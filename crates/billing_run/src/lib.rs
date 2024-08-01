@@ -5,7 +5,25 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct BillingAspayments7;
+pub struct BillingAspayments7 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingAspayments7Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingAspayments7 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingAspayments7Mapping([usize; 26]);
 /// # Summary
 ///
@@ -170,7 +188,6 @@ impl mmsdm_core::GetTable for BillingAspayments7 {
     type Row<'row> = BillingAspayments7Row<'row>;
     type FieldMapping = BillingAspayments7Mapping;
     type PrimaryKey = BillingAspayments7PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -350,11 +367,6 @@ impl mmsdm_core::GetTable for BillingAspayments7 {
         }
         Ok(BillingAspayments7Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -368,9 +380,14 @@ impl mmsdm_core::GetTable for BillingAspayments7 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_aspayments_v7".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_aspayments_v7_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingAspayments7Row {
@@ -936,7 +953,25 @@ pub struct BillingAspayments7Builder {
     raise1sec_array: arrow::array::builder::Decimal128Builder,
     lower1sec_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingAsrecovery9;
+pub struct BillingAsrecovery9 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingAsrecovery9Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingAsrecovery9 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingAsrecovery9Mapping([usize; 50]);
 /// # Summary
 ///
@@ -1182,7 +1217,6 @@ impl mmsdm_core::GetTable for BillingAsrecovery9 {
     type Row<'row> = BillingAsrecovery9Row<'row>;
     type FieldMapping = BillingAsrecovery9Mapping;
     type PrimaryKey = BillingAsrecovery9PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1511,11 +1545,6 @@ impl mmsdm_core::GetTable for BillingAsrecovery9 {
         }
         Ok(BillingAsrecovery9Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1529,9 +1558,14 @@ impl mmsdm_core::GetTable for BillingAsrecovery9 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_asrecovery_v9".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_asrecovery_v9_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingAsrecovery9Row {
@@ -2584,7 +2618,25 @@ pub struct BillingAsrecovery9Builder {
     lower1sec_ace_array: arrow::array::builder::Decimal128Builder,
     lower1sec_asoe_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingCpdata7;
+pub struct BillingCpdata7 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingCpdata7Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingCpdata7 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingCpdata7Mapping([usize; 16]);
 /// # Summary
 ///
@@ -2701,7 +2753,6 @@ impl mmsdm_core::GetTable for BillingCpdata7 {
     type Row<'row> = BillingCpdata7Row<'row>;
     type FieldMapping = BillingCpdata7Mapping;
     type PrimaryKey = BillingCpdata7PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2821,11 +2872,6 @@ impl mmsdm_core::GetTable for BillingCpdata7 {
         }
         Ok(BillingCpdata7Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2840,9 +2886,14 @@ impl mmsdm_core::GetTable for BillingCpdata7 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_cpdata_v7".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_cpdata_v7_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingCpdata7Row {
@@ -3208,7 +3259,25 @@ pub struct BillingCpdata7Builder {
     sales_array: arrow::array::builder::Decimal128Builder,
     purchasedenergy_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingDaytrk5;
+pub struct BillingDaytrk5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingDaytrk5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingDaytrk5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingDaytrk5Mapping([usize; 6]);
 /// # Summary
 ///
@@ -3270,7 +3339,6 @@ impl mmsdm_core::GetTable for BillingDaytrk5 {
     type Row<'row> = BillingDaytrk5Row<'row>;
     type FieldMapping = BillingDaytrk5Mapping;
     type PrimaryKey = BillingDaytrk5PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3345,23 +3413,6 @@ impl mmsdm_core::GetTable for BillingDaytrk5 {
         }
         Ok(BillingDaytrk5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let settlementdate = row
-            .get_custom_parsed_at_idx(
-                "settlementdate",
-                7,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(settlementdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(settlementdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3374,24 +3425,14 @@ impl mmsdm_core::GetTable for BillingDaytrk5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.settlementdate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.settlementdate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "billing_daytrk_v5_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_daytrk_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingDaytrk5Row {
@@ -3568,7 +3609,25 @@ pub struct BillingDaytrk5Builder {
     runno_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingFees5;
+pub struct BillingFees5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingFees5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingFees5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingFees5Mapping([usize; 10]);
 /// # Summary
 ///
@@ -3661,7 +3720,6 @@ impl mmsdm_core::GetTable for BillingFees5 {
     type Row<'row> = BillingFees5Row<'row>;
     type FieldMapping = BillingFees5Mapping;
     type PrimaryKey = BillingFees5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3746,11 +3804,6 @@ impl mmsdm_core::GetTable for BillingFees5 {
         }
         Ok(BillingFees5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3765,9 +3818,14 @@ impl mmsdm_core::GetTable for BillingFees5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_fees_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_fees_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingFees5Row {
@@ -4013,7 +4071,25 @@ pub struct BillingFees5Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     participantcategoryid_array: arrow::array::builder::StringBuilder,
 }
-pub struct BillingFinancialadjustments5;
+pub struct BillingFinancialadjustments5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingFinancialadjustments5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingFinancialadjustments5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingFinancialadjustments5Mapping([usize; 11]);
 /// # Summary
 ///
@@ -4130,7 +4206,6 @@ impl mmsdm_core::GetTable for BillingFinancialadjustments5 {
     type Row<'row> = BillingFinancialadjustments5Row<'row>;
     type FieldMapping = BillingFinancialadjustments5Mapping;
     type PrimaryKey = BillingFinancialadjustments5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4215,11 +4290,6 @@ impl mmsdm_core::GetTable for BillingFinancialadjustments5 {
         }
         Ok(BillingFinancialadjustments5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4233,9 +4303,14 @@ impl mmsdm_core::GetTable for BillingFinancialadjustments5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_financialadjustments_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_financialadjustments_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingFinancialadjustments5Row {
@@ -4488,7 +4563,25 @@ pub struct BillingFinancialadjustments5Builder {
     financialcode_array: arrow::array::builder::Decimal128Builder,
     bas_class_array: arrow::array::builder::StringBuilder,
 }
-pub struct BillingGendata5;
+pub struct BillingGendata5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingGendata5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingGendata5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingGendata5Mapping([usize; 13]);
 /// # Summary
 ///
@@ -4617,7 +4710,6 @@ impl mmsdm_core::GetTable for BillingGendata5 {
     type Row<'row> = BillingGendata5Row<'row>;
     type FieldMapping = BillingGendata5Mapping;
     type PrimaryKey = BillingGendata5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4709,11 +4801,6 @@ impl mmsdm_core::GetTable for BillingGendata5 {
         }
         Ok(BillingGendata5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4727,9 +4814,14 @@ impl mmsdm_core::GetTable for BillingGendata5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_gendata_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_gendata_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingGendata5Row {
@@ -5016,7 +5108,25 @@ pub struct BillingGendata5Builder {
     purchasedenergy_array: arrow::array::builder::Decimal128Builder,
     mda_array: arrow::array::builder::StringBuilder,
 }
-pub struct BillingInterresidues5;
+pub struct BillingInterresidues5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingInterresidues5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingInterresidues5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingInterresidues5Mapping([usize; 10]);
 /// # Summary
 ///
@@ -5109,7 +5219,6 @@ impl mmsdm_core::GetTable for BillingInterresidues5 {
     type Row<'row> = BillingInterresidues5Row<'row>;
     type FieldMapping = BillingInterresidues5Mapping;
     type PrimaryKey = BillingInterresidues5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -5193,11 +5302,6 @@ impl mmsdm_core::GetTable for BillingInterresidues5 {
         }
         Ok(BillingInterresidues5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -5212,9 +5316,14 @@ impl mmsdm_core::GetTable for BillingInterresidues5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_interresidues_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_interresidues_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingInterresidues5Row {
@@ -5460,7 +5569,25 @@ pub struct BillingInterresidues5Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
 }
-pub struct BillingIntraresidues5;
+pub struct BillingIntraresidues5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingIntraresidues5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingIntraresidues5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingIntraresidues5Mapping([usize; 9]);
 /// # Summary
 ///
@@ -5542,7 +5669,6 @@ impl mmsdm_core::GetTable for BillingIntraresidues5 {
     type Row<'row> = BillingIntraresidues5Row<'row>;
     type FieldMapping = BillingIntraresidues5Mapping;
     type PrimaryKey = BillingIntraresidues5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -5625,11 +5751,6 @@ impl mmsdm_core::GetTable for BillingIntraresidues5 {
         }
         Ok(BillingIntraresidues5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -5643,9 +5764,14 @@ impl mmsdm_core::GetTable for BillingIntraresidues5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_intraresidues_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_intraresidues_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingIntraresidues5Row {
@@ -5875,7 +6001,25 @@ pub struct BillingIntraresidues5Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
 }
-pub struct BillingIraucsurplus5;
+pub struct BillingIraucsurplus5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingIraucsurplus5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingIraucsurplus5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingIraucsurplus5Mapping([usize; 12]);
 /// # Summary
 ///
@@ -5980,7 +6124,6 @@ impl mmsdm_core::GetTable for BillingIraucsurplus5 {
     type Row<'row> = BillingIraucsurplus5Row<'row>;
     type FieldMapping = BillingIraucsurplus5Mapping;
     type PrimaryKey = BillingIraucsurplus5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -6071,11 +6214,6 @@ impl mmsdm_core::GetTable for BillingIraucsurplus5 {
         }
         Ok(BillingIraucsurplus5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -6091,9 +6229,14 @@ impl mmsdm_core::GetTable for BillingIraucsurplus5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_iraucsurplus_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_iraucsurplus_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingIraucsurplus5Row {
@@ -6375,7 +6518,25 @@ pub struct BillingIraucsurplus5Builder {
     adjustment_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingIraucsurplussum7;
+pub struct BillingIraucsurplussum7 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingIraucsurplussum7Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingIraucsurplussum7 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingIraucsurplussum7Mapping([usize; 16]);
 /// # Summary
 ///
@@ -6494,7 +6655,6 @@ impl mmsdm_core::GetTable for BillingIraucsurplussum7 {
     type Row<'row> = BillingIraucsurplussum7Row<'row>;
     type FieldMapping = BillingIraucsurplussum7Mapping;
     type PrimaryKey = BillingIraucsurplussum7PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -6614,11 +6774,6 @@ impl mmsdm_core::GetTable for BillingIraucsurplussum7 {
         }
         Ok(BillingIraucsurplussum7Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -6635,9 +6790,14 @@ impl mmsdm_core::GetTable for BillingIraucsurplussum7 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_iraucsurplussum_v7".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_iraucsurplussum_v7_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingIraucsurplussum7Row {
@@ -7005,7 +7165,25 @@ pub struct BillingIraucsurplussum7Builder {
     unadjusted_irsr_array: arrow::array::builder::Decimal128Builder,
     negative_residues_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingIrnspsurplus5;
+pub struct BillingIrnspsurplus5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingIrnspsurplus5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingIrnspsurplus5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingIrnspsurplus5Mapping([usize; 12]);
 /// # Summary
 ///
@@ -7110,7 +7288,6 @@ impl mmsdm_core::GetTable for BillingIrnspsurplus5 {
     type Row<'row> = BillingIrnspsurplus5Row<'row>;
     type FieldMapping = BillingIrnspsurplus5Mapping;
     type PrimaryKey = BillingIrnspsurplus5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -7201,11 +7378,6 @@ impl mmsdm_core::GetTable for BillingIrnspsurplus5 {
         }
         Ok(BillingIrnspsurplus5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -7221,9 +7393,14 @@ impl mmsdm_core::GetTable for BillingIrnspsurplus5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_irnspsurplus_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_irnspsurplus_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingIrnspsurplus5Row {
@@ -7505,7 +7682,25 @@ pub struct BillingIrnspsurplus5Builder {
     adjustment_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingIrnspsurplussum6;
+pub struct BillingIrnspsurplussum6 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingIrnspsurplussum6Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingIrnspsurplussum6 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingIrnspsurplussum6Mapping([usize; 14]);
 /// # Summary
 ///
@@ -7616,7 +7811,6 @@ impl mmsdm_core::GetTable for BillingIrnspsurplussum6 {
     type Row<'row> = BillingIrnspsurplussum6Row<'row>;
     type FieldMapping = BillingIrnspsurplussum6Mapping;
     type PrimaryKey = BillingIrnspsurplussum6PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -7724,11 +7918,6 @@ impl mmsdm_core::GetTable for BillingIrnspsurplussum6 {
         }
         Ok(BillingIrnspsurplussum6Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -7745,9 +7934,14 @@ impl mmsdm_core::GetTable for BillingIrnspsurplussum6 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_irnspsurplussum_v6".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_irnspsurplussum_v6_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingIrnspsurplussum6Row {
@@ -8075,7 +8269,25 @@ pub struct BillingIrnspsurplussum6Builder {
     csp_derogation_amount_array: arrow::array::builder::Decimal128Builder,
     unadjusted_irsr_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingIrpartsurplus5;
+pub struct BillingIrpartsurplus5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingIrpartsurplus5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingIrpartsurplus5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingIrpartsurplus5Mapping([usize; 13]);
 /// # Summary
 ///
@@ -8184,7 +8396,6 @@ impl mmsdm_core::GetTable for BillingIrpartsurplus5 {
     type Row<'row> = BillingIrpartsurplus5Row<'row>;
     type FieldMapping = BillingIrpartsurplus5Mapping;
     type PrimaryKey = BillingIrpartsurplus5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -8281,11 +8492,6 @@ impl mmsdm_core::GetTable for BillingIrpartsurplus5 {
         }
         Ok(BillingIrpartsurplus5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -8301,9 +8507,14 @@ impl mmsdm_core::GetTable for BillingIrpartsurplus5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_irpartsurplus_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_irpartsurplus_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingIrpartsurplus5Row {
@@ -8605,7 +8816,25 @@ pub struct BillingIrpartsurplus5Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     actualpayment_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingIrpartsurplussum7;
+pub struct BillingIrpartsurplussum7 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingIrpartsurplussum7Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingIrpartsurplussum7 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingIrpartsurplussum7Mapping([usize; 16]);
 /// # Summary
 ///
@@ -8724,7 +8953,6 @@ impl mmsdm_core::GetTable for BillingIrpartsurplussum7 {
     type Row<'row> = BillingIrpartsurplussum7Row<'row>;
     type FieldMapping = BillingIrpartsurplussum7Mapping;
     type PrimaryKey = BillingIrpartsurplussum7PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -8844,11 +9072,6 @@ impl mmsdm_core::GetTable for BillingIrpartsurplussum7 {
         }
         Ok(BillingIrpartsurplussum7Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -8865,9 +9088,14 @@ impl mmsdm_core::GetTable for BillingIrpartsurplussum7 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_irpartsurplussum_v7".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_irpartsurplussum_v7_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingIrpartsurplussum7Row {
@@ -9236,7 +9464,25 @@ pub struct BillingIrpartsurplussum7Builder {
     unadjusted_irsr_array: arrow::array::builder::Decimal128Builder,
     auctionfees_totalgross_adj_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingPrioradjustments5;
+pub struct BillingPrioradjustments5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingPrioradjustments5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingPrioradjustments5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingPrioradjustments5Mapping([usize; 16]);
 /// # Summary
 ///
@@ -9345,7 +9591,6 @@ impl mmsdm_core::GetTable for BillingPrioradjustments5 {
     type Row<'row> = BillingPrioradjustments5Row<'row>;
     type FieldMapping = BillingPrioradjustments5Mapping;
     type PrimaryKey = BillingPrioradjustments5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -9475,11 +9720,6 @@ impl mmsdm_core::GetTable for BillingPrioradjustments5 {
         }
         Ok(BillingPrioradjustments5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -9495,9 +9735,14 @@ impl mmsdm_core::GetTable for BillingPrioradjustments5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_prioradjustments_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_prioradjustments_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingPrioradjustments5Row {
@@ -9880,7 +10125,25 @@ pub struct BillingPrioradjustments5Builder {
     irsr_adjamount_array: arrow::array::builder::Decimal128Builder,
     irsr_interestamount_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingRealloc5;
+pub struct BillingRealloc5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingRealloc5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingRealloc5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingRealloc5Mapping([usize; 7]);
 /// # Summary
 ///
@@ -9954,7 +10217,6 @@ impl mmsdm_core::GetTable for BillingRealloc5 {
     type Row<'row> = BillingRealloc5Row<'row>;
     type FieldMapping = BillingRealloc5Mapping;
     type PrimaryKey = BillingRealloc5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -10025,11 +10287,6 @@ impl mmsdm_core::GetTable for BillingRealloc5 {
         }
         Ok(BillingRealloc5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -10043,9 +10300,14 @@ impl mmsdm_core::GetTable for BillingRealloc5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_realloc_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_realloc_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingRealloc5Row {
@@ -10235,7 +10497,25 @@ pub struct BillingRealloc5Builder {
     value_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingReallocDetail5;
+pub struct BillingReallocDetail5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingReallocDetail5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingReallocDetail5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingReallocDetail5Mapping([usize; 8]);
 /// # Summary
 ///
@@ -10320,7 +10600,6 @@ impl mmsdm_core::GetTable for BillingReallocDetail5 {
     type Row<'row> = BillingReallocDetail5Row<'row>;
     type FieldMapping = BillingReallocDetail5Mapping;
     type PrimaryKey = BillingReallocDetail5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -10392,11 +10671,6 @@ impl mmsdm_core::GetTable for BillingReallocDetail5 {
         }
         Ok(BillingReallocDetail5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -10411,9 +10685,14 @@ impl mmsdm_core::GetTable for BillingReallocDetail5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_realloc_detail_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_realloc_detail_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingReallocDetail5Row {
@@ -10619,7 +10898,25 @@ pub struct BillingReallocDetail5Builder {
     value_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingRegionexports5;
+pub struct BillingRegionexports5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingRegionexports5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingRegionexports5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingRegionexports5Mapping([usize; 10]);
 /// # Summary
 ///
@@ -10705,7 +11002,6 @@ impl mmsdm_core::GetTable for BillingRegionexports5 {
     type Row<'row> = BillingRegionexports5Row<'row>;
     type FieldMapping = BillingRegionexports5Mapping;
     type PrimaryKey = BillingRegionexports5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -10794,11 +11090,6 @@ impl mmsdm_core::GetTable for BillingRegionexports5 {
         }
         Ok(BillingRegionexports5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -10812,9 +11103,14 @@ impl mmsdm_core::GetTable for BillingRegionexports5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_regionexports_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_regionexports_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingRegionexports5Row {
@@ -11064,7 +11360,25 @@ pub struct BillingRegionexports5Builder {
     surplusvalue_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingRegionfigures6;
+pub struct BillingRegionfigures6 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingRegionfigures6Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingRegionfigures6 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingRegionfigures6Mapping([usize; 18]);
 /// # Summary
 ///
@@ -11178,7 +11492,6 @@ impl mmsdm_core::GetTable for BillingRegionfigures6 {
     type Row<'row> = BillingRegionfigures6Row<'row>;
     type FieldMapping = BillingRegionfigures6Mapping;
     type PrimaryKey = BillingRegionfigures6PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -11320,11 +11633,6 @@ impl mmsdm_core::GetTable for BillingRegionfigures6 {
         }
         Ok(BillingRegionfigures6Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -11337,9 +11645,14 @@ impl mmsdm_core::GetTable for BillingRegionfigures6 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_regionfigures_v6".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_regionfigures_v6_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingRegionfigures6Row {
@@ -11753,7 +12066,25 @@ pub struct BillingRegionfigures6Builder {
     wdrsq_array: arrow::array::builder::Decimal128Builder,
     wdrta_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingRegionimports5;
+pub struct BillingRegionimports5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingRegionimports5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingRegionimports5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingRegionimports5Mapping([usize; 10]);
 /// # Summary
 ///
@@ -11839,7 +12170,6 @@ impl mmsdm_core::GetTable for BillingRegionimports5 {
     type Row<'row> = BillingRegionimports5Row<'row>;
     type FieldMapping = BillingRegionimports5Mapping;
     type PrimaryKey = BillingRegionimports5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -11928,11 +12258,6 @@ impl mmsdm_core::GetTable for BillingRegionimports5 {
         }
         Ok(BillingRegionimports5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -11946,9 +12271,14 @@ impl mmsdm_core::GetTable for BillingRegionimports5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_regionimports_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_regionimports_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingRegionimports5Row {
@@ -12198,7 +12528,25 @@ pub struct BillingRegionimports5Builder {
     surplusvalue_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingRuntrk5;
+pub struct BillingRuntrk5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingRuntrk5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingRuntrk5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingRuntrk5Mapping([usize; 16]);
 /// # Summary
 ///
@@ -12372,7 +12720,6 @@ impl mmsdm_core::GetTable for BillingRuntrk5 {
     type Row<'row> = BillingRuntrk5Row<'row>;
     type FieldMapping = BillingRuntrk5Mapping;
     type PrimaryKey = BillingRuntrk5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -12477,11 +12824,6 @@ impl mmsdm_core::GetTable for BillingRuntrk5 {
         }
         Ok(BillingRuntrk5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -12493,9 +12835,14 @@ impl mmsdm_core::GetTable for BillingRuntrk5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_runtrk_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_runtrk_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingRuntrk5Row {
@@ -12807,7 +13154,25 @@ pub struct BillingRuntrk5Builder {
     shortfall_array: arrow::array::builder::Decimal128Builder,
     makeup_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingApcCompensation2;
+pub struct BillingApcCompensation2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingApcCompensation2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingApcCompensation2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingApcCompensation2Mapping([usize; 10]);
 /// # Summary
 ///
@@ -12923,7 +13288,6 @@ impl mmsdm_core::GetTable for BillingApcCompensation2 {
     type Row<'row> = BillingApcCompensation2Row<'row>;
     type FieldMapping = BillingApcCompensation2Mapping;
     type PrimaryKey = BillingApcCompensation2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -12983,11 +13347,6 @@ impl mmsdm_core::GetTable for BillingApcCompensation2 {
         }
         Ok(BillingApcCompensation2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -13001,9 +13360,14 @@ impl mmsdm_core::GetTable for BillingApcCompensation2 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_apc_compensation_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_apc_compensation_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingApcCompensation2Row {
@@ -13205,7 +13569,25 @@ pub struct BillingApcCompensation2Builder {
     compensation_type_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingApcRecovery3;
+pub struct BillingApcRecovery3 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingApcRecovery3Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingApcRecovery3 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingApcRecovery3Mapping([usize; 15]);
 /// # Summary
 ///
@@ -13313,7 +13695,6 @@ impl mmsdm_core::GetTable for BillingApcRecovery3 {
     type Row<'row> = BillingApcRecovery3Row<'row>;
     type FieldMapping = BillingApcRecovery3Mapping;
     type PrimaryKey = BillingApcRecovery3PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -13407,11 +13788,6 @@ impl mmsdm_core::GetTable for BillingApcRecovery3 {
         }
         Ok(BillingApcRecovery3Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -13427,9 +13803,14 @@ impl mmsdm_core::GetTable for BillingApcRecovery3 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_apc_recovery_v3".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_apc_recovery_v3_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingApcRecovery3Row {
@@ -13744,7 +14125,25 @@ pub struct BillingApcRecovery3Builder {
     participant_ace_mwh_array: arrow::array::builder::Decimal128Builder,
     region_ace_mwh_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingBillingCo2ePublication1;
+pub struct BillingBillingCo2ePublication1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingBillingCo2ePublication1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingBillingCo2ePublication1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingBillingCo2ePublication1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -13817,7 +14216,6 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublication1 {
     type Row<'row> = BillingBillingCo2ePublication1Row<'row>;
     type FieldMapping = BillingBillingCo2ePublication1Mapping;
     type PrimaryKey = BillingBillingCo2ePublication1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -13884,23 +14282,6 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublication1 {
         }
         Ok(BillingBillingCo2ePublication1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let settlementdate = row
-            .get_custom_parsed_at_idx(
-                "settlementdate",
-                7,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(settlementdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(settlementdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -13913,24 +14294,16 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublication1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.settlementdate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.settlementdate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "billing_billing_co2e_publication_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "billing_billing_co2e_publication_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingBillingCo2ePublication1Row {
@@ -14122,7 +14495,25 @@ pub struct BillingBillingCo2ePublication1Builder {
     generatoremissions_array: arrow::array::builder::Decimal128Builder,
     intensityindex_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingBillingCo2ePublicationTrk1;
+pub struct BillingBillingCo2ePublicationTrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingBillingCo2ePublicationTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingBillingCo2ePublicationTrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingBillingCo2ePublicationTrk1Mapping([usize; 4]);
 /// # Summary
 ///
@@ -14173,7 +14564,6 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublicationTrk1 {
     type Row<'row> = BillingBillingCo2ePublicationTrk1Row<'row>;
     type FieldMapping = BillingBillingCo2ePublicationTrk1Mapping;
     type PrimaryKey = BillingBillingCo2ePublicationTrk1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -14221,11 +14611,6 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublicationTrk1 {
         }
         Ok(BillingBillingCo2ePublicationTrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -14236,9 +14621,16 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublicationTrk1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_billing_co2e_publication_trk_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "billing_billing_co2e_publication_trk_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingBillingCo2ePublicationTrk1Row {
@@ -14355,7 +14747,25 @@ pub struct BillingBillingCo2ePublicationTrk1Builder {
     billrunno_array: arrow::array::builder::Int64Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingDailyEnergySummary2;
+pub struct BillingDailyEnergySummary2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingDailyEnergySummary2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingDailyEnergySummary2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingDailyEnergySummary2Mapping([usize; 17]);
 /// # Summary
 ///
@@ -14470,7 +14880,6 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary2 {
     type Row<'row> = BillingDailyEnergySummary2Row<'row>;
     type FieldMapping = BillingDailyEnergySummary2Mapping;
     type PrimaryKey = BillingDailyEnergySummary2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -14601,23 +15010,6 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary2 {
         }
         Ok(BillingDailyEnergySummary2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let settlementdate = row
-            .get_custom_parsed_at_idx(
-                "settlementdate",
-                7,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(settlementdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(settlementdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -14632,24 +15024,14 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary2 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.settlementdate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.settlementdate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "billing_daily_energy_summary_v2_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_daily_energy_summary_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingDailyEnergySummary2Row {
@@ -15043,7 +15425,25 @@ pub struct BillingDailyEnergySummary2Builder {
     total_mwh_array: arrow::array::builder::Decimal128Builder,
     total_amount_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingBillingDirectionReconOther2;
+pub struct BillingBillingDirectionReconOther2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingBillingDirectionReconOther2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingBillingDirectionReconOther2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingBillingDirectionReconOther2Mapping([usize; 21]);
 /// # Summary
 ///
@@ -15208,7 +15608,6 @@ impl mmsdm_core::GetTable for BillingBillingDirectionReconOther2 {
     type Row<'row> = BillingBillingDirectionReconOther2Row<'row>;
     type FieldMapping = BillingBillingDirectionReconOther2Mapping;
     type PrimaryKey = BillingBillingDirectionReconOther2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -15335,11 +15734,6 @@ impl mmsdm_core::GetTable for BillingBillingDirectionReconOther2 {
         }
         Ok(BillingBillingDirectionReconOther2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -15353,9 +15747,16 @@ impl mmsdm_core::GetTable for BillingBillingDirectionReconOther2 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_billing_direction_recon_other_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "billing_billing_direction_recon_other_v2_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingBillingDirectionReconOther2Row {
@@ -15771,7 +16172,25 @@ pub struct BillingBillingDirectionReconOther2Builder {
     region_asoe_mwh_array: arrow::array::builder::Decimal128Builder,
     direction_service_id_array: arrow::array::builder::StringBuilder,
 }
-pub struct BillingDirFinalAmount1;
+pub struct BillingDirFinalAmount1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingDirFinalAmount1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingDirFinalAmount1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingDirFinalAmount1Mapping([usize; 9]);
 /// # Summary
 ///
@@ -15859,7 +16278,6 @@ impl mmsdm_core::GetTable for BillingDirFinalAmount1 {
     type Row<'row> = BillingDirFinalAmount1Row<'row>;
     type FieldMapping = BillingDirFinalAmount1Mapping;
     type PrimaryKey = BillingDirFinalAmount1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -15937,11 +16355,6 @@ impl mmsdm_core::GetTable for BillingDirFinalAmount1 {
         }
         Ok(BillingDirFinalAmount1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -15956,9 +16369,14 @@ impl mmsdm_core::GetTable for BillingDirFinalAmount1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_dir_final_amount_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_dir_final_amount_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingDirFinalAmount1Row {
@@ -16188,7 +16606,25 @@ pub struct BillingDirFinalAmount1Builder {
     final_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingDirFinalRecovery1;
+pub struct BillingDirFinalRecovery1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingDirFinalRecovery1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingDirFinalRecovery1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingDirFinalRecovery1Mapping([usize; 9]);
 /// # Summary
 ///
@@ -16269,7 +16705,6 @@ impl mmsdm_core::GetTable for BillingDirFinalRecovery1 {
     type Row<'row> = BillingDirFinalRecovery1Row<'row>;
     type FieldMapping = BillingDirFinalRecovery1Mapping;
     type PrimaryKey = BillingDirFinalRecovery1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -16352,11 +16787,6 @@ impl mmsdm_core::GetTable for BillingDirFinalRecovery1 {
         }
         Ok(BillingDirFinalRecovery1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -16370,9 +16800,14 @@ impl mmsdm_core::GetTable for BillingDirFinalRecovery1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_dir_final_recovery_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_dir_final_recovery_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingDirFinalRecovery1Row {
@@ -16602,7 +17037,25 @@ pub struct BillingDirFinalRecovery1Builder {
     final_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingDirProvAmount1;
+pub struct BillingDirProvAmount1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingDirProvAmount1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingDirProvAmount1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingDirProvAmount1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -16686,7 +17139,6 @@ impl mmsdm_core::GetTable for BillingDirProvAmount1 {
     type Row<'row> = BillingDirProvAmount1Row<'row>;
     type FieldMapping = BillingDirProvAmount1Mapping;
     type PrimaryKey = BillingDirProvAmount1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -16758,11 +17210,6 @@ impl mmsdm_core::GetTable for BillingDirProvAmount1 {
         }
         Ok(BillingDirProvAmount1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -16777,9 +17224,14 @@ impl mmsdm_core::GetTable for BillingDirProvAmount1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_dir_prov_amount_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_dir_prov_amount_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingDirProvAmount1Row {
@@ -16989,7 +17441,25 @@ pub struct BillingDirProvAmount1Builder {
     compensation_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingDirProvRecovery1;
+pub struct BillingDirProvRecovery1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingDirProvRecovery1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingDirProvRecovery1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingDirProvRecovery1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -17066,7 +17536,6 @@ impl mmsdm_core::GetTable for BillingDirProvRecovery1 {
     type Row<'row> = BillingDirProvRecovery1Row<'row>;
     type FieldMapping = BillingDirProvRecovery1Mapping;
     type PrimaryKey = BillingDirProvRecovery1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -17143,11 +17612,6 @@ impl mmsdm_core::GetTable for BillingDirProvRecovery1 {
         }
         Ok(BillingDirProvRecovery1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -17161,9 +17625,14 @@ impl mmsdm_core::GetTable for BillingDirProvRecovery1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_dir_prov_recovery_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_dir_prov_recovery_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingDirProvRecovery1Row {
@@ -17373,7 +17842,25 @@ pub struct BillingDirProvRecovery1Builder {
     recovery_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingDirRecoveryDetail1;
+pub struct BillingDirRecoveryDetail1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingDirRecoveryDetail1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingDirRecoveryDetail1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingDirRecoveryDetail1Mapping([usize; 12]);
 /// # Summary
 ///
@@ -17477,7 +17964,6 @@ impl mmsdm_core::GetTable for BillingDirRecoveryDetail1 {
     type Row<'row> = BillingDirRecoveryDetail1Row<'row>;
     type FieldMapping = BillingDirRecoveryDetail1Mapping;
     type PrimaryKey = BillingDirRecoveryDetail1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -17569,11 +18055,6 @@ impl mmsdm_core::GetTable for BillingDirRecoveryDetail1 {
         }
         Ok(BillingDirRecoveryDetail1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -17589,9 +18070,14 @@ impl mmsdm_core::GetTable for BillingDirRecoveryDetail1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_dir_recovery_detail_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_dir_recovery_detail_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingDirRecoveryDetail1Row {
@@ -17873,7 +18359,25 @@ pub struct BillingDirRecoveryDetail1Builder {
     excluded_energy_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingEftshortfallAmount1;
+pub struct BillingEftshortfallAmount1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingEftshortfallAmount1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingEftshortfallAmount1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingEftshortfallAmount1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -17967,7 +18471,6 @@ impl mmsdm_core::GetTable for BillingEftshortfallAmount1 {
     type Row<'row> = BillingEftshortfallAmount1Row<'row>;
     type FieldMapping = BillingEftshortfallAmount1Mapping;
     type PrimaryKey = BillingEftshortfallAmount1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -18057,11 +18560,6 @@ impl mmsdm_core::GetTable for BillingEftshortfallAmount1 {
         }
         Ok(BillingEftshortfallAmount1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -18074,9 +18572,14 @@ impl mmsdm_core::GetTable for BillingEftshortfallAmount1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_eftshortfall_amount_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_eftshortfall_amount_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingEftshortfallAmount1Row {
@@ -18326,7 +18829,25 @@ pub struct BillingEftshortfallAmount1Builder {
     participant_net_energy_array: arrow::array::builder::Decimal128Builder,
     company_net_energy_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingEftshortfallDetail1;
+pub struct BillingEftshortfallDetail1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingEftshortfallDetail1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingEftshortfallDetail1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingEftshortfallDetail1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -18399,7 +18920,6 @@ impl mmsdm_core::GetTable for BillingEftshortfallDetail1 {
     type Row<'row> = BillingEftshortfallDetail1Row<'row>;
     type FieldMapping = BillingEftshortfallDetail1Mapping;
     type PrimaryKey = BillingEftshortfallDetail1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -18464,11 +18984,6 @@ impl mmsdm_core::GetTable for BillingEftshortfallDetail1 {
         }
         Ok(BillingEftshortfallDetail1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -18482,9 +18997,14 @@ impl mmsdm_core::GetTable for BillingEftshortfallDetail1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_eftshortfall_detail_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_eftshortfall_detail_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingEftshortfallDetail1Row {
@@ -18661,7 +19181,25 @@ pub struct BillingEftshortfallDetail1Builder {
     transaction_type_array: arrow::array::builder::StringBuilder,
     amount_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingEnergyGensetDetail1;
+pub struct BillingEnergyGensetDetail1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingEnergyGensetDetail1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingEnergyGensetDetail1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingEnergyGensetDetail1Mapping([usize; 20]);
 /// # Summary
 ///
@@ -18809,7 +19347,6 @@ impl mmsdm_core::GetTable for BillingEnergyGensetDetail1 {
     type Row<'row> = BillingEnergyGensetDetail1Row<'row>;
     type FieldMapping = BillingEnergyGensetDetail1Mapping;
     type PrimaryKey = BillingEnergyGensetDetail1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -18933,11 +19470,6 @@ impl mmsdm_core::GetTable for BillingEnergyGensetDetail1 {
         }
         Ok(BillingEnergyGensetDetail1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -18956,9 +19488,14 @@ impl mmsdm_core::GetTable for BillingEnergyGensetDetail1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_energy_genset_detail_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_energy_genset_detail_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingEnergyGensetDetail1Row {
@@ -19383,7 +19920,25 @@ pub struct BillingEnergyGensetDetail1Builder {
     total_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingEnergyTransaction1;
+pub struct BillingEnergyTransaction1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingEnergyTransaction1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingEnergyTransaction1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingEnergyTransaction1Mapping([usize; 16]);
 /// # Summary
 ///
@@ -19499,7 +20054,6 @@ impl mmsdm_core::GetTable for BillingEnergyTransaction1 {
     type Row<'row> = BillingEnergyTransaction1Row<'row>;
     type FieldMapping = BillingEnergyTransaction1Mapping;
     type PrimaryKey = BillingEnergyTransaction1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -19619,11 +20173,6 @@ impl mmsdm_core::GetTable for BillingEnergyTransaction1 {
         }
         Ok(BillingEnergyTransaction1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -19638,9 +20187,14 @@ impl mmsdm_core::GetTable for BillingEnergyTransaction1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_energy_transaction_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_energy_transaction_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingEnergyTransaction1Row {
@@ -20010,7 +20564,25 @@ pub struct BillingEnergyTransaction1Builder {
     dme_mwh_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingEnergyTranSaps1;
+pub struct BillingEnergyTranSaps1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingEnergyTranSaps1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingEnergyTranSaps1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingEnergyTranSaps1Mapping([usize; 11]);
 /// # Summary
 ///
@@ -20111,7 +20683,6 @@ impl mmsdm_core::GetTable for BillingEnergyTranSaps1 {
     type Row<'row> = BillingEnergyTranSaps1Row<'row>;
     type FieldMapping = BillingEnergyTranSaps1Mapping;
     type PrimaryKey = BillingEnergyTranSaps1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -20201,11 +20772,6 @@ impl mmsdm_core::GetTable for BillingEnergyTranSaps1 {
         }
         Ok(BillingEnergyTranSaps1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -20219,9 +20785,14 @@ impl mmsdm_core::GetTable for BillingEnergyTranSaps1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_energy_tran_saps_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_energy_tran_saps_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingEnergyTranSaps1Row {
@@ -20482,7 +21053,25 @@ pub struct BillingEnergyTranSaps1Builder {
     sentout_energy_cost_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingGstDetail5;
+pub struct BillingGstDetail5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingGstDetail5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingGstDetail5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingGstDetail5Mapping([usize; 9]);
 /// # Summary
 ///
@@ -20571,7 +21160,6 @@ impl mmsdm_core::GetTable for BillingGstDetail5 {
     type Row<'row> = BillingGstDetail5Row<'row>;
     type FieldMapping = BillingGstDetail5Mapping;
     type PrimaryKey = BillingGstDetail5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -20649,11 +21237,6 @@ impl mmsdm_core::GetTable for BillingGstDetail5 {
         }
         Ok(BillingGstDetail5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -20668,9 +21251,14 @@ impl mmsdm_core::GetTable for BillingGstDetail5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_gst_detail_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_gst_detail_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingGstDetail5Row {
@@ -20899,7 +21487,25 @@ pub struct BillingGstDetail5Builder {
     gst_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingGstSummary5;
+pub struct BillingGstSummary5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingGstSummary5Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingGstSummary5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingGstSummary5Mapping([usize; 8]);
 /// # Summary
 ///
@@ -20977,7 +21583,6 @@ impl mmsdm_core::GetTable for BillingGstSummary5 {
     type Row<'row> = BillingGstSummary5Row<'row>;
     type FieldMapping = BillingGstSummary5Mapping;
     type PrimaryKey = BillingGstSummary5PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -21054,11 +21659,6 @@ impl mmsdm_core::GetTable for BillingGstSummary5 {
         }
         Ok(BillingGstSummary5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -21072,9 +21672,14 @@ impl mmsdm_core::GetTable for BillingGstSummary5 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_gst_summary_v5".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_gst_summary_v5_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingGstSummary5Row {
@@ -21284,7 +21889,25 @@ pub struct BillingGstSummary5Builder {
     gst_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingNmasTstPayments1;
+pub struct BillingNmasTstPayments1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingNmasTstPayments1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingNmasTstPayments1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingNmasTstPayments1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -21361,7 +21984,6 @@ impl mmsdm_core::GetTable for BillingNmasTstPayments1 {
     type Row<'row> = BillingNmasTstPayments1Row<'row>;
     type FieldMapping = BillingNmasTstPayments1Mapping;
     type PrimaryKey = BillingNmasTstPayments1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -21427,11 +22049,6 @@ impl mmsdm_core::GetTable for BillingNmasTstPayments1 {
         }
         Ok(BillingNmasTstPayments1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -21446,9 +22063,14 @@ impl mmsdm_core::GetTable for BillingNmasTstPayments1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_nmas_tst_payments_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_nmas_tst_payments_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingNmasTstPayments1Row {
@@ -21638,7 +22260,25 @@ pub struct BillingNmasTstPayments1Builder {
     contractid_array: arrow::array::builder::StringBuilder,
     payment_amount_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingNmasTstRecovery2;
+pub struct BillingNmasTstRecovery2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingNmasTstRecovery2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingNmasTstRecovery2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingNmasTstRecovery2Mapping([usize; 28]);
 /// # Summary
 ///
@@ -21803,7 +22443,6 @@ impl mmsdm_core::GetTable for BillingNmasTstRecovery2 {
     type Row<'row> = BillingNmasTstRecovery2Row<'row>;
     type FieldMapping = BillingNmasTstRecovery2Mapping;
     type PrimaryKey = BillingNmasTstRecovery2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -21990,11 +22629,6 @@ impl mmsdm_core::GetTable for BillingNmasTstRecovery2 {
         }
         Ok(BillingNmasTstRecovery2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -22010,9 +22644,14 @@ impl mmsdm_core::GetTable for BillingNmasTstRecovery2 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_nmas_tst_recovery_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_nmas_tst_recovery_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingNmasTstRecovery2Row {
@@ -22605,7 +23244,25 @@ pub struct BillingNmasTstRecovery2Builder {
     recoveryamount_ace_array: arrow::array::builder::Decimal128Builder,
     recoveryamount_asoe_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingNmasTstRecvryRbf1;
+pub struct BillingNmasTstRecvryRbf1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingNmasTstRecvryRbf1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingNmasTstRecvryRbf1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingNmasTstRecvryRbf1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -22694,7 +23351,6 @@ impl mmsdm_core::GetTable for BillingNmasTstRecvryRbf1 {
     type Row<'row> = BillingNmasTstRecvryRbf1Row<'row>;
     type FieldMapping = BillingNmasTstRecvryRbf1Mapping;
     type PrimaryKey = BillingNmasTstRecvryRbf1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -22778,11 +23434,6 @@ impl mmsdm_core::GetTable for BillingNmasTstRecvryRbf1 {
         }
         Ok(BillingNmasTstRecvryRbf1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -22797,9 +23448,14 @@ impl mmsdm_core::GetTable for BillingNmasTstRecvryRbf1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_nmas_tst_recvry_rbf_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_nmas_tst_recvry_rbf_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingNmasTstRecvryRbf1Row {
@@ -23041,7 +23697,25 @@ pub struct BillingNmasTstRecvryRbf1Builder {
     recovery_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingNmasTstRecvryTrk1;
+pub struct BillingNmasTstRecvryTrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingNmasTstRecvryTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingNmasTstRecvryTrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingNmasTstRecvryTrk1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -23104,7 +23778,6 @@ impl mmsdm_core::GetTable for BillingNmasTstRecvryTrk1 {
     type Row<'row> = BillingNmasTstRecvryTrk1Row<'row>;
     type FieldMapping = BillingNmasTstRecvryTrk1Mapping;
     type PrimaryKey = BillingNmasTstRecvryTrk1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -23179,11 +23852,6 @@ impl mmsdm_core::GetTable for BillingNmasTstRecvryTrk1 {
         }
         Ok(BillingNmasTstRecvryTrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -23198,9 +23866,14 @@ impl mmsdm_core::GetTable for BillingNmasTstRecvryTrk1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_nmas_tst_recvry_trk_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_nmas_tst_recvry_trk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingNmasTstRecvryTrk1Row {
@@ -23391,7 +24064,25 @@ pub struct BillingNmasTstRecvryTrk1Builder {
     recovery_weekno_array: arrow::array::builder::Decimal128Builder,
     recovery_billrunno_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingSecdepositApplication1;
+pub struct BillingSecdepositApplication1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingSecdepositApplication1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingSecdepositApplication1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingSecdepositApplication1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -23453,7 +24144,6 @@ impl mmsdm_core::GetTable for BillingSecdepositApplication1 {
     type Row<'row> = BillingSecdepositApplication1Row<'row>;
     type FieldMapping = BillingSecdepositApplication1Mapping;
     type PrimaryKey = BillingSecdepositApplication1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -23517,11 +24207,6 @@ impl mmsdm_core::GetTable for BillingSecdepositApplication1 {
         }
         Ok(BillingSecdepositApplication1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -23534,9 +24219,14 @@ impl mmsdm_core::GetTable for BillingSecdepositApplication1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_secdeposit_application_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_secdeposit_application_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingSecdepositApplication1Row {
@@ -23695,7 +24385,25 @@ pub struct BillingSecdepositApplication1Builder {
     participantid_array: arrow::array::builder::StringBuilder,
     application_amount_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingSecdepInterestPay1;
+pub struct BillingSecdepInterestPay1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingSecdepInterestPay1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingSecdepInterestPay1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingSecdepInterestPay1Mapping([usize; 9]);
 /// # Summary
 ///
@@ -23804,7 +24512,6 @@ impl mmsdm_core::GetTable for BillingSecdepInterestPay1 {
     type Row<'row> = BillingSecdepInterestPay1Row<'row>;
     type FieldMapping = BillingSecdepInterestPay1Mapping;
     type PrimaryKey = BillingSecdepInterestPay1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -23879,11 +24586,6 @@ impl mmsdm_core::GetTable for BillingSecdepInterestPay1 {
         }
         Ok(BillingSecdepInterestPay1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -23897,9 +24599,14 @@ impl mmsdm_core::GetTable for BillingSecdepInterestPay1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_secdep_interest_pay_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_secdep_interest_pay_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingSecdepInterestPay1Row {
@@ -24119,7 +24826,25 @@ pub struct BillingSecdepInterestPay1Builder {
     interest_acct_id_array: arrow::array::builder::StringBuilder,
     interest_rate_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingSecdepInterestRate1;
+pub struct BillingSecdepInterestRate1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingSecdepInterestRate1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingSecdepInterestRate1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingSecdepInterestRate1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -24188,7 +24913,6 @@ impl mmsdm_core::GetTable for BillingSecdepInterestRate1 {
     type Row<'row> = BillingSecdepInterestRate1Row<'row>;
     type FieldMapping = BillingSecdepInterestRate1Mapping;
     type PrimaryKey = BillingSecdepInterestRate1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -24258,23 +24982,6 @@ impl mmsdm_core::GetTable for BillingSecdepInterestRate1 {
         }
         Ok(BillingSecdepInterestRate1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                8,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -24288,24 +24995,14 @@ impl mmsdm_core::GetTable for BillingSecdepInterestRate1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "billing_secdep_interest_rate_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_secdep_interest_rate_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingSecdepInterestRate1Row {
@@ -24485,7 +25182,25 @@ pub struct BillingSecdepInterestRate1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     interest_rate_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingSubstDemand1;
+pub struct BillingSubstDemand1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingSubstDemand1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingSubstDemand1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingSubstDemand1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -24575,7 +25290,6 @@ impl mmsdm_core::GetTable for BillingSubstDemand1 {
     type Row<'row> = BillingSubstDemand1Row<'row>;
     type FieldMapping = BillingSubstDemand1Mapping;
     type PrimaryKey = BillingSubstDemand1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -24647,23 +25361,6 @@ impl mmsdm_core::GetTable for BillingSubstDemand1 {
         }
         Ok(BillingSubstDemand1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let settlementdate = row
-            .get_custom_parsed_at_idx(
-                "settlementdate",
-                7,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(settlementdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(settlementdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -24678,24 +25375,14 @@ impl mmsdm_core::GetTable for BillingSubstDemand1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.settlementdate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.settlementdate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "billing_subst_demand_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_subst_demand_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingSubstDemand1Row {
@@ -24899,7 +25586,25 @@ pub struct BillingSubstDemand1Builder {
     regionid_array: arrow::array::builder::StringBuilder,
     substitutedemand_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingSubstRunVersion1;
+pub struct BillingSubstRunVersion1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingSubstRunVersion1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingSubstRunVersion1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingSubstRunVersion1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -24957,7 +25662,6 @@ impl mmsdm_core::GetTable for BillingSubstRunVersion1 {
     type Row<'row> = BillingSubstRunVersion1Row<'row>;
     type FieldMapping = BillingSubstRunVersion1Mapping;
     type PrimaryKey = BillingSubstRunVersion1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -25026,11 +25730,6 @@ impl mmsdm_core::GetTable for BillingSubstRunVersion1 {
         }
         Ok(BillingSubstRunVersion1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -25044,9 +25743,14 @@ impl mmsdm_core::GetTable for BillingSubstRunVersion1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_subst_run_version_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_subst_run_version_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingSubstRunVersion1Row {
@@ -25217,7 +25921,25 @@ pub struct BillingSubstRunVersion1Builder {
     referencesettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     referencesettlementrunno_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingWdr1;
+pub struct BillingWdr1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingWdr1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingWdr1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingWdr1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -25282,7 +26004,6 @@ impl mmsdm_core::GetTable for BillingWdr1 {
     type Row<'row> = BillingWdr1Row<'row>;
     type FieldMapping = BillingWdr1Mapping;
     type PrimaryKey = BillingWdr1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -25352,11 +26073,6 @@ impl mmsdm_core::GetTable for BillingWdr1 {
         }
         Ok(BillingWdr1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -25369,9 +26085,14 @@ impl mmsdm_core::GetTable for BillingWdr1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_wdr_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_wdr_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingWdr1Row {
@@ -25549,7 +26270,25 @@ pub struct BillingWdr1Builder {
     wdr_credit_amount_array: arrow::array::builder::Decimal128Builder,
     wdr_debit_amount_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingWdrDetail1;
+pub struct BillingWdrDetail1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingWdrDetail1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingWdrDetail1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingWdrDetail1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -25642,7 +26381,6 @@ impl mmsdm_core::GetTable for BillingWdrDetail1 {
     type Row<'row> = BillingWdrDetail1Row<'row>;
     type FieldMapping = BillingWdrDetail1Mapping;
     type PrimaryKey = BillingWdrDetail1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -25721,11 +26459,6 @@ impl mmsdm_core::GetTable for BillingWdrDetail1 {
         }
         Ok(BillingWdrDetail1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -25741,9 +26474,14 @@ impl mmsdm_core::GetTable for BillingWdrDetail1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_wdr_detail_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_wdr_detail_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingWdrDetail1Row {
@@ -25985,7 +26723,25 @@ pub struct BillingWdrDetail1Builder {
     wdrrr_array: arrow::array::builder::Decimal128Builder,
     wdrta_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingReservetraderpayment1;
+pub struct BillingReservetraderpayment1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingReservetraderpayment1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingReservetraderpayment1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingReservetraderpayment1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -26083,7 +26839,6 @@ impl mmsdm_core::GetTable for BillingReservetraderpayment1 {
     type Row<'row> = BillingReservetraderpayment1Row<'row>;
     type FieldMapping = BillingReservetraderpayment1Mapping;
     type PrimaryKey = BillingReservetraderpayment1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -26155,11 +26910,6 @@ impl mmsdm_core::GetTable for BillingReservetraderpayment1 {
         }
         Ok(BillingReservetraderpayment1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -26173,9 +26923,14 @@ impl mmsdm_core::GetTable for BillingReservetraderpayment1 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_reservetraderpayment_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_reservetraderpayment_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingReservetraderpayment1Row {
@@ -26379,7 +27134,25 @@ pub struct BillingReservetraderpayment1Builder {
     payment_type_array: arrow::array::builder::StringBuilder,
     payment_amount_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingReservetraderrecovery3;
+pub struct BillingReservetraderrecovery3 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingReservetraderrecovery3Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingReservetraderrecovery3 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingReservetraderrecovery3Mapping([usize; 16]);
 /// # Summary
 ///
@@ -26496,7 +27269,6 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery3 {
     type Row<'row> = BillingReservetraderrecovery3Row<'row>;
     type FieldMapping = BillingReservetraderrecovery3Mapping;
     type PrimaryKey = BillingReservetraderrecovery3PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -26616,11 +27388,6 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery3 {
         }
         Ok(BillingReservetraderrecovery3Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -26636,9 +27403,14 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery3 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_reservetraderrecovery_v3".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_reservetraderrecovery_v3_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingReservetraderrecovery3Row {

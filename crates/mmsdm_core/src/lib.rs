@@ -229,8 +229,27 @@ impl<'a> fmt::Display for FileKey<'a> {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct PartitionKey(pub &'static str);
+
+impl core::fmt::Display for PartitionKey {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(&self.0)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct PartitionValue(pub String);
+
+impl core::fmt::Display for PartitionValue {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(&self.0)
+    }
+}
+
 pub trait Partition: core::hash::Hash + PartialEq + Eq + PartialOrd + Ord + Copy {
-    fn get_suffix(&self) -> String;
+    fn key() -> PartitionKey;
+    fn value(&self) -> PartitionValue;
 }
 
 #[derive(PartialEq, Eq, Debug, Hash, Clone, Copy)]
@@ -257,16 +276,16 @@ impl Ord for YearMonth {
     }
 }
 
-impl Partition for YearMonth {
-    fn get_suffix(&self) -> String {
-        format!("_{:02}_{:04}", self.month.number_from_month(), self.year)
-    }
-}
-impl Partition for () {
-    fn get_suffix(&self) -> String {
-        String::new()
-    }
-}
+// impl Partition for YearMonth {
+//     fn get_suffix(&self) -> String {
+//         format!("_{:02}_{:04}", self.month.number_from_month(), self.year)
+//     }
+// }
+// impl Partition for () {
+//     fn get_suffix(&self) -> String {
+//         String::new()
+//     }
+// }
 
 // / This trait is designed as a convenient way to extract a Vec of the desired Strct representing
 // / a row of the table from the `AemoFile` which represents the whole file.
@@ -298,19 +317,19 @@ pub trait GetTable: 'static {
     const COLUMNS: &'static [&'static str];
     type Row<'a>;
     type PrimaryKey: PrimaryKey;
-    type Partition: Partition;
 
     type FieldMapping;
     // the row must be an I row with a matching file key
     fn field_mapping_from_row<'a>(row: CsvRow<'a>) -> Result<Self::FieldMapping>;
 
-    fn partition_suffix_from_row<'a>(row: CsvRow<'a>) -> Result<Self::Partition>;
     fn from_row<'a>(row: CsvRow<'a>, field_mapping: &Self::FieldMapping) -> Result<Self::Row<'a>>;
-
+    
     fn matches_file_key(key: &FileKey<'_>, version: i32) -> bool;
+    
+    fn partition_value(&self, row: &Self::Row<'_>) -> PartitionValue;
+    fn partition_name(&self, row: &Self::Row<'_>) -> String;
+    fn partition_key(&self) -> PartitionKey;
 
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition;
-    fn partition_name(row: &Self::Row<'_>) -> String;
     fn primary_key(row: &Self::Row<'_>) -> Self::PrimaryKey;
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static>;
 }

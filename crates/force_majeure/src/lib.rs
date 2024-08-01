@@ -5,7 +5,25 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct ApApevent1;
+pub struct ApApevent1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ApApevent1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ApApevent1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ApApevent1Mapping([usize; 9]);
 /// # Summary
 ///
@@ -112,7 +130,6 @@ impl mmsdm_core::GetTable for ApApevent1 {
     type Row<'row> = ApApevent1Row<'row>;
     type FieldMapping = ApApevent1Mapping;
     type PrimaryKey = ApApevent1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -191,11 +208,6 @@ impl mmsdm_core::GetTable for ApApevent1 {
         }
         Ok(ApApevent1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -205,9 +217,14 @@ impl mmsdm_core::GetTable for ApApevent1 {
             apeventid: row.apeventid,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "ap_apevent_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("ap_apevent_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ApApevent1Row {
@@ -404,7 +421,25 @@ pub struct ApApevent1Builder {
     endauthoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ApApeventregion2;
+pub struct ApApeventregion2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ApApeventregion2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ApApeventregion2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ApApeventregion2Mapping([usize; 14]);
 /// # Summary
 ///
@@ -499,7 +534,6 @@ impl mmsdm_core::GetTable for ApApeventregion2 {
     type Row<'row> = ApApeventregion2Row<'row>;
     type FieldMapping = ApApeventregion2Mapping;
     type PrimaryKey = ApApeventregion2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -617,11 +651,6 @@ impl mmsdm_core::GetTable for ApApeventregion2 {
         }
         Ok(ApApeventregion2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -632,9 +661,14 @@ impl mmsdm_core::GetTable for ApApeventregion2 {
             regionid: row.regionid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "ap_apeventregion_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("ap_apeventregion_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ApApeventregion2Row {
@@ -966,7 +1000,25 @@ pub struct ApApeventregion2Builder {
     raise1secapflag_array: arrow::array::builder::Decimal128Builder,
     lower1secapflag_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct ForceMajeureIrfmamount1;
+pub struct ForceMajeureIrfmamount1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ForceMajeureIrfmamount1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ForceMajeureIrfmamount1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ForceMajeureIrfmamount1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -1051,7 +1103,6 @@ impl mmsdm_core::GetTable for ForceMajeureIrfmamount1 {
     type Row<'row> = ForceMajeureIrfmamount1Row<'row>;
     type FieldMapping = ForceMajeureIrfmamount1Mapping;
     type PrimaryKey = ForceMajeureIrfmamount1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1128,11 +1179,6 @@ impl mmsdm_core::GetTable for ForceMajeureIrfmamount1 {
         }
         Ok(ForceMajeureIrfmamount1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1144,9 +1190,14 @@ impl mmsdm_core::GetTable for ForceMajeureIrfmamount1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "force_majeure_irfmamount_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("force_majeure_irfmamount_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ForceMajeureIrfmamount1Row {
@@ -1344,7 +1395,25 @@ pub struct ForceMajeureIrfmamount1Builder {
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ForceMajeureIrfmevents1;
+pub struct ForceMajeureIrfmevents1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ForceMajeureIrfmevents1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ForceMajeureIrfmevents1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ForceMajeureIrfmevents1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -1407,7 +1476,6 @@ impl mmsdm_core::GetTable for ForceMajeureIrfmevents1 {
     type Row<'row> = ForceMajeureIrfmevents1Row<'row>;
     type FieldMapping = ForceMajeureIrfmevents1Mapping;
     type PrimaryKey = ForceMajeureIrfmevents1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1477,11 +1545,6 @@ impl mmsdm_core::GetTable for ForceMajeureIrfmevents1 {
         }
         Ok(ForceMajeureIrfmevents1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1491,9 +1554,14 @@ impl mmsdm_core::GetTable for ForceMajeureIrfmevents1 {
             irfmid: row.irfmid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "force_majeure_irfmevents_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("force_majeure_irfmevents_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ForceMajeureIrfmevents1Row {
@@ -1658,7 +1726,25 @@ pub struct ForceMajeureIrfmevents1Builder {
     endperiod_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ForceMajeureMarketSuspendRegimeSum1;
+pub struct ForceMajeureMarketSuspendRegimeSum1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ForceMajeureMarketSuspendRegimeSum1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ForceMajeureMarketSuspendRegimeSum1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ForceMajeureMarketSuspendRegimeSum1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -1738,7 +1824,6 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendRegimeSum1 {
     type Row<'row> = ForceMajeureMarketSuspendRegimeSum1Row<'row>;
     type FieldMapping = ForceMajeureMarketSuspendRegimeSum1Mapping;
     type PrimaryKey = ForceMajeureMarketSuspendRegimeSum1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1798,11 +1883,6 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendRegimeSum1 {
         }
         Ok(ForceMajeureMarketSuspendRegimeSum1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1816,9 +1896,16 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendRegimeSum1 {
             suspension_id: row.suspension_id().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "force_majeure_market_suspend_regime_sum_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "force_majeure_market_suspend_regime_sum_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ForceMajeureMarketSuspendRegimeSum1Row {
@@ -1973,7 +2060,25 @@ pub struct ForceMajeureMarketSuspendRegimeSum1Builder {
     pricing_regime_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ForceMajeureMarketSuspendRegionSum1;
+pub struct ForceMajeureMarketSuspendRegionSum1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ForceMajeureMarketSuspendRegionSum1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ForceMajeureMarketSuspendRegionSum1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ForceMajeureMarketSuspendRegionSum1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -2040,7 +2145,6 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendRegionSum1 {
     type Row<'row> = ForceMajeureMarketSuspendRegionSum1Row<'row>;
     type FieldMapping = ForceMajeureMarketSuspendRegionSum1Mapping;
     type PrimaryKey = ForceMajeureMarketSuspendRegionSum1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2105,11 +2209,6 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendRegionSum1 {
         }
         Ok(ForceMajeureMarketSuspendRegionSum1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2122,9 +2221,16 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendRegionSum1 {
             suspension_id: row.suspension_id().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "force_majeure_market_suspend_region_sum_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "force_majeure_market_suspend_region_sum_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ForceMajeureMarketSuspendRegionSum1Row {
@@ -2283,7 +2389,25 @@ pub struct ForceMajeureMarketSuspendRegionSum1Builder {
     end_suspension_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ForceMajeureMarketSuspendSchedule2;
+pub struct ForceMajeureMarketSuspendSchedule2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ForceMajeureMarketSuspendSchedule2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ForceMajeureMarketSuspendSchedule2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ForceMajeureMarketSuspendSchedule2Mapping([usize; 16]);
 /// # Summary
 ///
@@ -2392,7 +2516,6 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendSchedule2 {
     type Row<'row> = ForceMajeureMarketSuspendSchedule2Row<'row>;
     type FieldMapping = ForceMajeureMarketSuspendSchedule2Mapping;
     type PrimaryKey = ForceMajeureMarketSuspendSchedule2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2517,23 +2640,6 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendSchedule2 {
         }
         Ok(ForceMajeureMarketSuspendSchedule2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2546,24 +2652,16 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendSchedule2 {
             regionid: row.regionid().to_string(),
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "force_majeure_market_suspend_schedule_v2_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "force_majeure_market_suspend_schedule_v2_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ForceMajeureMarketSuspendSchedule2Row {
@@ -2927,7 +3025,27 @@ pub struct ForceMajeureMarketSuspendSchedule2Builder {
     l1_rrp_array: arrow::array::builder::Decimal128Builder,
     r1_rrp_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct ForceMajeureMarketSuspendScheduleTrk1;
+pub struct ForceMajeureMarketSuspendScheduleTrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &ForceMajeureMarketSuspendScheduleTrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ForceMajeureMarketSuspendScheduleTrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ForceMajeureMarketSuspendScheduleTrk1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -2998,7 +3116,6 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendScheduleTrk1 {
     type Row<'row> = ForceMajeureMarketSuspendScheduleTrk1Row<'row>;
     type FieldMapping = ForceMajeureMarketSuspendScheduleTrk1Mapping;
     type PrimaryKey = ForceMajeureMarketSuspendScheduleTrk1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3068,23 +3185,6 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendScheduleTrk1 {
         }
         Ok(ForceMajeureMarketSuspendScheduleTrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3096,25 +3196,16 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendScheduleTrk1 {
             effectivedate: row.effectivedate,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "force_majeure_market_suspend_schedule_trk_v1_{}_{}",
-            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
-            .number_from_month()
+            "force_majeure_market_suspend_schedule_trk_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ForceMajeureMarketSuspendScheduleTrk1Row {
@@ -3273,7 +3364,25 @@ pub struct ForceMajeureMarketSuspendScheduleTrk1Builder {
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ForceMajeureOverriderrp1;
+pub struct ForceMajeureOverriderrp1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ForceMajeureOverriderrp1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ForceMajeureOverriderrp1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ForceMajeureOverriderrp1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -3390,7 +3499,6 @@ impl mmsdm_core::GetTable for ForceMajeureOverriderrp1 {
     type Row<'row> = ForceMajeureOverriderrp1Row<'row>;
     type FieldMapping = ForceMajeureOverriderrp1Mapping;
     type PrimaryKey = ForceMajeureOverriderrp1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3469,11 +3577,6 @@ impl mmsdm_core::GetTable for ForceMajeureOverriderrp1 {
         }
         Ok(ForceMajeureOverriderrp1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3485,9 +3588,14 @@ impl mmsdm_core::GetTable for ForceMajeureOverriderrp1 {
             startperiod: row.startperiod,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "force_majeure_overriderrp_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("force_majeure_overriderrp_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ForceMajeureOverriderrp1Row {
@@ -3707,7 +3815,25 @@ pub struct ForceMajeureOverriderrp1Builder {
     authoriseend_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ApRegionapc1;
+pub struct ApRegionapc1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ApRegionapc1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ApRegionapc1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ApRegionapc1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -3784,7 +3910,6 @@ impl mmsdm_core::GetTable for ApRegionapc1 {
     type Row<'row> = ApRegionapc1Row<'row>;
     type FieldMapping = ApRegionapc1Mapping;
     type PrimaryKey = ApRegionapc1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3849,23 +3974,6 @@ impl mmsdm_core::GetTable for ApRegionapc1 {
         }
         Ok(ApRegionapc1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3877,24 +3985,14 @@ impl mmsdm_core::GetTable for ApRegionapc1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "ap_regionapc_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("ap_regionapc_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ApRegionapc1Row {
@@ -4052,7 +4150,25 @@ pub struct ApRegionapc1Builder {
     authorisedby_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ApRegionapcintervals1;
+pub struct ApRegionapcintervals1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ApRegionapcintervals1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ApRegionapcintervals1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ApRegionapcintervals1Mapping([usize; 9]);
 /// # Summary
 ///
@@ -4130,7 +4246,6 @@ impl mmsdm_core::GetTable for ApRegionapcintervals1 {
     type Row<'row> = ApRegionapcintervals1Row<'row>;
     type FieldMapping = ApRegionapcintervals1Mapping;
     type PrimaryKey = ApRegionapcintervals1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4218,23 +4333,6 @@ impl mmsdm_core::GetTable for ApRegionapcintervals1 {
         }
         Ok(ApRegionapcintervals1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4247,24 +4345,14 @@ impl mmsdm_core::GetTable for ApRegionapcintervals1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "ap_regionapcintervals_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("ap_regionapcintervals_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ApRegionapcintervals1Row {

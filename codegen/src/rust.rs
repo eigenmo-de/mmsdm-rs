@@ -369,7 +369,24 @@ fn codegen_struct(
 ) -> anyhow::Result<()> {
     let mut manager_struct = codegen::Struct::new(&pdr_report.get_rust_manager_struct_name());
     manager_struct.vis("pub");
+    manager_struct.field("extract_row_partition", format!("alloc::boxed::Box<dyn Fn(&{}<'_>) -> mmsdm_core::PartitionValue>", pdr_report.get_rust_struct_name()));
+    manager_struct.field("row_partition_key", "mmsdm_core::PartitionKey");
     manager_struct.fmt(fmtr)?;
+
+    {
+        let mut manager_impl = codegen::Impl::new(&pdr_report.get_rust_manager_struct_name());
+
+        let func = manager_impl.new_fn("new");
+        func.vis("pub");
+        func.arg("row_partition_key", "mmsdm_core::PartitionKey");
+        func.arg("func", "impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static");
+        
+        func.ret("Self");
+
+        func.line("Self { extract_row_partition: alloc::boxed::Box::new(func), row_partition_key, }");
+
+        manager_impl.fmt(fmtr)?;
+    }
 
     let mut mapping = codegen::Struct::new(&pdr_report.get_rust_struct_mapping_name());
     mapping.vis("pub");
@@ -489,7 +506,6 @@ fn codegen_impl_get_table(
 ) -> anyhow::Result<()> {
     let mut current_impl = codegen::Impl::new(&pdr_report.get_rust_manager_struct_name());
     current_impl.impl_trait("mmsdm_core::GetTable");
-    // current_impl.generic("'data");
 
     current_impl.associate_type(
         "Row<'row>",
@@ -580,48 +596,48 @@ fn codegen_impl_get_table(
         current_impl.push_fn(field_mapping_from_row);
     }
 
-    {
-        let mut partition_suffix_from_row = codegen::Function::new("partition_suffix_from_row");
-        partition_suffix_from_row.ret("mmsdm_core::Result<Self::Partition>");
-        partition_suffix_from_row.generic("'a");
+    // {
+    //     let mut partition_suffix_from_row = codegen::Function::new("partition_suffix_from_row");
+    //     partition_suffix_from_row.ret("mmsdm_core::Result<Self::Partition>");
+    //     partition_suffix_from_row.generic("'a");
 
-        if let ControlFlow::Break(col) = table.partition_column() {
-            partition_suffix_from_row.arg("row", "mmsdm_core::CsvRow<'a>");
-            let (idx, _) = table
-                .columns()
-                .columns
-                .iter()
-                .enumerate()
-                .find(|(_, search_col)| search_col.field_name() == col.field_name())
-                .unwrap();
-            let field_name = col.field_name();
-            let idx = idx + 4;
-            let field_name_escaped = col.escaped_field_name();
+    //     if let ControlFlow::Break(col) = table.partition_column() {
+    //         partition_suffix_from_row.arg("row", "mmsdm_core::CsvRow<'a>");
+    //         let (idx, _) = table
+    //             .columns()
+    //             .columns
+    //             .iter()
+    //             .enumerate()
+    //             .find(|(_, search_col)| search_col.field_name() == col.field_name())
+    //             .unwrap();
+    //         let field_name = col.field_name();
+    //         let idx = idx + 4;
+    //         let field_name_escaped = col.escaped_field_name();
 
-            match &col.data_type {
-                mms::DataType::DateTime | mms::DataType::Date
-                    if !(col.is_trading_period() || col.is_dispatch_period()) =>
-                {
-                    partition_suffix_from_row.line(format!(r#"let {field_name_escaped}= row.get_custom_parsed_at_idx("{field_name}", {idx}, mmsdm_core::mms_datetime::parse)? - {};"#, table.frequency().duration()));
-                }
-                _ if col.is_trading_period() => {
-                    partition_suffix_from_row.line(format!(r#"let {field_name_escaped}: mmsdm_core::TradingPeriod = row.get_parsed_at_idx("{field_name}",{idx})?;"#));
-                }
-                _ if col.is_dispatch_period() => {
-                    partition_suffix_from_row.line(format!(r#"let {field_name_escaped}: mmsdm_core::DispatchPeriod = row.get_parsed_at_idx("{field_name}",{idx})?;"#));
-                }
-                otherwise => {
-                    // panic!("Invalid partition column: {col:?} of type {:?}", col.data_type);
-                }
-            }
+    //         match &col.data_type {
+    //             mms::DataType::DateTime | mms::DataType::Date
+    //                 if !(col.is_trading_period() || col.is_dispatch_period()) =>
+    //             {
+    //                 partition_suffix_from_row.line(format!(r#"let {field_name_escaped}= row.get_custom_parsed_at_idx("{field_name}", {idx}, mmsdm_core::mms_datetime::parse)? - {};"#, table.frequency().duration()));
+    //             }
+    //             _ if col.is_trading_period() => {
+    //                 partition_suffix_from_row.line(format!(r#"let {field_name_escaped}: mmsdm_core::TradingPeriod = row.get_parsed_at_idx("{field_name}",{idx})?;"#));
+    //             }
+    //             _ if col.is_dispatch_period() => {
+    //                 partition_suffix_from_row.line(format!(r#"let {field_name_escaped}: mmsdm_core::DispatchPeriod = row.get_parsed_at_idx("{field_name}",{idx})?;"#));
+    //             }
+    //             otherwise => {
+    //                 // panic!("Invalid partition column: {col:?} of type {:?}", col.data_type);
+    //             }
+    //         }
 
-            partition_suffix_from_row.line(format!(r#"Ok(mmsdm_core::YearMonth {{ year: chrono::NaiveDateTime::from({colname}).year(), month: num_traits::FromPrimitive::from_u32(chrono::NaiveDateTime::from({colname}).month()).unwrap() }})"#, colname = col.field_name()));
-        } else {
-            partition_suffix_from_row.arg("_row", "mmsdm_core::CsvRow<'a>");
-            partition_suffix_from_row.line("Ok(())");
-        }
-        current_impl.push_fn(partition_suffix_from_row);
-    }
+    //         partition_suffix_from_row.line(format!(r#"Ok(mmsdm_core::YearMonth {{ year: chrono::NaiveDateTime::from({colname}).year(), month: num_traits::FromPrimitive::from_u32(chrono::NaiveDateTime::from({colname}).month()).unwrap() }})"#, colname = col.field_name()));
+    //     } else {
+    //         partition_suffix_from_row.arg("_row", "mmsdm_core::CsvRow<'a>");
+    //         partition_suffix_from_row.line("Ok(())");
+    //     }
+    //     current_impl.push_fn(partition_suffix_from_row);
+    // }
 
     let mut file_version = codegen::Function::new("matches_file_key");
     file_version.arg("key", "&mmsdm_core::FileKey<'_>");
@@ -710,55 +726,30 @@ fn codegen_impl_get_table(
 
     current_impl.associate_type("PrimaryKey", pdr_report.get_rust_pk_name());
 
-    let mut partition_suffix = codegen::Function::new("partition_suffix");
-    partition_suffix.ret("Self::Partition");
-
-    // if pdr_report.name == "PREDISPATCH" && pdr_report.sub_type.as_deref() == Some("REGIONFCASREQUIREMENT") {
-
-    //     dbg!(table.partition_column(), table.find_column("predispatchseqno"), &table.columns());
-    //     panic!()
-    // }
-
-    if let ControlFlow::Break(col) = table.partition_column() {
-        partition_suffix.arg("row", "&Self::Row<'_>");
-        current_impl.associate_type("Partition", "mmsdm_core::YearMonth");
-
-        match &col.data_type {
-            mms::DataType::DateTime | mms::DataType::Date
-                if !(col.is_trading_period() || col.is_dispatch_period()) =>
-            {
-                partition_suffix.line(format!(r#"mmsdm_core::YearMonth {{ year: (chrono::NaiveDateTime::from(row.{colname}) - {sub}).year(), month: num_traits::FromPrimitive::from_u32((chrono::NaiveDateTime::from(row.{colname}) - {sub}).month()).unwrap() }}"#, colname = col.field_name(), sub = table.frequency().duration()));
-            }
-            _ => {
-                partition_suffix.line(format!(r#"mmsdm_core::YearMonth {{ year: chrono::NaiveDateTime::from(row.{colname}).year(), month: num_traits::FromPrimitive::from_u32(chrono::NaiveDateTime::from(row.{colname}).month()).unwrap() }}"#, colname = col.field_name()));
-            }
-        }
-    } else {
-        partition_suffix.arg("_row", "&Self::Row<'_>");
-        current_impl.associate_type("Partition", "()");
-    }
-    current_impl.push_fn(partition_suffix);
+    let mut partition_value = codegen::Function::new("partition_value");
+    partition_value.ret("mmsdm_core::PartitionValue");
+    partition_value.arg_ref_self();
+    partition_value.arg("row", "&Self::Row<'_>");
+    partition_value.line("(self.extract_row_partition)(row)");
+    current_impl.push_fn(partition_value);
 
     let mut partition_name = codegen::Function::new("partition_name");
     partition_name.ret("alloc::string::String");
-
-    if table.partition_column().is_break() {
-        partition_name.arg("row", "&Self::Row<'_>");
-        partition_name.line(
-            &format!(
-                r#"alloc::format!("{}_{{}}_{{}}", Self::partition_suffix(&row).year, Self::partition_suffix(&row).month.number_from_month())"#,
-                pdr_report.get_partition_base()
-            )
-        );
-    } else {
-        partition_name.arg("_row", "&Self::Row<'_>");
-        partition_name.line(&format!(
-            r#""{}".to_string()"#,
+    partition_name.arg_ref_self();
+    partition_name.arg("row", "&Self::Row<'_>");
+    partition_name.line(
+        &format!(
+            r#"alloc::format!("{}_{{}}", self.partition_value(row))"#,
             pdr_report.get_partition_base()
-        ));
-    }
-
+        )
+    );
     current_impl.push_fn(partition_name);
+
+    let mut partition_key = codegen::Function::new("partition_key");
+    partition_key.ret("mmsdm_core::PartitionKey");
+    partition_key.arg_ref_self();
+    partition_key.line("self.row_partition_key");
+    current_impl.push_fn(partition_key);
 
     {
         let mut to_owned = codegen::Function::new("to_static");

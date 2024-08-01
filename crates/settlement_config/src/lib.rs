@@ -5,7 +5,27 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct SettlementConfigAncillaryRecoverySplit2;
+pub struct SettlementConfigAncillaryRecoverySplit2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &SettlementConfigAncillaryRecoverySplit2Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementConfigAncillaryRecoverySplit2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementConfigAncillaryRecoverySplit2Mapping([usize; 7]);
 /// # Summary
 ///
@@ -78,7 +98,6 @@ impl mmsdm_core::GetTable for SettlementConfigAncillaryRecoverySplit2 {
     type Row<'row> = SettlementConfigAncillaryRecoverySplit2Row<'row>;
     type FieldMapping = SettlementConfigAncillaryRecoverySplit2Mapping;
     type PrimaryKey = SettlementConfigAncillaryRecoverySplit2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -149,23 +168,6 @@ impl mmsdm_core::GetTable for SettlementConfigAncillaryRecoverySplit2 {
         }
         Ok(SettlementConfigAncillaryRecoverySplit2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -180,25 +182,16 @@ impl mmsdm_core::GetTable for SettlementConfigAncillaryRecoverySplit2 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "settlement_config_ancillary_recovery_split_v2_{}_{}",
-            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
-            .number_from_month()
+            "settlement_config_ancillary_recovery_split_v2_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementConfigAncillaryRecoverySplit2Row {
@@ -386,7 +379,25 @@ pub struct SettlementConfigAncillaryRecoverySplit2Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     ace_portion_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct SettlementConfigMarketfee2;
+pub struct SettlementConfigMarketfee2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&SettlementConfigMarketfee2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementConfigMarketfee2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementConfigMarketfee2Mapping([usize; 10]);
 /// # Summary
 ///
@@ -561,7 +572,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfee2 {
     type Row<'row> = SettlementConfigMarketfee2Row<'row>;
     type FieldMapping = SettlementConfigMarketfee2Mapping;
     type PrimaryKey = SettlementConfigMarketfee2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -615,11 +625,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfee2 {
         }
         Ok(SettlementConfigMarketfee2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -629,9 +634,14 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfee2 {
             marketfeeid: row.marketfeeid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "settlement_config_marketfee_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("settlement_config_marketfee_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementConfigMarketfee2Row {
@@ -812,7 +822,25 @@ pub struct SettlementConfigMarketfee2Builder {
     meter_type_array: arrow::array::builder::StringBuilder,
     meter_subtype_array: arrow::array::builder::StringBuilder,
 }
-pub struct SettlementConfigMarketfeedata1;
+pub struct SettlementConfigMarketfeedata1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&SettlementConfigMarketfeedata1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementConfigMarketfeedata1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementConfigMarketfeedata1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -873,7 +901,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfeedata1 {
     type Row<'row> = SettlementConfigMarketfeedata1Row<'row>;
     type FieldMapping = SettlementConfigMarketfeedata1Mapping;
     type PrimaryKey = SettlementConfigMarketfeedata1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -937,23 +964,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfeedata1 {
         }
         Ok(SettlementConfigMarketfeedata1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                6,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -965,24 +975,16 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfeedata1 {
             marketfeeversionno: row.marketfeeversionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "settlement_config_marketfeedata_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "settlement_config_marketfeedata_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementConfigMarketfeedata1Row {
@@ -1135,7 +1137,25 @@ pub struct SettlementConfigMarketfeedata1Builder {
     marketfeevalue_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct SettlementConfigMarketfeetrk1;
+pub struct SettlementConfigMarketfeetrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&SettlementConfigMarketfeetrk1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementConfigMarketfeetrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementConfigMarketfeetrk1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -1204,7 +1224,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfeetrk1 {
     type Row<'row> = SettlementConfigMarketfeetrk1Row<'row>;
     type FieldMapping = SettlementConfigMarketfeetrk1Mapping;
     type PrimaryKey = SettlementConfigMarketfeetrk1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1268,23 +1287,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfeetrk1 {
         }
         Ok(SettlementConfigMarketfeetrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1295,24 +1297,14 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfeetrk1 {
             marketfeeversionno: row.marketfeeversionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "settlement_config_marketfeetrk_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("settlement_config_marketfeetrk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementConfigMarketfeetrk1Row {
@@ -1459,7 +1451,25 @@ pub struct SettlementConfigMarketfeetrk1Builder {
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct SettlementConfigMarketFeeCatExcl1;
+pub struct SettlementConfigMarketFeeCatExcl1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&SettlementConfigMarketFeeCatExcl1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementConfigMarketFeeCatExcl1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementConfigMarketFeeCatExcl1Mapping([usize; 4]);
 /// # Summary
 ///
@@ -1522,7 +1532,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExcl1 {
     type Row<'row> = SettlementConfigMarketFeeCatExcl1Row<'row>;
     type FieldMapping = SettlementConfigMarketFeeCatExcl1Mapping;
     type PrimaryKey = SettlementConfigMarketFeeCatExcl1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1576,23 +1585,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExcl1 {
         }
         Ok(SettlementConfigMarketFeeCatExcl1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1605,24 +1597,16 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExcl1 {
             version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "settlement_config_market_fee_cat_excl_v1_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "settlement_config_market_fee_cat_excl_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementConfigMarketFeeCatExcl1Row {
@@ -1753,7 +1737,27 @@ pub struct SettlementConfigMarketFeeCatExcl1Builder {
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     participant_categoryid_array: arrow::array::builder::StringBuilder,
 }
-pub struct SettlementConfigMarketFeeCatExclTrk1;
+pub struct SettlementConfigMarketFeeCatExclTrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &SettlementConfigMarketFeeCatExclTrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementConfigMarketFeeCatExclTrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementConfigMarketFeeCatExclTrk1Mapping([usize; 4]);
 /// # Summary
 ///
@@ -1809,7 +1813,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExclTrk1 {
     type Row<'row> = SettlementConfigMarketFeeCatExclTrk1Row<'row>;
     type FieldMapping = SettlementConfigMarketFeeCatExclTrk1Mapping;
     type PrimaryKey = SettlementConfigMarketFeeCatExclTrk1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1867,23 +1870,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExclTrk1 {
         }
         Ok(SettlementConfigMarketFeeCatExclTrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1897,25 +1883,16 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExclTrk1 {
             version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "settlement_config_market_fee_cat_excl_trk_v1_{}_{}",
-            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
-            .number_from_month()
+            "settlement_config_market_fee_cat_excl_trk_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementConfigMarketFeeCatExclTrk1Row {
@@ -2049,7 +2026,25 @@ pub struct SettlementConfigMarketFeeCatExclTrk1Builder {
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct SettlementConfigMarketFeeExclusion1;
+pub struct SettlementConfigMarketFeeExclusion1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&SettlementConfigMarketFeeExclusion1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementConfigMarketFeeExclusion1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementConfigMarketFeeExclusion1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -2114,7 +2109,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusion1 {
     type Row<'row> = SettlementConfigMarketFeeExclusion1Row<'row>;
     type FieldMapping = SettlementConfigMarketFeeExclusion1Mapping;
     type PrimaryKey = SettlementConfigMarketFeeExclusion1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2173,23 +2167,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusion1 {
         }
         Ok(SettlementConfigMarketFeeExclusion1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2204,24 +2181,16 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusion1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "settlement_config_market_fee_exclusion_v1_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "settlement_config_market_fee_exclusion_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementConfigMarketFeeExclusion1Row {
@@ -2372,7 +2341,27 @@ pub struct SettlementConfigMarketFeeExclusion1Builder {
     marketfeeid_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct SettlementConfigMarketFeeExclusionTrk1;
+pub struct SettlementConfigMarketFeeExclusionTrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &SettlementConfigMarketFeeExclusionTrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementConfigMarketFeeExclusionTrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementConfigMarketFeeExclusionTrk1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -2449,7 +2438,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusionTrk1 {
     type Row<'row> = SettlementConfigMarketFeeExclusionTrk1Row<'row>;
     type FieldMapping = SettlementConfigMarketFeeExclusionTrk1Mapping;
     type PrimaryKey = SettlementConfigMarketFeeExclusionTrk1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2514,23 +2502,6 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusionTrk1 {
         }
         Ok(SettlementConfigMarketFeeExclusionTrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2544,25 +2515,16 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusionTrk1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "settlement_config_market_fee_exclusion_trk_v1_{}_{}",
-            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
-            .number_from_month()
+            "settlement_config_market_fee_exclusion_trk_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementConfigMarketFeeExclusionTrk1Row {
@@ -2727,7 +2689,27 @@ pub struct SettlementConfigMarketFeeExclusionTrk1Builder {
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct SettlementConfigParticipantBandfeeAlloc1;
+pub struct SettlementConfigParticipantBandfeeAlloc1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &SettlementConfigParticipantBandfeeAlloc1Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementConfigParticipantBandfeeAlloc1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementConfigParticipantBandfeeAlloc1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -2807,7 +2789,6 @@ impl mmsdm_core::GetTable for SettlementConfigParticipantBandfeeAlloc1 {
     type Row<'row> = SettlementConfigParticipantBandfeeAlloc1Row<'row>;
     type FieldMapping = SettlementConfigParticipantBandfeeAlloc1Mapping;
     type PrimaryKey = SettlementConfigParticipantBandfeeAlloc1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2874,23 +2855,6 @@ impl mmsdm_core::GetTable for SettlementConfigParticipantBandfeeAlloc1 {
         }
         Ok(SettlementConfigParticipantBandfeeAlloc1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                6,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2906,25 +2870,17 @@ impl mmsdm_core::GetTable for SettlementConfigParticipantBandfeeAlloc1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "settlement_config_participant_bandfee_alloc_v1_{}_{}",
-            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
-            .number_from_month()
+            "settlement_config_participant_bandfee_alloc_v1_{}", self
+            .partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementConfigParticipantBandfeeAlloc1Row {
@@ -3111,7 +3067,25 @@ pub struct SettlementConfigParticipantBandfeeAlloc1Builder {
     marketfeevalue_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct SetcfgReallocation2;
+pub struct SetcfgReallocation2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&SetcfgReallocation2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SetcfgReallocation2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SetcfgReallocation2Mapping([usize; 15]);
 /// # Summary
 ///
@@ -3333,7 +3307,6 @@ impl mmsdm_core::GetTable for SetcfgReallocation2 {
     type Row<'row> = SetcfgReallocation2Row<'row>;
     type FieldMapping = SetcfgReallocation2Mapping;
     type PrimaryKey = SetcfgReallocation2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3410,11 +3383,6 @@ impl mmsdm_core::GetTable for SetcfgReallocation2 {
         }
         Ok(SetcfgReallocation2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3424,9 +3392,14 @@ impl mmsdm_core::GetTable for SetcfgReallocation2 {
             reallocationid: row.reallocationid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "setcfg_reallocation_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("setcfg_reallocation_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SetcfgReallocation2Row {
@@ -3681,7 +3654,25 @@ pub struct SetcfgReallocation2Builder {
     calendarid_array: arrow::array::builder::StringBuilder,
     intervallength_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct SetcfgReallocationinterval1;
+pub struct SetcfgReallocationinterval1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&SetcfgReallocationinterval1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SetcfgReallocationinterval1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SetcfgReallocationinterval1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -3743,7 +3734,6 @@ impl mmsdm_core::GetTable for SetcfgReallocationinterval1 {
     type Row<'row> = SetcfgReallocationinterval1Row<'row>;
     type FieldMapping = SetcfgReallocationinterval1Mapping;
     type PrimaryKey = SetcfgReallocationinterval1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3802,11 +3792,6 @@ impl mmsdm_core::GetTable for SetcfgReallocationinterval1 {
         }
         Ok(SetcfgReallocationinterval1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3817,9 +3802,14 @@ impl mmsdm_core::GetTable for SetcfgReallocationinterval1 {
             reallocationid: row.reallocationid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "setcfg_reallocationinterval_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("setcfg_reallocationinterval_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SetcfgReallocationinterval1Row {
@@ -3964,7 +3954,27 @@ pub struct SetcfgReallocationinterval1Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     nrp_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct SettlementConfigSetcfgParticipantMpf1;
+pub struct SettlementConfigSetcfgParticipantMpf1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &SettlementConfigSetcfgParticipantMpf1Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementConfigSetcfgParticipantMpf1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementConfigSetcfgParticipantMpf1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -4047,7 +4057,6 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpf1 {
     type Row<'row> = SettlementConfigSetcfgParticipantMpf1Row<'row>;
     type FieldMapping = SettlementConfigSetcfgParticipantMpf1Mapping;
     type PrimaryKey = SettlementConfigSetcfgParticipantMpf1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4114,23 +4123,6 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpf1 {
         }
         Ok(SettlementConfigSetcfgParticipantMpf1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4146,24 +4138,16 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpf1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "settlement_config_setcfg_participant_mpf_v1_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "settlement_config_setcfg_participant_mpf_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementConfigSetcfgParticipantMpf1Row {
@@ -4353,7 +4337,27 @@ pub struct SettlementConfigSetcfgParticipantMpf1Builder {
     mpf_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct SettlementConfigSetcfgParticipantMpftrk1;
+pub struct SettlementConfigSetcfgParticipantMpftrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &SettlementConfigSetcfgParticipantMpftrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementConfigSetcfgParticipantMpftrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementConfigSetcfgParticipantMpftrk1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -4430,7 +4434,6 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpftrk1 {
     type Row<'row> = SettlementConfigSetcfgParticipantMpftrk1Row<'row>;
     type FieldMapping = SettlementConfigSetcfgParticipantMpftrk1Mapping;
     type PrimaryKey = SettlementConfigSetcfgParticipantMpftrk1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4495,23 +4498,6 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpftrk1 {
         }
         Ok(SettlementConfigSetcfgParticipantMpftrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4525,25 +4511,17 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpftrk1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "settlement_config_setcfg_participant_mpftrk_v1_{}_{}",
-            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
-            .number_from_month()
+            "settlement_config_setcfg_participant_mpftrk_v1_{}", self
+            .partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementConfigSetcfgParticipantMpftrk1Row {
@@ -4708,7 +4686,25 @@ pub struct SettlementConfigSetcfgParticipantMpftrk1Builder {
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct SetcfgSapsSettPrice1;
+pub struct SetcfgSapsSettPrice1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&SetcfgSapsSettPrice1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SetcfgSapsSettPrice1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SetcfgSapsSettPrice1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -4777,7 +4773,6 @@ impl mmsdm_core::GetTable for SetcfgSapsSettPrice1 {
     type Row<'row> = SetcfgSapsSettPrice1Row<'row>;
     type FieldMapping = SetcfgSapsSettPrice1Mapping;
     type PrimaryKey = SetcfgSapsSettPrice1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4853,11 +4848,6 @@ impl mmsdm_core::GetTable for SetcfgSapsSettPrice1 {
         }
         Ok(SetcfgSapsSettPrice1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4870,9 +4860,14 @@ impl mmsdm_core::GetTable for SetcfgSapsSettPrice1 {
             version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "setcfg_saps_sett_price_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("setcfg_saps_sett_price_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SetcfgSapsSettPrice1Row {
@@ -5056,7 +5051,25 @@ pub struct SetcfgSapsSettPrice1Builder {
     isfirm_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct SettlementsConfigWdrrrCalendar1;
+pub struct SettlementsConfigWdrrrCalendar1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&SettlementsConfigWdrrrCalendar1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementsConfigWdrrrCalendar1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementsConfigWdrrrCalendar1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -5123,7 +5136,6 @@ impl mmsdm_core::GetTable for SettlementsConfigWdrrrCalendar1 {
     type Row<'row> = SettlementsConfigWdrrrCalendar1Row<'row>;
     type FieldMapping = SettlementsConfigWdrrrCalendar1Mapping;
     type PrimaryKey = SettlementsConfigWdrrrCalendar1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -5188,11 +5200,6 @@ impl mmsdm_core::GetTable for SettlementsConfigWdrrrCalendar1 {
         }
         Ok(SettlementsConfigWdrrrCalendar1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -5204,9 +5211,16 @@ impl mmsdm_core::GetTable for SettlementsConfigWdrrrCalendar1 {
             wdrrrperiod: row.wdrrrperiod().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "settlements_config_wdrrr_calendar_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlements_config_wdrrr_calendar_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementsConfigWdrrrCalendar1Row {
@@ -5366,7 +5380,25 @@ pub struct SettlementsConfigWdrrrCalendar1Builder {
     enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct SettlementsConfigWdrReimburseRate1;
+pub struct SettlementsConfigWdrReimburseRate1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&SettlementsConfigWdrReimburseRate1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementsConfigWdrReimburseRate1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementsConfigWdrReimburseRate1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -5433,7 +5465,6 @@ impl mmsdm_core::GetTable for SettlementsConfigWdrReimburseRate1 {
     type Row<'row> = SettlementsConfigWdrReimburseRate1Row<'row>;
     type FieldMapping = SettlementsConfigWdrReimburseRate1Mapping;
     type PrimaryKey = SettlementsConfigWdrReimburseRate1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -5498,11 +5529,6 @@ impl mmsdm_core::GetTable for SettlementsConfigWdrReimburseRate1 {
         }
         Ok(SettlementsConfigWdrReimburseRate1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -5514,9 +5540,16 @@ impl mmsdm_core::GetTable for SettlementsConfigWdrReimburseRate1 {
             wdrrrperiod: row.wdrrrperiod().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "settlements_config_wdr_reimburse_rate_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlements_config_wdr_reimburse_rate_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementsConfigWdrReimburseRate1Row {

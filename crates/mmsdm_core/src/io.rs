@@ -1,6 +1,6 @@
 extern crate std;
-use crate::{AemoHeader, CsvReader, Error, FileKey, GetTable, Result, RowValidation};
-use alloc::{collections::BTreeSet, format, string::String, vec::Vec};
+use crate::{AemoHeader, CsvReader, Error, FileKey, GetTable, PartitionKey, PartitionValue, Result, RowValidation};
+use alloc::{collections::BTreeSet, format, string::String, sync::Arc, vec::Vec};
 use core::ops::AddAssign;
 use std::{
     collections::BTreeMap,
@@ -97,7 +97,7 @@ where
         &self.header
     }
 
-    pub fn iter_closest<'sub_reader, T>(&'sub_reader mut self) -> Result<IterTyped<'sub_reader, T>>
+    pub fn iter_closest<'sub_reader, T>(&'sub_reader mut self, manager: Arc<T>) -> Result<IterTyped<'sub_reader, T>>
     where
         T: GetTable,
         'reader: 'sub_reader,
@@ -115,10 +115,10 @@ where
 
         let field_mapping = T::field_mapping_from_row(closest_key.backing_data().to_owned())?;
 
-        Ok(IterTyped::new(&closest_key, field_mapping,  BufReader::new(self.reader.by_index(0)?)))
+        Ok(IterTyped::new(manager, &closest_key, field_mapping,  BufReader::new(self.reader.by_index(0)?)))
     }
 
-    pub fn iter_exact<'sub_reader, T>(&'sub_reader mut self) -> Result<IterTyped<'sub_reader, T>>
+    pub fn iter_exact<'sub_reader, T>(&'sub_reader mut self, manager: Arc<T>) -> Result<IterTyped<'sub_reader, T>>
     where
         T: GetTable,
         'reader: 'sub_reader,
@@ -138,7 +138,7 @@ where
 
         let field_mapping = T::field_mapping_from_row(key.backing_data().to_owned())?;
 
-        Ok(IterTyped::new(&key, field_mapping,  BufReader::new(self.reader.by_index(0)?)))
+        Ok(IterTyped::new(manager, &key, field_mapping,  BufReader::new(self.reader.by_index(0)?)))
     }
 }
 
@@ -151,13 +151,14 @@ pub struct IterTyped<'reader, T: GetTable> {
     buf: String,
     field_mapping: T::FieldMapping,
     reader: CsvReader,
+    manager: Arc<T>,
 }
 
 impl<'reader, T> IterTyped<'reader, T>
 where
     T: GetTable,
 {
-    pub fn new(key: &FileKey<'_>, mapping: T::FieldMapping, reader: BufReader<ZipFile<'reader>>) -> IterTyped<'reader, T> {
+    pub fn new(manager: Arc<T> , key: &FileKey<'_>, mapping: T::FieldMapping, reader: BufReader<ZipFile<'reader>>) -> IterTyped<'reader, T> {
         IterTyped {
             inner: reader,
             ty: PhantomData,
@@ -169,6 +170,7 @@ where
             buf: String::new(),
             field_mapping: mapping,
             reader: CsvReader::new(),
+            manager,
         }
     }
     pub fn next<'next, 'row>(&'next mut self) -> Option<Option<Result<<T as GetTable>::Row<'row>>>>
@@ -216,11 +218,12 @@ where
         Ok(vec)
     }
 
-    pub fn collect_partitions(self) -> Result<BTreeSet<T::Partition>> {
+    pub fn collect_partitions(self) -> Result<BTreeSet<(PartitionKey, PartitionValue)>> {
         let mut vec = BTreeSet::new();
 
+        let manager = self.manager.clone();
         self.process_rows(|row| {
-            vec.insert(T::partition_suffix(&row));
+            vec.insert((manager.partition_key(), manager.partition_value(&row)));
         })?;
 
         Ok(vec)

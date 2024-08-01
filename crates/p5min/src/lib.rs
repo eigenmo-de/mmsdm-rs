@@ -5,7 +5,25 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct P5minBlockedConstraints1;
+pub struct P5minBlockedConstraints1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&P5minBlockedConstraints1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minBlockedConstraints1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct P5minBlockedConstraints1Mapping([usize; 2]);
 /// # Summary
 ///
@@ -49,7 +67,6 @@ impl mmsdm_core::GetTable for P5minBlockedConstraints1 {
     type Row<'row> = P5minBlockedConstraints1Row<'row>;
     type FieldMapping = P5minBlockedConstraints1Mapping;
     type PrimaryKey = P5minBlockedConstraints1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -95,30 +112,6 @@ impl mmsdm_core::GetTable for P5minBlockedConstraints1 {
         }
         Ok(P5minBlockedConstraints1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let run_datetime = row
-            .get_custom_parsed_at_idx(
-                "run_datetime",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(run_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(run_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -129,40 +122,14 @@ impl mmsdm_core::GetTable for P5minBlockedConstraints1 {
             run_datetime: row.run_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.run_datetime)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        5,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.run_datetime)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                5,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "p5min_blocked_constraints_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_blocked_constraints_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         P5minBlockedConstraints1Row {
@@ -255,7 +222,25 @@ pub struct P5minBlockedConstraints1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     constraintid_array: arrow::array::builder::StringBuilder,
 }
-pub struct P5minCasesolution2;
+pub struct P5minCasesolution2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&P5minCasesolution2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minCasesolution2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct P5minCasesolution2Mapping([usize; 19]);
 /// # Summary
 ///
@@ -380,7 +365,6 @@ impl mmsdm_core::GetTable for P5minCasesolution2 {
     type Row<'row> = P5minCasesolution2Row<'row>;
     type FieldMapping = P5minCasesolution2Mapping;
     type PrimaryKey = P5minCasesolution2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -529,30 +513,6 @@ impl mmsdm_core::GetTable for P5minCasesolution2 {
         }
         Ok(P5minCasesolution2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let run_datetime = row
-            .get_custom_parsed_at_idx(
-                "run_datetime",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(run_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(run_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -563,40 +523,14 @@ impl mmsdm_core::GetTable for P5minCasesolution2 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.run_datetime)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        5,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.run_datetime)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                5,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "p5min_casesolution_v2_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_casesolution_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         P5minCasesolution2Row {
@@ -1026,7 +960,25 @@ pub struct P5minCasesolution2Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct P5minConstraintsolution6;
+pub struct P5minConstraintsolution6 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&P5minConstraintsolution6Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minConstraintsolution6 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct P5minConstraintsolution6Mapping([usize; 12]);
 /// # Summary
 ///
@@ -1125,7 +1077,6 @@ impl mmsdm_core::GetTable for P5minConstraintsolution6 {
     type Row<'row> = P5minConstraintsolution6Row<'row>;
     type FieldMapping = P5minConstraintsolution6Mapping;
     type PrimaryKey = P5minConstraintsolution6PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1226,30 +1177,6 @@ impl mmsdm_core::GetTable for P5minConstraintsolution6 {
         }
         Ok(P5minConstraintsolution6Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1262,40 +1189,14 @@ impl mmsdm_core::GetTable for P5minConstraintsolution6 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        5,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                5,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "p5min_constraintsolution_v6_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_constraintsolution_v6_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         P5minConstraintsolution6Row {
@@ -1578,7 +1479,25 @@ pub struct P5minConstraintsolution6Builder {
     lhs_array: arrow::array::builder::Decimal128Builder,
     intervention_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct P5minFcasRequirment1;
+pub struct P5minFcasRequirment1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&P5minFcasRequirment1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minFcasRequirment1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct P5minFcasRequirment1Mapping([usize; 16]);
 /// # Summary
 ///
@@ -1691,7 +1610,6 @@ impl mmsdm_core::GetTable for P5minFcasRequirment1 {
     type Row<'row> = P5minFcasRequirment1Row<'row>;
     type FieldMapping = P5minFcasRequirment1Mapping;
     type PrimaryKey = P5minFcasRequirment1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1811,30 +1729,6 @@ impl mmsdm_core::GetTable for P5minFcasRequirment1 {
         }
         Ok(P5minFcasRequirment1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1849,40 +1743,14 @@ impl mmsdm_core::GetTable for P5minFcasRequirment1 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        5,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                5,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "p5min_fcas_requirment_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_fcas_requirment_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         P5minFcasRequirment1Row {
@@ -2241,7 +2109,25 @@ pub struct P5minFcasRequirment1Builder {
     recovery_factor_crmpf_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct P5minInterconnectorsoln4;
+pub struct P5minInterconnectorsoln4 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&P5minInterconnectorsoln4Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minInterconnectorsoln4 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct P5minInterconnectorsoln4Mapping([usize; 22]);
 /// # Summary
 ///
@@ -2398,7 +2284,6 @@ impl mmsdm_core::GetTable for P5minInterconnectorsoln4 {
     type Row<'row> = P5minInterconnectorsoln4Row<'row>;
     type FieldMapping = P5minInterconnectorsoln4Mapping;
     type PrimaryKey = P5minInterconnectorsoln4PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2554,30 +2439,6 @@ impl mmsdm_core::GetTable for P5minInterconnectorsoln4 {
         }
         Ok(P5minInterconnectorsoln4Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                6,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2590,40 +2451,14 @@ impl mmsdm_core::GetTable for P5minInterconnectorsoln4 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        5,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                5,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "p5min_interconnectorsoln_v4_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_interconnectorsoln_v4_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         P5minInterconnectorsoln4Row {
@@ -3105,7 +2940,25 @@ pub struct P5minInterconnectorsoln4Builder {
     locally_constrained_import_array: arrow::array::builder::Decimal128Builder,
     intervention_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct P5minIntersensitivities1;
+pub struct P5minIntersensitivities1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&P5minIntersensitivities1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minIntersensitivities1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct P5minIntersensitivities1Mapping([usize; 49]);
 /// # Summary
 ///
@@ -3345,7 +3198,6 @@ impl mmsdm_core::GetTable for P5minIntersensitivities1 {
     type Row<'row> = P5minIntersensitivities1Row<'row>;
     type FieldMapping = P5minIntersensitivities1Mapping;
     type PrimaryKey = P5minIntersensitivities1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3673,30 +3525,6 @@ impl mmsdm_core::GetTable for P5minIntersensitivities1 {
         }
         Ok(P5minIntersensitivities1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                6,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3709,40 +3537,14 @@ impl mmsdm_core::GetTable for P5minIntersensitivities1 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        5,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                5,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "p5min_intersensitivities_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_intersensitivities_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         P5minIntersensitivities1Row {
@@ -4778,7 +4580,25 @@ pub struct P5minIntersensitivities1Builder {
     mwflow43_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct P5minLocalPrice1;
+pub struct P5minLocalPrice1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&P5minLocalPrice1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minLocalPrice1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct P5minLocalPrice1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -4838,7 +4658,6 @@ impl mmsdm_core::GetTable for P5minLocalPrice1 {
     type Row<'row> = P5minLocalPrice1Row<'row>;
     type FieldMapping = P5minLocalPrice1Mapping;
     type PrimaryKey = P5minLocalPrice1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4902,30 +4721,6 @@ impl mmsdm_core::GetTable for P5minLocalPrice1 {
         }
         Ok(P5minLocalPrice1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4937,40 +4732,14 @@ impl mmsdm_core::GetTable for P5minLocalPrice1 {
             run_datetime: row.run_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        5,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                5,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "p5min_local_price_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_local_price_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         P5minLocalPrice1Row {
@@ -5123,7 +4892,25 @@ pub struct P5minLocalPrice1Builder {
     local_price_adjustment_array: arrow::array::builder::Decimal128Builder,
     locally_constrained_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct P5minPricesensitivities1;
+pub struct P5minPricesensitivities1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&P5minPricesensitivities1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minPricesensitivities1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct P5minPricesensitivities1Mapping([usize; 49]);
 /// # Summary
 ///
@@ -5360,7 +5147,6 @@ impl mmsdm_core::GetTable for P5minPricesensitivities1 {
     type Row<'row> = P5minPricesensitivities1Row<'row>;
     type FieldMapping = P5minPricesensitivities1Mapping;
     type PrimaryKey = P5minPricesensitivities1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -5688,30 +5474,6 @@ impl mmsdm_core::GetTable for P5minPricesensitivities1 {
         }
         Ok(P5minPricesensitivities1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                6,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -5724,40 +5486,14 @@ impl mmsdm_core::GetTable for P5minPricesensitivities1 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        5,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                5,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "p5min_pricesensitivities_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_pricesensitivities_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         P5minPricesensitivities1Row {
@@ -6789,7 +6525,25 @@ pub struct P5minPricesensitivities1Builder {
     rrp43_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct P5minRegionsolution9;
+pub struct P5minRegionsolution9 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&P5minRegionsolution9Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minRegionsolution9 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct P5minRegionsolution9Mapping([usize; 117]);
 /// # Summary
 ///
@@ -7299,7 +7053,6 @@ impl mmsdm_core::GetTable for P5minRegionsolution9 {
     type Row<'row> = P5minRegionsolution9Row<'row>;
     type FieldMapping = P5minRegionsolution9Mapping;
     type PrimaryKey = P5minRegionsolution9PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -8035,30 +7788,6 @@ impl mmsdm_core::GetTable for P5minRegionsolution9 {
         }
         Ok(P5minRegionsolution9Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -8071,40 +7800,14 @@ impl mmsdm_core::GetTable for P5minRegionsolution9 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        5,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                5,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "p5min_regionsolution_v9_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_regionsolution_v9_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         P5minRegionsolution9Row {
@@ -10500,7 +10203,25 @@ pub struct P5minRegionsolution9Builder {
     bdu_clearedmw_gen_array: arrow::array::builder::Decimal128Builder,
     bdu_clearedmw_load_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct P5minScenariodemand1;
+pub struct P5minScenariodemand1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&P5minScenariodemand1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minScenariodemand1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct P5minScenariodemand1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -10561,7 +10282,6 @@ impl mmsdm_core::GetTable for P5minScenariodemand1 {
     type Row<'row> = P5minScenariodemand1Row<'row>;
     type FieldMapping = P5minScenariodemand1Mapping;
     type PrimaryKey = P5minScenariodemand1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -10625,30 +10345,6 @@ impl mmsdm_core::GetTable for P5minScenariodemand1 {
         }
         Ok(P5minScenariodemand1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -10661,40 +10357,14 @@ impl mmsdm_core::GetTable for P5minScenariodemand1 {
             version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        5,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                5,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "p5min_scenariodemand_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_scenariodemand_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         P5minScenariodemand1Row {
@@ -10850,7 +10520,25 @@ pub struct P5minScenariodemand1Builder {
     regionid_array: arrow::array::builder::StringBuilder,
     deltamw_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct P5minScenariodemandtrk1;
+pub struct P5minScenariodemandtrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&P5minScenariodemandtrk1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minScenariodemandtrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct P5minScenariodemandtrk1Mapping([usize; 4]);
 /// # Summary
 ///
@@ -10901,7 +10589,6 @@ impl mmsdm_core::GetTable for P5minScenariodemandtrk1 {
     type Row<'row> = P5minScenariodemandtrk1Row<'row>;
     type FieldMapping = P5minScenariodemandtrk1Mapping;
     type PrimaryKey = P5minScenariodemandtrk1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -10964,30 +10651,6 @@ impl mmsdm_core::GetTable for P5minScenariodemandtrk1 {
         }
         Ok(P5minScenariodemandtrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -10998,40 +10661,14 @@ impl mmsdm_core::GetTable for P5minScenariodemandtrk1 {
             version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        5,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                5,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "p5min_scenariodemandtrk_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_scenariodemandtrk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         P5minScenariodemandtrk1Row {
@@ -11164,7 +10801,25 @@ pub struct P5minScenariodemandtrk1Builder {
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct P5minUnitsolution6;
+pub struct P5minUnitsolution6 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&P5minUnitsolution6Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minUnitsolution6 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct P5minUnitsolution6Mapping([usize; 42]);
 /// # Summary
 ///
@@ -11386,7 +11041,6 @@ impl mmsdm_core::GetTable for P5minUnitsolution6 {
     type Row<'row> = P5minUnitsolution6Row<'row>;
     type FieldMapping = P5minUnitsolution6Mapping;
     type PrimaryKey = P5minUnitsolution6PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -11668,30 +11322,6 @@ impl mmsdm_core::GetTable for P5minUnitsolution6 {
         }
         Ok(P5minUnitsolution6Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -11704,40 +11334,14 @@ impl mmsdm_core::GetTable for P5minUnitsolution6 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        5,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                5,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "p5min_unitsolution_v6_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_unitsolution_v6_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         P5minUnitsolution6Row {

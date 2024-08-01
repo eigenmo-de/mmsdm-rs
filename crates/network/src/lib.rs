@@ -5,7 +5,25 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct NetworkEquipmentdetail2;
+pub struct NetworkEquipmentdetail2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&NetworkEquipmentdetail2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkEquipmentdetail2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkEquipmentdetail2Mapping([usize; 9]);
 /// # Summary
 ///
@@ -113,7 +131,6 @@ impl mmsdm_core::GetTable for NetworkEquipmentdetail2 {
     type Row<'row> = NetworkEquipmentdetail2Row<'row>;
     type FieldMapping = NetworkEquipmentdetail2Mapping;
     type PrimaryKey = NetworkEquipmentdetail2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -181,11 +198,6 @@ impl mmsdm_core::GetTable for NetworkEquipmentdetail2 {
         }
         Ok(NetworkEquipmentdetail2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -199,9 +211,14 @@ impl mmsdm_core::GetTable for NetworkEquipmentdetail2 {
             validfrom: row.validfrom,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_equipmentdetail_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_equipmentdetail_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkEquipmentdetail2Row {
@@ -399,7 +416,25 @@ pub struct NetworkEquipmentdetail2Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     elementid_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct NetworkOutageconstraintset1;
+pub struct NetworkOutageconstraintset1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&NetworkOutageconstraintset1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkOutageconstraintset1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkOutageconstraintset1Mapping([usize; 4]);
 /// # Summary
 ///
@@ -454,7 +489,6 @@ impl mmsdm_core::GetTable for NetworkOutageconstraintset1 {
     type Row<'row> = NetworkOutageconstraintset1Row<'row>;
     type FieldMapping = NetworkOutageconstraintset1Mapping;
     type PrimaryKey = NetworkOutageconstraintset1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -512,11 +546,6 @@ impl mmsdm_core::GetTable for NetworkOutageconstraintset1 {
         }
         Ok(NetworkOutageconstraintset1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -527,9 +556,14 @@ impl mmsdm_core::GetTable for NetworkOutageconstraintset1 {
             outageid: row.outageid,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_outageconstraintset_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_outageconstraintset_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkOutageconstraintset1Row {
@@ -657,7 +691,25 @@ pub struct NetworkOutageconstraintset1Builder {
     startinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     endinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct NetworkOutagedetail4;
+pub struct NetworkOutagedetail4 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&NetworkOutagedetail4Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkOutagedetail4 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkOutagedetail4Mapping([usize; 19]);
 /// # Summary
 ///
@@ -830,7 +882,6 @@ impl mmsdm_core::GetTable for NetworkOutagedetail4 {
     type Row<'row> = NetworkOutagedetail4Row<'row>;
     type FieldMapping = NetworkOutagedetail4Mapping;
     type PrimaryKey = NetworkOutagedetail4PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -948,11 +999,6 @@ impl mmsdm_core::GetTable for NetworkOutagedetail4 {
         }
         Ok(NetworkOutagedetail4Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -967,9 +1013,14 @@ impl mmsdm_core::GetTable for NetworkOutagedetail4 {
             substationid: row.substationid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_outagedetail_v4".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_outagedetail_v4_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkOutagedetail4Row {
@@ -1336,7 +1387,25 @@ pub struct NetworkOutagedetail4Builder {
     companyrefcode_array: arrow::array::builder::StringBuilder,
     elementid_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct NetworkOutagestatuscode1;
+pub struct NetworkOutagestatuscode1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&NetworkOutagestatuscode1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkOutagestatuscode1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkOutagestatuscode1Mapping([usize; 3]);
 /// # Summary
 ///
@@ -1401,7 +1470,6 @@ impl mmsdm_core::GetTable for NetworkOutagestatuscode1 {
     type Row<'row> = NetworkOutagestatuscode1Row<'row>;
     type FieldMapping = NetworkOutagestatuscode1Mapping;
     type PrimaryKey = NetworkOutagestatuscode1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1448,11 +1516,6 @@ impl mmsdm_core::GetTable for NetworkOutagestatuscode1 {
         }
         Ok(NetworkOutagestatuscode1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1462,9 +1525,14 @@ impl mmsdm_core::GetTable for NetworkOutagestatuscode1 {
             outagestatuscode: row.outagestatuscode().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_outagestatuscode_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_outagestatuscode_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkOutagestatuscode1Row {
@@ -1568,7 +1636,25 @@ pub struct NetworkOutagestatuscode1Builder {
     description_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct NetworkRating1;
+pub struct NetworkRating1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&NetworkRating1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkRating1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkRating1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -1707,7 +1793,6 @@ impl mmsdm_core::GetTable for NetworkRating1 {
     type Row<'row> = NetworkRating1Row<'row>;
     type FieldMapping = NetworkRating1Mapping;
     type PrimaryKey = NetworkRating1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1776,11 +1861,6 @@ impl mmsdm_core::GetTable for NetworkRating1 {
         }
         Ok(NetworkRating1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1791,9 +1871,14 @@ impl mmsdm_core::GetTable for NetworkRating1 {
             validfrom: row.validfrom,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_rating_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_rating_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkRating1Row {
@@ -1992,7 +2077,25 @@ pub struct NetworkRating1Builder {
     isdynamic_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct NetworkRealtimerating1;
+pub struct NetworkRealtimerating1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&NetworkRealtimerating1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkRealtimerating1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkRealtimerating1Mapping([usize; 3]);
 /// # Summary
 ///
@@ -2043,7 +2146,6 @@ impl mmsdm_core::GetTable for NetworkRealtimerating1 {
     type Row<'row> = NetworkRealtimerating1Row<'row>;
     type FieldMapping = NetworkRealtimerating1Mapping;
     type PrimaryKey = NetworkRealtimerating1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2095,23 +2197,6 @@ impl mmsdm_core::GetTable for NetworkRealtimerating1 {
         }
         Ok(NetworkRealtimerating1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let settlementdate = row
-            .get_custom_parsed_at_idx(
-                "settlementdate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(settlementdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(settlementdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2122,24 +2207,14 @@ impl mmsdm_core::GetTable for NetworkRealtimerating1 {
             spd_id: row.spd_id().to_string(),
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.settlementdate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.settlementdate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "network_realtimerating_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_realtimerating_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkRealtimerating1Row {
@@ -2249,7 +2324,25 @@ pub struct NetworkRealtimerating1Builder {
     spd_id_array: arrow::array::builder::StringBuilder,
     ratingvalue_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct NetworkStaticrating1;
+pub struct NetworkStaticrating1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&NetworkStaticrating1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkStaticrating1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkStaticrating1Mapping([usize; 9]);
 /// # Summary
 ///
@@ -2340,7 +2433,6 @@ impl mmsdm_core::GetTable for NetworkStaticrating1 {
     type Row<'row> = NetworkStaticrating1Row<'row>;
     type FieldMapping = NetworkStaticrating1Mapping;
     type PrimaryKey = NetworkStaticrating1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2408,11 +2500,6 @@ impl mmsdm_core::GetTable for NetworkStaticrating1 {
         }
         Ok(NetworkStaticrating1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2427,9 +2514,14 @@ impl mmsdm_core::GetTable for NetworkStaticrating1 {
             validfrom: row.validfrom,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_staticrating_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_staticrating_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkStaticrating1Row {
@@ -2637,7 +2729,25 @@ pub struct NetworkStaticrating1Builder {
     ratingvalue_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct NetworkSubstationdetail2;
+pub struct NetworkSubstationdetail2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&NetworkSubstationdetail2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkSubstationdetail2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkSubstationdetail2Mapping([usize; 7]);
 /// # Summary
 ///
@@ -2740,7 +2850,6 @@ impl mmsdm_core::GetTable for NetworkSubstationdetail2 {
     type Row<'row> = NetworkSubstationdetail2Row<'row>;
     type FieldMapping = NetworkSubstationdetail2Mapping;
     type PrimaryKey = NetworkSubstationdetail2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2801,11 +2910,6 @@ impl mmsdm_core::GetTable for NetworkSubstationdetail2 {
         }
         Ok(NetworkSubstationdetail2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2816,9 +2920,14 @@ impl mmsdm_core::GetTable for NetworkSubstationdetail2 {
             validfrom: row.validfrom,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_substationdetail_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_substationdetail_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkSubstationdetail2Row {

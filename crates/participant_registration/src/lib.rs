@@ -5,7 +5,23 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct ParticipantRegistrationAdgDetail1;
+pub struct ParticipantRegistrationAdgDetail1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationAdgDetail1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationAdgDetail1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationAdgDetail1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -51,24 +67,20 @@ impl<'data> ParticipantRegistrationAdgDetail1Row<'data> {
         if self.adg_type.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.adg_type.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.adg_type.clone(),
+            ))
         }
     }
     pub fn authorisedby(&self) -> Option<&str> {
         if self.authorisedby.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.authorisedby.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.authorisedby.clone(),
+            ))
         }
     }
 }
@@ -76,15 +88,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAdgDetail1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "ADG_DETAIL";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationAdgDetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationAdgDetail1Mapping([4, 5, 6, 7, 8, 9, 10]);
     const COLUMNS: &'static [&'static str] = &[
         "ADG_ID",
         "EFFECTIVEDATE",
@@ -97,39 +102,34 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAdgDetail1 {
     type Row<'row> = ParticipantRegistrationAdgDetail1Row<'row>;
     type FieldMapping = ParticipantRegistrationAdgDetail1Mapping;
     type PrimaryKey = ParticipantRegistrationAdgDetail1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationAdgDetail1Row {
             adg_id: row.get_range("adg_id", field_mapping.0[0])?,
-            effectivedate: row
-                .get_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            version_datetime: row
-                .get_custom_parsed_at_idx(
-                    "version_datetime",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            effectivedate: row.get_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[1],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            version_datetime: row.get_custom_parsed_at_idx(
+                "version_datetime",
+                field_mapping.0[2],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             adg_type: row.get_opt_range("adg_type", field_mapping.0[3])?,
-            authoriseddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "authoriseddate",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            authoriseddate: row.get_opt_custom_parsed_at_idx(
+                "authoriseddate",
+                field_mapping.0[4],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             authorisedby: row.get_opt_range("authorisedby", field_mapping.0[5])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[6],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[6],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -137,22 +137,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAdgDetail1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -163,25 +159,9 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAdgDetail1 {
         }
         Ok(ParticipantRegistrationAdgDetail1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
     fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationAdgDetail1PrimaryKey {
@@ -191,24 +171,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAdgDetail1 {
             version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_adg_detail_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "participant_registration_adg_detail_v1_{}",
+            self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationAdgDetail1Row {
@@ -233,29 +206,32 @@ impl mmsdm_core::PrimaryKey for ParticipantRegistrationAdgDetail1PrimaryKey {}
 impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationAdgDetail1Row<'data> {
     type Row<'other> = ParticipantRegistrationAdgDetail1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.adg_id() == row.adg_id() && self.effectivedate == row.effectivedate
+        self.adg_id() == row.adg_id()
+            && self.effectivedate == row.effectivedate
             && self.version_datetime == row.version_datetime
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationAdgDetail1Row<'data> {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationAdgDetail1Row<'data> {
     type PrimaryKey = ParticipantRegistrationAdgDetail1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.adg_id() == key.adg_id && self.effectivedate == key.effectivedate
+        self.adg_id() == key.adg_id
+            && self.effectivedate == key.effectivedate
             && self.version_datetime == key.version_datetime
     }
 }
 impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationAdgDetail1PrimaryKey {
     type Row<'other> = ParticipantRegistrationAdgDetail1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.adg_id == row.adg_id() && self.effectivedate == row.effectivedate
+        self.adg_id == row.adg_id()
+            && self.effectivedate == row.effectivedate
             && self.version_datetime == row.version_datetime
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationAdgDetail1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationAdgDetail1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.adg_id == key.adg_id && self.effectivedate == key.effectivedate
+        self.adg_id == key.adg_id
+            && self.effectivedate == key.effectivedate
             && self.version_datetime == key.version_datetime
     }
 }
@@ -263,57 +239,43 @@ impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationAdgDetail1Prim
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
     type Builder = ParticipantRegistrationAdgDetail1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "adg_id",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("adg_id", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "version_datetime",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "version_datetime",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new("adg_type", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "authoriseddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "adg_type",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new("authorisedby", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "authoriseddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationAdgDetail1Builder {
@@ -328,7 +290,9 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.adg_id_array.append_value(row.adg_id());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.timestamp_millis());
         builder
             .version_datetime_array
             .append_value(row.version_datetime.timestamp_millis());
@@ -345,25 +309,25 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.adg_id_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.version_datetime_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.adg_type_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.adg_id_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.version_datetime_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.adg_type_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -376,7 +340,25 @@ pub struct ParticipantRegistrationAdgDetail1Builder {
     authorisedby_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationAggregateDispatchGroup1;
+pub struct ParticipantRegistrationAggregateDispatchGroup1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &ParticipantRegistrationAggregateDispatchGroup1Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationAggregateDispatchGroup1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationAggregateDispatchGroup1Mapping([usize; 3]);
 /// # Summary
 ///
@@ -412,12 +394,10 @@ impl<'data> ParticipantRegistrationAggregateDispatchGroup1Row<'data> {
         if self.comments.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.comments.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.comments.clone(),
+            ))
         }
     }
 }
@@ -425,16 +405,12 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAggregateDispatchGroup1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "AGGREGATE_DISPATCH_GROUP";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationAggregateDispatchGroup1Mapping([
-        4,
-        5,
-        6,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationAggregateDispatchGroup1Mapping([4, 5, 6]);
     const COLUMNS: &'static [&'static str] = &["ADG_ID", "COMMENTS", "LASTCHANGED"];
     type Row<'row> = ParticipantRegistrationAggregateDispatchGroup1Row<'row>;
     type FieldMapping = ParticipantRegistrationAggregateDispatchGroup1Mapping;
     type PrimaryKey = ParticipantRegistrationAggregateDispatchGroup1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -442,12 +418,11 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAggregateDispatchGroup1 {
         Ok(ParticipantRegistrationAggregateDispatchGroup1Row {
             adg_id: row.get_range("adg_id", field_mapping.0[0])?,
             comments: row.get_opt_range("comments", field_mapping.0[1])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[2],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -455,22 +430,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAggregateDispatchGroup1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -479,15 +450,13 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAggregateDispatchGroup1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(ParticipantRegistrationAggregateDispatchGroup1Mapping(base_mapping))
-    }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
+        Ok(ParticipantRegistrationAggregateDispatchGroup1Mapping(
+            base_mapping,
+        ))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
     fn primary_key(
@@ -497,9 +466,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAggregateDispatchGroup1 {
             adg_id: row.adg_id().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_aggregate_dispatch_group_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_aggregate_dispatch_group_v1_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationAggregateDispatchGroup1Row {
@@ -514,31 +491,34 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAggregateDispatchGroup1 {
 pub struct ParticipantRegistrationAggregateDispatchGroup1PrimaryKey {
     pub adg_id: alloc::string::String,
 }
-impl mmsdm_core::PrimaryKey
-for ParticipantRegistrationAggregateDispatchGroup1PrimaryKey {}
+impl mmsdm_core::PrimaryKey for ParticipantRegistrationAggregateDispatchGroup1PrimaryKey {}
 impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationAggregateDispatchGroup1Row<'data> {
+    for ParticipantRegistrationAggregateDispatchGroup1Row<'data>
+{
     type Row<'other> = ParticipantRegistrationAggregateDispatchGroup1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.adg_id() == row.adg_id()
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationAggregateDispatchGroup1Row<'data> {
+    for ParticipantRegistrationAggregateDispatchGroup1Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationAggregateDispatchGroup1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.adg_id() == key.adg_id
     }
 }
 impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationAggregateDispatchGroup1PrimaryKey {
+    for ParticipantRegistrationAggregateDispatchGroup1PrimaryKey
+{
     type Row<'other> = ParticipantRegistrationAggregateDispatchGroup1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.adg_id == row.adg_id()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationAggregateDispatchGroup1PrimaryKey {
+    for ParticipantRegistrationAggregateDispatchGroup1PrimaryKey
+{
     type PrimaryKey = ParticipantRegistrationAggregateDispatchGroup1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.adg_id == key.adg_id
@@ -548,28 +528,18 @@ for ParticipantRegistrationAggregateDispatchGroup1PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationAggregateDispatchGroup1 {
     type Builder = ParticipantRegistrationAggregateDispatchGroup1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "adg_id",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("adg_id", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new("comments", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "comments",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationAggregateDispatchGroup1Builder {
@@ -589,17 +559,17 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAggregateDispatchGroup1 
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.adg_id_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.comments_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.adg_id_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.comments_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -608,7 +578,23 @@ pub struct ParticipantRegistrationAggregateDispatchGroup1Builder {
     comments_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationBidduiddetails1;
+pub struct ParticipantRegistrationBidduiddetails1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationBidduiddetails1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationBidduiddetails1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationBidduiddetails1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -666,18 +652,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetails1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "BIDDUIDDETAILS";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationBidduiddetails1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationBidduiddetails1Mapping([4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
         "EFFECTIVEDATE",
@@ -693,62 +669,53 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetails1 {
     type Row<'row> = ParticipantRegistrationBidduiddetails1Row<'row>;
     type FieldMapping = ParticipantRegistrationBidduiddetails1Mapping;
     type PrimaryKey = ParticipantRegistrationBidduiddetails1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationBidduiddetails1Row {
             duid: row.get_range("duid", field_mapping.0[0])?,
-            effectivedate: row
-                .get_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            versionno: row
-                .get_custom_parsed_at_idx(
-                    "versionno",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            effectivedate: row.get_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[1],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            versionno: row.get_custom_parsed_at_idx(
+                "versionno",
+                field_mapping.0[2],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             bidtype: row.get_range("bidtype", field_mapping.0[3])?,
-            maxcapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxcapacity",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            minenablementlevel: row
-                .get_opt_custom_parsed_at_idx(
-                    "minenablementlevel",
-                    field_mapping.0[5],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            maxenablementlevel: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxenablementlevel",
-                    field_mapping.0[6],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            maxlowerangle: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxlowerangle",
-                    field_mapping.0[7],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            maxupperangle: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxupperangle",
-                    field_mapping.0[8],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[9],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            maxcapacity: row.get_opt_custom_parsed_at_idx(
+                "maxcapacity",
+                field_mapping.0[4],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            minenablementlevel: row.get_opt_custom_parsed_at_idx(
+                "minenablementlevel",
+                field_mapping.0[5],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            maxenablementlevel: row.get_opt_custom_parsed_at_idx(
+                "maxenablementlevel",
+                field_mapping.0[6],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            maxlowerangle: row.get_opt_custom_parsed_at_idx(
+                "maxlowerangle",
+                field_mapping.0[7],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            maxupperangle: row.get_opt_custom_parsed_at_idx(
+                "maxupperangle",
+                field_mapping.0[8],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[9],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -756,22 +723,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetails1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -782,30 +745,12 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetails1 {
         }
         Ok(ParticipantRegistrationBidduiddetails1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationBidduiddetails1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationBidduiddetails1PrimaryKey {
         ParticipantRegistrationBidduiddetails1PrimaryKey {
             bidtype: row.bidtype().to_string(),
             duid: row.duid().to_string(),
@@ -813,24 +758,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetails1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_bidduiddetails_v1_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "participant_registration_bidduiddetails_v1_{}",
+            self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationBidduiddetails1Row {
@@ -856,102 +794,96 @@ pub struct ParticipantRegistrationBidduiddetails1PrimaryKey {
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationBidduiddetails1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationBidduiddetails1Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationBidduiddetails1Row<'data> {
     type Row<'other> = ParticipantRegistrationBidduiddetails1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.bidtype() == row.bidtype() && self.duid() == row.duid()
-            && self.effectivedate == row.effectivedate && self.versionno == row.versionno
+        self.bidtype() == row.bidtype()
+            && self.duid() == row.duid()
+            && self.effectivedate == row.effectivedate
+            && self.versionno == row.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationBidduiddetails1Row<'data> {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationBidduiddetails1Row<'data> {
     type PrimaryKey = ParticipantRegistrationBidduiddetails1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.bidtype() == key.bidtype && self.duid() == key.duid
-            && self.effectivedate == key.effectivedate && self.versionno == key.versionno
+        self.bidtype() == key.bidtype
+            && self.duid() == key.duid
+            && self.effectivedate == key.effectivedate
+            && self.versionno == key.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationBidduiddetails1PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationBidduiddetails1PrimaryKey {
     type Row<'other> = ParticipantRegistrationBidduiddetails1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.bidtype == row.bidtype() && self.duid == row.duid()
-            && self.effectivedate == row.effectivedate && self.versionno == row.versionno
+        self.bidtype == row.bidtype()
+            && self.duid == row.duid()
+            && self.effectivedate == row.effectivedate
+            && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationBidduiddetails1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationBidduiddetails1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationBidduiddetails1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.bidtype == key.bidtype && self.duid == key.duid
-            && self.effectivedate == key.effectivedate && self.versionno == key.versionno
+        self.bidtype == key.bidtype
+            && self.duid == key.duid
+            && self.effectivedate == key.effectivedate
+            && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
     type Builder = ParticipantRegistrationBidduiddetails1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "duid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("duid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "versionno",
+                arrow::datatypes::DataType::Decimal128(3, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new("bidtype", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "maxcapacity",
+                arrow::datatypes::DataType::Decimal128(22, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "minenablementlevel",
+                arrow::datatypes::DataType::Decimal128(22, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "maxenablementlevel",
+                arrow::datatypes::DataType::Decimal128(22, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "maxlowerangle",
+                arrow::datatypes::DataType::Decimal128(3, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "maxupperangle",
+                arrow::datatypes::DataType::Decimal128(3, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "versionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "bidtype",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxcapacity",
-                    arrow::datatypes::DataType::Decimal128(22, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "minenablementlevel",
-                    arrow::datatypes::DataType::Decimal128(22, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxenablementlevel",
-                    arrow::datatypes::DataType::Decimal128(22, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxlowerangle",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxupperangle",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationBidduiddetails1Builder {
@@ -975,60 +907,45 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.duid_array.append_value(row.duid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
-            .versionno_array
-            .append_value({
-                let mut val = row.versionno;
+            .effectivedate_array
+            .append_value(row.effectivedate.timestamp_millis());
+        builder.versionno_array.append_value({
+            let mut val = row.versionno;
+            val.rescale(0);
+            val.mantissa()
+        });
+        builder.bidtype_array.append_value(row.bidtype());
+        builder.maxcapacity_array.append_option({
+            row.maxcapacity.map(|mut val| {
                 val.rescale(0);
                 val.mantissa()
-            });
-        builder.bidtype_array.append_value(row.bidtype());
-        builder
-            .maxcapacity_array
-            .append_option({
-                row.maxcapacity
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .minenablementlevel_array
-            .append_option({
-                row.minenablementlevel
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .maxenablementlevel_array
-            .append_option({
-                row.maxenablementlevel
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .maxlowerangle_array
-            .append_option({
-                row.maxlowerangle
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .maxupperangle_array
-            .append_option({
-                row.maxupperangle
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+            })
+        });
+        builder.minenablementlevel_array.append_option({
+            row.minenablementlevel.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.maxenablementlevel_array.append_option({
+            row.maxenablementlevel.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.maxlowerangle_array.append_option({
+            row.maxlowerangle.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.maxupperangle_array.append_option({
+            row.maxupperangle.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
@@ -1037,31 +954,31 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.duid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.bidtype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maxcapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.minenablementlevel_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maxenablementlevel_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maxlowerangle_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maxupperangle_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.duid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionno_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.bidtype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxcapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.minenablementlevel_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxenablementlevel_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxlowerangle_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxupperangle_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -1077,7 +994,23 @@ pub struct ParticipantRegistrationBidduiddetails1Builder {
     maxupperangle_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationBidduiddetailstrk1;
+pub struct ParticipantRegistrationBidduiddetailstrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationBidduiddetailstrk1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationBidduiddetailstrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationBidduiddetailstrk1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -1122,12 +1055,10 @@ impl<'data> ParticipantRegistrationBidduiddetailstrk1Row<'data> {
         if self.authorisedby.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.authorisedby.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.authorisedby.clone(),
+            ))
         }
     }
 }
@@ -1135,14 +1066,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetailstrk1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "BIDDUIDDETAILSTRK";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationBidduiddetailstrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationBidduiddetailstrk1Mapping([4, 5, 6, 7, 8, 9]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
         "EFFECTIVEDATE",
@@ -1154,38 +1079,33 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetailstrk1 {
     type Row<'row> = ParticipantRegistrationBidduiddetailstrk1Row<'row>;
     type FieldMapping = ParticipantRegistrationBidduiddetailstrk1Mapping;
     type PrimaryKey = ParticipantRegistrationBidduiddetailstrk1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationBidduiddetailstrk1Row {
             duid: row.get_range("duid", field_mapping.0[0])?,
-            effectivedate: row
-                .get_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            versionno: row
-                .get_custom_parsed_at_idx(
-                    "versionno",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            authoriseddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "authoriseddate",
-                    field_mapping.0[3],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            effectivedate: row.get_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[1],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            versionno: row.get_custom_parsed_at_idx(
+                "versionno",
+                field_mapping.0[2],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            authoriseddate: row.get_opt_custom_parsed_at_idx(
+                "authoriseddate",
+                field_mapping.0[3],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             authorisedby: row.get_opt_range("authorisedby", field_mapping.0[4])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[5],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[5],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -1193,22 +1113,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetailstrk1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -1217,57 +1133,33 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetailstrk1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(ParticipantRegistrationBidduiddetailstrk1Mapping(base_mapping))
-    }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
+        Ok(ParticipantRegistrationBidduiddetailstrk1Mapping(
+            base_mapping,
+        ))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationBidduiddetailstrk1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationBidduiddetailstrk1PrimaryKey {
         ParticipantRegistrationBidduiddetailstrk1PrimaryKey {
             duid: row.duid().to_string(),
             effectivedate: row.effectivedate,
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_bidduiddetailstrk_v1_{}_{}",
-            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
-            .number_from_month()
+            "participant_registration_bidduiddetailstrk_v1_{}",
+            self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationBidduiddetailstrk1Row {
@@ -1288,35 +1180,37 @@ pub struct ParticipantRegistrationBidduiddetailstrk1PrimaryKey {
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationBidduiddetailstrk1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationBidduiddetailstrk1Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationBidduiddetailstrk1Row<'data> {
     type Row<'other> = ParticipantRegistrationBidduiddetailstrk1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.duid() == row.duid() && self.effectivedate == row.effectivedate
+        self.duid() == row.duid()
+            && self.effectivedate == row.effectivedate
             && self.versionno == row.versionno
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationBidduiddetailstrk1Row<'data> {
+    for ParticipantRegistrationBidduiddetailstrk1Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationBidduiddetailstrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid() == key.duid && self.effectivedate == key.effectivedate
+        self.duid() == key.duid
+            && self.effectivedate == key.effectivedate
             && self.versionno == key.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationBidduiddetailstrk1PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationBidduiddetailstrk1PrimaryKey {
     type Row<'other> = ParticipantRegistrationBidduiddetailstrk1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.duid == row.duid() && self.effectivedate == row.effectivedate
+        self.duid == row.duid()
+            && self.effectivedate == row.effectivedate
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationBidduiddetailstrk1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationBidduiddetailstrk1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationBidduiddetailstrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid == key.duid && self.effectivedate == key.effectivedate
+        self.duid == key.duid
+            && self.effectivedate == key.effectivedate
             && self.versionno == key.versionno
     }
 }
@@ -1324,49 +1218,39 @@ for ParticipantRegistrationBidduiddetailstrk1PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
     type Builder = ParticipantRegistrationBidduiddetailstrk1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "duid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("duid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "versionno",
+                arrow::datatypes::DataType::Decimal128(3, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "authoriseddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "versionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
+                true,
+            ),
+            arrow::datatypes::Field::new("authorisedby", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "authoriseddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationBidduiddetailstrk1Builder {
@@ -1381,14 +1265,14 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.duid_array.append_value(row.duid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
-            .versionno_array
-            .append_value({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            .effectivedate_array
+            .append_value(row.effectivedate.timestamp_millis());
+        builder.versionno_array.append_value({
+            let mut val = row.versionno;
+            val.rescale(0);
+            val.mantissa()
+        });
         builder
             .authoriseddate_array
             .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
@@ -1401,23 +1285,23 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.duid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.duid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionno_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -1429,7 +1313,23 @@ pub struct ParticipantRegistrationBidduiddetailstrk1Builder {
     authorisedby_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationDispatchableunit1;
+pub struct ParticipantRegistrationDispatchableunit1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationDispatchableunit1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationDispatchableunit1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationDispatchableunit1Mapping([usize; 4]);
 /// # Summary
 ///
@@ -1468,24 +1368,20 @@ impl<'data> ParticipantRegistrationDispatchableunit1Row<'data> {
         if self.duname.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.duname.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.duname.clone(),
+            ))
         }
     }
     pub fn unittype(&self) -> Option<&str> {
         if self.unittype.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.unittype.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.unittype.clone(),
+            ))
         }
     }
 }
@@ -1493,22 +1389,12 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDispatchableunit1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "DISPATCHABLEUNIT";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDispatchableunit1Mapping([
-        4,
-        5,
-        6,
-        7,
-    ]);
-    const COLUMNS: &'static [&'static str] = &[
-        "DUID",
-        "DUNAME",
-        "UNITTYPE",
-        "LASTCHANGED",
-    ];
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationDispatchableunit1Mapping([4, 5, 6, 7]);
+    const COLUMNS: &'static [&'static str] = &["DUID", "DUNAME", "UNITTYPE", "LASTCHANGED"];
     type Row<'row> = ParticipantRegistrationDispatchableunit1Row<'row>;
     type FieldMapping = ParticipantRegistrationDispatchableunit1Mapping;
     type PrimaryKey = ParticipantRegistrationDispatchableunit1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1517,12 +1403,11 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDispatchableunit1 {
             duid: row.get_range("duid", field_mapping.0[0])?,
             duname: row.get_opt_range("duname", field_mapping.0[1])?,
             unittype: row.get_opt_range("unittype", field_mapping.0[2])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[3],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[3],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -1530,22 +1415,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDispatchableunit1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -1554,27 +1435,31 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDispatchableunit1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(ParticipantRegistrationDispatchableunit1Mapping(base_mapping))
-    }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
+        Ok(ParticipantRegistrationDispatchableunit1Mapping(
+            base_mapping,
+        ))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationDispatchableunit1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationDispatchableunit1PrimaryKey {
         ParticipantRegistrationDispatchableunit1PrimaryKey {
             duid: row.duid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_dispatchableunit_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_dispatchableunit_v1_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationDispatchableunit1Row {
@@ -1591,29 +1476,27 @@ pub struct ParticipantRegistrationDispatchableunit1PrimaryKey {
     pub duid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationDispatchableunit1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationDispatchableunit1Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationDispatchableunit1Row<'data> {
     type Row<'other> = ParticipantRegistrationDispatchableunit1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.duid() == row.duid()
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationDispatchableunit1Row<'data> {
+    for ParticipantRegistrationDispatchableunit1Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationDispatchableunit1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid() == key.duid
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationDispatchableunit1PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationDispatchableunit1PrimaryKey {
     type Row<'other> = ParticipantRegistrationDispatchableunit1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.duid == row.duid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationDispatchableunit1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDispatchableunit1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationDispatchableunit1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid
@@ -1623,33 +1506,19 @@ for ParticipantRegistrationDispatchableunit1PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
     type Builder = ParticipantRegistrationDispatchableunit1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "duid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("duid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new("duname", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("unittype", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "duname",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "unittype",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationDispatchableunit1Builder {
@@ -1671,19 +1540,19 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.duid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.duname_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.unittype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.duid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.duname_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.unittype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -1693,7 +1562,23 @@ pub struct ParticipantRegistrationDispatchableunit1Builder {
     unittype_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationDualloc1;
+pub struct ParticipantRegistrationDualloc1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationDualloc1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationDualloc1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationDualloc1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -1741,13 +1626,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDualloc1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "DUALLOC";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDualloc1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationDualloc1Mapping([4, 5, 6, 7, 8]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
         "VERSIONNO",
@@ -1758,32 +1638,28 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDualloc1 {
     type Row<'row> = ParticipantRegistrationDualloc1Row<'row>;
     type FieldMapping = ParticipantRegistrationDualloc1Mapping;
     type PrimaryKey = ParticipantRegistrationDualloc1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationDualloc1Row {
-            effectivedate: row
-                .get_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[0],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            versionno: row
-                .get_custom_parsed_at_idx(
-                    "versionno",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            effectivedate: row.get_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[0],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            versionno: row.get_custom_parsed_at_idx(
+                "versionno",
+                field_mapping.0[1],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             duid: row.get_range("duid", field_mapping.0[2])?,
             gensetid: row.get_range("gensetid", field_mapping.0[3])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[4],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -1791,22 +1667,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDualloc1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -1817,25 +1689,9 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDualloc1 {
         }
         Ok(ParticipantRegistrationDualloc1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
     fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationDualloc1PrimaryKey {
@@ -1846,24 +1702,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDualloc1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_dualloc_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "participant_registration_dualloc_v1_{}",
+            self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationDualloc1Row {
@@ -1887,71 +1736,68 @@ impl mmsdm_core::PrimaryKey for ParticipantRegistrationDualloc1PrimaryKey {}
 impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationDualloc1Row<'data> {
     type Row<'other> = ParticipantRegistrationDualloc1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.duid() == row.duid() && self.effectivedate == row.effectivedate
-            && self.gensetid() == row.gensetid() && self.versionno == row.versionno
+        self.duid() == row.duid()
+            && self.effectivedate == row.effectivedate
+            && self.gensetid() == row.gensetid()
+            && self.versionno == row.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationDualloc1Row<'data> {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDualloc1Row<'data> {
     type PrimaryKey = ParticipantRegistrationDualloc1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid() == key.duid && self.effectivedate == key.effectivedate
-            && self.gensetid() == key.gensetid && self.versionno == key.versionno
+        self.duid() == key.duid
+            && self.effectivedate == key.effectivedate
+            && self.gensetid() == key.gensetid
+            && self.versionno == key.versionno
     }
 }
 impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationDualloc1PrimaryKey {
     type Row<'other> = ParticipantRegistrationDualloc1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.duid == row.duid() && self.effectivedate == row.effectivedate
-            && self.gensetid == row.gensetid() && self.versionno == row.versionno
+        self.duid == row.duid()
+            && self.effectivedate == row.effectivedate
+            && self.gensetid == row.gensetid()
+            && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDualloc1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationDualloc1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid == key.duid && self.effectivedate == key.effectivedate
-            && self.gensetid == key.gensetid && self.versionno == key.versionno
+        self.duid == key.duid
+            && self.effectivedate == key.effectivedate
+            && self.gensetid == key.gensetid
+            && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationDualloc1 {
     type Builder = ParticipantRegistrationDualloc1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "versionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "versionno",
+                arrow::datatypes::DataType::Decimal128(3, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new("duid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new("gensetid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "duid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "gensetid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationDualloc1Builder {
@@ -1964,14 +1810,14 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDualloc1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
-            .versionno_array
-            .append_value({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            .effectivedate_array
+            .append_value(row.effectivedate.timestamp_millis());
+        builder.versionno_array.append_value({
+            let mut val = row.versionno;
+            val.rescale(0);
+            val.mantissa()
+        });
         builder.duid_array.append_value(row.duid());
         builder.gensetid_array.append_value(row.gensetid());
         builder
@@ -1982,21 +1828,21 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDualloc1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.duid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.gensetid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionno_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.duid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.gensetid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -2007,7 +1853,23 @@ pub struct ParticipantRegistrationDualloc1Builder {
     gensetid_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationDudetail6;
+pub struct ParticipantRegistrationDudetail6 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationDudetail6Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationDudetail6 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationDudetail6Mapping([usize; 33]);
 /// # Summary
 ///
@@ -2106,156 +1968,130 @@ impl<'data> ParticipantRegistrationDudetail6Row<'data> {
         if self.connectionpointid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.connectionpointid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.connectionpointid.clone(),
+            ))
         }
     }
     pub fn voltlevel(&self) -> Option<&str> {
         if self.voltlevel.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.voltlevel.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.voltlevel.clone(),
+            ))
         }
     }
     pub fn agccapability(&self) -> Option<&str> {
         if self.agccapability.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.agccapability.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.agccapability.clone(),
+            ))
         }
     }
     pub fn dispatchtype(&self) -> Option<&str> {
         if self.dispatchtype.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.dispatchtype.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.dispatchtype.clone(),
+            ))
         }
     }
     pub fn starttype(&self) -> Option<&str> {
         if self.starttype.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.starttype.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.starttype.clone(),
+            ))
         }
     }
     pub fn normallyonflag(&self) -> Option<&str> {
         if self.normallyonflag.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.normallyonflag.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.normallyonflag.clone(),
+            ))
         }
     }
     pub fn physicaldetailsflag(&self) -> Option<&str> {
         if self.physicaldetailsflag.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.physicaldetailsflag.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.physicaldetailsflag.clone(),
+            ))
         }
     }
     pub fn spinningreserveflag(&self) -> Option<&str> {
         if self.spinningreserveflag.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.spinningreserveflag.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.spinningreserveflag.clone(),
+            ))
         }
     }
     pub fn authorisedby(&self) -> Option<&str> {
         if self.authorisedby.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.authorisedby.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.authorisedby.clone(),
+            ))
         }
     }
     pub fn intermittentflag(&self) -> Option<&str> {
         if self.intermittentflag.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.intermittentflag.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.intermittentflag.clone(),
+            ))
         }
     }
     pub fn semi_schedule_flag(&self) -> Option<&str> {
         if self.semi_schedule_flag.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.semi_schedule_flag.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.semi_schedule_flag.clone(),
+            ))
         }
     }
     pub fn dispatchsubtype(&self) -> Option<&str> {
         if self.dispatchsubtype.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.dispatchsubtype.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.dispatchsubtype.clone(),
+            ))
         }
     }
     pub fn adg_id(&self) -> Option<&str> {
         if self.adg_id.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.adg_id.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.adg_id.clone(),
+            ))
         }
     }
 }
@@ -2264,39 +2100,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail6 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "DUDETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDudetail6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+        28, 29, 30, 31, 32, 33, 34, 35, 36,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -2336,145 +2141,120 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail6 {
     type Row<'row> = ParticipantRegistrationDudetail6Row<'row>;
     type FieldMapping = ParticipantRegistrationDudetail6Mapping;
     type PrimaryKey = ParticipantRegistrationDudetail6PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationDudetail6Row {
-            effectivedate: row
-                .get_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[0],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            effectivedate: row.get_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[0],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             duid: row.get_range("duid", field_mapping.0[1])?,
-            versionno: row
-                .get_custom_parsed_at_idx(
-                    "versionno",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            connectionpointid: row
-                .get_opt_range("connectionpointid", field_mapping.0[3])?,
+            versionno: row.get_custom_parsed_at_idx(
+                "versionno",
+                field_mapping.0[2],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            connectionpointid: row.get_opt_range("connectionpointid", field_mapping.0[3])?,
             voltlevel: row.get_opt_range("voltlevel", field_mapping.0[4])?,
-            registeredcapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "registeredcapacity",
-                    field_mapping.0[5],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            registeredcapacity: row.get_opt_custom_parsed_at_idx(
+                "registeredcapacity",
+                field_mapping.0[5],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             agccapability: row.get_opt_range("agccapability", field_mapping.0[6])?,
             dispatchtype: row.get_opt_range("dispatchtype", field_mapping.0[7])?,
-            maxcapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxcapacity",
-                    field_mapping.0[8],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            maxcapacity: row.get_opt_custom_parsed_at_idx(
+                "maxcapacity",
+                field_mapping.0[8],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             starttype: row.get_opt_range("starttype", field_mapping.0[9])?,
             normallyonflag: row.get_opt_range("normallyonflag", field_mapping.0[10])?,
-            physicaldetailsflag: row
-                .get_opt_range("physicaldetailsflag", field_mapping.0[11])?,
-            spinningreserveflag: row
-                .get_opt_range("spinningreserveflag", field_mapping.0[12])?,
+            physicaldetailsflag: row.get_opt_range("physicaldetailsflag", field_mapping.0[11])?,
+            spinningreserveflag: row.get_opt_range("spinningreserveflag", field_mapping.0[12])?,
             authorisedby: row.get_opt_range("authorisedby", field_mapping.0[13])?,
-            authoriseddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "authoriseddate",
-                    field_mapping.0[14],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[15],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            intermittentflag: row
-                .get_opt_range("intermittentflag", field_mapping.0[16])?,
-            semi_schedule_flag: row
-                .get_opt_range("semi_schedule_flag", field_mapping.0[17])?,
-            maxrateofchangeup: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxrateofchangeup",
-                    field_mapping.0[18],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            maxrateofchangedown: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxrateofchangedown",
-                    field_mapping.0[19],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            authoriseddate: row.get_opt_custom_parsed_at_idx(
+                "authoriseddate",
+                field_mapping.0[14],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[15],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            intermittentflag: row.get_opt_range("intermittentflag", field_mapping.0[16])?,
+            semi_schedule_flag: row.get_opt_range("semi_schedule_flag", field_mapping.0[17])?,
+            maxrateofchangeup: row.get_opt_custom_parsed_at_idx(
+                "maxrateofchangeup",
+                field_mapping.0[18],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            maxrateofchangedown: row.get_opt_custom_parsed_at_idx(
+                "maxrateofchangedown",
+                field_mapping.0[19],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             dispatchsubtype: row.get_opt_range("dispatchsubtype", field_mapping.0[20])?,
             adg_id: row.get_opt_range("adg_id", field_mapping.0[21])?,
-            mincapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "mincapacity",
-                    field_mapping.0[22],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            registeredmincapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "registeredmincapacity",
-                    field_mapping.0[23],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            maxrateofchangeup_load: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxrateofchangeup_load",
-                    field_mapping.0[24],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            maxrateofchangedown_load: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxrateofchangedown_load",
-                    field_mapping.0[25],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            maxstoragecapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxstoragecapacity",
-                    field_mapping.0[26],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            storageimportefficiencyfactor: row
-                .get_opt_custom_parsed_at_idx(
-                    "storageimportefficiencyfactor",
-                    field_mapping.0[27],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            storageexportefficiencyfactor: row
-                .get_opt_custom_parsed_at_idx(
-                    "storageexportefficiencyfactor",
-                    field_mapping.0[28],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            min_ramp_rate_up: row
-                .get_opt_custom_parsed_at_idx(
-                    "min_ramp_rate_up",
-                    field_mapping.0[29],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            min_ramp_rate_down: row
-                .get_opt_custom_parsed_at_idx(
-                    "min_ramp_rate_down",
-                    field_mapping.0[30],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            load_min_ramp_rate_up: row
-                .get_opt_custom_parsed_at_idx(
-                    "load_min_ramp_rate_up",
-                    field_mapping.0[31],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            load_min_ramp_rate_down: row
-                .get_opt_custom_parsed_at_idx(
-                    "load_min_ramp_rate_down",
-                    field_mapping.0[32],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            mincapacity: row.get_opt_custom_parsed_at_idx(
+                "mincapacity",
+                field_mapping.0[22],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            registeredmincapacity: row.get_opt_custom_parsed_at_idx(
+                "registeredmincapacity",
+                field_mapping.0[23],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            maxrateofchangeup_load: row.get_opt_custom_parsed_at_idx(
+                "maxrateofchangeup_load",
+                field_mapping.0[24],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            maxrateofchangedown_load: row.get_opt_custom_parsed_at_idx(
+                "maxrateofchangedown_load",
+                field_mapping.0[25],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            maxstoragecapacity: row.get_opt_custom_parsed_at_idx(
+                "maxstoragecapacity",
+                field_mapping.0[26],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            storageimportefficiencyfactor: row.get_opt_custom_parsed_at_idx(
+                "storageimportefficiencyfactor",
+                field_mapping.0[27],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            storageexportefficiencyfactor: row.get_opt_custom_parsed_at_idx(
+                "storageexportefficiencyfactor",
+                field_mapping.0[28],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            min_ramp_rate_up: row.get_opt_custom_parsed_at_idx(
+                "min_ramp_rate_up",
+                field_mapping.0[29],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            min_ramp_rate_down: row.get_opt_custom_parsed_at_idx(
+                "min_ramp_rate_down",
+                field_mapping.0[30],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            load_min_ramp_rate_up: row.get_opt_custom_parsed_at_idx(
+                "load_min_ramp_rate_up",
+                field_mapping.0[31],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            load_min_ramp_rate_down: row.get_opt_custom_parsed_at_idx(
+                "load_min_ramp_rate_down",
+                field_mapping.0[32],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -2482,22 +2262,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail6 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -2508,25 +2284,9 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail6 {
         }
         Ok(ParticipantRegistrationDudetail6Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
     fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationDudetail6PrimaryKey {
@@ -2536,24 +2296,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail6 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_dudetail_v6_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "participant_registration_dudetail_v6_{}",
+            self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationDudetail6Row {
@@ -2604,29 +2357,32 @@ impl mmsdm_core::PrimaryKey for ParticipantRegistrationDudetail6PrimaryKey {}
 impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationDudetail6Row<'data> {
     type Row<'other> = ParticipantRegistrationDudetail6Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.duid() == row.duid() && self.effectivedate == row.effectivedate
+        self.duid() == row.duid()
+            && self.effectivedate == row.effectivedate
             && self.versionno == row.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationDudetail6Row<'data> {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDudetail6Row<'data> {
     type PrimaryKey = ParticipantRegistrationDudetail6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid() == key.duid && self.effectivedate == key.effectivedate
+        self.duid() == key.duid
+            && self.effectivedate == key.effectivedate
             && self.versionno == key.versionno
     }
 }
 impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationDudetail6PrimaryKey {
     type Row<'other> = ParticipantRegistrationDudetail6Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.duid == row.duid() && self.effectivedate == row.effectivedate
+        self.duid == row.duid()
+            && self.effectivedate == row.effectivedate
             && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDudetail6PrimaryKey {
     type PrimaryKey = ParticipantRegistrationDudetail6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid == key.duid && self.effectivedate == key.effectivedate
+        self.duid == key.duid
+            && self.effectivedate == key.effectivedate
             && self.versionno == key.versionno
     }
 }
@@ -2634,184 +2390,146 @@ impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDudetail6Prima
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail6 {
     type Builder = ParticipantRegistrationDudetail6Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "duid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new("duid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "versionno",
+                arrow::datatypes::DataType::Decimal128(3, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "connectionpointid",
+                arrow::datatypes::DataType::Utf8,
+                true,
+            ),
+            arrow::datatypes::Field::new("voltlevel", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "registeredcapacity",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new("agccapability", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("dispatchtype", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "maxcapacity",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new("starttype", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("normallyonflag", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "physicaldetailsflag",
+                arrow::datatypes::DataType::Utf8,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "spinningreserveflag",
+                arrow::datatypes::DataType::Utf8,
+                true,
+            ),
+            arrow::datatypes::Field::new("authorisedby", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "authoriseddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "versionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "voltlevel",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "registeredcapacity",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "agccapability",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "dispatchtype",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxcapacity",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "starttype",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "normallyonflag",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "physicaldetailsflag",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "spinningreserveflag",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "authoriseddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "intermittentflag",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "semi_schedule_flag",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxrateofchangeup",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxrateofchangedown",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "dispatchsubtype",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "adg_id",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "mincapacity",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "registeredmincapacity",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxrateofchangeup_load",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxrateofchangedown_load",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxstoragecapacity",
-                    arrow::datatypes::DataType::Decimal128(15, 5),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "storageimportefficiencyfactor",
-                    arrow::datatypes::DataType::Decimal128(15, 5),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "storageexportefficiencyfactor",
-                    arrow::datatypes::DataType::Decimal128(15, 5),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "min_ramp_rate_up",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "min_ramp_rate_down",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "load_min_ramp_rate_up",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "load_min_ramp_rate_down",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "intermittentflag",
+                arrow::datatypes::DataType::Utf8,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "semi_schedule_flag",
+                arrow::datatypes::DataType::Utf8,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "maxrateofchangeup",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "maxrateofchangedown",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new("dispatchsubtype", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("adg_id", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "mincapacity",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "registeredmincapacity",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "maxrateofchangeup_load",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "maxrateofchangedown_load",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "maxstoragecapacity",
+                arrow::datatypes::DataType::Decimal128(15, 5),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "storageimportefficiencyfactor",
+                arrow::datatypes::DataType::Decimal128(15, 5),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "storageexportefficiencyfactor",
+                arrow::datatypes::DataType::Decimal128(15, 5),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "min_ramp_rate_up",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "min_ramp_rate_down",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "load_min_ramp_rate_up",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "load_min_ramp_rate_down",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationDudetail6Builder {
@@ -2867,41 +2585,45 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail6 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
-        builder.duid_array.append_value(row.duid());
         builder
-            .versionno_array
-            .append_value({
-                let mut val = row.versionno;
+            .effectivedate_array
+            .append_value(row.effectivedate.timestamp_millis());
+        builder.duid_array.append_value(row.duid());
+        builder.versionno_array.append_value({
+            let mut val = row.versionno;
+            val.rescale(0);
+            val.mantissa()
+        });
+        builder
+            .connectionpointid_array
+            .append_option(row.connectionpointid());
+        builder.voltlevel_array.append_option(row.voltlevel());
+        builder.registeredcapacity_array.append_option({
+            row.registeredcapacity.map(|mut val| {
                 val.rescale(0);
                 val.mantissa()
-            });
-        builder.connectionpointid_array.append_option(row.connectionpointid());
-        builder.voltlevel_array.append_option(row.voltlevel());
+            })
+        });
         builder
-            .registeredcapacity_array
-            .append_option({
-                row.registeredcapacity
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder.agccapability_array.append_option(row.agccapability());
+            .agccapability_array
+            .append_option(row.agccapability());
         builder.dispatchtype_array.append_option(row.dispatchtype());
-        builder
-            .maxcapacity_array
-            .append_option({
-                row.maxcapacity
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+        builder.maxcapacity_array.append_option({
+            row.maxcapacity.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
         builder.starttype_array.append_option(row.starttype());
-        builder.normallyonflag_array.append_option(row.normallyonflag());
-        builder.physicaldetailsflag_array.append_option(row.physicaldetailsflag());
-        builder.spinningreserveflag_array.append_option(row.spinningreserveflag());
+        builder
+            .normallyonflag_array
+            .append_option(row.normallyonflag());
+        builder
+            .physicaldetailsflag_array
+            .append_option(row.physicaldetailsflag());
+        builder
+            .spinningreserveflag_array
+            .append_option(row.spinningreserveflag());
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
@@ -2909,206 +2631,170 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail6 {
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.intermittentflag_array.append_option(row.intermittentflag());
-        builder.semi_schedule_flag_array.append_option(row.semi_schedule_flag());
         builder
-            .maxrateofchangeup_array
-            .append_option({
-                row.maxrateofchangeup
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+            .intermittentflag_array
+            .append_option(row.intermittentflag());
         builder
-            .maxrateofchangedown_array
-            .append_option({
-                row.maxrateofchangedown
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder.dispatchsubtype_array.append_option(row.dispatchsubtype());
+            .semi_schedule_flag_array
+            .append_option(row.semi_schedule_flag());
+        builder.maxrateofchangeup_array.append_option({
+            row.maxrateofchangeup.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.maxrateofchangedown_array.append_option({
+            row.maxrateofchangedown.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder
+            .dispatchsubtype_array
+            .append_option(row.dispatchsubtype());
         builder.adg_id_array.append_option(row.adg_id());
-        builder
-            .mincapacity_array
-            .append_option({
-                row.mincapacity
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .registeredmincapacity_array
-            .append_option({
-                row.registeredmincapacity
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .maxrateofchangeup_load_array
-            .append_option({
-                row.maxrateofchangeup_load
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .maxrateofchangedown_load_array
-            .append_option({
-                row.maxrateofchangedown_load
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .maxstoragecapacity_array
-            .append_option({
-                row.maxstoragecapacity
-                    .map(|mut val| {
-                        val.rescale(5);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .storageimportefficiencyfactor_array
-            .append_option({
-                row.storageimportefficiencyfactor
-                    .map(|mut val| {
-                        val.rescale(5);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .storageexportefficiencyfactor_array
-            .append_option({
-                row.storageexportefficiencyfactor
-                    .map(|mut val| {
-                        val.rescale(5);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .min_ramp_rate_up_array
-            .append_option({
-                row.min_ramp_rate_up
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .min_ramp_rate_down_array
-            .append_option({
-                row.min_ramp_rate_down
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .load_min_ramp_rate_up_array
-            .append_option({
-                row.load_min_ramp_rate_up
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .load_min_ramp_rate_down_array
-            .append_option({
-                row.load_min_ramp_rate_down
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+        builder.mincapacity_array.append_option({
+            row.mincapacity.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.registeredmincapacity_array.append_option({
+            row.registeredmincapacity.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.maxrateofchangeup_load_array.append_option({
+            row.maxrateofchangeup_load.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.maxrateofchangedown_load_array.append_option({
+            row.maxrateofchangedown_load.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.maxstoragecapacity_array.append_option({
+            row.maxstoragecapacity.map(|mut val| {
+                val.rescale(5);
+                val.mantissa()
+            })
+        });
+        builder.storageimportefficiencyfactor_array.append_option({
+            row.storageimportefficiencyfactor.map(|mut val| {
+                val.rescale(5);
+                val.mantissa()
+            })
+        });
+        builder.storageexportefficiencyfactor_array.append_option({
+            row.storageexportefficiencyfactor.map(|mut val| {
+                val.rescale(5);
+                val.mantissa()
+            })
+        });
+        builder.min_ramp_rate_up_array.append_option({
+            row.min_ramp_rate_up.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.min_ramp_rate_down_array.append_option({
+            row.min_ramp_rate_down.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.load_min_ramp_rate_up_array.append_option({
+            row.load_min_ramp_rate_up.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.load_min_ramp_rate_down_array.append_option({
+            row.load_min_ramp_rate_down.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.duid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.connectionpointid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.voltlevel_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.registeredcapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.agccapability_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.dispatchtype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maxcapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.starttype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.normallyonflag_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.physicaldetailsflag_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.spinningreserveflag_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.intermittentflag_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.semi_schedule_flag_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maxrateofchangeup_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maxrateofchangedown_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.dispatchsubtype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.adg_id_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.mincapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.registeredmincapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maxrateofchangeup_load_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(
-                        builder.maxrateofchangedown_load_array.finish(),
-                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maxstoragecapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(
-                        builder.storageimportefficiencyfactor_array.finish(),
-                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(
-                        builder.storageexportefficiencyfactor_array.finish(),
-                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.min_ramp_rate_up_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.min_ramp_rate_down_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.load_min_ramp_rate_up_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.load_min_ramp_rate_down_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.duid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionno_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.connectionpointid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.voltlevel_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.registeredcapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.agccapability_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.dispatchtype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxcapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.starttype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.normallyonflag_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.physicaldetailsflag_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.spinningreserveflag_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.intermittentflag_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.semi_schedule_flag_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxrateofchangeup_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxrateofchangedown_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.dispatchsubtype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.adg_id_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.mincapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.registeredmincapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxrateofchangeup_load_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxrateofchangedown_load_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxstoragecapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.storageimportefficiencyfactor_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.storageexportefficiencyfactor_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.min_ramp_rate_up_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.min_ramp_rate_down_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.load_min_ramp_rate_up_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.load_min_ramp_rate_down_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -3147,7 +2833,23 @@ pub struct ParticipantRegistrationDudetail6Builder {
     load_min_ramp_rate_up_array: arrow::array::builder::Decimal128Builder,
     load_min_ramp_rate_down_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct ParticipantRegistrationDudetailsummary7;
+pub struct ParticipantRegistrationDudetailsummary7 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationDudetailsummary7Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationDudetailsummary7 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationDudetailsummary7Mapping([usize; 29]);
 /// # Summary
 ///
@@ -3237,108 +2939,90 @@ impl<'data> ParticipantRegistrationDudetailsummary7Row<'data> {
         if self.dispatchtype.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.dispatchtype.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.dispatchtype.clone(),
+            ))
         }
     }
     pub fn connectionpointid(&self) -> Option<&str> {
         if self.connectionpointid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.connectionpointid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.connectionpointid.clone(),
+            ))
         }
     }
     pub fn regionid(&self) -> Option<&str> {
         if self.regionid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.regionid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.regionid.clone(),
+            ))
         }
     }
     pub fn stationid(&self) -> Option<&str> {
         if self.stationid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.stationid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.stationid.clone(),
+            ))
         }
     }
     pub fn participantid(&self) -> Option<&str> {
         if self.participantid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.participantid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.participantid.clone(),
+            ))
         }
     }
     pub fn starttype(&self) -> Option<&str> {
         if self.starttype.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.starttype.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.starttype.clone(),
+            ))
         }
     }
     pub fn schedule_type(&self) -> Option<&str> {
         if self.schedule_type.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.schedule_type.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.schedule_type.clone(),
+            ))
         }
     }
     pub fn dispatchsubtype(&self) -> Option<&str> {
         if self.dispatchsubtype.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.dispatchsubtype.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.dispatchsubtype.clone(),
+            ))
         }
     }
     pub fn adg_id(&self) -> Option<&str> {
         if self.adg_id.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.adg_id.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.adg_id.clone(),
+            ))
         }
     }
 }
@@ -3346,37 +3030,11 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetailsummary7 {
     const VERSION: i32 = 7;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "DUDETAILSUMMARY";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDudetailsummary7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationDudetailsummary7Mapping([
+            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+            27, 28, 29, 30, 31, 32,
+        ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
         "START_DATE",
@@ -3411,137 +3069,116 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetailsummary7 {
     type Row<'row> = ParticipantRegistrationDudetailsummary7Row<'row>;
     type FieldMapping = ParticipantRegistrationDudetailsummary7Mapping;
     type PrimaryKey = ParticipantRegistrationDudetailsummary7PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationDudetailsummary7Row {
             duid: row.get_range("duid", field_mapping.0[0])?,
-            start_date: row
-                .get_custom_parsed_at_idx(
-                    "start_date",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            end_date: row
-                .get_custom_parsed_at_idx(
-                    "end_date",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            start_date: row.get_custom_parsed_at_idx(
+                "start_date",
+                field_mapping.0[1],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            end_date: row.get_custom_parsed_at_idx(
+                "end_date",
+                field_mapping.0[2],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             dispatchtype: row.get_opt_range("dispatchtype", field_mapping.0[3])?,
-            connectionpointid: row
-                .get_opt_range("connectionpointid", field_mapping.0[4])?,
+            connectionpointid: row.get_opt_range("connectionpointid", field_mapping.0[4])?,
             regionid: row.get_opt_range("regionid", field_mapping.0[5])?,
             stationid: row.get_opt_range("stationid", field_mapping.0[6])?,
             participantid: row.get_opt_range("participantid", field_mapping.0[7])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[8],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            transmissionlossfactor: row
-                .get_opt_custom_parsed_at_idx(
-                    "transmissionlossfactor",
-                    field_mapping.0[9],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[8],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            transmissionlossfactor: row.get_opt_custom_parsed_at_idx(
+                "transmissionlossfactor",
+                field_mapping.0[9],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             starttype: row.get_opt_range("starttype", field_mapping.0[10])?,
-            distributionlossfactor: row
-                .get_opt_custom_parsed_at_idx(
-                    "distributionlossfactor",
-                    field_mapping.0[11],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            minimum_energy_price: row
-                .get_opt_custom_parsed_at_idx(
-                    "minimum_energy_price",
-                    field_mapping.0[12],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            maximum_energy_price: row
-                .get_opt_custom_parsed_at_idx(
-                    "maximum_energy_price",
-                    field_mapping.0[13],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            distributionlossfactor: row.get_opt_custom_parsed_at_idx(
+                "distributionlossfactor",
+                field_mapping.0[11],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            minimum_energy_price: row.get_opt_custom_parsed_at_idx(
+                "minimum_energy_price",
+                field_mapping.0[12],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            maximum_energy_price: row.get_opt_custom_parsed_at_idx(
+                "maximum_energy_price",
+                field_mapping.0[13],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             schedule_type: row.get_opt_range("schedule_type", field_mapping.0[14])?,
-            min_ramp_rate_up: row
-                .get_opt_custom_parsed_at_idx(
-                    "min_ramp_rate_up",
-                    field_mapping.0[15],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            min_ramp_rate_down: row
-                .get_opt_custom_parsed_at_idx(
-                    "min_ramp_rate_down",
-                    field_mapping.0[16],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            max_ramp_rate_up: row
-                .get_opt_custom_parsed_at_idx(
-                    "max_ramp_rate_up",
-                    field_mapping.0[17],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            max_ramp_rate_down: row
-                .get_opt_custom_parsed_at_idx(
-                    "max_ramp_rate_down",
-                    field_mapping.0[18],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            is_aggregated: row
-                .get_opt_custom_parsed_at_idx(
-                    "is_aggregated",
-                    field_mapping.0[19],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            min_ramp_rate_up: row.get_opt_custom_parsed_at_idx(
+                "min_ramp_rate_up",
+                field_mapping.0[15],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            min_ramp_rate_down: row.get_opt_custom_parsed_at_idx(
+                "min_ramp_rate_down",
+                field_mapping.0[16],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            max_ramp_rate_up: row.get_opt_custom_parsed_at_idx(
+                "max_ramp_rate_up",
+                field_mapping.0[17],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            max_ramp_rate_down: row.get_opt_custom_parsed_at_idx(
+                "max_ramp_rate_down",
+                field_mapping.0[18],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            is_aggregated: row.get_opt_custom_parsed_at_idx(
+                "is_aggregated",
+                field_mapping.0[19],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             dispatchsubtype: row.get_opt_range("dispatchsubtype", field_mapping.0[20])?,
             adg_id: row.get_opt_range("adg_id", field_mapping.0[21])?,
-            load_minimum_energy_price: row
-                .get_opt_custom_parsed_at_idx(
-                    "load_minimum_energy_price",
-                    field_mapping.0[22],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            load_maximum_energy_price: row
-                .get_opt_custom_parsed_at_idx(
-                    "load_maximum_energy_price",
-                    field_mapping.0[23],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            load_min_ramp_rate_up: row
-                .get_opt_custom_parsed_at_idx(
-                    "load_min_ramp_rate_up",
-                    field_mapping.0[24],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            load_min_ramp_rate_down: row
-                .get_opt_custom_parsed_at_idx(
-                    "load_min_ramp_rate_down",
-                    field_mapping.0[25],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            load_max_ramp_rate_up: row
-                .get_opt_custom_parsed_at_idx(
-                    "load_max_ramp_rate_up",
-                    field_mapping.0[26],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            load_max_ramp_rate_down: row
-                .get_opt_custom_parsed_at_idx(
-                    "load_max_ramp_rate_down",
-                    field_mapping.0[27],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            secondary_tlf: row
-                .get_opt_custom_parsed_at_idx(
-                    "secondary_tlf",
-                    field_mapping.0[28],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            load_minimum_energy_price: row.get_opt_custom_parsed_at_idx(
+                "load_minimum_energy_price",
+                field_mapping.0[22],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            load_maximum_energy_price: row.get_opt_custom_parsed_at_idx(
+                "load_maximum_energy_price",
+                field_mapping.0[23],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            load_min_ramp_rate_up: row.get_opt_custom_parsed_at_idx(
+                "load_min_ramp_rate_up",
+                field_mapping.0[24],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            load_min_ramp_rate_down: row.get_opt_custom_parsed_at_idx(
+                "load_min_ramp_rate_down",
+                field_mapping.0[25],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            load_max_ramp_rate_up: row.get_opt_custom_parsed_at_idx(
+                "load_max_ramp_rate_up",
+                field_mapping.0[26],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            load_max_ramp_rate_down: row.get_opt_custom_parsed_at_idx(
+                "load_max_ramp_rate_down",
+                field_mapping.0[27],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            secondary_tlf: row.get_opt_custom_parsed_at_idx(
+                "secondary_tlf",
+                field_mapping.0[28],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -3549,22 +3186,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetailsummary7 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -3575,26 +3208,28 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetailsummary7 {
         }
         Ok(ParticipantRegistrationDudetailsummary7Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationDudetailsummary7PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationDudetailsummary7PrimaryKey {
         ParticipantRegistrationDudetailsummary7PrimaryKey {
             duid: row.duid().to_string(),
             start_date: row.start_date,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_dudetailsummary_v7".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_dudetailsummary_v7_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationDudetailsummary7Row {
@@ -3637,29 +3272,27 @@ pub struct ParticipantRegistrationDudetailsummary7PrimaryKey {
     pub start_date: chrono::NaiveDateTime,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationDudetailsummary7PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationDudetailsummary7Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationDudetailsummary7Row<'data> {
     type Row<'other> = ParticipantRegistrationDudetailsummary7Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.duid() == row.duid() && self.start_date == row.start_date
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationDudetailsummary7Row<'data> {
+    for ParticipantRegistrationDudetailsummary7Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationDudetailsummary7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid() == key.duid && self.start_date == key.start_date
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationDudetailsummary7PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationDudetailsummary7PrimaryKey {
     type Row<'other> = ParticipantRegistrationDudetailsummary7Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.duid == row.duid() && self.start_date == row.start_date
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationDudetailsummary7PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDudetailsummary7PrimaryKey {
     type PrimaryKey = ParticipantRegistrationDudetailsummary7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.start_date == key.start_date
@@ -3669,164 +3302,126 @@ for ParticipantRegistrationDudetailsummary7PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary7 {
     type Builder = ParticipantRegistrationDudetailsummary7Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "duid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("duid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "start_date",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "start_date",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "end_date",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "end_date",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new("dispatchtype", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "connectionpointid",
+                arrow::datatypes::DataType::Utf8,
+                true,
+            ),
+            arrow::datatypes::Field::new("regionid", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("stationid", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("participantid", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "dispatchtype",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "regionid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "stationid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "participantid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "transmissionlossfactor",
-                    arrow::datatypes::DataType::Decimal128(15, 5),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "starttype",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "distributionlossfactor",
-                    arrow::datatypes::DataType::Decimal128(15, 5),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "minimum_energy_price",
-                    arrow::datatypes::DataType::Decimal128(9, 2),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maximum_energy_price",
-                    arrow::datatypes::DataType::Decimal128(9, 2),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "schedule_type",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "min_ramp_rate_up",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "min_ramp_rate_down",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "max_ramp_rate_up",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "max_ramp_rate_down",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "is_aggregated",
-                    arrow::datatypes::DataType::Decimal128(1, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "dispatchsubtype",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "adg_id",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "load_minimum_energy_price",
-                    arrow::datatypes::DataType::Decimal128(9, 2),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "load_maximum_energy_price",
-                    arrow::datatypes::DataType::Decimal128(9, 2),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "load_min_ramp_rate_up",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "load_min_ramp_rate_down",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "load_max_ramp_rate_up",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "load_max_ramp_rate_down",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "secondary_tlf",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "transmissionlossfactor",
+                arrow::datatypes::DataType::Decimal128(15, 5),
+                true,
+            ),
+            arrow::datatypes::Field::new("starttype", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "distributionlossfactor",
+                arrow::datatypes::DataType::Decimal128(15, 5),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "minimum_energy_price",
+                arrow::datatypes::DataType::Decimal128(9, 2),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "maximum_energy_price",
+                arrow::datatypes::DataType::Decimal128(9, 2),
+                true,
+            ),
+            arrow::datatypes::Field::new("schedule_type", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "min_ramp_rate_up",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "min_ramp_rate_down",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "max_ramp_rate_up",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "max_ramp_rate_down",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "is_aggregated",
+                arrow::datatypes::DataType::Decimal128(1, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new("dispatchsubtype", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("adg_id", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "load_minimum_energy_price",
+                arrow::datatypes::DataType::Decimal128(9, 2),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "load_maximum_energy_price",
+                arrow::datatypes::DataType::Decimal128(9, 2),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "load_min_ramp_rate_up",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "load_min_ramp_rate_down",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "load_max_ramp_rate_up",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "load_max_ramp_rate_down",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "secondary_tlf",
+                arrow::datatypes::DataType::Decimal128(18, 8),
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationDudetailsummary7Builder {
@@ -3879,234 +3474,196 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary7 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.duid_array.append_value(row.duid());
-        builder.start_date_array.append_value(row.start_date.timestamp_millis());
-        builder.end_date_array.append_value(row.end_date.timestamp_millis());
+        builder
+            .start_date_array
+            .append_value(row.start_date.timestamp_millis());
+        builder
+            .end_date_array
+            .append_value(row.end_date.timestamp_millis());
         builder.dispatchtype_array.append_option(row.dispatchtype());
-        builder.connectionpointid_array.append_option(row.connectionpointid());
+        builder
+            .connectionpointid_array
+            .append_option(row.connectionpointid());
         builder.regionid_array.append_option(row.regionid());
         builder.stationid_array.append_option(row.stationid());
-        builder.participantid_array.append_option(row.participantid());
+        builder
+            .participantid_array
+            .append_option(row.participantid());
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder
-            .transmissionlossfactor_array
-            .append_option({
-                row.transmissionlossfactor
-                    .map(|mut val| {
-                        val.rescale(5);
-                        val.mantissa()
-                    })
-            });
+        builder.transmissionlossfactor_array.append_option({
+            row.transmissionlossfactor.map(|mut val| {
+                val.rescale(5);
+                val.mantissa()
+            })
+        });
         builder.starttype_array.append_option(row.starttype());
+        builder.distributionlossfactor_array.append_option({
+            row.distributionlossfactor.map(|mut val| {
+                val.rescale(5);
+                val.mantissa()
+            })
+        });
+        builder.minimum_energy_price_array.append_option({
+            row.minimum_energy_price.map(|mut val| {
+                val.rescale(2);
+                val.mantissa()
+            })
+        });
+        builder.maximum_energy_price_array.append_option({
+            row.maximum_energy_price.map(|mut val| {
+                val.rescale(2);
+                val.mantissa()
+            })
+        });
         builder
-            .distributionlossfactor_array
-            .append_option({
-                row.distributionlossfactor
-                    .map(|mut val| {
-                        val.rescale(5);
-                        val.mantissa()
-                    })
-            });
+            .schedule_type_array
+            .append_option(row.schedule_type());
+        builder.min_ramp_rate_up_array.append_option({
+            row.min_ramp_rate_up.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.min_ramp_rate_down_array.append_option({
+            row.min_ramp_rate_down.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.max_ramp_rate_up_array.append_option({
+            row.max_ramp_rate_up.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.max_ramp_rate_down_array.append_option({
+            row.max_ramp_rate_down.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.is_aggregated_array.append_option({
+            row.is_aggregated.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
         builder
-            .minimum_energy_price_array
-            .append_option({
-                row.minimum_energy_price
-                    .map(|mut val| {
-                        val.rescale(2);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .maximum_energy_price_array
-            .append_option({
-                row.maximum_energy_price
-                    .map(|mut val| {
-                        val.rescale(2);
-                        val.mantissa()
-                    })
-            });
-        builder.schedule_type_array.append_option(row.schedule_type());
-        builder
-            .min_ramp_rate_up_array
-            .append_option({
-                row.min_ramp_rate_up
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .min_ramp_rate_down_array
-            .append_option({
-                row.min_ramp_rate_down
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .max_ramp_rate_up_array
-            .append_option({
-                row.max_ramp_rate_up
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .max_ramp_rate_down_array
-            .append_option({
-                row.max_ramp_rate_down
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .is_aggregated_array
-            .append_option({
-                row.is_aggregated
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder.dispatchsubtype_array.append_option(row.dispatchsubtype());
+            .dispatchsubtype_array
+            .append_option(row.dispatchsubtype());
         builder.adg_id_array.append_option(row.adg_id());
-        builder
-            .load_minimum_energy_price_array
-            .append_option({
-                row.load_minimum_energy_price
-                    .map(|mut val| {
-                        val.rescale(2);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .load_maximum_energy_price_array
-            .append_option({
-                row.load_maximum_energy_price
-                    .map(|mut val| {
-                        val.rescale(2);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .load_min_ramp_rate_up_array
-            .append_option({
-                row.load_min_ramp_rate_up
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .load_min_ramp_rate_down_array
-            .append_option({
-                row.load_min_ramp_rate_down
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .load_max_ramp_rate_up_array
-            .append_option({
-                row.load_max_ramp_rate_up
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .load_max_ramp_rate_down_array
-            .append_option({
-                row.load_max_ramp_rate_down
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .secondary_tlf_array
-            .append_option({
-                row.secondary_tlf
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
+        builder.load_minimum_energy_price_array.append_option({
+            row.load_minimum_energy_price.map(|mut val| {
+                val.rescale(2);
+                val.mantissa()
+            })
+        });
+        builder.load_maximum_energy_price_array.append_option({
+            row.load_maximum_energy_price.map(|mut val| {
+                val.rescale(2);
+                val.mantissa()
+            })
+        });
+        builder.load_min_ramp_rate_up_array.append_option({
+            row.load_min_ramp_rate_up.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.load_min_ramp_rate_down_array.append_option({
+            row.load_min_ramp_rate_down.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.load_max_ramp_rate_up_array.append_option({
+            row.load_max_ramp_rate_up.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.load_max_ramp_rate_down_array.append_option({
+            row.load_max_ramp_rate_down.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.secondary_tlf_array.append_option({
+            row.secondary_tlf.map(|mut val| {
+                val.rescale(8);
+                val.mantissa()
+            })
+        });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.duid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.start_date_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.end_date_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.dispatchtype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.connectionpointid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.regionid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.stationid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.participantid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.transmissionlossfactor_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.starttype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.distributionlossfactor_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.minimum_energy_price_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maximum_energy_price_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.schedule_type_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.min_ramp_rate_up_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.min_ramp_rate_down_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.max_ramp_rate_up_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.max_ramp_rate_down_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.is_aggregated_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.dispatchsubtype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.adg_id_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(
-                        builder.load_minimum_energy_price_array.finish(),
-                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(
-                        builder.load_maximum_energy_price_array.finish(),
-                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.load_min_ramp_rate_up_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.load_min_ramp_rate_down_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.load_max_ramp_rate_up_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.load_max_ramp_rate_down_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.secondary_tlf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.duid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.start_date_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.end_date_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.dispatchtype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.connectionpointid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.regionid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.stationid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.participantid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.transmissionlossfactor_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.starttype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.distributionlossfactor_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.minimum_energy_price_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maximum_energy_price_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.schedule_type_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.min_ramp_rate_up_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.min_ramp_rate_down_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.max_ramp_rate_up_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.max_ramp_rate_down_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.is_aggregated_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.dispatchsubtype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.adg_id_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.load_minimum_energy_price_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.load_maximum_energy_price_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.load_min_ramp_rate_up_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.load_min_ramp_rate_down_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.load_max_ramp_rate_up_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.load_max_ramp_rate_down_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.secondary_tlf_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -4141,7 +3698,23 @@ pub struct ParticipantRegistrationDudetailsummary7Builder {
     load_max_ramp_rate_down_array: arrow::array::builder::Decimal128Builder,
     secondary_tlf_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct ParticipantRegistrationGenmeter1;
+pub struct ParticipantRegistrationGenmeter1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationGenmeter1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationGenmeter1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationGenmeter1Mapping([usize; 16]);
 /// # Summary
 ///
@@ -4206,72 +3779,60 @@ impl<'data> ParticipantRegistrationGenmeter1Row<'data> {
         if self.gensetid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.gensetid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.gensetid.clone(),
+            ))
         }
     }
     pub fn connectionpointid(&self) -> Option<&str> {
         if self.connectionpointid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.connectionpointid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.connectionpointid.clone(),
+            ))
         }
     }
     pub fn stationid(&self) -> Option<&str> {
         if self.stationid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.stationid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.stationid.clone(),
+            ))
         }
     }
     pub fn metertype(&self) -> Option<&str> {
         if self.metertype.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.metertype.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.metertype.clone(),
+            ))
         }
     }
     pub fn meterclass(&self) -> Option<&str> {
         if self.meterclass.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.meterclass.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.meterclass.clone(),
+            ))
         }
     }
     pub fn authorisedby(&self) -> Option<&str> {
         if self.authorisedby.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.authorisedby.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.authorisedby.clone(),
+            ))
         }
     }
 }
@@ -4280,22 +3841,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenmeter1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "GENMETER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationGenmeter1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "METERID",
@@ -4318,7 +3864,6 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenmeter1 {
     type Row<'row> = ParticipantRegistrationGenmeter1Row<'row>;
     type FieldMapping = ParticipantRegistrationGenmeter1Mapping;
     type PrimaryKey = ParticipantRegistrationGenmeter1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4326,66 +3871,56 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenmeter1 {
         Ok(ParticipantRegistrationGenmeter1Row {
             meterid: row.get_range("meterid", field_mapping.0[0])?,
             gensetid: row.get_opt_range("gensetid", field_mapping.0[1])?,
-            connectionpointid: row
-                .get_opt_range("connectionpointid", field_mapping.0[2])?,
+            connectionpointid: row.get_opt_range("connectionpointid", field_mapping.0[2])?,
             stationid: row.get_opt_range("stationid", field_mapping.0[3])?,
             metertype: row.get_opt_range("metertype", field_mapping.0[4])?,
             meterclass: row.get_opt_range("meterclass", field_mapping.0[5])?,
-            voltagelevel: row
-                .get_opt_custom_parsed_at_idx(
-                    "voltagelevel",
-                    field_mapping.0[6],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            applydate: row
-                .get_custom_parsed_at_idx(
-                    "applydate",
-                    field_mapping.0[7],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            versionno: row
-                .get_custom_parsed_at_idx(
-                    "versionno",
-                    field_mapping.0[8],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            voltagelevel: row.get_opt_custom_parsed_at_idx(
+                "voltagelevel",
+                field_mapping.0[6],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            applydate: row.get_custom_parsed_at_idx(
+                "applydate",
+                field_mapping.0[7],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            versionno: row.get_custom_parsed_at_idx(
+                "versionno",
+                field_mapping.0[8],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             authorisedby: row.get_opt_range("authorisedby", field_mapping.0[9])?,
-            authoriseddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "authoriseddate",
-                    field_mapping.0[10],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            comdate: row
-                .get_opt_custom_parsed_at_idx(
-                    "comdate",
-                    field_mapping.0[11],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            decomdate: row
-                .get_opt_custom_parsed_at_idx(
-                    "decomdate",
-                    field_mapping.0[12],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            enddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "enddate",
-                    field_mapping.0[13],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            startdate: row
-                .get_opt_custom_parsed_at_idx(
-                    "startdate",
-                    field_mapping.0[14],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[15],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            authoriseddate: row.get_opt_custom_parsed_at_idx(
+                "authoriseddate",
+                field_mapping.0[10],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            comdate: row.get_opt_custom_parsed_at_idx(
+                "comdate",
+                field_mapping.0[11],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            decomdate: row.get_opt_custom_parsed_at_idx(
+                "decomdate",
+                field_mapping.0[12],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            enddate: row.get_opt_custom_parsed_at_idx(
+                "enddate",
+                field_mapping.0[13],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            startdate: row.get_opt_custom_parsed_at_idx(
+                "startdate",
+                field_mapping.0[14],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[15],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -4393,22 +3928,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenmeter1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -4419,13 +3950,9 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenmeter1 {
         }
         Ok(ParticipantRegistrationGenmeter1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
     fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationGenmeter1PrimaryKey {
@@ -4435,9 +3962,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenmeter1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_genmeter_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_genmeter_v1_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationGenmeter1Row {
@@ -4471,29 +4006,32 @@ impl mmsdm_core::PrimaryKey for ParticipantRegistrationGenmeter1PrimaryKey {}
 impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationGenmeter1Row<'data> {
     type Row<'other> = ParticipantRegistrationGenmeter1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.applydate == row.applydate && self.meterid() == row.meterid()
+        self.applydate == row.applydate
+            && self.meterid() == row.meterid()
             && self.versionno == row.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationGenmeter1Row<'data> {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationGenmeter1Row<'data> {
     type PrimaryKey = ParticipantRegistrationGenmeter1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.applydate == key.applydate && self.meterid() == key.meterid
+        self.applydate == key.applydate
+            && self.meterid() == key.meterid
             && self.versionno == key.versionno
     }
 }
 impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationGenmeter1PrimaryKey {
     type Row<'other> = ParticipantRegistrationGenmeter1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.applydate == row.applydate && self.meterid == row.meterid()
+        self.applydate == row.applydate
+            && self.meterid == row.meterid()
             && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationGenmeter1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationGenmeter1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.applydate == key.applydate && self.meterid == key.meterid
+        self.applydate == key.applydate
+            && self.meterid == key.meterid
             && self.versionno == key.versionno
     }
 }
@@ -4501,111 +4039,85 @@ impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationGenmeter1Prima
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
     type Builder = ParticipantRegistrationGenmeter1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "meterid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("meterid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new("gensetid", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "connectionpointid",
+                arrow::datatypes::DataType::Utf8,
+                true,
+            ),
+            arrow::datatypes::Field::new("stationid", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("metertype", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("meterclass", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "voltagelevel",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "applydate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "gensetid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "versionno",
+                arrow::datatypes::DataType::Decimal128(3, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new("authorisedby", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "authoriseddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "comdate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "stationid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "decomdate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "metertype",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "enddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "meterclass",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "startdate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "voltagelevel",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "applydate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "versionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "authoriseddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "comdate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "decomdate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "enddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "startdate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationGenmeter1Builder {
@@ -4632,27 +4144,26 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.meterid_array.append_value(row.meterid());
         builder.gensetid_array.append_option(row.gensetid());
-        builder.connectionpointid_array.append_option(row.connectionpointid());
+        builder
+            .connectionpointid_array
+            .append_option(row.connectionpointid());
         builder.stationid_array.append_option(row.stationid());
         builder.metertype_array.append_option(row.metertype());
         builder.meterclass_array.append_option(row.meterclass());
-        builder
-            .voltagelevel_array
-            .append_option({
-                row.voltagelevel
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder.applydate_array.append_value(row.applydate.timestamp_millis());
-        builder
-            .versionno_array
-            .append_value({
-                let mut val = row.versionno;
+        builder.voltagelevel_array.append_option({
+            row.voltagelevel.map(|mut val| {
                 val.rescale(0);
                 val.mantissa()
-            });
+            })
+        });
+        builder
+            .applydate_array
+            .append_value(row.applydate.timestamp_millis());
+        builder.versionno_array.append_value({
+            let mut val = row.versionno;
+            val.rescale(0);
+            val.mantissa()
+        });
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
@@ -4677,43 +4188,43 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.meterid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.gensetid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.connectionpointid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.stationid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.metertype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.meterclass_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.voltagelevel_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.applydate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.comdate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.decomdate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.enddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.startdate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.meterid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.gensetid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.connectionpointid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.stationid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.metertype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.meterclass_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.voltagelevel_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.applydate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionno_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.comdate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.decomdate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.enddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.startdate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -4735,7 +4246,23 @@ pub struct ParticipantRegistrationGenmeter1Builder {
     startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationGenunits3;
+pub struct ParticipantRegistrationGenunits3 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationGenunits3Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationGenunits3 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationGenunits3Mapping([usize; 22]);
 /// # Summary
 ///
@@ -4810,144 +4337,120 @@ impl<'data> ParticipantRegistrationGenunits3Row<'data> {
         if self.stationid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.stationid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.stationid.clone(),
+            ))
         }
     }
     pub fn cdindicator(&self) -> Option<&str> {
         if self.cdindicator.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.cdindicator.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.cdindicator.clone(),
+            ))
         }
     }
     pub fn agcflag(&self) -> Option<&str> {
         if self.agcflag.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.agcflag.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.agcflag.clone(),
+            ))
         }
     }
     pub fn spinningflag(&self) -> Option<&str> {
         if self.spinningflag.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.spinningflag.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.spinningflag.clone(),
+            ))
         }
     }
     pub fn dispatchtype(&self) -> Option<&str> {
         if self.dispatchtype.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.dispatchtype.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.dispatchtype.clone(),
+            ))
         }
     }
     pub fn starttype(&self) -> Option<&str> {
         if self.starttype.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.starttype.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.starttype.clone(),
+            ))
         }
     }
     pub fn mktgeneratorind(&self) -> Option<&str> {
         if self.mktgeneratorind.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.mktgeneratorind.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.mktgeneratorind.clone(),
+            ))
         }
     }
     pub fn normalstatus(&self) -> Option<&str> {
         if self.normalstatus.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.normalstatus.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.normalstatus.clone(),
+            ))
         }
     }
     pub fn gensettype(&self) -> Option<&str> {
         if self.gensettype.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.gensettype.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.gensettype.clone(),
+            ))
         }
     }
     pub fn gensetname(&self) -> Option<&str> {
         if self.gensetname.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.gensetname.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.gensetname.clone(),
+            ))
         }
     }
     pub fn co2e_energy_source(&self) -> Option<&str> {
         if self.co2e_energy_source.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.co2e_energy_source.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.co2e_energy_source.clone(),
+            ))
         }
     }
     pub fn co2e_data_source(&self) -> Option<&str> {
         if self.co2e_data_source.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.co2e_data_source.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.co2e_data_source.clone(),
+            ))
         }
     }
 }
@@ -4956,28 +4459,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunits3 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "GENUNITS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationGenunits3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GENSETID",
@@ -5006,7 +4488,6 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunits3 {
     type Row<'row> = ParticipantRegistrationGenunits3Row<'row>;
     type FieldMapping = ParticipantRegistrationGenunits3Mapping;
     type PrimaryKey = ParticipantRegistrationGenunits3PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -5014,73 +4495,62 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunits3 {
         Ok(ParticipantRegistrationGenunits3Row {
             gensetid: row.get_range("gensetid", field_mapping.0[0])?,
             stationid: row.get_opt_range("stationid", field_mapping.0[1])?,
-            setlossfactor: row
-                .get_opt_custom_parsed_at_idx(
-                    "setlossfactor",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            setlossfactor: row.get_opt_custom_parsed_at_idx(
+                "setlossfactor",
+                field_mapping.0[2],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             cdindicator: row.get_opt_range("cdindicator", field_mapping.0[3])?,
             agcflag: row.get_opt_range("agcflag", field_mapping.0[4])?,
             spinningflag: row.get_opt_range("spinningflag", field_mapping.0[5])?,
-            voltlevel: row
-                .get_opt_custom_parsed_at_idx(
-                    "voltlevel",
-                    field_mapping.0[6],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            registeredcapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "registeredcapacity",
-                    field_mapping.0[7],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            voltlevel: row.get_opt_custom_parsed_at_idx(
+                "voltlevel",
+                field_mapping.0[6],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            registeredcapacity: row.get_opt_custom_parsed_at_idx(
+                "registeredcapacity",
+                field_mapping.0[7],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             dispatchtype: row.get_opt_range("dispatchtype", field_mapping.0[8])?,
             starttype: row.get_opt_range("starttype", field_mapping.0[9])?,
             mktgeneratorind: row.get_opt_range("mktgeneratorind", field_mapping.0[10])?,
             normalstatus: row.get_opt_range("normalstatus", field_mapping.0[11])?,
-            maxcapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxcapacity",
-                    field_mapping.0[12],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            maxcapacity: row.get_opt_custom_parsed_at_idx(
+                "maxcapacity",
+                field_mapping.0[12],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             gensettype: row.get_opt_range("gensettype", field_mapping.0[13])?,
             gensetname: row.get_opt_range("gensetname", field_mapping.0[14])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[15],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            co2e_emissions_factor: row
-                .get_opt_custom_parsed_at_idx(
-                    "co2e_emissions_factor",
-                    field_mapping.0[16],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            co2e_energy_source: row
-                .get_opt_range("co2e_energy_source", field_mapping.0[17])?,
-            co2e_data_source: row
-                .get_opt_range("co2e_data_source", field_mapping.0[18])?,
-            mincapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "mincapacity",
-                    field_mapping.0[19],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            registeredmincapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "registeredmincapacity",
-                    field_mapping.0[20],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            maxstoragecapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxstoragecapacity",
-                    field_mapping.0[21],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[15],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            co2e_emissions_factor: row.get_opt_custom_parsed_at_idx(
+                "co2e_emissions_factor",
+                field_mapping.0[16],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            co2e_energy_source: row.get_opt_range("co2e_energy_source", field_mapping.0[17])?,
+            co2e_data_source: row.get_opt_range("co2e_data_source", field_mapping.0[18])?,
+            mincapacity: row.get_opt_custom_parsed_at_idx(
+                "mincapacity",
+                field_mapping.0[19],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            registeredmincapacity: row.get_opt_custom_parsed_at_idx(
+                "registeredmincapacity",
+                field_mapping.0[20],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            maxstoragecapacity: row.get_opt_custom_parsed_at_idx(
+                "maxstoragecapacity",
+                field_mapping.0[21],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -5088,22 +4558,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunits3 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -5114,13 +4580,9 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunits3 {
         }
         Ok(ParticipantRegistrationGenunits3Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
     fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationGenunits3PrimaryKey {
@@ -5128,9 +4590,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunits3 {
             gensetid: row.gensetid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_genunits_v3".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_genunits_v3_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationGenunits3Row {
@@ -5171,8 +4641,7 @@ impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationGenunits3Row<'
         self.gensetid() == row.gensetid()
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationGenunits3Row<'data> {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationGenunits3Row<'data> {
     type PrimaryKey = ParticipantRegistrationGenunits3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.gensetid() == key.gensetid
@@ -5194,123 +4663,77 @@ impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationGenunits3Prima
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunits3 {
     type Builder = ParticipantRegistrationGenunits3Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "gensetid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("gensetid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new("stationid", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "setlossfactor",
+                arrow::datatypes::DataType::Decimal128(16, 6),
+                true,
+            ),
+            arrow::datatypes::Field::new("cdindicator", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("agcflag", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("spinningflag", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "voltlevel",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "registeredcapacity",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new("dispatchtype", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("starttype", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("mktgeneratorind", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("normalstatus", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "maxcapacity",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new("gensettype", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("gensetname", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "stationid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "setlossfactor",
-                    arrow::datatypes::DataType::Decimal128(16, 6),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "cdindicator",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "agcflag",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "spinningflag",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "voltlevel",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "registeredcapacity",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "dispatchtype",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "starttype",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "mktgeneratorind",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "normalstatus",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxcapacity",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "gensettype",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "gensetname",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "co2e_emissions_factor",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "co2e_energy_source",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "co2e_data_source",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "mincapacity",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "registeredmincapacity",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxstoragecapacity",
-                    arrow::datatypes::DataType::Decimal128(15, 5),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "co2e_emissions_factor",
+                arrow::datatypes::DataType::Decimal128(18, 8),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "co2e_energy_source",
+                arrow::datatypes::DataType::Utf8,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "co2e_data_source",
+                arrow::datatypes::DataType::Utf8,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "mincapacity",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "registeredmincapacity",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "maxstoragecapacity",
+                arrow::datatypes::DataType::Decimal128(15, 5),
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationGenunits3Builder {
@@ -5349,146 +4772,128 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunits3 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.gensetid_array.append_value(row.gensetid());
         builder.stationid_array.append_option(row.stationid());
-        builder
-            .setlossfactor_array
-            .append_option({
-                row.setlossfactor
-                    .map(|mut val| {
-                        val.rescale(6);
-                        val.mantissa()
-                    })
-            });
+        builder.setlossfactor_array.append_option({
+            row.setlossfactor.map(|mut val| {
+                val.rescale(6);
+                val.mantissa()
+            })
+        });
         builder.cdindicator_array.append_option(row.cdindicator());
         builder.agcflag_array.append_option(row.agcflag());
         builder.spinningflag_array.append_option(row.spinningflag());
-        builder
-            .voltlevel_array
-            .append_option({
-                row.voltlevel
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .registeredcapacity_array
-            .append_option({
-                row.registeredcapacity
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+        builder.voltlevel_array.append_option({
+            row.voltlevel.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.registeredcapacity_array.append_option({
+            row.registeredcapacity.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
         builder.dispatchtype_array.append_option(row.dispatchtype());
         builder.starttype_array.append_option(row.starttype());
-        builder.mktgeneratorind_array.append_option(row.mktgeneratorind());
-        builder.normalstatus_array.append_option(row.normalstatus());
         builder
-            .maxcapacity_array
-            .append_option({
-                row.maxcapacity
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+            .mktgeneratorind_array
+            .append_option(row.mktgeneratorind());
+        builder.normalstatus_array.append_option(row.normalstatus());
+        builder.maxcapacity_array.append_option({
+            row.maxcapacity.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
         builder.gensettype_array.append_option(row.gensettype());
         builder.gensetname_array.append_option(row.gensetname());
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+        builder.co2e_emissions_factor_array.append_option({
+            row.co2e_emissions_factor.map(|mut val| {
+                val.rescale(8);
+                val.mantissa()
+            })
+        });
         builder
-            .co2e_emissions_factor_array
-            .append_option({
-                row.co2e_emissions_factor
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder.co2e_energy_source_array.append_option(row.co2e_energy_source());
-        builder.co2e_data_source_array.append_option(row.co2e_data_source());
+            .co2e_energy_source_array
+            .append_option(row.co2e_energy_source());
         builder
-            .mincapacity_array
-            .append_option({
-                row.mincapacity
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .registeredmincapacity_array
-            .append_option({
-                row.registeredmincapacity
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .maxstoragecapacity_array
-            .append_option({
-                row.maxstoragecapacity
-                    .map(|mut val| {
-                        val.rescale(5);
-                        val.mantissa()
-                    })
-            });
+            .co2e_data_source_array
+            .append_option(row.co2e_data_source());
+        builder.mincapacity_array.append_option({
+            row.mincapacity.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.registeredmincapacity_array.append_option({
+            row.registeredmincapacity.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.maxstoragecapacity_array.append_option({
+            row.maxstoragecapacity.map(|mut val| {
+                val.rescale(5);
+                val.mantissa()
+            })
+        });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.gensetid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.stationid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.setlossfactor_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.cdindicator_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.agcflag_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.spinningflag_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.voltlevel_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.registeredcapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.dispatchtype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.starttype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.mktgeneratorind_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.normalstatus_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maxcapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.gensettype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.gensetname_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.co2e_emissions_factor_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.co2e_energy_source_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.co2e_data_source_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.mincapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.registeredmincapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maxstoragecapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.gensetid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.stationid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.setlossfactor_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.cdindicator_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.agcflag_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.spinningflag_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.voltlevel_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.registeredcapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.dispatchtype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.starttype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.mktgeneratorind_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.normalstatus_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxcapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.gensettype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.gensetname_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.co2e_emissions_factor_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.co2e_energy_source_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.co2e_data_source_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.mincapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.registeredmincapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxstoragecapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -5516,7 +4921,23 @@ pub struct ParticipantRegistrationGenunits3Builder {
     registeredmincapacity_array: arrow::array::builder::Decimal128Builder,
     maxstoragecapacity_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct ParticipantRegistrationGenunitsUnit2;
+pub struct ParticipantRegistrationGenunitsUnit2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationGenunitsUnit2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationGenunitsUnit2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationGenunitsUnit2Mapping([usize; 13]);
 /// # Summary
 ///
@@ -5582,21 +5003,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunitsUnit2 {
     const VERSION: i32 = 2;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "GENUNITS_UNIT";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationGenunitsUnit2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationGenunitsUnit2Mapping([4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
     const COLUMNS: &'static [&'static str] = &[
         "GENSETID",
         "EFFECTIVEDATE",
@@ -5615,81 +5023,68 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunitsUnit2 {
     type Row<'row> = ParticipantRegistrationGenunitsUnit2Row<'row>;
     type FieldMapping = ParticipantRegistrationGenunitsUnit2Mapping;
     type PrimaryKey = ParticipantRegistrationGenunitsUnit2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationGenunitsUnit2Row {
             gensetid: row.get_range("gensetid", field_mapping.0[0])?,
-            effectivedate: row
-                .get_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            versionno: row
-                .get_custom_parsed_at_idx(
-                    "versionno",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            unit_grouping_label: row
-                .get_range("unit_grouping_label", field_mapping.0[3])?,
-            unit_count: row
-                .get_opt_custom_parsed_at_idx(
-                    "unit_count",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            unit_size: row
-                .get_opt_custom_parsed_at_idx(
-                    "unit_size",
-                    field_mapping.0[5],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            unit_max_size: row
-                .get_opt_custom_parsed_at_idx(
-                    "unit_max_size",
-                    field_mapping.0[6],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            aggregation_flag: row
-                .get_opt_custom_parsed_at_idx(
-                    "aggregation_flag",
-                    field_mapping.0[7],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[8],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            unitminsize: row
-                .get_opt_custom_parsed_at_idx(
-                    "unitminsize",
-                    field_mapping.0[9],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            maxstoragecapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxstoragecapacity",
-                    field_mapping.0[10],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            registeredcapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "registeredcapacity",
-                    field_mapping.0[11],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            registeredmincapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "registeredmincapacity",
-                    field_mapping.0[12],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            effectivedate: row.get_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[1],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            versionno: row.get_custom_parsed_at_idx(
+                "versionno",
+                field_mapping.0[2],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            unit_grouping_label: row.get_range("unit_grouping_label", field_mapping.0[3])?,
+            unit_count: row.get_opt_custom_parsed_at_idx(
+                "unit_count",
+                field_mapping.0[4],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            unit_size: row.get_opt_custom_parsed_at_idx(
+                "unit_size",
+                field_mapping.0[5],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            unit_max_size: row.get_opt_custom_parsed_at_idx(
+                "unit_max_size",
+                field_mapping.0[6],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            aggregation_flag: row.get_opt_custom_parsed_at_idx(
+                "aggregation_flag",
+                field_mapping.0[7],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[8],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            unitminsize: row.get_opt_custom_parsed_at_idx(
+                "unitminsize",
+                field_mapping.0[9],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            maxstoragecapacity: row.get_opt_custom_parsed_at_idx(
+                "maxstoragecapacity",
+                field_mapping.0[10],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            registeredcapacity: row.get_opt_custom_parsed_at_idx(
+                "registeredcapacity",
+                field_mapping.0[11],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            registeredmincapacity: row.get_opt_custom_parsed_at_idx(
+                "registeredmincapacity",
+                field_mapping.0[12],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -5697,22 +5092,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunitsUnit2 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -5723,30 +5114,12 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunitsUnit2 {
         }
         Ok(ParticipantRegistrationGenunitsUnit2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationGenunitsUnit2PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationGenunitsUnit2PrimaryKey {
         ParticipantRegistrationGenunitsUnit2PrimaryKey {
             effectivedate: row.effectivedate,
             gensetid: row.gensetid().to_string(),
@@ -5754,24 +5127,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunitsUnit2 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_genunits_unit_v2_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "participant_registration_genunits_unit_v2_{}",
+            self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationGenunitsUnit2Row {
@@ -5800,38 +5166,38 @@ pub struct ParticipantRegistrationGenunitsUnit2PrimaryKey {
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationGenunitsUnit2PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationGenunitsUnit2Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationGenunitsUnit2Row<'data> {
     type Row<'other> = ParticipantRegistrationGenunitsUnit2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.effectivedate == row.effectivedate && self.gensetid() == row.gensetid()
+        self.effectivedate == row.effectivedate
+            && self.gensetid() == row.gensetid()
             && self.unit_grouping_label() == row.unit_grouping_label()
             && self.versionno == row.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationGenunitsUnit2Row<'data> {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationGenunitsUnit2Row<'data> {
     type PrimaryKey = ParticipantRegistrationGenunitsUnit2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.gensetid() == key.gensetid
+        self.effectivedate == key.effectivedate
+            && self.gensetid() == key.gensetid
             && self.unit_grouping_label() == key.unit_grouping_label
             && self.versionno == key.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationGenunitsUnit2PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationGenunitsUnit2PrimaryKey {
     type Row<'other> = ParticipantRegistrationGenunitsUnit2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.effectivedate == row.effectivedate && self.gensetid == row.gensetid()
+        self.effectivedate == row.effectivedate
+            && self.gensetid == row.gensetid()
             && self.unit_grouping_label == row.unit_grouping_label()
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationGenunitsUnit2PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationGenunitsUnit2PrimaryKey {
     type PrimaryKey = ParticipantRegistrationGenunitsUnit2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.gensetid == key.gensetid
+        self.effectivedate == key.effectivedate
+            && self.gensetid == key.gensetid
             && self.unit_grouping_label == key.unit_grouping_label
             && self.versionno == key.versionno
     }
@@ -5840,81 +5206,75 @@ for ParticipantRegistrationGenunitsUnit2PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunitsUnit2 {
     type Builder = ParticipantRegistrationGenunitsUnit2Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "gensetid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("gensetid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "versionno",
+                arrow::datatypes::DataType::Decimal128(6, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "unit_grouping_label",
+                arrow::datatypes::DataType::Utf8,
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "unit_count",
+                arrow::datatypes::DataType::Decimal128(10, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "unit_size",
+                arrow::datatypes::DataType::Decimal128(8, 3),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "unit_max_size",
+                arrow::datatypes::DataType::Decimal128(8, 3),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "aggregation_flag",
+                arrow::datatypes::DataType::Decimal128(1, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "versionno",
-                    arrow::datatypes::DataType::Decimal128(6, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "unit_grouping_label",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "unit_count",
-                    arrow::datatypes::DataType::Decimal128(10, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "unit_size",
-                    arrow::datatypes::DataType::Decimal128(8, 3),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "unit_max_size",
-                    arrow::datatypes::DataType::Decimal128(8, 3),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "aggregation_flag",
-                    arrow::datatypes::DataType::Decimal128(1, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "unitminsize",
-                    arrow::datatypes::DataType::Decimal128(8, 3),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxstoragecapacity",
-                    arrow::datatypes::DataType::Decimal128(15, 5),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "registeredcapacity",
-                    arrow::datatypes::DataType::Decimal128(8, 3),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "registeredmincapacity",
-                    arrow::datatypes::DataType::Decimal128(8, 3),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "unitminsize",
+                arrow::datatypes::DataType::Decimal128(8, 3),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "maxstoragecapacity",
+                arrow::datatypes::DataType::Decimal128(15, 5),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "registeredcapacity",
+                arrow::datatypes::DataType::Decimal128(8, 3),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "registeredmincapacity",
+                arrow::datatypes::DataType::Decimal128(8, 3),
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationGenunitsUnit2Builder {
@@ -5944,126 +5304,104 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunitsUnit2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.gensetid_array.append_value(row.gensetid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
-            .versionno_array
-            .append_value({
-                let mut val = row.versionno;
+            .effectivedate_array
+            .append_value(row.effectivedate.timestamp_millis());
+        builder.versionno_array.append_value({
+            let mut val = row.versionno;
+            val.rescale(0);
+            val.mantissa()
+        });
+        builder
+            .unit_grouping_label_array
+            .append_value(row.unit_grouping_label());
+        builder.unit_count_array.append_option({
+            row.unit_count.map(|mut val| {
                 val.rescale(0);
                 val.mantissa()
-            });
-        builder.unit_grouping_label_array.append_value(row.unit_grouping_label());
-        builder
-            .unit_count_array
-            .append_option({
-                row.unit_count
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .unit_size_array
-            .append_option({
-                row.unit_size
-                    .map(|mut val| {
-                        val.rescale(3);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .unit_max_size_array
-            .append_option({
-                row.unit_max_size
-                    .map(|mut val| {
-                        val.rescale(3);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .aggregation_flag_array
-            .append_option({
-                row.aggregation_flag
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+            })
+        });
+        builder.unit_size_array.append_option({
+            row.unit_size.map(|mut val| {
+                val.rescale(3);
+                val.mantissa()
+            })
+        });
+        builder.unit_max_size_array.append_option({
+            row.unit_max_size.map(|mut val| {
+                val.rescale(3);
+                val.mantissa()
+            })
+        });
+        builder.aggregation_flag_array.append_option({
+            row.aggregation_flag.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder
-            .unitminsize_array
-            .append_option({
-                row.unitminsize
-                    .map(|mut val| {
-                        val.rescale(3);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .maxstoragecapacity_array
-            .append_option({
-                row.maxstoragecapacity
-                    .map(|mut val| {
-                        val.rescale(5);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .registeredcapacity_array
-            .append_option({
-                row.registeredcapacity
-                    .map(|mut val| {
-                        val.rescale(3);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .registeredmincapacity_array
-            .append_option({
-                row.registeredmincapacity
-                    .map(|mut val| {
-                        val.rescale(3);
-                        val.mantissa()
-                    })
-            });
+        builder.unitminsize_array.append_option({
+            row.unitminsize.map(|mut val| {
+                val.rescale(3);
+                val.mantissa()
+            })
+        });
+        builder.maxstoragecapacity_array.append_option({
+            row.maxstoragecapacity.map(|mut val| {
+                val.rescale(5);
+                val.mantissa()
+            })
+        });
+        builder.registeredcapacity_array.append_option({
+            row.registeredcapacity.map(|mut val| {
+                val.rescale(3);
+                val.mantissa()
+            })
+        });
+        builder.registeredmincapacity_array.append_option({
+            row.registeredmincapacity.map(|mut val| {
+                val.rescale(3);
+                val.mantissa()
+            })
+        });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.gensetid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.unit_grouping_label_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.unit_count_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.unit_size_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.unit_max_size_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.aggregation_flag_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.unitminsize_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maxstoragecapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.registeredcapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.registeredmincapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.gensetid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionno_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.unit_grouping_label_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.unit_count_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.unit_size_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.unit_max_size_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.aggregation_flag_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.unitminsize_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxstoragecapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.registeredcapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.registeredmincapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -6082,7 +5420,23 @@ pub struct ParticipantRegistrationGenunitsUnit2Builder {
     registeredcapacity_array: arrow::array::builder::Decimal128Builder,
     registeredmincapacity_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct ParticipantRegistrationMnspInterconnector2;
+pub struct ParticipantRegistrationMnspInterconnector2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationMnspInterconnector2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationMnspInterconnector2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationMnspInterconnector2Mapping([usize; 15]);
 /// # Summary
 ///
@@ -6145,48 +5499,40 @@ impl<'data> ParticipantRegistrationMnspInterconnector2Row<'data> {
         if self.interconnectorid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.interconnectorid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.interconnectorid.clone(),
+            ))
         }
     }
     pub fn fromregion(&self) -> Option<&str> {
         if self.fromregion.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.fromregion.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.fromregion.clone(),
+            ))
         }
     }
     pub fn toregion(&self) -> Option<&str> {
         if self.toregion.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.toregion.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.toregion.clone(),
+            ))
         }
     }
     pub fn authorisedby(&self) -> Option<&str> {
         if self.authorisedby.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.authorisedby.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.authorisedby.clone(),
+            ))
         }
     }
 }
@@ -6194,23 +5540,10 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspInterconnector2 {
     const VERSION: i32 = 2;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "MNSP_INTERCONNECTOR";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationMnspInterconnector2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationMnspInterconnector2Mapping([
+            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+        ]);
     const COLUMNS: &'static [&'static str] = &[
         "LINKID",
         "EFFECTIVEDATE",
@@ -6231,77 +5564,66 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspInterconnector2 {
     type Row<'row> = ParticipantRegistrationMnspInterconnector2Row<'row>;
     type FieldMapping = ParticipantRegistrationMnspInterconnector2Mapping;
     type PrimaryKey = ParticipantRegistrationMnspInterconnector2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationMnspInterconnector2Row {
             linkid: row.get_range("linkid", field_mapping.0[0])?,
-            effectivedate: row
-                .get_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            versionno: row
-                .get_custom_parsed_at_idx(
-                    "versionno",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            effectivedate: row.get_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[1],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            versionno: row.get_custom_parsed_at_idx(
+                "versionno",
+                field_mapping.0[2],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             interconnectorid: row.get_opt_range("interconnectorid", field_mapping.0[3])?,
             fromregion: row.get_opt_range("fromregion", field_mapping.0[4])?,
             toregion: row.get_opt_range("toregion", field_mapping.0[5])?,
-            maxcapacity: row
-                .get_opt_custom_parsed_at_idx(
-                    "maxcapacity",
-                    field_mapping.0[6],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            tlf: row
-                .get_opt_custom_parsed_at_idx(
-                    "tlf",
-                    field_mapping.0[7],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            lhsfactor: row
-                .get_opt_custom_parsed_at_idx(
-                    "lhsfactor",
-                    field_mapping.0[8],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            meterflowconstant: row
-                .get_opt_custom_parsed_at_idx(
-                    "meterflowconstant",
-                    field_mapping.0[9],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            authoriseddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "authoriseddate",
-                    field_mapping.0[10],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            maxcapacity: row.get_opt_custom_parsed_at_idx(
+                "maxcapacity",
+                field_mapping.0[6],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            tlf: row.get_opt_custom_parsed_at_idx(
+                "tlf",
+                field_mapping.0[7],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            lhsfactor: row.get_opt_custom_parsed_at_idx(
+                "lhsfactor",
+                field_mapping.0[8],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            meterflowconstant: row.get_opt_custom_parsed_at_idx(
+                "meterflowconstant",
+                field_mapping.0[9],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            authoriseddate: row.get_opt_custom_parsed_at_idx(
+                "authoriseddate",
+                field_mapping.0[10],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             authorisedby: row.get_opt_range("authorisedby", field_mapping.0[11])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[12],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            from_region_tlf: row
-                .get_opt_custom_parsed_at_idx(
-                    "from_region_tlf",
-                    field_mapping.0[13],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            to_region_tlf: row
-                .get_opt_custom_parsed_at_idx(
-                    "to_region_tlf",
-                    field_mapping.0[14],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[12],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            from_region_tlf: row.get_opt_custom_parsed_at_idx(
+                "from_region_tlf",
+                field_mapping.0[13],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            to_region_tlf: row.get_opt_custom_parsed_at_idx(
+                "to_region_tlf",
+                field_mapping.0[14],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -6309,22 +5631,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspInterconnector2 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -6333,57 +5651,33 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspInterconnector2 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(ParticipantRegistrationMnspInterconnector2Mapping(base_mapping))
-    }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
+        Ok(ParticipantRegistrationMnspInterconnector2Mapping(
+            base_mapping,
+        ))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationMnspInterconnector2PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationMnspInterconnector2PrimaryKey {
         ParticipantRegistrationMnspInterconnector2PrimaryKey {
             effectivedate: row.effectivedate,
             linkid: row.linkid().to_string(),
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_mnsp_interconnector_v2_{}_{}",
-            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
-            .number_from_month()
+            "participant_registration_mnsp_interconnector_v2_{}",
+            self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationMnspInterconnector2Row {
@@ -6413,35 +5707,37 @@ pub struct ParticipantRegistrationMnspInterconnector2PrimaryKey {
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationMnspInterconnector2PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationMnspInterconnector2Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationMnspInterconnector2Row<'data> {
     type Row<'other> = ParticipantRegistrationMnspInterconnector2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.effectivedate == row.effectivedate && self.linkid() == row.linkid()
+        self.effectivedate == row.effectivedate
+            && self.linkid() == row.linkid()
             && self.versionno == row.versionno
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationMnspInterconnector2Row<'data> {
+    for ParticipantRegistrationMnspInterconnector2Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationMnspInterconnector2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.linkid() == key.linkid
+        self.effectivedate == key.effectivedate
+            && self.linkid() == key.linkid
             && self.versionno == key.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationMnspInterconnector2PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationMnspInterconnector2PrimaryKey {
     type Row<'other> = ParticipantRegistrationMnspInterconnector2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.effectivedate == row.effectivedate && self.linkid == row.linkid()
+        self.effectivedate == row.effectivedate
+            && self.linkid == row.linkid()
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationMnspInterconnector2PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationMnspInterconnector2PrimaryKey {
     type PrimaryKey = ParticipantRegistrationMnspInterconnector2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.linkid == key.linkid
+        self.effectivedate == key.effectivedate
+            && self.linkid == key.linkid
             && self.versionno == key.versionno
     }
 }
@@ -6449,94 +5745,76 @@ for ParticipantRegistrationMnspInterconnector2PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
     type Builder = ParticipantRegistrationMnspInterconnector2Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "linkid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("linkid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "versionno",
+                arrow::datatypes::DataType::Decimal128(3, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "interconnectorid",
+                arrow::datatypes::DataType::Utf8,
+                true,
+            ),
+            arrow::datatypes::Field::new("fromregion", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("toregion", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "maxcapacity",
+                arrow::datatypes::DataType::Decimal128(5, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "tlf",
+                arrow::datatypes::DataType::Decimal128(12, 7),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "lhsfactor",
+                arrow::datatypes::DataType::Decimal128(12, 7),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "meterflowconstant",
+                arrow::datatypes::DataType::Decimal128(12, 7),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "authoriseddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "versionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
+                true,
+            ),
+            arrow::datatypes::Field::new("authorisedby", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "fromregion",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "toregion",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maxcapacity",
-                    arrow::datatypes::DataType::Decimal128(5, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "tlf",
-                    arrow::datatypes::DataType::Decimal128(12, 7),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lhsfactor",
-                    arrow::datatypes::DataType::Decimal128(12, 7),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "meterflowconstant",
-                    arrow::datatypes::DataType::Decimal128(12, 7),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "authoriseddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "from_region_tlf",
-                    arrow::datatypes::DataType::Decimal128(12, 7),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "to_region_tlf",
-                    arrow::datatypes::DataType::Decimal128(12, 7),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "from_region_tlf",
+                arrow::datatypes::DataType::Decimal128(12, 7),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "to_region_tlf",
+                arrow::datatypes::DataType::Decimal128(12, 7),
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationMnspInterconnector2Builder {
@@ -6566,53 +5844,43 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.linkid_array.append_value(row.linkid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
-            .versionno_array
-            .append_value({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
-        builder.interconnectorid_array.append_option(row.interconnectorid());
+            .effectivedate_array
+            .append_value(row.effectivedate.timestamp_millis());
+        builder.versionno_array.append_value({
+            let mut val = row.versionno;
+            val.rescale(0);
+            val.mantissa()
+        });
+        builder
+            .interconnectorid_array
+            .append_option(row.interconnectorid());
         builder.fromregion_array.append_option(row.fromregion());
         builder.toregion_array.append_option(row.toregion());
-        builder
-            .maxcapacity_array
-            .append_option({
-                row.maxcapacity
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .tlf_array
-            .append_option({
-                row.tlf
-                    .map(|mut val| {
-                        val.rescale(7);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .lhsfactor_array
-            .append_option({
-                row.lhsfactor
-                    .map(|mut val| {
-                        val.rescale(7);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .meterflowconstant_array
-            .append_option({
-                row.meterflowconstant
-                    .map(|mut val| {
-                        val.rescale(7);
-                        val.mantissa()
-                    })
-            });
+        builder.maxcapacity_array.append_option({
+            row.maxcapacity.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.tlf_array.append_option({
+            row.tlf.map(|mut val| {
+                val.rescale(7);
+                val.mantissa()
+            })
+        });
+        builder.lhsfactor_array.append_option({
+            row.lhsfactor.map(|mut val| {
+                val.rescale(7);
+                val.mantissa()
+            })
+        });
+        builder.meterflowconstant_array.append_option({
+            row.meterflowconstant.map(|mut val| {
+                val.rescale(7);
+                val.mantissa()
+            })
+        });
         builder
             .authoriseddate_array
             .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
@@ -6620,64 +5888,58 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder
-            .from_region_tlf_array
-            .append_option({
-                row.from_region_tlf
-                    .map(|mut val| {
-                        val.rescale(7);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .to_region_tlf_array
-            .append_option({
-                row.to_region_tlf
-                    .map(|mut val| {
-                        val.rescale(7);
-                        val.mantissa()
-                    })
-            });
+        builder.from_region_tlf_array.append_option({
+            row.from_region_tlf.map(|mut val| {
+                val.rescale(7);
+                val.mantissa()
+            })
+        });
+        builder.to_region_tlf_array.append_option({
+            row.to_region_tlf.map(|mut val| {
+                val.rescale(7);
+                val.mantissa()
+            })
+        });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.linkid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.fromregion_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.toregion_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maxcapacity_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.tlf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lhsfactor_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.meterflowconstant_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.from_region_tlf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.to_region_tlf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.linkid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionno_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.fromregion_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.toregion_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maxcapacity_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.tlf_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lhsfactor_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.meterflowconstant_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.from_region_tlf_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.to_region_tlf_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -6698,7 +5960,23 @@ pub struct ParticipantRegistrationMnspInterconnector2Builder {
     from_region_tlf_array: arrow::array::builder::Decimal128Builder,
     to_region_tlf_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct ParticipantRegistrationMnspParticipant1;
+pub struct ParticipantRegistrationMnspParticipant1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationMnspParticipant1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationMnspParticipant1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationMnspParticipant1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -6736,10 +6014,7 @@ pub struct ParticipantRegistrationMnspParticipant1Row<'data> {
 }
 impl<'data> ParticipantRegistrationMnspParticipant1Row<'data> {
     pub fn interconnectorid(&self) -> &str {
-        core::ops::Index::index(
-            self.backing_data.as_slice(),
-            self.interconnectorid.clone(),
-        )
+        core::ops::Index::index(self.backing_data.as_slice(), self.interconnectorid.clone())
     }
     pub fn participantid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
@@ -6749,13 +6024,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspParticipant1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "MNSP_PARTICIPANT";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationMnspParticipant1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationMnspParticipant1Mapping([4, 5, 6, 7, 8]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERCONNECTORID",
         "EFFECTIVEDATE",
@@ -6766,32 +6036,28 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspParticipant1 {
     type Row<'row> = ParticipantRegistrationMnspParticipant1Row<'row>;
     type FieldMapping = ParticipantRegistrationMnspParticipant1Mapping;
     type PrimaryKey = ParticipantRegistrationMnspParticipant1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationMnspParticipant1Row {
             interconnectorid: row.get_range("interconnectorid", field_mapping.0[0])?,
-            effectivedate: row
-                .get_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            versionno: row
-                .get_custom_parsed_at_idx(
-                    "versionno",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            effectivedate: row.get_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[1],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            versionno: row.get_custom_parsed_at_idx(
+                "versionno",
+                field_mapping.0[2],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             participantid: row.get_range("participantid", field_mapping.0[3])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[4],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -6799,22 +6065,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspParticipant1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -6825,30 +6087,12 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspParticipant1 {
         }
         Ok(ParticipantRegistrationMnspParticipant1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationMnspParticipant1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationMnspParticipant1PrimaryKey {
         ParticipantRegistrationMnspParticipant1PrimaryKey {
             effectivedate: row.effectivedate,
             interconnectorid: row.interconnectorid().to_string(),
@@ -6856,25 +6100,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspParticipant1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_mnsp_participant_v1_{}_{}",
-            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
-            .number_from_month()
+            "participant_registration_mnsp_participant_v1_{}",
+            self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationMnspParticipant1Row {
@@ -6895,8 +6131,7 @@ pub struct ParticipantRegistrationMnspParticipant1PrimaryKey {
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationMnspParticipant1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationMnspParticipant1Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationMnspParticipant1Row<'data> {
     type Row<'other> = ParticipantRegistrationMnspParticipant1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
@@ -6906,7 +6141,8 @@ for ParticipantRegistrationMnspParticipant1Row<'data> {
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationMnspParticipant1Row<'data> {
+    for ParticipantRegistrationMnspParticipant1Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationMnspParticipant1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
@@ -6915,8 +6151,7 @@ for ParticipantRegistrationMnspParticipant1Row<'data> {
             && self.versionno == key.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationMnspParticipant1PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationMnspParticipant1PrimaryKey {
     type Row<'other> = ParticipantRegistrationMnspParticipant1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
@@ -6925,54 +6160,48 @@ for ParticipantRegistrationMnspParticipant1PrimaryKey {
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationMnspParticipant1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationMnspParticipant1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationMnspParticipant1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.interconnectorid == key.interconnectorid
-            && self.participantid == key.participantid && self.versionno == key.versionno
+            && self.participantid == key.participantid
+            && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
     type Builder = ParticipantRegistrationMnspParticipant1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new(
+                "interconnectorid",
+                arrow::datatypes::DataType::Utf8,
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "versionno",
+                arrow::datatypes::DataType::Decimal128(3, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new("participantid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "versionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "participantid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationMnspParticipant1Builder {
@@ -6985,16 +6214,20 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.interconnectorid_array.append_value(row.interconnectorid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
         builder
-            .versionno_array
-            .append_value({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
-        builder.participantid_array.append_value(row.participantid());
+            .interconnectorid_array
+            .append_value(row.interconnectorid());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.timestamp_millis());
+        builder.versionno_array.append_value({
+            let mut val = row.versionno;
+            val.rescale(0);
+            val.mantissa()
+        });
+        builder
+            .participantid_array
+            .append_value(row.participantid());
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
@@ -7003,21 +6236,21 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.participantid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionno_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.participantid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -7028,7 +6261,23 @@ pub struct ParticipantRegistrationMnspParticipant1Builder {
     participantid_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationParticipant1;
+pub struct ParticipantRegistrationParticipant1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationParticipant1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationParticipant1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationParticipant1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -7073,52 +6322,50 @@ impl<'data> ParticipantRegistrationParticipant1Row<'data> {
         if self.participantclassid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.participantclassid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.participantclassid.clone(),
+            ))
         }
     }
     pub fn name(&self) -> Option<&str> {
         if self.name.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(self.backing_data.as_slice(), self.name.clone()),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.name.clone(),
+            ))
         }
     }
     pub fn description(&self) -> Option<&str> {
         if self.description.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.description.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.description.clone(),
+            ))
         }
     }
     pub fn acn(&self) -> Option<&str> {
         if self.acn.is_empty() {
             None
         } else {
-            Some(core::ops::Index::index(self.backing_data.as_slice(), self.acn.clone()))
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.acn.clone(),
+            ))
         }
     }
     pub fn primarybusiness(&self) -> Option<&str> {
         if self.primarybusiness.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.primarybusiness.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.primarybusiness.clone(),
+            ))
         }
     }
 }
@@ -7126,15 +6373,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipant1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANT";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipant1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationParticipant1Mapping([4, 5, 6, 7, 8, 9, 10]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
         "PARTICIPANTCLASSID",
@@ -7147,25 +6387,22 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipant1 {
     type Row<'row> = ParticipantRegistrationParticipant1Row<'row>;
     type FieldMapping = ParticipantRegistrationParticipant1Mapping;
     type PrimaryKey = ParticipantRegistrationParticipant1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationParticipant1Row {
             participantid: row.get_range("participantid", field_mapping.0[0])?,
-            participantclassid: row
-                .get_opt_range("participantclassid", field_mapping.0[1])?,
+            participantclassid: row.get_opt_range("participantclassid", field_mapping.0[1])?,
             name: row.get_opt_range("name", field_mapping.0[2])?,
             description: row.get_opt_range("description", field_mapping.0[3])?,
             acn: row.get_opt_range("acn", field_mapping.0[4])?,
             primarybusiness: row.get_opt_range("primarybusiness", field_mapping.0[5])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[6],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[6],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -7173,22 +6410,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipant1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -7199,25 +6432,27 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipant1 {
         }
         Ok(ParticipantRegistrationParticipant1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationParticipant1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationParticipant1PrimaryKey {
         ParticipantRegistrationParticipant1PrimaryKey {
             participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_participant_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_participant_v1_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationParticipant1Row {
@@ -7237,29 +6472,25 @@ pub struct ParticipantRegistrationParticipant1PrimaryKey {
     pub participantid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationParticipant1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationParticipant1Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationParticipant1Row<'data> {
     type Row<'other> = ParticipantRegistrationParticipant1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.participantid() == row.participantid()
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationParticipant1Row<'data> {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationParticipant1Row<'data> {
     type PrimaryKey = ParticipantRegistrationParticipant1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.participantid() == key.participantid
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationParticipant1PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationParticipant1PrimaryKey {
     type Row<'other> = ParticipantRegistrationParticipant1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.participantid == row.participantid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationParticipant1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationParticipant1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationParticipant1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.participantid == key.participantid
@@ -7269,48 +6500,26 @@ for ParticipantRegistrationParticipant1PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipant1 {
     type Builder = ParticipantRegistrationParticipant1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "participantid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("participantid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "participantclassid",
+                arrow::datatypes::DataType::Utf8,
+                true,
+            ),
+            arrow::datatypes::Field::new("name", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("description", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("acn", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("primarybusiness", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "participantclassid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "name",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "description",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "acn",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "primarybusiness",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipant1Builder {
@@ -7324,12 +6533,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipant1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.participantid_array.append_value(row.participantid());
-        builder.participantclassid_array.append_option(row.participantclassid());
+        builder
+            .participantid_array
+            .append_value(row.participantid());
+        builder
+            .participantclassid_array
+            .append_option(row.participantclassid());
         builder.name_array.append_option(row.name());
         builder.description_array.append_option(row.description());
         builder.acn_array.append_option(row.acn());
-        builder.primarybusiness_array.append_option(row.primarybusiness());
+        builder
+            .primarybusiness_array
+            .append_option(row.primarybusiness());
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
@@ -7338,25 +6553,25 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipant1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.participantid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.participantclassid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.name_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.description_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.acn_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.primarybusiness_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.participantid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.participantclassid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.name_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.description_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.acn_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.primarybusiness_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -7369,7 +6584,23 @@ pub struct ParticipantRegistrationParticipant1Builder {
     primarybusiness_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationParticipantaccount1;
+pub struct ParticipantRegistrationParticipantaccount1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationParticipantaccount1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationParticipantaccount1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationParticipantaccount1Mapping([usize; 15]);
 /// # Summary
 ///
@@ -7427,12 +6658,10 @@ impl<'data> ParticipantRegistrationParticipantaccount1Row<'data> {
         if self.accountname.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.accountname.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.accountname.clone(),
+            ))
         }
     }
     pub fn participantid(&self) -> &str {
@@ -7442,67 +6671,60 @@ impl<'data> ParticipantRegistrationParticipantaccount1Row<'data> {
         if self.accountnumber.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.accountnumber.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.accountnumber.clone(),
+            ))
         }
     }
     pub fn bankname(&self) -> Option<&str> {
         if self.bankname.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.bankname.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.bankname.clone(),
+            ))
         }
     }
     pub fn branchname(&self) -> Option<&str> {
         if self.branchname.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.branchname.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.branchname.clone(),
+            ))
         }
     }
     pub fn bsbnumber(&self) -> Option<&str> {
         if self.bsbnumber.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.bsbnumber.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.bsbnumber.clone(),
+            ))
         }
     }
     pub fn authorisedby(&self) -> Option<&str> {
         if self.authorisedby.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.authorisedby.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.authorisedby.clone(),
+            ))
         }
     }
     pub fn abn(&self) -> Option<&str> {
         if self.abn.is_empty() {
             None
         } else {
-            Some(core::ops::Index::index(self.backing_data.as_slice(), self.abn.clone()))
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.abn.clone(),
+            ))
         }
     }
 }
@@ -7510,23 +6732,10 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantaccount1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTACCOUNT";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantaccount1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationParticipantaccount1Mapping([
+            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+        ]);
     const COLUMNS: &'static [&'static str] = &[
         "ACCOUNTNAME",
         "PARTICIPANTID",
@@ -7547,7 +6756,6 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantaccount1 {
     type Row<'row> = ParticipantRegistrationParticipantaccount1Row<'row>;
     type FieldMapping = ParticipantRegistrationParticipantaccount1Mapping;
     type PrimaryKey = ParticipantRegistrationParticipantaccount1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -7557,51 +6765,44 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantaccount1 {
             participantid: row.get_range("participantid", field_mapping.0[1])?,
             accountnumber: row.get_opt_range("accountnumber", field_mapping.0[2])?,
             bankname: row.get_opt_range("bankname", field_mapping.0[3])?,
-            banknumber: row
-                .get_opt_custom_parsed_at_idx(
-                    "banknumber",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            banknumber: row.get_opt_custom_parsed_at_idx(
+                "banknumber",
+                field_mapping.0[4],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             branchname: row.get_opt_range("branchname", field_mapping.0[5])?,
-            branchnumber: row
-                .get_opt_custom_parsed_at_idx(
-                    "branchnumber",
-                    field_mapping.0[6],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            branchnumber: row.get_opt_custom_parsed_at_idx(
+                "branchnumber",
+                field_mapping.0[6],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             bsbnumber: row.get_opt_range("bsbnumber", field_mapping.0[7])?,
-            nemmcocreditaccountnumber: row
-                .get_opt_custom_parsed_at_idx(
-                    "nemmcocreditaccountnumber",
-                    field_mapping.0[8],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            nemmcodebitaccountnumber: row
-                .get_opt_custom_parsed_at_idx(
-                    "nemmcodebitaccountnumber",
-                    field_mapping.0[9],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            nemmcocreditaccountnumber: row.get_opt_custom_parsed_at_idx(
+                "nemmcocreditaccountnumber",
+                field_mapping.0[8],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            nemmcodebitaccountnumber: row.get_opt_custom_parsed_at_idx(
+                "nemmcodebitaccountnumber",
+                field_mapping.0[9],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             authorisedby: row.get_opt_range("authorisedby", field_mapping.0[10])?,
-            authoriseddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "authoriseddate",
-                    field_mapping.0[11],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            effectivedate: row
-                .get_opt_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[12],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[13],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            authoriseddate: row.get_opt_custom_parsed_at_idx(
+                "authoriseddate",
+                field_mapping.0[11],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            effectivedate: row.get_opt_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[12],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[13],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             abn: row.get_opt_range("abn", field_mapping.0[14])?,
             backing_data: row,
         })
@@ -7610,22 +6811,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantaccount1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -7634,27 +6831,31 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantaccount1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(ParticipantRegistrationParticipantaccount1Mapping(base_mapping))
-    }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
+        Ok(ParticipantRegistrationParticipantaccount1Mapping(
+            base_mapping,
+        ))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationParticipantaccount1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationParticipantaccount1PrimaryKey {
         ParticipantRegistrationParticipantaccount1PrimaryKey {
             participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_participantaccount_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_participantaccount_v1_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationParticipantaccount1Row {
@@ -7682,29 +6883,27 @@ pub struct ParticipantRegistrationParticipantaccount1PrimaryKey {
     pub participantid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationParticipantaccount1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationParticipantaccount1Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationParticipantaccount1Row<'data> {
     type Row<'other> = ParticipantRegistrationParticipantaccount1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.participantid() == row.participantid()
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationParticipantaccount1Row<'data> {
+    for ParticipantRegistrationParticipantaccount1Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationParticipantaccount1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.participantid() == key.participantid
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationParticipantaccount1PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationParticipantaccount1PrimaryKey {
     type Row<'other> = ParticipantRegistrationParticipantaccount1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.participantid == row.participantid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationParticipantaccount1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationParticipantaccount1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationParticipantaccount1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.participantid == key.participantid
@@ -7714,94 +6913,60 @@ for ParticipantRegistrationParticipantaccount1PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
     type Builder = ParticipantRegistrationParticipantaccount1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "accountname",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("accountname", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("participantid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new("accountnumber", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("bankname", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "banknumber",
+                arrow::datatypes::DataType::Decimal128(10, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new("branchname", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "branchnumber",
+                arrow::datatypes::DataType::Decimal128(10, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new("bsbnumber", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "nemmcocreditaccountnumber",
+                arrow::datatypes::DataType::Decimal128(10, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "nemmcodebitaccountnumber",
+                arrow::datatypes::DataType::Decimal128(10, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new("authorisedby", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "authoriseddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "participantid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "accountnumber",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "bankname",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "banknumber",
-                    arrow::datatypes::DataType::Decimal128(10, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "branchname",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "branchnumber",
-                    arrow::datatypes::DataType::Decimal128(10, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "bsbnumber",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "nemmcocreditaccountnumber",
-                    arrow::datatypes::DataType::Decimal128(10, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "nemmcodebitaccountnumber",
-                    arrow::datatypes::DataType::Decimal128(10, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "authoriseddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "abn",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+            arrow::datatypes::Field::new("abn", arrow::datatypes::DataType::Utf8, true),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipantaccount1Builder {
@@ -7828,47 +6993,39 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.accountname_array.append_option(row.accountname());
-        builder.participantid_array.append_value(row.participantid());
-        builder.accountnumber_array.append_option(row.accountnumber());
+        builder
+            .participantid_array
+            .append_value(row.participantid());
+        builder
+            .accountnumber_array
+            .append_option(row.accountnumber());
         builder.bankname_array.append_option(row.bankname());
-        builder
-            .banknumber_array
-            .append_option({
-                row.banknumber
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+        builder.banknumber_array.append_option({
+            row.banknumber.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
         builder.branchname_array.append_option(row.branchname());
-        builder
-            .branchnumber_array
-            .append_option({
-                row.branchnumber
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+        builder.branchnumber_array.append_option({
+            row.branchnumber.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
         builder.bsbnumber_array.append_option(row.bsbnumber());
-        builder
-            .nemmcocreditaccountnumber_array
-            .append_option({
-                row.nemmcocreditaccountnumber
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .nemmcodebitaccountnumber_array
-            .append_option({
-                row.nemmcodebitaccountnumber
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+        builder.nemmcocreditaccountnumber_array.append_option({
+            row.nemmcocreditaccountnumber.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.nemmcodebitaccountnumber_array.append_option({
+            row.nemmcodebitaccountnumber.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
@@ -7885,43 +7042,41 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.accountname_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.participantid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.accountnumber_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.bankname_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.banknumber_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.branchname_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.branchnumber_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.bsbnumber_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(
-                        builder.nemmcocreditaccountnumber_array.finish(),
-                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(
-                        builder.nemmcodebitaccountnumber_array.finish(),
-                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.abn_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.accountname_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.participantid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.accountnumber_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.bankname_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.banknumber_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.branchname_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.branchnumber_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.bsbnumber_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.nemmcocreditaccountnumber_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.nemmcodebitaccountnumber_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.abn_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -7942,7 +7097,23 @@ pub struct ParticipantRegistrationParticipantaccount1Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     abn_array: arrow::array::builder::StringBuilder,
 }
-pub struct ParticipantRegistrationParticipantcategory1;
+pub struct ParticipantRegistrationParticipantcategory1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationParticipantcategory1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationParticipantcategory1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationParticipantcategory1Mapping([usize; 3]);
 /// # Summary
 ///
@@ -7982,12 +7153,10 @@ impl<'data> ParticipantRegistrationParticipantcategory1Row<'data> {
         if self.description.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.description.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.description.clone(),
+            ))
         }
     }
 }
@@ -7995,34 +7164,25 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcategory1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTCATEGORY";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantcategory1Mapping([
-        4,
-        5,
-        6,
-    ]);
-    const COLUMNS: &'static [&'static str] = &[
-        "PARTICIPANTCATEGORYID",
-        "DESCRIPTION",
-        "LASTCHANGED",
-    ];
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationParticipantcategory1Mapping([4, 5, 6]);
+    const COLUMNS: &'static [&'static str] =
+        &["PARTICIPANTCATEGORYID", "DESCRIPTION", "LASTCHANGED"];
     type Row<'row> = ParticipantRegistrationParticipantcategory1Row<'row>;
     type FieldMapping = ParticipantRegistrationParticipantcategory1Mapping;
     type PrimaryKey = ParticipantRegistrationParticipantcategory1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationParticipantcategory1Row {
-            participantcategoryid: row
-                .get_range("participantcategoryid", field_mapping.0[0])?,
+            participantcategoryid: row.get_range("participantcategoryid", field_mapping.0[0])?,
             description: row.get_opt_range("description", field_mapping.0[1])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[2],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -8030,22 +7190,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcategory1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -8054,27 +7210,31 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcategory1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(ParticipantRegistrationParticipantcategory1Mapping(base_mapping))
-    }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
+        Ok(ParticipantRegistrationParticipantcategory1Mapping(
+            base_mapping,
+        ))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationParticipantcategory1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationParticipantcategory1PrimaryKey {
         ParticipantRegistrationParticipantcategory1PrimaryKey {
             participantcategoryid: row.participantcategoryid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_participantcategory_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_participantcategory_v1_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationParticipantcategory1Row {
@@ -8090,29 +7250,27 @@ pub struct ParticipantRegistrationParticipantcategory1PrimaryKey {
     pub participantcategoryid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationParticipantcategory1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationParticipantcategory1Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationParticipantcategory1Row<'data> {
     type Row<'other> = ParticipantRegistrationParticipantcategory1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.participantcategoryid() == row.participantcategoryid()
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationParticipantcategory1Row<'data> {
+    for ParticipantRegistrationParticipantcategory1Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationParticipantcategory1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.participantcategoryid() == key.participantcategoryid
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationParticipantcategory1PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationParticipantcategory1PrimaryKey {
     type Row<'other> = ParticipantRegistrationParticipantcategory1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.participantcategoryid == row.participantcategoryid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationParticipantcategory1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationParticipantcategory1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationParticipantcategory1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.participantcategoryid == key.participantcategoryid
@@ -8122,28 +7280,22 @@ for ParticipantRegistrationParticipantcategory1PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
     type Builder = ParticipantRegistrationParticipantcategory1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "participantcategoryid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new(
+                "participantcategoryid",
+                arrow::datatypes::DataType::Utf8,
+                false,
+            ),
+            arrow::datatypes::Field::new("description", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "description",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipantcategory1Builder {
@@ -8153,7 +7305,9 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.participantcategoryid_array.append_value(row.participantcategoryid());
+        builder
+            .participantcategoryid_array
+            .append_value(row.participantcategoryid());
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
@@ -8163,17 +7317,17 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.participantcategoryid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.description_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.participantcategoryid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.description_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -8182,7 +7336,25 @@ pub struct ParticipantRegistrationParticipantcategory1Builder {
     description_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationParticipantcategoryalloc1;
+pub struct ParticipantRegistrationParticipantcategoryalloc1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &ParticipantRegistrationParticipantcategoryalloc1Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationParticipantcategoryalloc1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationParticipantcategoryalloc1Mapping([usize; 3]);
 /// # Summary
 ///
@@ -8227,34 +7399,25 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcategoryalloc1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTCATEGORYALLOC";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantcategoryalloc1Mapping([
-        4,
-        5,
-        6,
-    ]);
-    const COLUMNS: &'static [&'static str] = &[
-        "PARTICIPANTCATEGORYID",
-        "PARTICIPANTID",
-        "LASTCHANGED",
-    ];
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationParticipantcategoryalloc1Mapping([4, 5, 6]);
+    const COLUMNS: &'static [&'static str] =
+        &["PARTICIPANTCATEGORYID", "PARTICIPANTID", "LASTCHANGED"];
     type Row<'row> = ParticipantRegistrationParticipantcategoryalloc1Row<'row>;
     type FieldMapping = ParticipantRegistrationParticipantcategoryalloc1Mapping;
     type PrimaryKey = ParticipantRegistrationParticipantcategoryalloc1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationParticipantcategoryalloc1Row {
-            participantcategoryid: row
-                .get_range("participantcategoryid", field_mapping.0[0])?,
+            participantcategoryid: row.get_range("participantcategoryid", field_mapping.0[0])?,
             participantid: row.get_range("participantid", field_mapping.0[1])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[2],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -8262,22 +7425,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcategoryalloc1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -8286,15 +7445,13 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcategoryalloc1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(ParticipantRegistrationParticipantcategoryalloc1Mapping(base_mapping))
-    }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
+        Ok(ParticipantRegistrationParticipantcategoryalloc1Mapping(
+            base_mapping,
+        ))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
     fn primary_key(
@@ -8305,9 +7462,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcategoryalloc1 {
             participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_participantcategoryalloc_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_participantcategoryalloc_v1_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationParticipantcategoryalloc1Row {
@@ -8323,10 +7488,10 @@ pub struct ParticipantRegistrationParticipantcategoryalloc1PrimaryKey {
     pub participantcategoryid: alloc::string::String,
     pub participantid: alloc::string::String,
 }
-impl mmsdm_core::PrimaryKey
-for ParticipantRegistrationParticipantcategoryalloc1PrimaryKey {}
+impl mmsdm_core::PrimaryKey for ParticipantRegistrationParticipantcategoryalloc1PrimaryKey {}
 impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationParticipantcategoryalloc1Row<'data> {
+    for ParticipantRegistrationParticipantcategoryalloc1Row<'data>
+{
     type Row<'other> = ParticipantRegistrationParticipantcategoryalloc1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.participantcategoryid() == row.participantcategoryid()
@@ -8334,7 +7499,8 @@ for ParticipantRegistrationParticipantcategoryalloc1Row<'data> {
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationParticipantcategoryalloc1Row<'data> {
+    for ParticipantRegistrationParticipantcategoryalloc1Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationParticipantcategoryalloc1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.participantcategoryid() == key.participantcategoryid
@@ -8342,7 +7508,8 @@ for ParticipantRegistrationParticipantcategoryalloc1Row<'data> {
     }
 }
 impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationParticipantcategoryalloc1PrimaryKey {
+    for ParticipantRegistrationParticipantcategoryalloc1PrimaryKey
+{
     type Row<'other> = ParticipantRegistrationParticipantcategoryalloc1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.participantcategoryid == row.participantcategoryid()
@@ -8350,7 +7517,8 @@ for ParticipantRegistrationParticipantcategoryalloc1PrimaryKey {
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationParticipantcategoryalloc1PrimaryKey {
+    for ParticipantRegistrationParticipantcategoryalloc1PrimaryKey
+{
     type PrimaryKey = ParticipantRegistrationParticipantcategoryalloc1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.participantcategoryid == key.participantcategoryid
@@ -8361,28 +7529,22 @@ for ParticipantRegistrationParticipantcategoryalloc1PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc1 {
     type Builder = ParticipantRegistrationParticipantcategoryalloc1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "participantcategoryid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new(
+                "participantcategoryid",
+                arrow::datatypes::DataType::Utf8,
+                false,
+            ),
+            arrow::datatypes::Field::new("participantid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "participantid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipantcategoryalloc1Builder {
@@ -8392,8 +7554,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.participantcategoryid_array.append_value(row.participantcategoryid());
-        builder.participantid_array.append_value(row.participantid());
+        builder
+            .participantcategoryid_array
+            .append_value(row.participantcategoryid());
+        builder
+            .participantid_array
+            .append_value(row.participantid());
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
@@ -8402,17 +7568,17 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.participantcategoryid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.participantid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.participantcategoryid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.participantid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -8421,7 +7587,23 @@ pub struct ParticipantRegistrationParticipantcategoryalloc1Builder {
     participantid_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationParticipantclass1;
+pub struct ParticipantRegistrationParticipantclass1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationParticipantclass1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationParticipantclass1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationParticipantclass1Mapping([usize; 3]);
 /// # Summary
 ///
@@ -8461,12 +7643,10 @@ impl<'data> ParticipantRegistrationParticipantclass1Row<'data> {
         if self.description.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.description.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.description.clone(),
+            ))
         }
     }
 }
@@ -8474,20 +7654,12 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantclass1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTCLASS";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantclass1Mapping([
-        4,
-        5,
-        6,
-    ]);
-    const COLUMNS: &'static [&'static str] = &[
-        "PARTICIPANTCLASSID",
-        "DESCRIPTION",
-        "LASTCHANGED",
-    ];
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationParticipantclass1Mapping([4, 5, 6]);
+    const COLUMNS: &'static [&'static str] = &["PARTICIPANTCLASSID", "DESCRIPTION", "LASTCHANGED"];
     type Row<'row> = ParticipantRegistrationParticipantclass1Row<'row>;
     type FieldMapping = ParticipantRegistrationParticipantclass1Mapping;
     type PrimaryKey = ParticipantRegistrationParticipantclass1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -8495,12 +7667,11 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantclass1 {
         Ok(ParticipantRegistrationParticipantclass1Row {
             participantclassid: row.get_range("participantclassid", field_mapping.0[0])?,
             description: row.get_opt_range("description", field_mapping.0[1])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[2],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -8508,22 +7679,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantclass1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -8532,27 +7699,31 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantclass1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(ParticipantRegistrationParticipantclass1Mapping(base_mapping))
-    }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
+        Ok(ParticipantRegistrationParticipantclass1Mapping(
+            base_mapping,
+        ))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationParticipantclass1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationParticipantclass1PrimaryKey {
         ParticipantRegistrationParticipantclass1PrimaryKey {
             participantclassid: row.participantclassid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_participantclass_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_participantclass_v1_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationParticipantclass1Row {
@@ -8568,29 +7739,27 @@ pub struct ParticipantRegistrationParticipantclass1PrimaryKey {
     pub participantclassid: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationParticipantclass1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationParticipantclass1Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationParticipantclass1Row<'data> {
     type Row<'other> = ParticipantRegistrationParticipantclass1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.participantclassid() == row.participantclassid()
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationParticipantclass1Row<'data> {
+    for ParticipantRegistrationParticipantclass1Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationParticipantclass1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.participantclassid() == key.participantclassid
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationParticipantclass1PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationParticipantclass1PrimaryKey {
     type Row<'other> = ParticipantRegistrationParticipantclass1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.participantclassid == row.participantclassid()
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationParticipantclass1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationParticipantclass1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationParticipantclass1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.participantclassid == key.participantclassid
@@ -8600,28 +7769,22 @@ for ParticipantRegistrationParticipantclass1PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantclass1 {
     type Builder = ParticipantRegistrationParticipantclass1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "participantclassid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new(
+                "participantclassid",
+                arrow::datatypes::DataType::Utf8,
+                false,
+            ),
+            arrow::datatypes::Field::new("description", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "description",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipantclass1Builder {
@@ -8631,7 +7794,9 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantclass1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.participantclassid_array.append_value(row.participantclassid());
+        builder
+            .participantclassid_array
+            .append_value(row.participantclassid());
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
@@ -8641,17 +7806,17 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantclass1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.participantclassid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.description_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.participantclassid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.description_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -8660,7 +7825,25 @@ pub struct ParticipantRegistrationParticipantclass1Builder {
     description_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationParticipantcreditdetail1;
+pub struct ParticipantRegistrationParticipantcreditdetail1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &ParticipantRegistrationParticipantcreditdetail1Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationParticipantcreditdetail1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationParticipantcreditdetail1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -8704,12 +7887,10 @@ impl<'data> ParticipantRegistrationParticipantcreditdetail1Row<'data> {
         if self.authorisedby.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.authorisedby.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.authorisedby.clone(),
+            ))
         }
     }
 }
@@ -8717,14 +7898,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcreditdetail1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTCREDITDETAIL";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantcreditdetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationParticipantcreditdetail1Mapping([4, 5, 6, 7, 8, 9]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
         "PARTICIPANTID",
@@ -8736,38 +7911,33 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcreditdetail1 {
     type Row<'row> = ParticipantRegistrationParticipantcreditdetail1Row<'row>;
     type FieldMapping = ParticipantRegistrationParticipantcreditdetail1Mapping;
     type PrimaryKey = ParticipantRegistrationParticipantcreditdetail1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationParticipantcreditdetail1Row {
-            effectivedate: row
-                .get_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[0],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            effectivedate: row.get_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[0],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             participantid: row.get_range("participantid", field_mapping.0[1])?,
-            creditlimit: row
-                .get_opt_custom_parsed_at_idx(
-                    "creditlimit",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            creditlimit: row.get_opt_custom_parsed_at_idx(
+                "creditlimit",
+                field_mapping.0[2],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             authorisedby: row.get_opt_range("authorisedby", field_mapping.0[3])?,
-            authoriseddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "authoriseddate",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[5],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            authoriseddate: row.get_opt_custom_parsed_at_idx(
+                "authoriseddate",
+                field_mapping.0[4],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[5],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -8775,22 +7945,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcreditdetail1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -8799,27 +7965,13 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcreditdetail1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(ParticipantRegistrationParticipantcreditdetail1Mapping(base_mapping))
-    }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
+        Ok(ParticipantRegistrationParticipantcreditdetail1Mapping(
+            base_mapping,
+        ))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
     fn primary_key(
@@ -8830,25 +7982,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcreditdetail1 {
             participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_participantcreditdetail_v1_{}_{}",
-            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
-            .number_from_month()
+            "participant_registration_participantcreditdetail_v1_{}",
+            self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationParticipantcreditdetail1Row {
@@ -8867,87 +8011,76 @@ pub struct ParticipantRegistrationParticipantcreditdetail1PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub participantid: alloc::string::String,
 }
-impl mmsdm_core::PrimaryKey
-for ParticipantRegistrationParticipantcreditdetail1PrimaryKey {}
+impl mmsdm_core::PrimaryKey for ParticipantRegistrationParticipantcreditdetail1PrimaryKey {}
 impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationParticipantcreditdetail1Row<'data> {
+    for ParticipantRegistrationParticipantcreditdetail1Row<'data>
+{
     type Row<'other> = ParticipantRegistrationParticipantcreditdetail1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.participantid() == row.participantid()
+        self.effectivedate == row.effectivedate && self.participantid() == row.participantid()
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationParticipantcreditdetail1Row<'data> {
+    for ParticipantRegistrationParticipantcreditdetail1Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationParticipantcreditdetail1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.participantid() == key.participantid
+        self.effectivedate == key.effectivedate && self.participantid() == key.participantid
     }
 }
 impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationParticipantcreditdetail1PrimaryKey {
+    for ParticipantRegistrationParticipantcreditdetail1PrimaryKey
+{
     type Row<'other> = ParticipantRegistrationParticipantcreditdetail1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.effectivedate == row.effectivedate
-            && self.participantid == row.participantid()
+        self.effectivedate == row.effectivedate && self.participantid == row.participantid()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationParticipantcreditdetail1PrimaryKey {
+    for ParticipantRegistrationParticipantcreditdetail1PrimaryKey
+{
     type PrimaryKey = ParticipantRegistrationParticipantcreditdetail1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid
+        self.effectivedate == key.effectivedate && self.participantid == key.participantid
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1 {
     type Builder = ParticipantRegistrationParticipantcreditdetail1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "participantid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new("participantid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "creditlimit",
+                arrow::datatypes::DataType::Decimal128(10, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new("authorisedby", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "authoriseddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "creditlimit",
-                    arrow::datatypes::DataType::Decimal128(10, 0),
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "authoriseddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipantcreditdetail1Builder {
@@ -8961,17 +8094,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
-        builder.participantid_array.append_value(row.participantid());
         builder
-            .creditlimit_array
-            .append_option({
-                row.creditlimit
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+            .effectivedate_array
+            .append_value(row.effectivedate.timestamp_millis());
+        builder
+            .participantid_array
+            .append_value(row.participantid());
+        builder.creditlimit_array.append_option({
+            row.creditlimit.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
@@ -8984,23 +8118,23 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.participantid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.creditlimit_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.participantid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.creditlimit_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -9012,7 +8146,23 @@ pub struct ParticipantRegistrationParticipantcreditdetail1Builder {
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationPmsGroup1;
+pub struct ParticipantRegistrationPmsGroup1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationPmsGroup1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationPmsGroup1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationPmsGroup1Mapping([usize; 3]);
 /// # Summary
 ///
@@ -9045,39 +8195,32 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroup1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PMS_GROUP";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationPmsGroup1Mapping([
-        4,
-        5,
-        6,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationPmsGroup1Mapping([4, 5, 6]);
     const COLUMNS: &'static [&'static str] = &["GROUPID", "CREATEDDATE", "LASTCHANGED"];
     type Row<'row> = ParticipantRegistrationPmsGroup1Row<'row>;
     type FieldMapping = ParticipantRegistrationPmsGroup1Mapping;
     type PrimaryKey = ParticipantRegistrationPmsGroup1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationPmsGroup1Row {
-            groupid: row
-                .get_custom_parsed_at_idx(
-                    "groupid",
-                    field_mapping.0[0],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            createddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "createddate",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            groupid: row.get_custom_parsed_at_idx(
+                "groupid",
+                field_mapping.0[0],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            createddate: row.get_opt_custom_parsed_at_idx(
+                "createddate",
+                field_mapping.0[1],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[2],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: core::marker::PhantomData,
         })
     }
@@ -9085,22 +8228,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroup1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -9111,13 +8250,9 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroup1 {
         }
         Ok(ParticipantRegistrationPmsGroup1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
     fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationPmsGroup1PrimaryKey {
@@ -9125,9 +8260,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroup1 {
             groupid: row.groupid,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_pms_group_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_pms_group_v1_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationPmsGroup1Row {
@@ -9149,8 +8292,7 @@ impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationPmsGroup1Row<'
         self.groupid == row.groupid
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationPmsGroup1Row<'data> {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationPmsGroup1Row<'data> {
     type PrimaryKey = ParticipantRegistrationPmsGroup1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.groupid == key.groupid
@@ -9172,31 +8314,29 @@ impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationPmsGroup1Prima
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroup1 {
     type Builder = ParticipantRegistrationPmsGroup1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "groupid",
-                    arrow::datatypes::DataType::Decimal128(20, 0),
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new(
+                "groupid",
+                arrow::datatypes::DataType::Decimal128(20, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "createddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "createddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationPmsGroup1Builder {
@@ -9207,13 +8347,11 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroup1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder
-            .groupid_array
-            .append_value({
-                let mut val = row.groupid;
-                val.rescale(0);
-                val.mantissa()
-            });
+        builder.groupid_array.append_value({
+            let mut val = row.groupid;
+            val.rescale(0);
+            val.mantissa()
+        });
         builder
             .createddate_array
             .append_option(row.createddate.map(|val| val.timestamp_millis()));
@@ -9225,17 +8363,17 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroup1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.groupid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.createddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.groupid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.createddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -9244,7 +8382,23 @@ pub struct ParticipantRegistrationPmsGroup1Builder {
     createddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationPmsGroupnmi1;
+pub struct ParticipantRegistrationPmsGroupnmi1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationPmsGroupnmi1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationPmsGroupnmi1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationPmsGroupnmi1Mapping([usize; 17]);
 /// # Summary
 ///
@@ -9305,55 +8459,50 @@ impl<'data> ParticipantRegistrationPmsGroupnmi1Row<'data> {
         if self.nmi.is_empty() {
             None
         } else {
-            Some(core::ops::Index::index(self.backing_data.as_slice(), self.nmi.clone()))
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.nmi.clone(),
+            ))
         }
     }
     pub fn sitename(&self) -> Option<&str> {
         if self.sitename.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.sitename.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.sitename.clone(),
+            ))
         }
     }
     pub fn baselinemethodologyid(&self) -> Option<&str> {
         if self.baselinemethodologyid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.baselinemethodologyid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.baselinemethodologyid.clone(),
+            ))
         }
     }
     pub fn mrcreason(&self) -> Option<&str> {
         if self.mrcreason.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.mrcreason.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.mrcreason.clone(),
+            ))
         }
     }
     pub fn retailcustomer(&self) -> Option<&str> {
         if self.retailcustomer.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.retailcustomer.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.retailcustomer.clone(),
+            ))
         }
     }
 }
@@ -9362,23 +8511,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroupnmi1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PMS_GROUPNMI";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationPmsGroupnmi1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GROUPNMIID",
@@ -9402,90 +8535,77 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroupnmi1 {
     type Row<'row> = ParticipantRegistrationPmsGroupnmi1Row<'row>;
     type FieldMapping = ParticipantRegistrationPmsGroupnmi1Mapping;
     type PrimaryKey = ParticipantRegistrationPmsGroupnmi1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationPmsGroupnmi1Row {
-            groupnmiid: row
-                .get_custom_parsed_at_idx(
-                    "groupnmiid",
-                    field_mapping.0[0],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            groupid: row
-                .get_opt_custom_parsed_at_idx(
-                    "groupid",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            versionfrom: row
-                .get_opt_custom_parsed_at_idx(
-                    "versionfrom",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            versionto: row
-                .get_opt_custom_parsed_at_idx(
-                    "versionto",
-                    field_mapping.0[3],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            startdate: row
-                .get_opt_custom_parsed_at_idx(
-                    "startdate",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            enddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "enddate",
-                    field_mapping.0[5],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            groupnmiid: row.get_custom_parsed_at_idx(
+                "groupnmiid",
+                field_mapping.0[0],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            groupid: row.get_opt_custom_parsed_at_idx(
+                "groupid",
+                field_mapping.0[1],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            versionfrom: row.get_opt_custom_parsed_at_idx(
+                "versionfrom",
+                field_mapping.0[2],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            versionto: row.get_opt_custom_parsed_at_idx(
+                "versionto",
+                field_mapping.0[3],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            startdate: row.get_opt_custom_parsed_at_idx(
+                "startdate",
+                field_mapping.0[4],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            enddate: row.get_opt_custom_parsed_at_idx(
+                "enddate",
+                field_mapping.0[5],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             nmi: row.get_opt_range("nmi", field_mapping.0[6])?,
             sitename: row.get_opt_range("sitename", field_mapping.0[7])?,
-            nerrgrouppremises: row
-                .get_opt_custom_parsed_at_idx(
-                    "nerrgrouppremises",
-                    field_mapping.0[8],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            nerrgrouppremises: row.get_opt_custom_parsed_at_idx(
+                "nerrgrouppremises",
+                field_mapping.0[8],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             baselinemethodologyid: row
                 .get_opt_range("baselinemethodologyid", field_mapping.0[9])?,
-            mrc: row
-                .get_opt_custom_parsed_at_idx(
-                    "mrc",
-                    field_mapping.0[10],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            mrc: row.get_opt_custom_parsed_at_idx(
+                "mrc",
+                field_mapping.0[10],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             mrcreason: row.get_opt_range("mrcreason", field_mapping.0[11])?,
             retailcustomer: row.get_opt_range("retailcustomer", field_mapping.0[12])?,
-            suspended: row
-                .get_opt_custom_parsed_at_idx(
-                    "suspended",
-                    field_mapping.0[13],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            unavailable: row
-                .get_opt_custom_parsed_at_idx(
-                    "unavailable",
-                    field_mapping.0[14],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            approveddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "approveddate",
-                    field_mapping.0[15],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[16],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            suspended: row.get_opt_custom_parsed_at_idx(
+                "suspended",
+                field_mapping.0[13],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            unavailable: row.get_opt_custom_parsed_at_idx(
+                "unavailable",
+                field_mapping.0[14],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            approveddate: row.get_opt_custom_parsed_at_idx(
+                "approveddate",
+                field_mapping.0[15],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[16],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -9493,22 +8613,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroupnmi1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -9519,25 +8635,27 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroupnmi1 {
         }
         Ok(ParticipantRegistrationPmsGroupnmi1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationPmsGroupnmi1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationPmsGroupnmi1PrimaryKey {
         ParticipantRegistrationPmsGroupnmi1PrimaryKey {
             groupnmiid: row.groupnmiid,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_pms_groupnmi_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_pms_groupnmi_v1_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationPmsGroupnmi1Row {
@@ -9567,29 +8685,25 @@ pub struct ParticipantRegistrationPmsGroupnmi1PrimaryKey {
     pub groupnmiid: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationPmsGroupnmi1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationPmsGroupnmi1Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationPmsGroupnmi1Row<'data> {
     type Row<'other> = ParticipantRegistrationPmsGroupnmi1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.groupnmiid == row.groupnmiid
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationPmsGroupnmi1Row<'data> {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationPmsGroupnmi1Row<'data> {
     type PrimaryKey = ParticipantRegistrationPmsGroupnmi1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.groupnmiid == key.groupnmiid
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationPmsGroupnmi1PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationPmsGroupnmi1PrimaryKey {
     type Row<'other> = ParticipantRegistrationPmsGroupnmi1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.groupnmiid == row.groupnmiid
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationPmsGroupnmi1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationPmsGroupnmi1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationPmsGroupnmi1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.groupnmiid == key.groupnmiid
@@ -9599,113 +8713,95 @@ for ParticipantRegistrationPmsGroupnmi1PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
     type Builder = ParticipantRegistrationPmsGroupnmi1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "groupnmiid",
-                    arrow::datatypes::DataType::Decimal128(20, 0),
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new(
+                "groupnmiid",
+                arrow::datatypes::DataType::Decimal128(20, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "groupid",
+                arrow::datatypes::DataType::Decimal128(20, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "versionfrom",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "groupid",
-                    arrow::datatypes::DataType::Decimal128(20, 0),
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "versionto",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "versionfrom",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "startdate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "versionto",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "enddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "startdate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new("nmi", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("sitename", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "nerrgrouppremises",
+                arrow::datatypes::DataType::Decimal128(1, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "baselinemethodologyid",
+                arrow::datatypes::DataType::Utf8,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "mrc",
+                arrow::datatypes::DataType::Decimal128(10, 3),
+                true,
+            ),
+            arrow::datatypes::Field::new("mrcreason", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("retailcustomer", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "suspended",
+                arrow::datatypes::DataType::Decimal128(1, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "unavailable",
+                arrow::datatypes::DataType::Decimal128(1, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "approveddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "enddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "nmi",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "sitename",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "nerrgrouppremises",
-                    arrow::datatypes::DataType::Decimal128(1, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "baselinemethodologyid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "mrc",
-                    arrow::datatypes::DataType::Decimal128(10, 3),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "mrcreason",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "retailcustomer",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "suspended",
-                    arrow::datatypes::DataType::Decimal128(1, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "unavailable",
-                    arrow::datatypes::DataType::Decimal128(1, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "approveddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationPmsGroupnmi1Builder {
@@ -9735,22 +8831,17 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder
-            .groupnmiid_array
-            .append_value({
-                let mut val = row.groupnmiid;
+        builder.groupnmiid_array.append_value({
+            let mut val = row.groupnmiid;
+            val.rescale(0);
+            val.mantissa()
+        });
+        builder.groupid_array.append_option({
+            row.groupid.map(|mut val| {
                 val.rescale(0);
                 val.mantissa()
-            });
-        builder
-            .groupid_array
-            .append_option({
-                row.groupid
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+            })
+        });
         builder
             .versionfrom_array
             .append_option(row.versionfrom.map(|val| val.timestamp_millis()));
@@ -9765,45 +8856,37 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
             .append_option(row.enddate.map(|val| val.timestamp_millis()));
         builder.nmi_array.append_option(row.nmi());
         builder.sitename_array.append_option(row.sitename());
+        builder.nerrgrouppremises_array.append_option({
+            row.nerrgrouppremises.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
         builder
-            .nerrgrouppremises_array
-            .append_option({
-                row.nerrgrouppremises
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder.baselinemethodologyid_array.append_option(row.baselinemethodologyid());
-        builder
-            .mrc_array
-            .append_option({
-                row.mrc
-                    .map(|mut val| {
-                        val.rescale(3);
-                        val.mantissa()
-                    })
-            });
+            .baselinemethodologyid_array
+            .append_option(row.baselinemethodologyid());
+        builder.mrc_array.append_option({
+            row.mrc.map(|mut val| {
+                val.rescale(3);
+                val.mantissa()
+            })
+        });
         builder.mrcreason_array.append_option(row.mrcreason());
-        builder.retailcustomer_array.append_option(row.retailcustomer());
         builder
-            .suspended_array
-            .append_option({
-                row.suspended
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .unavailable_array
-            .append_option({
-                row.unavailable
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+            .retailcustomer_array
+            .append_option(row.retailcustomer());
+        builder.suspended_array.append_option({
+            row.suspended.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
+        builder.unavailable_array.append_option({
+            row.unavailable.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
         builder
             .approveddate_array
             .append_option(row.approveddate.map(|val| val.timestamp_millis()));
@@ -9815,45 +8898,45 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.groupnmiid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.groupid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionfrom_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionto_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.startdate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.enddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.nmi_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.sitename_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.nerrgrouppremises_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.baselinemethodologyid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.mrc_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.mrcreason_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.retailcustomer_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.suspended_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.unavailable_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.approveddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.groupnmiid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.groupid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionfrom_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionto_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.startdate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.enddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.nmi_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.sitename_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.nerrgrouppremises_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.baselinemethodologyid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.mrc_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.mrcreason_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.retailcustomer_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.suspended_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.unavailable_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.approveddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -9876,7 +8959,23 @@ pub struct ParticipantRegistrationPmsGroupnmi1Builder {
     approveddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationPmsGroupservice1;
+pub struct ParticipantRegistrationPmsGroupservice1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationPmsGroupservice1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationPmsGroupservice1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationPmsGroupservice1Mapping([usize; 16]);
 /// # Summary
 ///
@@ -9935,72 +9034,60 @@ impl<'data> ParticipantRegistrationPmsGroupservice1Row<'data> {
         if self.market.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.market.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.market.clone(),
+            ))
         }
     }
     pub fn servicetype(&self) -> Option<&str> {
         if self.servicetype.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.servicetype.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.servicetype.clone(),
+            ))
         }
     }
     pub fn entitytype(&self) -> Option<&str> {
         if self.entitytype.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.entitytype.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.entitytype.clone(),
+            ))
         }
     }
     pub fn entityid(&self) -> Option<&str> {
         if self.entityid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.entityid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.entityid.clone(),
+            ))
         }
     }
     pub fn mrcreason(&self) -> Option<&str> {
         if self.mrcreason.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.mrcreason.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.mrcreason.clone(),
+            ))
         }
     }
     pub fn region(&self) -> Option<&str> {
         if self.region.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.region.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.region.clone(),
+            ))
         }
     }
 }
@@ -10008,24 +9095,10 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroupservice1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PMS_GROUPSERVICE";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationPmsGroupservice1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationPmsGroupservice1Mapping([
+            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        ]);
     const COLUMNS: &'static [&'static str] = &[
         "GROUPSERVICEID",
         "GROUPID",
@@ -10047,78 +9120,67 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroupservice1 {
     type Row<'row> = ParticipantRegistrationPmsGroupservice1Row<'row>;
     type FieldMapping = ParticipantRegistrationPmsGroupservice1Mapping;
     type PrimaryKey = ParticipantRegistrationPmsGroupservice1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationPmsGroupservice1Row {
-            groupserviceid: row
-                .get_custom_parsed_at_idx(
-                    "groupserviceid",
-                    field_mapping.0[0],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            groupid: row
-                .get_opt_custom_parsed_at_idx(
-                    "groupid",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            versionfrom: row
-                .get_opt_custom_parsed_at_idx(
-                    "versionfrom",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            versionto: row
-                .get_opt_custom_parsed_at_idx(
-                    "versionto",
-                    field_mapping.0[3],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            startdate: row
-                .get_opt_custom_parsed_at_idx(
-                    "startdate",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            enddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "enddate",
-                    field_mapping.0[5],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            groupserviceid: row.get_custom_parsed_at_idx(
+                "groupserviceid",
+                field_mapping.0[0],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            groupid: row.get_opt_custom_parsed_at_idx(
+                "groupid",
+                field_mapping.0[1],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            versionfrom: row.get_opt_custom_parsed_at_idx(
+                "versionfrom",
+                field_mapping.0[2],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            versionto: row.get_opt_custom_parsed_at_idx(
+                "versionto",
+                field_mapping.0[3],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            startdate: row.get_opt_custom_parsed_at_idx(
+                "startdate",
+                field_mapping.0[4],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            enddate: row.get_opt_custom_parsed_at_idx(
+                "enddate",
+                field_mapping.0[5],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             market: row.get_opt_range("market", field_mapping.0[6])?,
             servicetype: row.get_opt_range("servicetype", field_mapping.0[7])?,
             entitytype: row.get_opt_range("entitytype", field_mapping.0[8])?,
             entityid: row.get_opt_range("entityid", field_mapping.0[9])?,
-            mrc: row
-                .get_opt_custom_parsed_at_idx(
-                    "mrc",
-                    field_mapping.0[10],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            mrc: row.get_opt_custom_parsed_at_idx(
+                "mrc",
+                field_mapping.0[10],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             mrcreason: row.get_opt_range("mrcreason", field_mapping.0[11])?,
-            maximumrampratepermin: row
-                .get_opt_custom_parsed_at_idx(
-                    "maximumrampratepermin",
-                    field_mapping.0[12],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            maximumrampratepermin: row.get_opt_custom_parsed_at_idx(
+                "maximumrampratepermin",
+                field_mapping.0[12],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             region: row.get_opt_range("region", field_mapping.0[13])?,
-            approveddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "approveddate",
-                    field_mapping.0[14],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[15],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            approveddate: row.get_opt_custom_parsed_at_idx(
+                "approveddate",
+                field_mapping.0[14],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[15],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -10126,22 +9188,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroupservice1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -10152,25 +9210,27 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroupservice1 {
         }
         Ok(ParticipantRegistrationPmsGroupservice1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationPmsGroupservice1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationPmsGroupservice1PrimaryKey {
         ParticipantRegistrationPmsGroupservice1PrimaryKey {
             groupserviceid: row.groupserviceid,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_pms_groupservice_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_pms_groupservice_v1_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationPmsGroupservice1Row {
@@ -10199,29 +9259,27 @@ pub struct ParticipantRegistrationPmsGroupservice1PrimaryKey {
     pub groupserviceid: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationPmsGroupservice1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationPmsGroupservice1Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationPmsGroupservice1Row<'data> {
     type Row<'other> = ParticipantRegistrationPmsGroupservice1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.groupserviceid == row.groupserviceid
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationPmsGroupservice1Row<'data> {
+    for ParticipantRegistrationPmsGroupservice1Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationPmsGroupservice1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.groupserviceid == key.groupserviceid
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationPmsGroupservice1PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationPmsGroupservice1PrimaryKey {
     type Row<'other> = ParticipantRegistrationPmsGroupservice1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.groupserviceid == row.groupserviceid
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationPmsGroupservice1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationPmsGroupservice1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationPmsGroupservice1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.groupserviceid == key.groupserviceid
@@ -10231,108 +9289,82 @@ for ParticipantRegistrationPmsGroupservice1PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
     type Builder = ParticipantRegistrationPmsGroupservice1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "groupserviceid",
-                    arrow::datatypes::DataType::Decimal128(20, 0),
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new(
+                "groupserviceid",
+                arrow::datatypes::DataType::Decimal128(20, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "groupid",
+                arrow::datatypes::DataType::Decimal128(20, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "versionfrom",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "groupid",
-                    arrow::datatypes::DataType::Decimal128(20, 0),
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "versionto",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "versionfrom",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "startdate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "versionto",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "enddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "startdate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new("market", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("servicetype", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("entitytype", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("entityid", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "mrc",
+                arrow::datatypes::DataType::Decimal128(10, 3),
+                true,
+            ),
+            arrow::datatypes::Field::new("mrcreason", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "maximumrampratepermin",
+                arrow::datatypes::DataType::Decimal128(10, 0),
+                true,
+            ),
+            arrow::datatypes::Field::new("region", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "approveddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "enddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "market",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "servicetype",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "entitytype",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "entityid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "mrc",
-                    arrow::datatypes::DataType::Decimal128(10, 3),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "mrcreason",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "maximumrampratepermin",
-                    arrow::datatypes::DataType::Decimal128(10, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "region",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "approveddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationPmsGroupservice1Builder {
@@ -10359,22 +9391,17 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder
-            .groupserviceid_array
-            .append_value({
-                let mut val = row.groupserviceid;
+        builder.groupserviceid_array.append_value({
+            let mut val = row.groupserviceid;
+            val.rescale(0);
+            val.mantissa()
+        });
+        builder.groupid_array.append_option({
+            row.groupid.map(|mut val| {
                 val.rescale(0);
                 val.mantissa()
-            });
-        builder
-            .groupid_array
-            .append_option({
-                row.groupid
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+            })
+        });
         builder
             .versionfrom_array
             .append_option(row.versionfrom.map(|val| val.timestamp_millis()));
@@ -10391,25 +9418,19 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
         builder.servicetype_array.append_option(row.servicetype());
         builder.entitytype_array.append_option(row.entitytype());
         builder.entityid_array.append_option(row.entityid());
-        builder
-            .mrc_array
-            .append_option({
-                row.mrc
-                    .map(|mut val| {
-                        val.rescale(3);
-                        val.mantissa()
-                    })
-            });
+        builder.mrc_array.append_option({
+            row.mrc.map(|mut val| {
+                val.rescale(3);
+                val.mantissa()
+            })
+        });
         builder.mrcreason_array.append_option(row.mrcreason());
-        builder
-            .maximumrampratepermin_array
-            .append_option({
-                row.maximumrampratepermin
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
+        builder.maximumrampratepermin_array.append_option({
+            row.maximumrampratepermin.map(|mut val| {
+                val.rescale(0);
+                val.mantissa()
+            })
+        });
         builder.region_array.append_option(row.region());
         builder
             .approveddate_array
@@ -10422,43 +9443,43 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.groupserviceid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.groupid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionfrom_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionto_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.startdate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.enddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.market_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.servicetype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.entitytype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.entityid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.mrc_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.mrcreason_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.maximumrampratepermin_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.region_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.approveddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.groupserviceid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.groupid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionfrom_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionto_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.startdate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.enddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.market_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.servicetype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.entitytype_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.entityid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.mrc_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.mrcreason_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.maximumrampratepermin_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.region_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.approveddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -10480,7 +9501,23 @@ pub struct ParticipantRegistrationPmsGroupservice1Builder {
     approveddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationStadualloc1;
+pub struct ParticipantRegistrationStadualloc1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationStadualloc1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationStadualloc1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationStadualloc1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -10528,13 +9565,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStadualloc1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STADUALLOC";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStadualloc1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationStadualloc1Mapping([4, 5, 6, 7, 8]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
         "EFFECTIVEDATE",
@@ -10545,32 +9577,28 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStadualloc1 {
     type Row<'row> = ParticipantRegistrationStadualloc1Row<'row>;
     type FieldMapping = ParticipantRegistrationStadualloc1Mapping;
     type PrimaryKey = ParticipantRegistrationStadualloc1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationStadualloc1Row {
             duid: row.get_range("duid", field_mapping.0[0])?,
-            effectivedate: row
-                .get_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            effectivedate: row.get_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[1],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             stationid: row.get_range("stationid", field_mapping.0[2])?,
-            versionno: row
-                .get_custom_parsed_at_idx(
-                    "versionno",
-                    field_mapping.0[3],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            versionno: row.get_custom_parsed_at_idx(
+                "versionno",
+                field_mapping.0[3],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[4],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -10578,22 +9606,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStadualloc1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -10604,25 +9628,9 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStadualloc1 {
         }
         Ok(ParticipantRegistrationStadualloc1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
     fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationStadualloc1PrimaryKey {
@@ -10633,24 +9641,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStadualloc1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_stadualloc_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "participant_registration_stadualloc_v1_{}",
+            self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationStadualloc1Row {
@@ -10674,71 +9675,68 @@ impl mmsdm_core::PrimaryKey for ParticipantRegistrationStadualloc1PrimaryKey {}
 impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationStadualloc1Row<'data> {
     type Row<'other> = ParticipantRegistrationStadualloc1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.duid() == row.duid() && self.effectivedate == row.effectivedate
-            && self.stationid() == row.stationid() && self.versionno == row.versionno
+        self.duid() == row.duid()
+            && self.effectivedate == row.effectivedate
+            && self.stationid() == row.stationid()
+            && self.versionno == row.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationStadualloc1Row<'data> {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationStadualloc1Row<'data> {
     type PrimaryKey = ParticipantRegistrationStadualloc1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid() == key.duid && self.effectivedate == key.effectivedate
-            && self.stationid() == key.stationid && self.versionno == key.versionno
+        self.duid() == key.duid
+            && self.effectivedate == key.effectivedate
+            && self.stationid() == key.stationid
+            && self.versionno == key.versionno
     }
 }
 impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationStadualloc1PrimaryKey {
     type Row<'other> = ParticipantRegistrationStadualloc1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.duid == row.duid() && self.effectivedate == row.effectivedate
-            && self.stationid == row.stationid() && self.versionno == row.versionno
+        self.duid == row.duid()
+            && self.effectivedate == row.effectivedate
+            && self.stationid == row.stationid()
+            && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationStadualloc1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationStadualloc1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.duid == key.duid && self.effectivedate == key.effectivedate
-            && self.stationid == key.stationid && self.versionno == key.versionno
+        self.duid == key.duid
+            && self.effectivedate == key.effectivedate
+            && self.stationid == key.stationid
+            && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationStadualloc1 {
     type Builder = ParticipantRegistrationStadualloc1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "duid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("duid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new("stationid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "versionno",
+                arrow::datatypes::DataType::Decimal128(3, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "stationid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "versionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStadualloc1Builder {
@@ -10752,15 +9750,15 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStadualloc1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.duid_array.append_value(row.duid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
-        builder.stationid_array.append_value(row.stationid());
         builder
-            .versionno_array
-            .append_value({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            .effectivedate_array
+            .append_value(row.effectivedate.timestamp_millis());
+        builder.stationid_array.append_value(row.stationid());
+        builder.versionno_array.append_value({
+            let mut val = row.versionno;
+            val.rescale(0);
+            val.mantissa()
+        });
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
@@ -10769,21 +9767,21 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStadualloc1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.duid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.stationid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.duid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.stationid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionno_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -10794,7 +9792,23 @@ pub struct ParticipantRegistrationStadualloc1Builder {
     versionno_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationStation1;
+pub struct ParticipantRegistrationStation1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationStation1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationStation1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationStation1Mapping([usize; 11]);
 /// # Summary
 ///
@@ -10847,102 +9861,90 @@ impl<'data> ParticipantRegistrationStation1Row<'data> {
         if self.stationname.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.stationname.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.stationname.clone(),
+            ))
         }
     }
     pub fn address1(&self) -> Option<&str> {
         if self.address1.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.address1.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.address1.clone(),
+            ))
         }
     }
     pub fn address2(&self) -> Option<&str> {
         if self.address2.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.address2.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.address2.clone(),
+            ))
         }
     }
     pub fn address3(&self) -> Option<&str> {
         if self.address3.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.address3.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.address3.clone(),
+            ))
         }
     }
     pub fn address4(&self) -> Option<&str> {
         if self.address4.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.address4.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.address4.clone(),
+            ))
         }
     }
     pub fn city(&self) -> Option<&str> {
         if self.city.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(self.backing_data.as_slice(), self.city.clone()),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.city.clone(),
+            ))
         }
     }
     pub fn state(&self) -> Option<&str> {
         if self.state.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(self.backing_data.as_slice(), self.state.clone()),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.state.clone(),
+            ))
         }
     }
     pub fn postcode(&self) -> Option<&str> {
         if self.postcode.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.postcode.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.postcode.clone(),
+            ))
         }
     }
     pub fn connectionpointid(&self) -> Option<&str> {
         if self.connectionpointid.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.connectionpointid.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.connectionpointid.clone(),
+            ))
         }
     }
 }
@@ -10950,19 +9952,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStation1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STATION";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStation1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationStation1Mapping([4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
     const COLUMNS: &'static [&'static str] = &[
         "STATIONID",
         "STATIONNAME",
@@ -10979,7 +9970,6 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStation1 {
     type Row<'row> = ParticipantRegistrationStation1Row<'row>;
     type FieldMapping = ParticipantRegistrationStation1Mapping;
     type PrimaryKey = ParticipantRegistrationStation1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -10994,14 +9984,12 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStation1 {
             city: row.get_opt_range("city", field_mapping.0[6])?,
             state: row.get_opt_range("state", field_mapping.0[7])?,
             postcode: row.get_opt_range("postcode", field_mapping.0[8])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[9],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            connectionpointid: row
-                .get_opt_range("connectionpointid", field_mapping.0[10])?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[9],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            connectionpointid: row.get_opt_range("connectionpointid", field_mapping.0[10])?,
             backing_data: row,
         })
     }
@@ -11009,22 +9997,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStation1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -11035,13 +10019,9 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStation1 {
         }
         Ok(ParticipantRegistrationStation1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
     fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationStation1PrimaryKey {
@@ -11049,9 +10029,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStation1 {
             stationid: row.stationid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "participant_registration_station_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_station_v1_{}",
+            self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationStation1Row {
@@ -11081,8 +10069,7 @@ impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationStation1Row<'d
         self.stationid() == row.stationid()
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationStation1Row<'data> {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationStation1Row<'data> {
     type PrimaryKey = ParticipantRegistrationStation1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.stationid() == key.stationid
@@ -11104,68 +10091,30 @@ impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationStation1Primar
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationStation1 {
     type Builder = ParticipantRegistrationStation1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "stationid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new("stationid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new("stationname", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("address1", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("address2", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("address3", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("address4", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("city", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("state", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("postcode", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "stationname",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "address1",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "address2",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "address3",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "address4",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "city",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "state",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "postcode",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "connectionpointid",
+                arrow::datatypes::DataType::Utf8,
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStation1Builder {
@@ -11195,39 +10144,41 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStation1 {
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.connectionpointid_array.append_option(row.connectionpointid());
+        builder
+            .connectionpointid_array
+            .append_option(row.connectionpointid());
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.stationid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.stationname_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.address1_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.address2_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.address3_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.address4_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.city_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.state_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.postcode_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.connectionpointid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.stationid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.stationname_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.address1_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.address2_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.address3_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.address4_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.city_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.state_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.postcode_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.connectionpointid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -11244,7 +10195,25 @@ pub struct ParticipantRegistrationStation1Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     connectionpointid_array: arrow::array::builder::StringBuilder,
 }
-pub struct ParticipantRegistrationStationoperatingstatus1;
+pub struct ParticipantRegistrationStationoperatingstatus1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &ParticipantRegistrationStationoperatingstatus1Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationStationoperatingstatus1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationStationoperatingstatus1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -11291,24 +10260,20 @@ impl<'data> ParticipantRegistrationStationoperatingstatus1Row<'data> {
         if self.status.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.status.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.status.clone(),
+            ))
         }
     }
     pub fn authorisedby(&self) -> Option<&str> {
         if self.authorisedby.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.authorisedby.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.authorisedby.clone(),
+            ))
         }
     }
 }
@@ -11316,15 +10281,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationoperatingstatus1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STATIONOPERATINGSTATUS";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStationoperatingstatus1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationStationoperatingstatus1Mapping([4, 5, 6, 7, 8, 9, 10]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
         "STATIONID",
@@ -11337,39 +10295,34 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationoperatingstatus1 {
     type Row<'row> = ParticipantRegistrationStationoperatingstatus1Row<'row>;
     type FieldMapping = ParticipantRegistrationStationoperatingstatus1Mapping;
     type PrimaryKey = ParticipantRegistrationStationoperatingstatus1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationStationoperatingstatus1Row {
-            effectivedate: row
-                .get_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[0],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            effectivedate: row.get_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[0],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             stationid: row.get_range("stationid", field_mapping.0[1])?,
-            versionno: row
-                .get_custom_parsed_at_idx(
-                    "versionno",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            versionno: row.get_custom_parsed_at_idx(
+                "versionno",
+                field_mapping.0[2],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             status: row.get_opt_range("status", field_mapping.0[3])?,
             authorisedby: row.get_opt_range("authorisedby", field_mapping.0[4])?,
-            authoriseddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "authoriseddate",
-                    field_mapping.0[5],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[6],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            authoriseddate: row.get_opt_custom_parsed_at_idx(
+                "authoriseddate",
+                field_mapping.0[5],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[6],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -11377,22 +10330,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationoperatingstatus1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -11401,27 +10350,13 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationoperatingstatus1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(ParticipantRegistrationStationoperatingstatus1Mapping(base_mapping))
-    }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
+        Ok(ParticipantRegistrationStationoperatingstatus1Mapping(
+            base_mapping,
+        ))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
     fn primary_key(
@@ -11433,25 +10368,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationoperatingstatus1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_stationoperatingstatus_v1_{}_{}",
-            Self::partition_suffix(& row).year, Self::partition_suffix(& row).month
-            .number_from_month()
+            "participant_registration_stationoperatingstatus_v1_{}",
+            self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationStationoperatingstatus1Row {
@@ -11472,37 +10399,44 @@ pub struct ParticipantRegistrationStationoperatingstatus1PrimaryKey {
     pub stationid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey
-for ParticipantRegistrationStationoperatingstatus1PrimaryKey {}
+impl mmsdm_core::PrimaryKey for ParticipantRegistrationStationoperatingstatus1PrimaryKey {}
 impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationStationoperatingstatus1Row<'data> {
+    for ParticipantRegistrationStationoperatingstatus1Row<'data>
+{
     type Row<'other> = ParticipantRegistrationStationoperatingstatus1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.effectivedate == row.effectivedate && self.stationid() == row.stationid()
+        self.effectivedate == row.effectivedate
+            && self.stationid() == row.stationid()
             && self.versionno == row.versionno
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationStationoperatingstatus1Row<'data> {
+    for ParticipantRegistrationStationoperatingstatus1Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationStationoperatingstatus1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.stationid() == key.stationid
+        self.effectivedate == key.effectivedate
+            && self.stationid() == key.stationid
             && self.versionno == key.versionno
     }
 }
 impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationStationoperatingstatus1PrimaryKey {
+    for ParticipantRegistrationStationoperatingstatus1PrimaryKey
+{
     type Row<'other> = ParticipantRegistrationStationoperatingstatus1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.effectivedate == row.effectivedate && self.stationid == row.stationid()
+        self.effectivedate == row.effectivedate
+            && self.stationid == row.stationid()
             && self.versionno == row.versionno
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationStationoperatingstatus1PrimaryKey {
+    for ParticipantRegistrationStationoperatingstatus1PrimaryKey
+{
     type PrimaryKey = ParticipantRegistrationStationoperatingstatus1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.effectivedate == key.effectivedate && self.stationid == key.stationid
+        self.effectivedate == key.effectivedate
+            && self.stationid == key.stationid
             && self.versionno == key.versionno
     }
 }
@@ -11510,54 +10444,40 @@ for ParticipantRegistrationStationoperatingstatus1PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 {
     type Builder = ParticipantRegistrationStationoperatingstatus1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "stationid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new("stationid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "versionno",
+                arrow::datatypes::DataType::Decimal128(3, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new("status", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new("authorisedby", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "authoriseddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "versionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "status",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "authoriseddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStationoperatingstatus1Builder {
@@ -11572,15 +10492,15 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
-        builder.stationid_array.append_value(row.stationid());
         builder
-            .versionno_array
-            .append_value({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            .effectivedate_array
+            .append_value(row.effectivedate.timestamp_millis());
+        builder.stationid_array.append_value(row.stationid());
+        builder.versionno_array.append_value({
+            let mut val = row.versionno;
+            val.rescale(0);
+            val.mantissa()
+        });
         builder.status_array.append_option(row.status());
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
@@ -11594,25 +10514,25 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.stationid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.status_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.stationid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionno_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.status_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -11625,7 +10545,23 @@ pub struct ParticipantRegistrationStationoperatingstatus1Builder {
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationStationowner1;
+pub struct ParticipantRegistrationStationowner1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationStationowner1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationStationowner1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationStationowner1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -11673,13 +10609,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationowner1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STATIONOWNER";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStationowner1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationStationowner1Mapping([4, 5, 6, 7, 8]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
         "PARTICIPANTID",
@@ -11690,32 +10621,28 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationowner1 {
     type Row<'row> = ParticipantRegistrationStationowner1Row<'row>;
     type FieldMapping = ParticipantRegistrationStationowner1Mapping;
     type PrimaryKey = ParticipantRegistrationStationowner1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationStationowner1Row {
-            effectivedate: row
-                .get_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[0],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            effectivedate: row.get_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[0],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             participantid: row.get_range("participantid", field_mapping.0[1])?,
             stationid: row.get_range("stationid", field_mapping.0[2])?,
-            versionno: row
-                .get_custom_parsed_at_idx(
-                    "versionno",
-                    field_mapping.0[3],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            versionno: row.get_custom_parsed_at_idx(
+                "versionno",
+                field_mapping.0[3],
+                mmsdm_core::mms_decimal::parse,
+            )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[4],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -11723,22 +10650,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationowner1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -11749,30 +10672,12 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationowner1 {
         }
         Ok(ParticipantRegistrationStationowner1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationStationowner1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationStationowner1PrimaryKey {
         ParticipantRegistrationStationowner1PrimaryKey {
             effectivedate: row.effectivedate,
             participantid: row.participantid().to_string(),
@@ -11780,24 +10685,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationowner1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_stationowner_v1_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "participant_registration_stationowner_v1_{}",
+            self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationStationowner1Row {
@@ -11818,39 +10716,39 @@ pub struct ParticipantRegistrationStationowner1PrimaryKey {
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationStationowner1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationStationowner1Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationStationowner1Row<'data> {
     type Row<'other> = ParticipantRegistrationStationowner1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
             && self.participantid() == row.participantid()
-            && self.stationid() == row.stationid() && self.versionno == row.versionno
+            && self.stationid() == row.stationid()
+            && self.versionno == row.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationStationowner1Row<'data> {
+impl<'data> mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationStationowner1Row<'data> {
     type PrimaryKey = ParticipantRegistrationStationowner1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
             && self.participantid() == key.participantid
-            && self.stationid() == key.stationid && self.versionno == key.versionno
+            && self.stationid() == key.stationid
+            && self.versionno == key.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationStationowner1PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationStationowner1PrimaryKey {
     type Row<'other> = ParticipantRegistrationStationowner1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
             && self.participantid == row.participantid()
-            && self.stationid == row.stationid() && self.versionno == row.versionno
+            && self.stationid == row.stationid()
+            && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationStationowner1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationStationowner1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationStationowner1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid && self.stationid == key.stationid
+            && self.participantid == key.participantid
+            && self.stationid == key.stationid
             && self.versionno == key.versionno
     }
 }
@@ -11858,41 +10756,31 @@ for ParticipantRegistrationStationowner1PrimaryKey {
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationowner1 {
     type Builder = ParticipantRegistrationStationowner1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "participantid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new("participantid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new("stationid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "versionno",
+                arrow::datatypes::DataType::Decimal128(3, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "stationid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "versionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStationowner1Builder {
@@ -11905,16 +10793,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationowner1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
-        builder.participantid_array.append_value(row.participantid());
-        builder.stationid_array.append_value(row.stationid());
         builder
-            .versionno_array
-            .append_value({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            .effectivedate_array
+            .append_value(row.effectivedate.timestamp_millis());
+        builder
+            .participantid_array
+            .append_value(row.participantid());
+        builder.stationid_array.append_value(row.stationid());
+        builder.versionno_array.append_value({
+            let mut val = row.versionno;
+            val.rescale(0);
+            val.mantissa()
+        });
         builder
             .lastchanged_array
             .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
@@ -11923,21 +10813,21 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationowner1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.participantid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.stationid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.participantid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.stationid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionno_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
@@ -11948,7 +10838,23 @@ pub struct ParticipantRegistrationStationowner1Builder {
     versionno_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationStationownertrk1;
+pub struct ParticipantRegistrationStationownertrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ParticipantRegistrationStationownertrk1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationStationownertrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ParticipantRegistrationStationownertrk1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -11993,12 +10899,10 @@ impl<'data> ParticipantRegistrationStationownertrk1Row<'data> {
         if self.authorisedby.is_empty() {
             None
         } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.authorisedby.clone(),
-                ),
-            )
+            Some(core::ops::Index::index(
+                self.backing_data.as_slice(),
+                self.authorisedby.clone(),
+            ))
         }
     }
 }
@@ -12006,14 +10910,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationownertrk1 {
     const VERSION: i32 = 1;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STATIONOWNERTRK";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStationownertrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-    ]);
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping =
+        ParticipantRegistrationStationownertrk1Mapping([4, 5, 6, 7, 8, 9]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
         "PARTICIPANTID",
@@ -12025,38 +10923,33 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationownertrk1 {
     type Row<'row> = ParticipantRegistrationStationownertrk1Row<'row>;
     type FieldMapping = ParticipantRegistrationStationownertrk1Mapping;
     type PrimaryKey = ParticipantRegistrationStationownertrk1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
         Ok(ParticipantRegistrationStationownertrk1Row {
-            effectivedate: row
-                .get_custom_parsed_at_idx(
-                    "effectivedate",
-                    field_mapping.0[0],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            effectivedate: row.get_custom_parsed_at_idx(
+                "effectivedate",
+                field_mapping.0[0],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             participantid: row.get_range("participantid", field_mapping.0[1])?,
-            versionno: row
-                .get_custom_parsed_at_idx(
-                    "versionno",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
+            versionno: row.get_custom_parsed_at_idx(
+                "versionno",
+                field_mapping.0[2],
+                mmsdm_core::mms_decimal::parse,
+            )?,
             authorisedby: row.get_opt_range("authorisedby", field_mapping.0[3])?,
-            authoriseddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "authoriseddate",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[5],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
+            authoriseddate: row.get_opt_custom_parsed_at_idx(
+                "authoriseddate",
+                field_mapping.0[4],
+                mmsdm_core::mms_datetime::parse,
+            )?,
+            lastchanged: row.get_opt_custom_parsed_at_idx(
+                "lastchanged",
+                field_mapping.0[5],
+                mmsdm_core::mms_datetime::parse,
+            )?,
             backing_data: row,
         })
     }
@@ -12064,22 +10957,18 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationownertrk1 {
         mut row: mmsdm_core::CsvRow<'a>,
     ) -> mmsdm_core::Result<Self::FieldMapping> {
         if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected an I row but got {row:?}"
+            )));
         }
         let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
         if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
+            return Err(mmsdm_core::Error::UnexpectedRowType(alloc::format!(
+                "Expected a row matching {}.{}.v{} but got {row_key}",
+                Self::DATA_SET_NAME,
+                Self::TABLE_NAME,
+                Self::VERSION
+            )));
         }
         let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
         for (field_index, field) in Self::COLUMNS.iter().enumerate() {
@@ -12090,54 +10979,29 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationownertrk1 {
         }
         Ok(ParticipantRegistrationStationownertrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+        version == key.version
+            && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(
-        row: &Self::Row<'_>,
-    ) -> ParticipantRegistrationStationownertrk1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationStationownertrk1PrimaryKey {
         ParticipantRegistrationStationownertrk1PrimaryKey {
             effectivedate: row.effectivedate,
             participantid: row.participantid().to_string(),
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_stationownertrk_v1_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "participant_registration_stationownertrk_v1_{}",
+            self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ParticipantRegistrationStationownertrk1Row {
@@ -12158,8 +11022,7 @@ pub struct ParticipantRegistrationStationownertrk1PrimaryKey {
     pub versionno: rust_decimal::Decimal,
 }
 impl mmsdm_core::PrimaryKey for ParticipantRegistrationStationownertrk1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationStationownertrk1Row<'data> {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationStationownertrk1Row<'data> {
     type Row<'other> = ParticipantRegistrationStationownertrk1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
@@ -12168,7 +11031,8 @@ for ParticipantRegistrationStationownertrk1Row<'data> {
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationStationownertrk1Row<'data> {
+    for ParticipantRegistrationStationownertrk1Row<'data>
+{
     type PrimaryKey = ParticipantRegistrationStationownertrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
@@ -12176,8 +11040,7 @@ for ParticipantRegistrationStationownertrk1Row<'data> {
             && self.versionno == key.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow
-for ParticipantRegistrationStationownertrk1PrimaryKey {
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationStationownertrk1PrimaryKey {
     type Row<'other> = ParticipantRegistrationStationownertrk1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate
@@ -12185,61 +11048,51 @@ for ParticipantRegistrationStationownertrk1PrimaryKey {
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationStationownertrk1PrimaryKey {
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationStationownertrk1PrimaryKey {
     type PrimaryKey = ParticipantRegistrationStationownertrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate
-            && self.participantid == key.participantid && self.versionno == key.versionno
+            && self.participantid == key.participantid
+            && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
 impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationownertrk1 {
     type Builder = ParticipantRegistrationStationownertrk1Builder;
     fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
+        arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+            arrow::datatypes::Field::new(
+                "effectivedate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "participantid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
+                false,
+            ),
+            arrow::datatypes::Field::new("participantid", arrow::datatypes::DataType::Utf8, false),
+            arrow::datatypes::Field::new(
+                "versionno",
+                arrow::datatypes::DataType::Decimal128(3, 0),
+                false,
+            ),
+            arrow::datatypes::Field::new("authorisedby", arrow::datatypes::DataType::Utf8, true),
+            arrow::datatypes::Field::new(
+                "authoriseddate",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "versionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
+                true,
+            ),
+            arrow::datatypes::Field::new(
+                "lastchanged",
+                arrow::datatypes::DataType::Timestamp(
+                    arrow::datatypes::TimeUnit::Millisecond,
+                    None,
                 ),
-                arrow::datatypes::Field::new(
-                    "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "authoriseddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
+                true,
+            ),
+        ]))
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStationownertrk1Builder {
@@ -12253,15 +11106,17 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationownertrk1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
-        builder.participantid_array.append_value(row.participantid());
         builder
-            .versionno_array
-            .append_value({
-                let mut val = row.versionno;
-                val.rescale(0);
-                val.mantissa()
-            });
+            .effectivedate_array
+            .append_value(row.effectivedate.timestamp_millis());
+        builder
+            .participantid_array
+            .append_value(row.participantid());
+        builder.versionno_array.append_value({
+            let mut val = row.versionno;
+            val.rescale(0);
+            val.mantissa()
+        });
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
@@ -12274,23 +11129,23 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationownertrk1 {
         builder: &mut Self::Builder,
     ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
         arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.participantid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authorisedby_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
+            alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+            alloc::vec::Vec::from([
+                alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.participantid_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.versionno_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authorisedby_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+                alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                    as alloc::sync::Arc<dyn arrow::array::Array>,
+            ]),
+        )
+        .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]

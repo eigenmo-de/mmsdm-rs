@@ -5,7 +5,25 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct PrudentialCompanyPosition1;
+pub struct PrudentialCompanyPosition1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&PrudentialCompanyPosition1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PrudentialCompanyPosition1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PrudentialCompanyPosition1Mapping([usize; 19]);
 /// # Summary
 ///
@@ -121,7 +139,6 @@ impl mmsdm_core::GetTable for PrudentialCompanyPosition1 {
     type Row<'row> = PrudentialCompanyPosition1Row<'row>;
     type FieldMapping = PrudentialCompanyPosition1Mapping;
     type PrimaryKey = PrudentialCompanyPosition1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -264,11 +281,6 @@ impl mmsdm_core::GetTable for PrudentialCompanyPosition1 {
         }
         Ok(PrudentialCompanyPosition1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -280,9 +292,14 @@ impl mmsdm_core::GetTable for PrudentialCompanyPosition1 {
             runno: row.runno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "prudential_company_position_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("prudential_company_position_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PrudentialCompanyPosition1Row {
@@ -710,7 +727,25 @@ pub struct PrudentialCompanyPosition1Builder {
     percentage_outstandings_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct PrudentialRuntrk1;
+pub struct PrudentialRuntrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&PrudentialRuntrk1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PrudentialRuntrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PrudentialRuntrk1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -778,7 +813,6 @@ impl mmsdm_core::GetTable for PrudentialRuntrk1 {
     type Row<'row> = PrudentialRuntrk1Row<'row>;
     type FieldMapping = PrudentialRuntrk1Mapping;
     type PrimaryKey = PrudentialRuntrk1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -837,11 +871,6 @@ impl mmsdm_core::GetTable for PrudentialRuntrk1 {
         }
         Ok(PrudentialRuntrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -852,9 +881,14 @@ impl mmsdm_core::GetTable for PrudentialRuntrk1 {
             runno: row.runno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "prudential_runtrk_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("prudential_runtrk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PrudentialRuntrk1Row {

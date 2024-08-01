@@ -5,7 +5,25 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct OperationalDemandActual3;
+pub struct OperationalDemandActual3 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&OperationalDemandActual3Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl OperationalDemandActual3 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct OperationalDemandActual3Mapping([usize; 6]);
 /// # Summary
 ///
@@ -68,7 +86,6 @@ impl mmsdm_core::GetTable for OperationalDemandActual3 {
     type Row<'row> = OperationalDemandActual3Row<'row>;
     type FieldMapping = OperationalDemandActual3Mapping;
     type PrimaryKey = OperationalDemandActual3PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -133,23 +150,6 @@ impl mmsdm_core::GetTable for OperationalDemandActual3 {
         }
         Ok(OperationalDemandActual3Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -160,24 +160,14 @@ impl mmsdm_core::GetTable for OperationalDemandActual3 {
             regionid: row.regionid().to_string(),
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "operational_demand_actual_v3_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("operational_demand_actual_v3_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         OperationalDemandActual3Row {
@@ -342,7 +332,25 @@ pub struct OperationalDemandActual3Builder {
     operational_demand_adjustment_array: arrow::array::builder::Decimal128Builder,
     wdr_estimate_array: arrow::array::builder::Int64Builder,
 }
-pub struct OperationalDemandForecast1;
+pub struct OperationalDemandForecast1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&OperationalDemandForecast1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl OperationalDemandForecast1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct OperationalDemandForecast1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -409,7 +417,6 @@ impl mmsdm_core::GetTable for OperationalDemandForecast1 {
     type Row<'row> = OperationalDemandForecast1Row<'row>;
     type FieldMapping = OperationalDemandForecast1Mapping;
     type PrimaryKey = OperationalDemandForecast1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -485,23 +492,6 @@ impl mmsdm_core::GetTable for OperationalDemandForecast1 {
         }
         Ok(OperationalDemandForecast1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -512,24 +502,14 @@ impl mmsdm_core::GetTable for OperationalDemandForecast1 {
             regionid: row.regionid().to_string(),
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "operational_demand_forecast_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("operational_demand_forecast_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         OperationalDemandForecast1Row {
@@ -721,7 +701,25 @@ pub struct OperationalDemandForecast1Builder {
     operational_demand_poe90_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct DemandIntermittentClusterAvail2;
+pub struct DemandIntermittentClusterAvail2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&DemandIntermittentClusterAvail2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandIntermittentClusterAvail2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct DemandIntermittentClusterAvail2Mapping([usize; 7]);
 /// # Summary
 ///
@@ -794,7 +792,6 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvail2 {
     type Row<'row> = DemandIntermittentClusterAvail2Row<'row>;
     type FieldMapping = DemandIntermittentClusterAvail2Mapping;
     type PrimaryKey = DemandIntermittentClusterAvail2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -865,20 +862,6 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvail2 {
         }
         Ok(DemandIntermittentClusterAvail2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let tradingdate = row
-            .get_custom_parsed_at_idx("tradingdate", 4, mmsdm_core::mms_datetime::parse)?
-            - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(tradingdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(tradingdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -892,24 +875,16 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvail2 {
             tradingdate: row.tradingdate,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.tradingdate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.tradingdate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "demand_intermittent_cluster_avail_v2_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "demand_intermittent_cluster_avail_v2_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         DemandIntermittentClusterAvail2Row {
@@ -1096,7 +1071,25 @@ pub struct DemandIntermittentClusterAvail2Builder {
     elements_unavailable_array: arrow::array::builder::Decimal128Builder,
     elements_available_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct DemandIntermittentClusterAvailDay1;
+pub struct DemandIntermittentClusterAvailDay1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&DemandIntermittentClusterAvailDay1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandIntermittentClusterAvailDay1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct DemandIntermittentClusterAvailDay1Mapping([usize; 4]);
 /// # Summary
 ///
@@ -1156,7 +1149,6 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvailDay1 {
     type Row<'row> = DemandIntermittentClusterAvailDay1Row<'row>;
     type FieldMapping = DemandIntermittentClusterAvailDay1Mapping;
     type PrimaryKey = DemandIntermittentClusterAvailDay1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1209,20 +1201,6 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvailDay1 {
         }
         Ok(DemandIntermittentClusterAvailDay1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let tradingdate = row
-            .get_custom_parsed_at_idx("tradingdate", 4, mmsdm_core::mms_datetime::parse)?
-            - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(tradingdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(tradingdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1235,24 +1213,16 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvailDay1 {
             tradingdate: row.tradingdate,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.tradingdate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.tradingdate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "demand_intermittent_cluster_avail_day_v1_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "demand_intermittent_cluster_avail_day_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         DemandIntermittentClusterAvailDay1Row {
@@ -1380,7 +1350,25 @@ pub struct DemandIntermittentClusterAvailDay1Builder {
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     clusterid_array: arrow::array::builder::StringBuilder,
 }
-pub struct DemandIntermittentDsPred1;
+pub struct DemandIntermittentDsPred1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&DemandIntermittentDsPred1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandIntermittentDsPred1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct DemandIntermittentDsPred1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -1466,7 +1454,6 @@ impl mmsdm_core::GetTable for DemandIntermittentDsPred1 {
     type Row<'row> = DemandIntermittentDsPred1Row<'row>;
     type FieldMapping = DemandIntermittentDsPred1Mapping;
     type PrimaryKey = DemandIntermittentDsPred1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1555,23 +1542,6 @@ impl mmsdm_core::GetTable for DemandIntermittentDsPred1 {
         }
         Ok(DemandIntermittentDsPred1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                7,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1586,24 +1556,14 @@ impl mmsdm_core::GetTable for DemandIntermittentDsPred1 {
             run_datetime: row.run_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "demand_intermittent_ds_pred_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("demand_intermittent_ds_pred_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         DemandIntermittentDsPred1Row {
@@ -1850,7 +1810,25 @@ pub struct DemandIntermittentDsPred1Builder {
     forecast_poe50_array: arrow::array::builder::Decimal128Builder,
     forecast_poe90_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct DemandIntermittentDsRun1;
+pub struct DemandIntermittentDsRun1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&DemandIntermittentDsRun1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandIntermittentDsRun1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct DemandIntermittentDsRun1Mapping([usize; 13]);
 /// # Summary
 ///
@@ -1992,7 +1970,6 @@ impl mmsdm_core::GetTable for DemandIntermittentDsRun1 {
     type Row<'row> = DemandIntermittentDsRun1Row<'row>;
     type FieldMapping = DemandIntermittentDsRun1Mapping;
     type PrimaryKey = DemandIntermittentDsRun1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2079,23 +2056,6 @@ impl mmsdm_core::GetTable for DemandIntermittentDsRun1 {
         }
         Ok(DemandIntermittentDsRun1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let run_datetime = row
-            .get_custom_parsed_at_idx(
-                "run_datetime",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(run_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(run_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2109,24 +2069,14 @@ impl mmsdm_core::GetTable for DemandIntermittentDsRun1 {
             run_datetime: row.run_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.run_datetime)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.run_datetime)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "demand_intermittent_ds_run_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("demand_intermittent_ds_run_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         DemandIntermittentDsRun1Row {
@@ -2388,7 +2338,25 @@ pub struct DemandIntermittentDsRun1Builder {
     suppressed_participant_array: arrow::array::builder::Decimal128Builder,
     transaction_id_array: arrow::array::builder::StringBuilder,
 }
-pub struct ForecastIntermittentGen1;
+pub struct ForecastIntermittentGen1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ForecastIntermittentGen1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ForecastIntermittentGen1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ForecastIntermittentGen1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -2452,7 +2420,6 @@ impl mmsdm_core::GetTable for ForecastIntermittentGen1 {
     type Row<'row> = ForecastIntermittentGen1Row<'row>;
     type FieldMapping = ForecastIntermittentGen1Mapping;
     type PrimaryKey = ForecastIntermittentGen1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2522,23 +2489,6 @@ impl mmsdm_core::GetTable for ForecastIntermittentGen1 {
         }
         Ok(ForecastIntermittentGen1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let run_datetime = row
-            .get_custom_parsed_at_idx(
-                "run_datetime",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(run_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(run_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2549,24 +2499,14 @@ impl mmsdm_core::GetTable for ForecastIntermittentGen1 {
             run_datetime: row.run_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.run_datetime)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.run_datetime)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "forecast_intermittent_gen_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("forecast_intermittent_gen_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ForecastIntermittentGen1Row {
@@ -2726,7 +2666,25 @@ pub struct ForecastIntermittentGen1Builder {
     versionno_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ForecastIntermittentGenData1;
+pub struct ForecastIntermittentGenData1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&ForecastIntermittentGenData1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ForecastIntermittentGenData1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct ForecastIntermittentGenData1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -2799,7 +2757,6 @@ impl mmsdm_core::GetTable for ForecastIntermittentGenData1 {
     type Row<'row> = ForecastIntermittentGenData1Row<'row>;
     type FieldMapping = ForecastIntermittentGenData1Mapping;
     type PrimaryKey = ForecastIntermittentGenData1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2881,23 +2838,6 @@ impl mmsdm_core::GetTable for ForecastIntermittentGenData1 {
         }
         Ok(ForecastIntermittentGenData1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                6,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2909,24 +2849,14 @@ impl mmsdm_core::GetTable for ForecastIntermittentGenData1 {
             run_datetime: row.run_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "forecast_intermittent_gen_data_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("forecast_intermittent_gen_data_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         ForecastIntermittentGenData1Row {
@@ -3136,7 +3066,25 @@ pub struct ForecastIntermittentGenData1Builder {
     powerpoehigh_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct DemandIntermittentGenLimit1;
+pub struct DemandIntermittentGenLimit1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&DemandIntermittentGenLimit1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandIntermittentGenLimit1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct DemandIntermittentGenLimit1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -3197,7 +3145,6 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimit1 {
     type Row<'row> = DemandIntermittentGenLimit1Row<'row>;
     type FieldMapping = DemandIntermittentGenLimit1Mapping;
     type PrimaryKey = DemandIntermittentGenLimit1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3256,20 +3203,6 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimit1 {
         }
         Ok(DemandIntermittentGenLimit1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let tradingdate = row
-            .get_custom_parsed_at_idx("tradingdate", 4, mmsdm_core::mms_datetime::parse)?
-            - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(tradingdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(tradingdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3282,24 +3215,14 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimit1 {
             tradingdate: row.tradingdate,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.tradingdate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.tradingdate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "demand_intermittent_gen_limit_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("demand_intermittent_gen_limit_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         DemandIntermittentGenLimit1Row {
@@ -3440,7 +3363,25 @@ pub struct DemandIntermittentGenLimit1Builder {
     periodid_array: arrow::array::builder::Decimal128Builder,
     uppermwlimit_array: arrow::array::builder::Int64Builder,
 }
-pub struct DemandIntermittentGenLimitDay1;
+pub struct DemandIntermittentGenLimitDay1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&DemandIntermittentGenLimitDay1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandIntermittentGenLimitDay1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct DemandIntermittentGenLimitDay1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -3544,7 +3485,6 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimitDay1 {
     type Row<'row> = DemandIntermittentGenLimitDay1Row<'row>;
     type FieldMapping = DemandIntermittentGenLimitDay1Mapping;
     type PrimaryKey = DemandIntermittentGenLimitDay1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3606,20 +3546,6 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimitDay1 {
         }
         Ok(DemandIntermittentGenLimitDay1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let tradingdate = row
-            .get_custom_parsed_at_idx("tradingdate", 4, mmsdm_core::mms_datetime::parse)?
-            - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(tradingdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(tradingdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3631,24 +3557,16 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimitDay1 {
             tradingdate: row.tradingdate,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.tradingdate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.tradingdate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "demand_intermittent_gen_limit_day_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "demand_intermittent_gen_limit_day_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         DemandIntermittentGenLimitDay1Row {
@@ -3812,7 +3730,25 @@ pub struct DemandIntermittentGenLimitDay1Builder {
     authorisedbyuser_array: arrow::array::builder::StringBuilder,
     authorisedbyparticipantid_array: arrow::array::builder::StringBuilder,
 }
-pub struct DemandIntermittentGenScada1;
+pub struct DemandIntermittentGenScada1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&DemandIntermittentGenScada1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandIntermittentGenScada1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct DemandIntermittentGenScada1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -3887,7 +3823,6 @@ impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
     type Row<'row> = DemandIntermittentGenScada1Row<'row>;
     type FieldMapping = DemandIntermittentGenScada1Mapping;
     type PrimaryKey = DemandIntermittentGenScada1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3941,23 +3876,6 @@ impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
         }
         Ok(DemandIntermittentGenScada1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let run_datetime = row
-            .get_custom_parsed_at_idx(
-                "run_datetime",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(run_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(run_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3969,24 +3887,14 @@ impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
             scada_type: row.scada_type().to_string(),
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.run_datetime)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.run_datetime)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "demand_intermittent_gen_scada_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("demand_intermittent_gen_scada_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         DemandIntermittentGenScada1Row {
@@ -4125,7 +4033,25 @@ pub struct DemandIntermittentGenScada1Builder {
     scada_value_array: arrow::array::builder::Decimal128Builder,
     scada_quality_array: arrow::array::builder::StringBuilder,
 }
-pub struct DemandMtpasaIntermittentAvail2;
+pub struct DemandMtpasaIntermittentAvail2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&DemandMtpasaIntermittentAvail2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandMtpasaIntermittentAvail2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct DemandMtpasaIntermittentAvail2Mapping([usize; 7]);
 /// # Summary
 ///
@@ -4197,7 +4123,6 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentAvail2 {
     type Row<'row> = DemandMtpasaIntermittentAvail2Row<'row>;
     type FieldMapping = DemandMtpasaIntermittentAvail2Mapping;
     type PrimaryKey = DemandMtpasaIntermittentAvail2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4268,20 +4193,6 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentAvail2 {
         }
         Ok(DemandMtpasaIntermittentAvail2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let tradingdate = row
-            .get_custom_parsed_at_idx("tradingdate", 4, mmsdm_core::mms_datetime::parse)?
-            - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(tradingdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(tradingdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4294,24 +4205,16 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentAvail2 {
             tradingdate: row.tradingdate,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.tradingdate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.tradingdate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "demand_mtpasa_intermittent_avail_v2_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "demand_mtpasa_intermittent_avail_v2_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         DemandMtpasaIntermittentAvail2Row {
@@ -4495,7 +4398,25 @@ pub struct DemandMtpasaIntermittentAvail2Builder {
     elements_unavailable_array: arrow::array::builder::Decimal128Builder,
     elements_available_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct DemandMtpasaIntermittentLimit1;
+pub struct DemandMtpasaIntermittentLimit1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&DemandMtpasaIntermittentLimit1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandMtpasaIntermittentLimit1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct DemandMtpasaIntermittentLimit1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -4587,7 +4508,6 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentLimit1 {
     type Row<'row> = DemandMtpasaIntermittentLimit1Row<'row>;
     type FieldMapping = DemandMtpasaIntermittentLimit1Mapping;
     type PrimaryKey = DemandMtpasaIntermittentLimit1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4649,20 +4569,6 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentLimit1 {
         }
         Ok(DemandMtpasaIntermittentLimit1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let tradingdate = row
-            .get_custom_parsed_at_idx("tradingdate", 4, mmsdm_core::mms_datetime::parse)?
-            - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(tradingdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(tradingdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4674,24 +4580,16 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentLimit1 {
             tradingdate: row.tradingdate,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.tradingdate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.tradingdate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "demand_mtpasa_intermittent_limit_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "demand_mtpasa_intermittent_limit_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         DemandMtpasaIntermittentLimit1Row {
@@ -4855,7 +4753,25 @@ pub struct DemandMtpasaIntermittentLimit1Builder {
     authorisedbyuser_array: arrow::array::builder::StringBuilder,
     authorisedbyparticipantid_array: arrow::array::builder::StringBuilder,
 }
-pub struct DemandPeriod1;
+pub struct DemandPeriod1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&DemandPeriod1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandPeriod1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct DemandPeriod1Mapping([usize; 11]);
 /// # Summary
 ///
@@ -4942,7 +4858,6 @@ impl mmsdm_core::GetTable for DemandPeriod1 {
     type Row<'row> = DemandPeriod1Row<'row>;
     type FieldMapping = DemandPeriod1Mapping;
     type PrimaryKey = DemandPeriod1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -5042,23 +4957,6 @@ impl mmsdm_core::GetTable for DemandPeriod1 {
         }
         Ok(DemandPeriod1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let settlementdate = row
-            .get_custom_parsed_at_idx(
-                "settlementdate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(settlementdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(settlementdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -5072,24 +4970,14 @@ impl mmsdm_core::GetTable for DemandPeriod1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.settlementdate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.settlementdate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "demand_period_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("demand_period_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         DemandPeriod1Row {
@@ -5357,7 +5245,25 @@ pub struct DemandPeriod1Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     mr_schedule_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct DemandTrk1;
+pub struct DemandTrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&DemandTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandTrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct DemandTrk1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -5455,7 +5361,6 @@ impl mmsdm_core::GetTable for DemandTrk1 {
     type Row<'row> = DemandTrk1Row<'row>;
     type FieldMapping = DemandTrk1Mapping;
     type PrimaryKey = DemandTrk1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -5527,23 +5432,6 @@ impl mmsdm_core::GetTable for DemandTrk1 {
         }
         Ok(DemandTrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )? - chrono::TimeDelta::zero();
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -5556,24 +5444,14 @@ impl mmsdm_core::GetTable for DemandTrk1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.effectivedate)
-                - chrono::TimeDelta::zero())
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.effectivedate)
-                        - chrono::TimeDelta::zero())
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "demand_trk_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("demand_trk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         DemandTrk1Row {
@@ -5757,7 +5635,25 @@ pub struct DemandTrk1Builder {
     authorisedby_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct RooftopActual2;
+pub struct RooftopActual2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&RooftopActual2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl RooftopActual2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct RooftopActual2Mapping([usize; 6]);
 /// # Summary
 ///
@@ -5824,7 +5720,6 @@ impl mmsdm_core::GetTable for RooftopActual2 {
     type Row<'row> = RooftopActual2Row<'row>;
     type FieldMapping = RooftopActual2Mapping;
     type PrimaryKey = RooftopActual2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -5889,30 +5784,6 @@ impl mmsdm_core::GetTable for RooftopActual2 {
         }
         Ok(RooftopActual2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(30) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -5924,40 +5795,14 @@ impl mmsdm_core::GetTable for RooftopActual2 {
             r#type: row.r#type().to_string(),
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        30,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                30,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "rooftop_actual_v2_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("rooftop_actual_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         RooftopActual2Row {
@@ -6123,7 +5968,25 @@ pub struct RooftopActual2Builder {
     qi_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct RooftopForecast1;
+pub struct RooftopForecast1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&RooftopForecast1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl RooftopForecast1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct RooftopForecast1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -6195,7 +6058,6 @@ impl mmsdm_core::GetTable for RooftopForecast1 {
     type Row<'row> = RooftopForecast1Row<'row>;
     type FieldMapping = RooftopForecast1Mapping;
     type PrimaryKey = RooftopForecast1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -6277,30 +6139,6 @@ impl mmsdm_core::GetTable for RooftopForecast1 {
         }
         Ok(RooftopForecast1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                6,
-                mmsdm_core::mms_datetime::parse,
-            )?
-            - {
-                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(30) {
-                    Some(d) => d,
-                    None => panic!("invalid"),
-                };
-                D
-            };
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -6312,40 +6150,14 @@ impl mmsdm_core::GetTable for RooftopForecast1 {
             version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: (chrono::NaiveDateTime::from(row.interval_datetime)
-                - {
-                    const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                        30,
-                    ) {
-                        Some(d) => d,
-                        None => panic!("invalid"),
-                    };
-                    D
-                })
-                .year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    (chrono::NaiveDateTime::from(row.interval_datetime)
-                        - {
-                            const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(
-                                30,
-                            ) {
-                                Some(d) => d,
-                                None => panic!("invalid"),
-                            };
-                            D
-                        })
-                        .month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "rooftop_forecast_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("rooftop_forecast_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         RooftopForecast1Row {

@@ -5,7 +5,25 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct IrauctionConfigAuction1;
+pub struct IrauctionConfigAuction1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionConfigAuction1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionConfigAuction1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionConfigAuction1Mapping([usize; 9]);
 /// # Summary
 ///
@@ -104,7 +122,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuction1 {
     type Row<'row> = IrauctionConfigAuction1Row<'row>;
     type FieldMapping = IrauctionConfigAuction1Mapping;
     type PrimaryKey = IrauctionConfigAuction1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -182,11 +199,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuction1 {
         }
         Ok(IrauctionConfigAuction1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -196,9 +208,14 @@ impl mmsdm_core::GetTable for IrauctionConfigAuction1 {
             auctionid: row.auctionid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_config_auction_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_config_auction_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionConfigAuction1Row {
@@ -393,7 +410,25 @@ pub struct IrauctionConfigAuction1Builder {
     authorisedby_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionConfigAuctionCalendar2;
+pub struct IrauctionConfigAuctionCalendar2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionConfigAuctionCalendar2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionConfigAuctionCalendar2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionConfigAuctionCalendar2Mapping([usize; 12]);
 /// # Summary
 ///
@@ -477,7 +512,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionCalendar2 {
     type Row<'row> = IrauctionConfigAuctionCalendar2Row<'row>;
     type FieldMapping = IrauctionConfigAuctionCalendar2Mapping;
     type PrimaryKey = IrauctionConfigAuctionCalendar2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -588,11 +622,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionCalendar2 {
         }
         Ok(IrauctionConfigAuctionCalendar2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -603,9 +632,16 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionCalendar2 {
             quarter: row.quarter,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_config_auction_calendar_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_config_auction_calendar_v2_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionConfigAuctionCalendar2Row {
@@ -869,7 +905,27 @@ pub struct IrauctionConfigAuctionCalendar2Builder {
     finalpurchasestmtdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     finalproceedsstmtdate_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionConfigAuctionIcAllocations2;
+pub struct IrauctionConfigAuctionIcAllocations2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &IrauctionConfigAuctionIcAllocations2Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionConfigAuctionIcAllocations2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionConfigAuctionIcAllocations2Mapping([usize; 12]);
 /// # Summary
 ///
@@ -978,7 +1034,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionIcAllocations2 {
     type Row<'row> = IrauctionConfigAuctionIcAllocations2Row<'row>;
     type FieldMapping = IrauctionConfigAuctionIcAllocations2Mapping;
     type PrimaryKey = IrauctionConfigAuctionIcAllocations2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1074,11 +1129,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionIcAllocations2 {
         }
         Ok(IrauctionConfigAuctionIcAllocations2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1094,9 +1144,16 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionIcAllocations2 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_config_auction_ic_allocations_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_config_auction_ic_allocations_v2_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionConfigAuctionIcAllocations2Row {
@@ -1378,7 +1435,27 @@ pub struct IrauctionConfigAuctionIcAllocations2Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     auctionfee_sales_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct IrauctionConfigAuctionRevenueEstimate1;
+pub struct IrauctionConfigAuctionRevenueEstimate1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &IrauctionConfigAuctionRevenueEstimate1Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionConfigAuctionRevenueEstimate1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionConfigAuctionRevenueEstimate1Mapping([usize; 11]);
 /// # Summary
 ///
@@ -1476,7 +1553,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRevenueEstimate1 {
     type Row<'row> = IrauctionConfigAuctionRevenueEstimate1Row<'row>;
     type FieldMapping = IrauctionConfigAuctionRevenueEstimate1Mapping;
     type PrimaryKey = IrauctionConfigAuctionRevenueEstimate1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1566,11 +1642,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRevenueEstimate1 {
         }
         Ok(IrauctionConfigAuctionRevenueEstimate1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1588,9 +1659,16 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRevenueEstimate1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_config_auction_revenue_estimate_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_config_auction_revenue_estimate_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionConfigAuctionRevenueEstimate1Row {
@@ -1852,7 +1930,25 @@ pub struct IrauctionConfigAuctionRevenueEstimate1Builder {
     revenue_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionConfigAuctionRevenueTrack1;
+pub struct IrauctionConfigAuctionRevenueTrack1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionConfigAuctionRevenueTrack1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionConfigAuctionRevenueTrack1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionConfigAuctionRevenueTrack1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -1970,7 +2066,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRevenueTrack1 {
     type Row<'row> = IrauctionConfigAuctionRevenueTrack1Row<'row>;
     type FieldMapping = IrauctionConfigAuctionRevenueTrack1Mapping;
     type PrimaryKey = IrauctionConfigAuctionRevenueTrack1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2049,11 +2144,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRevenueTrack1 {
         }
         Ok(IrauctionConfigAuctionRevenueTrack1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2068,9 +2158,16 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRevenueTrack1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_config_auction_revenue_track_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_config_auction_revenue_track_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionConfigAuctionRevenueTrack1Row {
@@ -2293,7 +2390,25 @@ pub struct IrauctionConfigAuctionRevenueTrack1Builder {
     authorisedby_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionConfigAuctionRpEstimate1;
+pub struct IrauctionConfigAuctionRpEstimate1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionConfigAuctionRpEstimate1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionConfigAuctionRpEstimate1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionConfigAuctionRpEstimate1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -2378,7 +2493,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRpEstimate1 {
     type Row<'row> = IrauctionConfigAuctionRpEstimate1Row<'row>;
     type FieldMapping = IrauctionConfigAuctionRpEstimate1Mapping;
     type PrimaryKey = IrauctionConfigAuctionRpEstimate1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2450,11 +2564,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRpEstimate1 {
         }
         Ok(IrauctionConfigAuctionRpEstimate1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2469,9 +2578,16 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRpEstimate1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_config_auction_rp_estimate_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_config_auction_rp_estimate_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionConfigAuctionRpEstimate1Row {
@@ -2679,7 +2795,25 @@ pub struct IrauctionConfigAuctionRpEstimate1Builder {
     rpestimate_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionConfigAuctionTranche1;
+pub struct IrauctionConfigAuctionTranche1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionConfigAuctionTranche1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionConfigAuctionTranche1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionConfigAuctionTranche1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -2770,7 +2904,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionTranche1 {
     type Row<'row> = IrauctionConfigAuctionTranche1Row<'row>;
     type FieldMapping = IrauctionConfigAuctionTranche1Mapping;
     type PrimaryKey = IrauctionConfigAuctionTranche1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2864,11 +2997,6 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionTranche1 {
         }
         Ok(IrauctionConfigAuctionTranche1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2881,9 +3009,16 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionTranche1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_config_auction_tranche_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_config_auction_tranche_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionConfigAuctionTranche1Row {
@@ -3124,7 +3259,27 @@ pub struct IrauctionConfigAuctionTranche1Builder {
     changedby_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct SettlementConfigResiduecontractpayments1;
+pub struct SettlementConfigResiduecontractpayments1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &SettlementConfigResiduecontractpayments1Row<'_>,
+        ) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementConfigResiduecontractpayments1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SettlementConfigResiduecontractpayments1Mapping([usize; 3]);
 /// # Summary
 ///
@@ -3179,7 +3334,6 @@ impl mmsdm_core::GetTable for SettlementConfigResiduecontractpayments1 {
     type Row<'row> = SettlementConfigResiduecontractpayments1Row<'row>;
     type FieldMapping = SettlementConfigResiduecontractpayments1Mapping;
     type PrimaryKey = SettlementConfigResiduecontractpayments1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3226,11 +3380,6 @@ impl mmsdm_core::GetTable for SettlementConfigResiduecontractpayments1 {
         }
         Ok(SettlementConfigResiduecontractpayments1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3243,9 +3392,16 @@ impl mmsdm_core::GetTable for SettlementConfigResiduecontractpayments1 {
             participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "settlement_config_residuecontractpayments_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlement_config_residuecontractpayments_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SettlementConfigResiduecontractpayments1Row {
@@ -3355,7 +3511,25 @@ pub struct SettlementConfigResiduecontractpayments1Builder {
     participantid_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionBidsFileTrk1;
+pub struct IrauctionBidsFileTrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionBidsFileTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionBidsFileTrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionBidsFileTrk1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -3479,7 +3653,6 @@ impl mmsdm_core::GetTable for IrauctionBidsFileTrk1 {
     type Row<'row> = IrauctionBidsFileTrk1Row<'row>;
     type FieldMapping = IrauctionBidsFileTrk1Mapping;
     type PrimaryKey = IrauctionBidsFileTrk1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3536,11 +3709,6 @@ impl mmsdm_core::GetTable for IrauctionBidsFileTrk1 {
         }
         Ok(IrauctionBidsFileTrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3552,9 +3720,14 @@ impl mmsdm_core::GetTable for IrauctionBidsFileTrk1 {
             participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_bids_file_trk_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_bids_file_trk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionBidsFileTrk1Row {
@@ -3722,7 +3895,25 @@ pub struct IrauctionBidsFileTrk1Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     auctionid_array: arrow::array::builder::StringBuilder,
 }
-pub struct IrauctionResidueBidTrk1;
+pub struct IrauctionResidueBidTrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionResidueBidTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionResidueBidTrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionResidueBidTrk1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -3802,7 +3993,6 @@ impl mmsdm_core::GetTable for IrauctionResidueBidTrk1 {
     type Row<'row> = IrauctionResidueBidTrk1Row<'row>;
     type FieldMapping = IrauctionResidueBidTrk1Mapping;
     type PrimaryKey = IrauctionResidueBidTrk1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3862,11 +4052,6 @@ impl mmsdm_core::GetTable for IrauctionResidueBidTrk1 {
         }
         Ok(IrauctionResidueBidTrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3878,9 +4063,14 @@ impl mmsdm_core::GetTable for IrauctionResidueBidTrk1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_residue_bid_trk_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_residue_bid_trk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionResidueBidTrk1Row {
@@ -4036,7 +4226,25 @@ pub struct IrauctionResidueBidTrk1Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     auctionid_array: arrow::array::builder::StringBuilder,
 }
-pub struct IrauctionResidueContracts1;
+pub struct IrauctionResidueContracts1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionResidueContracts1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionResidueContracts1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionResidueContracts1Mapping([usize; 18]);
 /// # Summary
 ///
@@ -4230,7 +4438,6 @@ impl mmsdm_core::GetTable for IrauctionResidueContracts1 {
     type Row<'row> = IrauctionResidueContracts1Row<'row>;
     type FieldMapping = IrauctionResidueContracts1Mapping;
     type PrimaryKey = IrauctionResidueContracts1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4342,11 +4549,6 @@ impl mmsdm_core::GetTable for IrauctionResidueContracts1 {
         }
         Ok(IrauctionResidueContracts1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4358,9 +4560,14 @@ impl mmsdm_core::GetTable for IrauctionResidueContracts1 {
             tranche: row.tranche,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_residue_contracts_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_residue_contracts_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionResidueContracts1Row {
@@ -4691,7 +4898,25 @@ pub struct IrauctionResidueContracts1Builder {
     description_array: arrow::array::builder::StringBuilder,
     auctionid_array: arrow::array::builder::StringBuilder,
 }
-pub struct IrauctionResidueConData2;
+pub struct IrauctionResidueConData2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionResidueConData2Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionResidueConData2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionResidueConData2Mapping([usize; 9]);
 /// # Summary
 ///
@@ -4782,7 +5007,6 @@ impl mmsdm_core::GetTable for IrauctionResidueConData2 {
     type Row<'row> = IrauctionResidueConData2Row<'row>;
     type FieldMapping = IrauctionResidueConData2Mapping;
     type PrimaryKey = IrauctionResidueConData2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4855,11 +5079,6 @@ impl mmsdm_core::GetTable for IrauctionResidueConData2 {
         }
         Ok(IrauctionResidueConData2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4873,9 +5092,14 @@ impl mmsdm_core::GetTable for IrauctionResidueConData2 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_residue_con_data_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_residue_con_data_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionResidueConData2Row {
@@ -5095,7 +5319,25 @@ pub struct IrauctionResidueConData2Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     secondary_units_sold_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct IrauctionResidueConEstimatesTrk1;
+pub struct IrauctionResidueConEstimatesTrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionResidueConEstimatesTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionResidueConEstimatesTrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionResidueConEstimatesTrk1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -5164,7 +5406,6 @@ impl mmsdm_core::GetTable for IrauctionResidueConEstimatesTrk1 {
     type Row<'row> = IrauctionResidueConEstimatesTrk1Row<'row>;
     type FieldMapping = IrauctionResidueConEstimatesTrk1Mapping;
     type PrimaryKey = IrauctionResidueConEstimatesTrk1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -5229,11 +5470,6 @@ impl mmsdm_core::GetTable for IrauctionResidueConEstimatesTrk1 {
         }
         Ok(IrauctionResidueConEstimatesTrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -5246,9 +5482,16 @@ impl mmsdm_core::GetTable for IrauctionResidueConEstimatesTrk1 {
             valuationid: row.valuationid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_residue_con_estimates_trk_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_residue_con_estimates_trk_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionResidueConEstimatesTrk1Row {
@@ -5416,7 +5659,25 @@ pub struct IrauctionResidueConEstimatesTrk1Builder {
     versionno_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionResidueConFunds1;
+pub struct IrauctionResidueConFunds1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionResidueConFunds1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionResidueConFunds1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionResidueConFunds1Mapping([usize; 11]);
 /// # Summary
 ///
@@ -5510,7 +5771,6 @@ impl mmsdm_core::GetTable for IrauctionResidueConFunds1 {
     type Row<'row> = IrauctionResidueConFunds1Row<'row>;
     type FieldMapping = IrauctionResidueConFunds1Mapping;
     type PrimaryKey = IrauctionResidueConFunds1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -5600,11 +5860,6 @@ impl mmsdm_core::GetTable for IrauctionResidueConFunds1 {
         }
         Ok(IrauctionResidueConFunds1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -5616,9 +5871,14 @@ impl mmsdm_core::GetTable for IrauctionResidueConFunds1 {
             interconnectorid: row.interconnectorid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_residue_con_funds_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_residue_con_funds_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionResidueConFunds1Row {
@@ -5880,7 +6140,25 @@ pub struct IrauctionResidueConFunds1Builder {
     actualreserveprice_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionBidsFundsBid1;
+pub struct IrauctionBidsFundsBid1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionBidsFundsBid1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionBidsFundsBid1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionBidsFundsBid1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -5968,7 +6246,6 @@ impl mmsdm_core::GetTable for IrauctionBidsFundsBid1 {
     type Row<'row> = IrauctionBidsFundsBid1Row<'row>;
     type FieldMapping = IrauctionBidsFundsBid1Mapping;
     type PrimaryKey = IrauctionBidsFundsBid1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -6035,11 +6312,6 @@ impl mmsdm_core::GetTable for IrauctionBidsFundsBid1 {
         }
         Ok(IrauctionBidsFundsBid1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -6054,9 +6326,14 @@ impl mmsdm_core::GetTable for IrauctionBidsFundsBid1 {
             participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_bids_funds_bid_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_bids_funds_bid_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionBidsFundsBid1Row {
@@ -6252,7 +6529,25 @@ pub struct IrauctionBidsFundsBid1Builder {
     units_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionResiduePriceBid1;
+pub struct IrauctionResiduePriceBid1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionResiduePriceBid1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionResiduePriceBid1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionResiduePriceBid1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -6337,7 +6632,6 @@ impl mmsdm_core::GetTable for IrauctionResiduePriceBid1 {
     type Row<'row> = IrauctionResiduePriceBid1Row<'row>;
     type FieldMapping = IrauctionResiduePriceBid1Mapping;
     type PrimaryKey = IrauctionResiduePriceBid1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -6403,11 +6697,6 @@ impl mmsdm_core::GetTable for IrauctionResiduePriceBid1 {
         }
         Ok(IrauctionResiduePriceBid1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -6420,9 +6709,14 @@ impl mmsdm_core::GetTable for IrauctionResiduePriceBid1 {
             participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_residue_price_bid_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_residue_price_bid_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionResiduePriceBid1Row {
@@ -6597,7 +6891,25 @@ pub struct IrauctionResiduePriceBid1Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     auctionid_array: arrow::array::builder::StringBuilder,
 }
-pub struct IrauctionResiduePriceFundsBid1;
+pub struct IrauctionResiduePriceFundsBid1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionResiduePriceFundsBid1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionResiduePriceFundsBid1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionResiduePriceFundsBid1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -6684,7 +6996,6 @@ impl mmsdm_core::GetTable for IrauctionResiduePriceFundsBid1 {
     type Row<'row> = IrauctionResiduePriceFundsBid1Row<'row>;
     type FieldMapping = IrauctionResiduePriceFundsBid1Mapping;
     type PrimaryKey = IrauctionResiduePriceFundsBid1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -6751,11 +7062,6 @@ impl mmsdm_core::GetTable for IrauctionResiduePriceFundsBid1 {
         }
         Ok(IrauctionResiduePriceFundsBid1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -6769,9 +7075,16 @@ impl mmsdm_core::GetTable for IrauctionResiduePriceFundsBid1 {
             linkedbidflag: row.linkedbidflag,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_residue_price_funds_bid_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_residue_price_funds_bid_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionResiduePriceFundsBid1Row {
@@ -6972,7 +7285,25 @@ pub struct IrauctionResiduePriceFundsBid1Builder {
     auctionid_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionResiduePublicData1;
+pub struct IrauctionResiduePublicData1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionResiduePublicData1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionResiduePublicData1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionResiduePublicData1Mapping([usize; 9]);
 /// # Summary
 ///
@@ -7059,7 +7390,6 @@ impl mmsdm_core::GetTable for IrauctionResiduePublicData1 {
     type Row<'row> = IrauctionResiduePublicData1Row<'row>;
     type FieldMapping = IrauctionResiduePublicData1Mapping;
     type PrimaryKey = IrauctionResiduePublicData1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -7137,11 +7467,6 @@ impl mmsdm_core::GetTable for IrauctionResiduePublicData1 {
         }
         Ok(IrauctionResiduePublicData1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -7154,9 +7479,14 @@ impl mmsdm_core::GetTable for IrauctionResiduePublicData1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_residue_public_data_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_residue_public_data_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionResiduePublicData1Row {
@@ -7381,7 +7711,25 @@ pub struct IrauctionResiduePublicData1Builder {
     reserveprice_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionResidueTrk1;
+pub struct IrauctionResidueTrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionResidueTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionResidueTrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionResidueTrk1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -7509,7 +7857,6 @@ impl mmsdm_core::GetTable for IrauctionResidueTrk1 {
     type Row<'row> = IrauctionResidueTrk1Row<'row>;
     type FieldMapping = IrauctionResidueTrk1Mapping;
     type PrimaryKey = IrauctionResidueTrk1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -7583,11 +7930,6 @@ impl mmsdm_core::GetTable for IrauctionResidueTrk1 {
         }
         Ok(IrauctionResidueTrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -7598,9 +7940,14 @@ impl mmsdm_core::GetTable for IrauctionResidueTrk1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_residue_trk_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_residue_trk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionResidueTrk1Row {
@@ -7804,7 +8151,25 @@ pub struct IrauctionResidueTrk1Builder {
     status_array: arrow::array::builder::StringBuilder,
     auctionid_array: arrow::array::builder::StringBuilder,
 }
-pub struct IrauctionSraCashSecurity1;
+pub struct IrauctionSraCashSecurity1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionSraCashSecurity1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionSraCashSecurity1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionSraCashSecurity1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -7909,7 +8274,6 @@ impl mmsdm_core::GetTable for IrauctionSraCashSecurity1 {
     type Row<'row> = IrauctionSraCashSecurity1Row<'row>;
     type FieldMapping = IrauctionSraCashSecurity1Mapping;
     type PrimaryKey = IrauctionSraCashSecurity1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -7993,11 +8357,6 @@ impl mmsdm_core::GetTable for IrauctionSraCashSecurity1 {
         }
         Ok(IrauctionSraCashSecurity1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -8007,9 +8366,14 @@ impl mmsdm_core::GetTable for IrauctionSraCashSecurity1 {
             cash_security_id: row.cash_security_id().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_sra_cash_security_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_sra_cash_security_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionSraCashSecurity1Row {
@@ -8228,7 +8592,25 @@ pub struct IrauctionSraCashSecurity1Builder {
     deletiondate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionSraFinancialAucpayDetail1;
+pub struct IrauctionSraFinancialAucpayDetail1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionSraFinancialAucpayDetail1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionSraFinancialAucpayDetail1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionSraFinancialAucpayDetail1Mapping([usize; 17]);
 /// # Summary
 ///
@@ -8352,7 +8734,6 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucpayDetail1 {
     type Row<'row> = IrauctionSraFinancialAucpayDetail1Row<'row>;
     type FieldMapping = IrauctionSraFinancialAucpayDetail1Mapping;
     type PrimaryKey = IrauctionSraFinancialAucpayDetail1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -8458,11 +8839,6 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucpayDetail1 {
         }
         Ok(IrauctionSraFinancialAucpayDetail1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -8478,9 +8854,16 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucpayDetail1 {
             sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_sra_financial_aucpay_detail_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_sra_financial_aucpay_detail_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionSraFinancialAucpayDetail1Row {
@@ -8843,7 +9226,25 @@ pub struct IrauctionSraFinancialAucpayDetail1Builder {
     net_payment_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionSraFinancialAucpaySum1;
+pub struct IrauctionSraFinancialAucpaySum1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionSraFinancialAucpaySum1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionSraFinancialAucpaySum1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionSraFinancialAucpaySum1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -8924,7 +9325,6 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucpaySum1 {
     type Row<'row> = IrauctionSraFinancialAucpaySum1Row<'row>;
     type FieldMapping = IrauctionSraFinancialAucpaySum1Mapping;
     type PrimaryKey = IrauctionSraFinancialAucpaySum1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -9003,11 +9403,6 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucpaySum1 {
         }
         Ok(IrauctionSraFinancialAucpaySum1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -9020,9 +9415,16 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucpaySum1 {
             sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_sra_financial_aucpay_sum_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_sra_financial_aucpay_sum_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionSraFinancialAucpaySum1Row {
@@ -9258,7 +9660,25 @@ pub struct IrauctionSraFinancialAucpaySum1Builder {
     net_payment_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionSraFinancialAucMardetail1;
+pub struct IrauctionSraFinancialAucMardetail1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionSraFinancialAucMardetail1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionSraFinancialAucMardetail1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionSraFinancialAucMardetail1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -9334,7 +9754,6 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucMardetail1 {
     type Row<'row> = IrauctionSraFinancialAucMardetail1Row<'row>;
     type FieldMapping = IrauctionSraFinancialAucMardetail1Mapping;
     type PrimaryKey = IrauctionSraFinancialAucMardetail1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -9390,11 +9809,6 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucMardetail1 {
         }
         Ok(IrauctionSraFinancialAucMardetail1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -9408,9 +9822,16 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucMardetail1 {
             sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_sra_financial_auc_mardetail_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_sra_financial_auc_mardetail_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionSraFinancialAucMardetail1Row {
@@ -9588,7 +10009,25 @@ pub struct IrauctionSraFinancialAucMardetail1Builder {
     returned_amount_array: arrow::array::builder::Decimal128Builder,
     returned_interest_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct IrauctionSraFinancialAucMargin1;
+pub struct IrauctionSraFinancialAucMargin1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionSraFinancialAucMargin1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionSraFinancialAucMargin1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionSraFinancialAucMargin1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -9661,7 +10100,6 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucMargin1 {
     type Row<'row> = IrauctionSraFinancialAucMargin1Row<'row>;
     type FieldMapping = IrauctionSraFinancialAucMargin1Mapping;
     type PrimaryKey = IrauctionSraFinancialAucMargin1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -9728,11 +10166,6 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucMargin1 {
         }
         Ok(IrauctionSraFinancialAucMargin1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -9745,9 +10178,16 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucMargin1 {
             sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_sra_financial_auc_margin_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_sra_financial_auc_margin_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionSraFinancialAucMargin1Row {
@@ -9947,7 +10387,25 @@ pub struct IrauctionSraFinancialAucMargin1Builder {
     returned_margin_array: arrow::array::builder::Decimal128Builder,
     returned_margin_interest_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct IrauctionSraFinancialAucReceipts1;
+pub struct IrauctionSraFinancialAucReceipts1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionSraFinancialAucReceipts1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionSraFinancialAucReceipts1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionSraFinancialAucReceipts1Mapping([usize; 13]);
 /// # Summary
 ///
@@ -10055,7 +10513,6 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucReceipts1 {
     type Row<'row> = IrauctionSraFinancialAucReceipts1Row<'row>;
     type FieldMapping = IrauctionSraFinancialAucReceipts1Mapping;
     type PrimaryKey = IrauctionSraFinancialAucReceipts1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -10137,11 +10594,6 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucReceipts1 {
         }
         Ok(IrauctionSraFinancialAucReceipts1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -10157,9 +10609,16 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucReceipts1 {
             sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_sra_financial_auc_receipts_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_sra_financial_auc_receipts_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionSraFinancialAucReceipts1Row {
@@ -10442,7 +10901,25 @@ pub struct IrauctionSraFinancialAucReceipts1Builder {
     proceeds_amount_array: arrow::array::builder::Decimal128Builder,
     units_sold_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct IrauctionSraFinancialRuntrk1;
+pub struct IrauctionSraFinancialRuntrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionSraFinancialRuntrk1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionSraFinancialRuntrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionSraFinancialRuntrk1Mapping([usize; 9]);
 /// # Summary
 ///
@@ -10527,7 +11004,6 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialRuntrk1 {
     type Row<'row> = IrauctionSraFinancialRuntrk1Row<'row>;
     type FieldMapping = IrauctionSraFinancialRuntrk1Mapping;
     type PrimaryKey = IrauctionSraFinancialRuntrk1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -10592,11 +11068,6 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialRuntrk1 {
         }
         Ok(IrauctionSraFinancialRuntrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -10608,9 +11079,14 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialRuntrk1 {
             sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_sra_financial_runtrk_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_sra_financial_runtrk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionSraFinancialRuntrk1Row {
@@ -10797,7 +11273,25 @@ pub struct IrauctionSraFinancialRuntrk1Builder {
     makeup_versionno_array: arrow::array::builder::Int64Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionSraOfferProduct1;
+pub struct IrauctionSraOfferProduct1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionSraOfferProduct1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionSraOfferProduct1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionSraOfferProduct1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -10917,7 +11411,6 @@ impl mmsdm_core::GetTable for IrauctionSraOfferProduct1 {
     type Row<'row> = IrauctionSraOfferProduct1Row<'row>;
     type FieldMapping = IrauctionSraOfferProduct1Mapping;
     type PrimaryKey = IrauctionSraOfferProduct1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -10982,11 +11475,6 @@ impl mmsdm_core::GetTable for IrauctionSraOfferProduct1 {
         }
         Ok(IrauctionSraOfferProduct1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -10999,9 +11487,14 @@ impl mmsdm_core::GetTable for IrauctionSraOfferProduct1 {
             participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_sra_offer_product_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_sra_offer_product_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionSraOfferProduct1Row {
@@ -11202,7 +11695,25 @@ pub struct IrauctionSraOfferProduct1Builder {
     trancheid_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionSraOfferProfile1;
+pub struct IrauctionSraOfferProfile1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionSraOfferProfile1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionSraOfferProfile1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionSraOfferProfile1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -11309,7 +11820,6 @@ impl mmsdm_core::GetTable for IrauctionSraOfferProfile1 {
     type Row<'row> = IrauctionSraOfferProfile1Row<'row>;
     type FieldMapping = IrauctionSraOfferProfile1Mapping;
     type PrimaryKey = IrauctionSraOfferProfile1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -11365,11 +11875,6 @@ impl mmsdm_core::GetTable for IrauctionSraOfferProfile1 {
         }
         Ok(IrauctionSraOfferProfile1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -11381,9 +11886,14 @@ impl mmsdm_core::GetTable for IrauctionSraOfferProfile1 {
             participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_sra_offer_profile_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_sra_offer_profile_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionSraOfferProfile1Row {
@@ -11540,7 +12050,25 @@ pub struct IrauctionSraOfferProfile1Builder {
     transactionid_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct IrauctionSraPrudentialCashSecurity1;
+pub struct IrauctionSraPrudentialCashSecurity1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionSraPrudentialCashSecurity1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionSraPrudentialCashSecurity1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionSraPrudentialCashSecurity1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -11607,7 +12135,6 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialCashSecurity1 {
     type Row<'row> = IrauctionSraPrudentialCashSecurity1Row<'row>;
     type FieldMapping = IrauctionSraPrudentialCashSecurity1Mapping;
     type PrimaryKey = IrauctionSraPrudentialCashSecurity1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -11662,11 +12189,6 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialCashSecurity1 {
         }
         Ok(IrauctionSraPrudentialCashSecurity1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -11681,9 +12203,16 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialCashSecurity1 {
             prudential_runno: row.prudential_runno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_sra_prudential_cash_security_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_sra_prudential_cash_security_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionSraPrudentialCashSecurity1Row {
@@ -11837,7 +12366,25 @@ pub struct IrauctionSraPrudentialCashSecurity1Builder {
     cash_security_id_array: arrow::array::builder::StringBuilder,
     cash_security_amount_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct IrauctionSraPrudentialCompPosition1;
+pub struct IrauctionSraPrudentialCompPosition1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionSraPrudentialCompPosition1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionSraPrudentialCompPosition1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionSraPrudentialCompPosition1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -11901,7 +12448,6 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialCompPosition1 {
     type Row<'row> = IrauctionSraPrudentialCompPosition1Row<'row>;
     type FieldMapping = IrauctionSraPrudentialCompPosition1Mapping;
     type PrimaryKey = IrauctionSraPrudentialCompPosition1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -11967,11 +12513,6 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialCompPosition1 {
         }
         Ok(IrauctionSraPrudentialCompPosition1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -11985,9 +12526,16 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialCompPosition1 {
             prudential_runno: row.prudential_runno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_sra_prudential_comp_position_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_sra_prudential_comp_position_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionSraPrudentialCompPosition1Row {
@@ -12166,7 +12714,25 @@ pub struct IrauctionSraPrudentialCompPosition1Builder {
     prudential_exposure_amount_array: arrow::array::builder::Decimal128Builder,
     trading_margin_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct IrauctionSraPrudentialExposure1;
+pub struct IrauctionSraPrudentialExposure1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionSraPrudentialExposure1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionSraPrudentialExposure1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionSraPrudentialExposure1Mapping([usize; 14]);
 /// # Summary
 ///
@@ -12287,7 +12853,6 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialExposure1 {
     type Row<'row> = IrauctionSraPrudentialExposure1Row<'row>;
     type FieldMapping = IrauctionSraPrudentialExposure1Mapping;
     type PrimaryKey = IrauctionSraPrudentialExposure1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -12371,11 +12936,6 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialExposure1 {
         }
         Ok(IrauctionSraPrudentialExposure1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -12391,9 +12951,16 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialExposure1 {
             sra_year: row.sra_year,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_sra_prudential_exposure_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "irauction_sra_prudential_exposure_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionSraPrudentialExposure1Row {
@@ -12687,7 +13254,25 @@ pub struct IrauctionSraPrudentialExposure1Builder {
     cancellation_volume_array: arrow::array::builder::Decimal128Builder,
     trading_position_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct IrauctionSraPrudentialRun1;
+pub struct IrauctionSraPrudentialRun1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionSraPrudentialRun1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionSraPrudentialRun1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionSraPrudentialRun1Mapping([usize; 2]);
 /// # Summary
 ///
@@ -12727,7 +13312,6 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialRun1 {
     type Row<'row> = IrauctionSraPrudentialRun1Row<'row>;
     type FieldMapping = IrauctionSraPrudentialRun1Mapping;
     type PrimaryKey = IrauctionSraPrudentialRun1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -12774,11 +13358,6 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialRun1 {
         }
         Ok(IrauctionSraPrudentialRun1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -12789,9 +13368,14 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialRun1 {
             prudential_runno: row.prudential_runno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_sra_prudential_run_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_sra_prudential_run_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionSraPrudentialRun1Row {
@@ -12889,7 +13473,25 @@ pub struct IrauctionSraPrudentialRun1Builder {
     prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     prudential_runno_array: arrow::array::builder::Int64Builder,
 }
-pub struct IrauctionValuationid1;
+pub struct IrauctionValuationid1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&IrauctionValuationid1Row<'_>) -> mmsdm_core::PartitionValue,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl IrauctionValuationid1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct IrauctionValuationid1Mapping([usize; 3]);
 /// # Summary
 ///
@@ -12952,7 +13554,6 @@ impl mmsdm_core::GetTable for IrauctionValuationid1 {
     type Row<'row> = IrauctionValuationid1Row<'row>;
     type FieldMapping = IrauctionValuationid1Mapping;
     type PrimaryKey = IrauctionValuationid1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -12999,11 +13600,6 @@ impl mmsdm_core::GetTable for IrauctionValuationid1 {
         }
         Ok(IrauctionValuationid1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -13013,9 +13609,14 @@ impl mmsdm_core::GetTable for IrauctionValuationid1 {
             valuationid: row.valuationid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "irauction_valuationid_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("irauction_valuationid_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         IrauctionValuationid1Row {
