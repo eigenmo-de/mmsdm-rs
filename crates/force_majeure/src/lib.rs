@@ -7,7 +7,7 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct ApApevent1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&ApApevent1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(&ApApevent1Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +16,7 @@ impl ApApevent1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -363,22 +363,30 @@ impl mmsdm_core::ArrowSchema for ApApevent1 {
             });
         builder
             .effectivefrominterval_array
-            .append_option(row.effectivefrominterval.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.effectivefrominterval.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .effectivetointerval_array
-            .append_option(row.effectivetointerval.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.effectivetointerval.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.reason_array.append_option(row.reason());
         builder.startauthorisedby_array.append_option(row.startauthorisedby());
         builder
             .startauthoriseddate_array
-            .append_option(row.startauthoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.startauthoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.endauthorisedby_array.append_option(row.endauthorisedby());
         builder
             .endauthoriseddate_array
-            .append_option(row.endauthoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.endauthoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -423,7 +431,9 @@ pub struct ApApevent1Builder {
 }
 pub struct ApApeventregion2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&ApApeventregion2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &ApApeventregion2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -432,7 +442,7 @@ impl ApApeventregion2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -843,7 +853,7 @@ impl mmsdm_core::ArrowSchema for ApApeventregion2 {
         builder.regionid_array.append_value(row.regionid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .energyapflag_array
             .append_option({
@@ -1002,7 +1012,9 @@ pub struct ApApeventregion2Builder {
 }
 pub struct ForceMajeureIrfmamount1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&ForceMajeureIrfmamount1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &ForceMajeureIrfmamount1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1011,7 +1023,7 @@ impl ForceMajeureIrfmamount1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1325,7 +1337,9 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
         builder.irfmid_array.append_value(row.irfmid());
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.effectivedate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .versionno_array
             .append_value({
@@ -1352,10 +1366,12 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1397,7 +1413,9 @@ pub struct ForceMajeureIrfmamount1Builder {
 }
 pub struct ForceMajeureIrfmevents1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&ForceMajeureIrfmevents1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &ForceMajeureIrfmevents1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1406,7 +1424,7 @@ impl ForceMajeureIrfmevents1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1668,7 +1686,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
         builder.irfmid_array.append_value(row.irfmid());
         builder
             .startdate_array
-            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+            .append_option(row.startdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .startperiod_array
             .append_option({
@@ -1680,7 +1698,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
             });
         builder
             .enddate_array
-            .append_option(row.enddate.map(|val| val.timestamp_millis()));
+            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .endperiod_array
             .append_option({
@@ -1692,7 +1710,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1728,7 +1746,9 @@ pub struct ForceMajeureIrfmevents1Builder {
 }
 pub struct ForceMajeureMarketSuspendRegimeSum1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&ForceMajeureMarketSuspendRegimeSum1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &ForceMajeureMarketSuspendRegimeSum1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1737,7 +1757,7 @@ impl ForceMajeureMarketSuspendRegimeSum1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2019,14 +2039,16 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.suspension_id_array.append_value(row.suspension_id());
         builder.regionid_array.append_value(row.regionid());
-        builder.start_interval_array.append_value(row.start_interval.timestamp_millis());
+        builder
+            .start_interval_array
+            .append_value(row.start_interval.and_utc().timestamp_millis());
         builder
             .end_interval_array
-            .append_option(row.end_interval.map(|val| val.timestamp_millis()));
+            .append_option(row.end_interval.map(|val| val.and_utc().timestamp_millis()));
         builder.pricing_regime_array.append_option(row.pricing_regime());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2062,7 +2084,9 @@ pub struct ForceMajeureMarketSuspendRegimeSum1Builder {
 }
 pub struct ForceMajeureMarketSuspendRegionSum1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&ForceMajeureMarketSuspendRegionSum1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &ForceMajeureMarketSuspendRegionSum1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2071,7 +2095,7 @@ impl ForceMajeureMarketSuspendRegionSum1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2344,18 +2368,22 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
         builder.regionid_array.append_value(row.regionid());
         builder
             .initial_interval_array
-            .append_option(row.initial_interval.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.initial_interval.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .end_region_interval_array
-            .append_option(row.end_region_interval.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.end_region_interval.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .end_suspension_interval_array
             .append_option(
-                row.end_suspension_interval.map(|val| val.timestamp_millis()),
+                row.end_suspension_interval.map(|val| val.and_utc().timestamp_millis()),
             );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2391,7 +2419,9 @@ pub struct ForceMajeureMarketSuspendRegionSum1Builder {
 }
 pub struct ForceMajeureMarketSuspendSchedule2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&ForceMajeureMarketSuspendSchedule2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &ForceMajeureMarketSuspendSchedule2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2400,7 +2430,7 @@ impl ForceMajeureMarketSuspendSchedule2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2850,7 +2880,9 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder.day_type_array.append_value(row.day_type());
         builder.regionid_array.append_value(row.regionid());
         builder
@@ -2943,7 +2975,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .l1_rrp_array
             .append_option({
@@ -3029,7 +3061,7 @@ pub struct ForceMajeureMarketSuspendScheduleTrk1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
             &ForceMajeureMarketSuspendScheduleTrk1Row<'_>,
-        ) -> mmsdm_core::PartitionValue,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3038,7 +3070,7 @@ impl ForceMajeureMarketSuspendScheduleTrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3317,20 +3349,28 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .source_start_date_array
-            .append_option(row.source_start_date.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.source_start_date.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .source_end_date_array
-            .append_option(row.source_end_date.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.source_end_date.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.comments_array.append_option(row.comments());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3366,7 +3406,9 @@ pub struct ForceMajeureMarketSuspendScheduleTrk1Builder {
 }
 pub struct ForceMajeureOverriderrp1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&ForceMajeureOverriderrp1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &ForceMajeureOverriderrp1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3375,7 +3417,7 @@ impl ForceMajeureOverriderrp1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3735,7 +3777,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.regionid_array.append_value(row.regionid());
-        builder.startdate_array.append_value(row.startdate.timestamp_millis());
+        builder.startdate_array.append_value(row.startdate.and_utc().timestamp_millis());
         builder
             .startperiod_array
             .append_value({
@@ -3745,7 +3787,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
             });
         builder
             .enddate_array
-            .append_option(row.enddate.map(|val| val.timestamp_millis()));
+            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .endperiod_array
             .append_option({
@@ -3769,7 +3811,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
         builder.authoriseend_array.append_option(row.authoriseend());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3817,7 +3859,9 @@ pub struct ForceMajeureOverriderrp1Builder {
 }
 pub struct ApRegionapc1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&ApRegionapc1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &ApRegionapc1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3826,7 +3870,7 @@ impl ApRegionapc1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4102,7 +4146,9 @@ impl mmsdm_core::ArrowSchema for ApRegionapc1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.regionid_array.append_value(row.regionid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4112,11 +4158,13 @@ impl mmsdm_core::ArrowSchema for ApRegionapc1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4152,7 +4200,9 @@ pub struct ApRegionapc1Builder {
 }
 pub struct ApRegionapcintervals1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&ApRegionapcintervals1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &ApRegionapcintervals1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4161,7 +4211,7 @@ impl ApRegionapcintervals1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4486,7 +4536,9 @@ impl mmsdm_core::ArrowSchema for ApRegionapcintervals1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.regionid_array.append_value(row.regionid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4512,7 +4564,7 @@ impl mmsdm_core::ArrowSchema for ApRegionapcintervals1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .apctype_array
             .append_option({

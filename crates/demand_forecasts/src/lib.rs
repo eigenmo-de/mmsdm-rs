@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct OperationalDemandActual3 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&OperationalDemandActual3Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &OperationalDemandActual3Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl OperationalDemandActual3 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -274,7 +276,7 @@ impl mmsdm_core::ArrowSchema for OperationalDemandActual3 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .operational_demand_array
@@ -287,7 +289,7 @@ impl mmsdm_core::ArrowSchema for OperationalDemandActual3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .operational_demand_adjustment_array
             .append_option({
@@ -334,7 +336,9 @@ pub struct OperationalDemandActual3Builder {
 }
 pub struct OperationalDemandForecast1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&OperationalDemandForecast1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &OperationalDemandForecast1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -343,7 +347,7 @@ impl OperationalDemandForecast1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -627,11 +631,11 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .load_date_array
-            .append_option(row.load_date.map(|val| val.timestamp_millis()));
+            .append_option(row.load_date.map(|val| val.and_utc().timestamp_millis()));
         builder
             .operational_demand_poe10_array
             .append_option({
@@ -661,7 +665,7 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -703,7 +707,9 @@ pub struct OperationalDemandForecast1Builder {
 }
 pub struct DemandIntermittentClusterAvail2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&DemandIntermittentClusterAvail2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &DemandIntermittentClusterAvail2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -712,7 +718,7 @@ impl DemandIntermittentClusterAvail2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1006,9 +1012,13 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
+        builder
+            .tradingdate_array
+            .append_value(row.tradingdate.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
         builder.clusterid_array.append_value(row.clusterid());
         builder
             .periodid_array
@@ -1073,7 +1083,9 @@ pub struct DemandIntermittentClusterAvail2Builder {
 }
 pub struct DemandIntermittentClusterAvailDay1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&DemandIntermittentClusterAvailDay1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &DemandIntermittentClusterAvailDay1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1082,7 +1094,7 @@ impl DemandIntermittentClusterAvailDay1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1319,9 +1331,13 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvailDay1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
+        builder
+            .tradingdate_array
+            .append_value(row.tradingdate.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
         builder.clusterid_array.append_value(row.clusterid());
     }
     fn finalize_builder(
@@ -1352,7 +1368,9 @@ pub struct DemandIntermittentClusterAvailDay1Builder {
 }
 pub struct DemandIntermittentDsPred1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&DemandIntermittentDsPred1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &DemandIntermittentDsPred1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1361,7 +1379,7 @@ impl DemandIntermittentDsPred1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1715,12 +1733,16 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.origin_array.append_value(row.origin());
         builder
             .forecast_priority_array
@@ -1812,7 +1834,9 @@ pub struct DemandIntermittentDsPred1Builder {
 }
 pub struct DemandIntermittentDsRun1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&DemandIntermittentDsRun1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &DemandIntermittentDsRun1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1821,7 +1845,7 @@ impl DemandIntermittentDsRun1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2245,9 +2269,13 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
         builder.origin_array.append_value(row.origin());
         builder
             .forecast_priority_array
@@ -2260,11 +2288,13 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
         builder.comments_array.append_option(row.comments());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.model_array.append_option(row.model());
         builder
             .participant_timestamp_array
-            .append_option(row.participant_timestamp.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.participant_timestamp.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .suppressed_aemo_array
             .append_option({
@@ -2340,7 +2370,9 @@ pub struct DemandIntermittentDsRun1Builder {
 }
 pub struct ForecastIntermittentGen1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&ForecastIntermittentGen1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &ForecastIntermittentGen1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2349,7 +2381,7 @@ impl ForecastIntermittentGen1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2613,14 +2645,16 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder
             .start_interval_datetime_array
-            .append_value(row.start_interval_datetime.timestamp_millis());
+            .append_value(row.start_interval_datetime.and_utc().timestamp_millis());
         builder
             .end_interval_datetime_array
-            .append_value(row.end_interval_datetime.timestamp_millis());
+            .append_value(row.end_interval_datetime.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_option({
@@ -2632,7 +2666,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2668,7 +2702,9 @@ pub struct ForecastIntermittentGen1Builder {
 }
 pub struct ForecastIntermittentGenData1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&ForecastIntermittentGenData1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &ForecastIntermittentGenData1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2677,7 +2713,7 @@ impl ForecastIntermittentGenData1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2983,11 +3019,13 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder
             .powermean_array
             .append_option({
@@ -3026,7 +3064,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3068,7 +3106,9 @@ pub struct ForecastIntermittentGenData1Builder {
 }
 pub struct DemandIntermittentGenLimit1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&DemandIntermittentGenLimit1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &DemandIntermittentGenLimit1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3077,7 +3117,7 @@ impl DemandIntermittentGenLimit1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3322,9 +3362,13 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimit1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
+        builder
+            .tradingdate_array
+            .append_value(row.tradingdate.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
         builder
             .periodid_array
             .append_value({
@@ -3365,7 +3409,9 @@ pub struct DemandIntermittentGenLimit1Builder {
 }
 pub struct DemandIntermittentGenLimitDay1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&DemandIntermittentGenLimitDay1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &DemandIntermittentGenLimitDay1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3374,7 +3420,7 @@ impl DemandIntermittentGenLimitDay1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3682,13 +3728,17 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
+        builder
+            .tradingdate_array
+            .append_value(row.tradingdate.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
         builder.participantid_array.append_option(row.participantid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.authorisedbyuser_array.append_option(row.authorisedbyuser());
         builder
             .authorisedbyparticipantid_array
@@ -3732,7 +3782,9 @@ pub struct DemandIntermittentGenLimitDay1Builder {
 }
 pub struct DemandIntermittentGenScada1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&DemandIntermittentGenScada1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &DemandIntermittentGenScada1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3741,7 +3793,7 @@ impl DemandIntermittentGenScada1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3990,7 +4042,9 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.scada_type_array.append_value(row.scada_type());
         builder
@@ -4035,7 +4089,9 @@ pub struct DemandIntermittentGenScada1Builder {
 }
 pub struct DemandMtpasaIntermittentAvail2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&DemandMtpasaIntermittentAvail2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &DemandMtpasaIntermittentAvail2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4044,7 +4100,7 @@ impl DemandMtpasaIntermittentAvail2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4337,13 +4393,17 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
+        builder
+            .tradingdate_array
+            .append_value(row.tradingdate.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
         builder.clusterid_array.append_value(row.clusterid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .elements_unavailable_array
             .append_option({
@@ -4400,7 +4460,9 @@ pub struct DemandMtpasaIntermittentAvail2Builder {
 }
 pub struct DemandMtpasaIntermittentLimit1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&DemandMtpasaIntermittentLimit1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &DemandMtpasaIntermittentLimit1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4409,7 +4471,7 @@ impl DemandMtpasaIntermittentLimit1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4705,12 +4767,16 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
+        builder
+            .tradingdate_array
+            .append_value(row.tradingdate.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.uppermwlimit_array.append_option(row.uppermwlimit);
         builder.authorisedbyuser_array.append_option(row.authorisedbyuser());
         builder
@@ -4755,7 +4821,9 @@ pub struct DemandMtpasaIntermittentLimit1Builder {
 }
 pub struct DemandPeriod1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&DemandPeriod1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &DemandPeriod1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4764,7 +4832,7 @@ impl DemandPeriod1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5140,10 +5208,14 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+            .append_option(
+                row.effectivedate.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
-        builder.offerdate_array.append_value(row.offerdate.timestamp_millis());
+        builder.offerdate_array.append_value(row.offerdate.and_utc().timestamp_millis());
         builder
             .periodid_array
             .append_value({
@@ -5187,7 +5259,7 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .mr_schedule_array
             .append_option({
@@ -5247,7 +5319,7 @@ pub struct DemandPeriod1Builder {
 }
 pub struct DemandTrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&DemandTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(&DemandTrk1Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -5256,7 +5328,7 @@ impl DemandTrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5578,9 +5650,11 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
-        builder.offerdate_array.append_value(row.offerdate.timestamp_millis());
+        builder.offerdate_array.append_value(row.offerdate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -5591,11 +5665,13 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
         builder.filename_array.append_option(row.filename());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5637,7 +5713,9 @@ pub struct DemandTrk1Builder {
 }
 pub struct RooftopActual2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&RooftopActual2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &RooftopActual2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -5646,7 +5724,7 @@ impl RooftopActual2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5911,7 +5989,7 @@ impl mmsdm_core::ArrowSchema for RooftopActual2 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.r#type_array.append_value(row.r#type());
         builder.regionid_array.append_value(row.regionid());
         builder
@@ -5934,7 +6012,7 @@ impl mmsdm_core::ArrowSchema for RooftopActual2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5970,7 +6048,9 @@ pub struct RooftopActual2Builder {
 }
 pub struct RooftopForecast1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&RooftopForecast1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &RooftopForecast1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -5979,7 +6059,7 @@ impl RooftopForecast1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -6288,11 +6368,11 @@ impl mmsdm_core::ArrowSchema for RooftopForecast1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .version_datetime_array
-            .append_value(row.version_datetime.timestamp_millis());
+            .append_value(row.version_datetime.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder
             .powermean_array
             .append_option({
@@ -6331,7 +6411,7 @@ impl mmsdm_core::ArrowSchema for RooftopForecast1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

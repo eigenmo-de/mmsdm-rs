@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct GenericConstraintEmsmaster1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&GenericConstraintEmsmaster1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &GenericConstraintEmsmaster1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl GenericConstraintEmsmaster1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -270,7 +272,7 @@ impl mmsdm_core::ArrowSchema for GenericConstraintEmsmaster1 {
         builder.grouping_id_array.append_option(row.grouping_id());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -303,7 +305,9 @@ pub struct GenericConstraintEmsmaster1Builder {
 }
 pub struct GencondataNull6 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&GencondataNull6Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &GencondataNull6Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -312,7 +316,7 @@ impl GencondataNull6 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1034,7 +1038,9 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1066,7 +1072,9 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .dynamicrhs_array
@@ -1079,7 +1087,7 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.dispatch_array.append_option(row.dispatch());
         builder.predispatch_array.append_option(row.predispatch());
         builder.stpasa_array.append_option(row.stpasa());
@@ -1197,7 +1205,9 @@ pub struct GencondataNull6Builder {
 }
 pub struct GenconsetNull1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&GenconsetNull1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &GenconsetNull1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1206,7 +1216,7 @@ impl GenconsetNull1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1494,7 +1504,9 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.genconsetid_array.append_value(row.genconsetid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1505,7 +1517,9 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
         builder.genconid_array.append_value(row.genconid());
         builder
             .genconeffdate_array
-            .append_option(row.genconeffdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.genconeffdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .genconversionno_array
             .append_option({
@@ -1517,7 +1531,7 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1556,7 +1570,9 @@ pub struct GenconsetNull1Builder {
 }
 pub struct GenconsetinvokeNull2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&GenconsetinvokeNull2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &GenconsetinvokeNull2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1565,7 +1581,7 @@ impl GenconsetinvokeNull2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1995,7 +2011,7 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.invocation_id_array.append_value(row.invocation_id);
-        builder.startdate_array.append_value(row.startdate.timestamp_millis());
+        builder.startdate_array.append_value(row.startdate.and_utc().timestamp_millis());
         builder
             .startperiod_array
             .append_value({
@@ -2006,7 +2022,7 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
         builder.genconsetid_array.append_value(row.genconsetid());
         builder
             .enddate_array
-            .append_option(row.enddate.map(|val| val.timestamp_millis()));
+            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .endperiod_array
             .append_option({
@@ -2022,13 +2038,17 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
         builder.asconstrainttype_array.append_option(row.asconstrainttype());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .startintervaldatetime_array
-            .append_option(row.startintervaldatetime.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.startintervaldatetime.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .endintervaldatetime_array
-            .append_option(row.endintervaldatetime.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.endintervaldatetime.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.systemnormal_array.append_option(row.systemnormal());
     }
     fn finalize_builder(
@@ -2089,7 +2109,9 @@ pub struct GenconsetinvokeNull2Builder {
 }
 pub struct GenconsettrkNull2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&GenconsettrkNull2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &GenconsettrkNull2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2098,7 +2120,7 @@ impl GenconsettrkNull2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2494,7 +2516,9 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.genconsetid_array.append_value(row.genconsetid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2506,10 +2530,12 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.coverage_array.append_option(row.coverage());
         builder.modifications_array.append_option(row.modifications());
         builder.systemnormal_array.append_option(row.systemnormal());
@@ -2564,7 +2590,7 @@ pub struct GenconsettrkNull2Builder {
 }
 pub struct GcrhsNull1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&GcrhsNull1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(&GcrhsNull1Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2573,7 +2599,7 @@ impl GcrhsNull1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3046,7 +3072,9 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.genconid_array.append_value(row.genconid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -3097,7 +3125,7 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
         builder.parameterterm3_array.append_option(row.parameterterm3());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3160,7 +3188,9 @@ pub struct GcrhsNull1Builder {
 }
 pub struct GeqdescNull2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&GeqdescNull2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &GeqdescNull2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3169,7 +3199,7 @@ impl GeqdescNull2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3524,7 +3554,7 @@ impl mmsdm_core::ArrowSchema for GeqdescNull2 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.impact_array.append_option(row.impact());
         builder.source_array.append_option(row.source());
         builder.limittype_array.append_option(row.limittype());
@@ -3575,7 +3605,7 @@ pub struct GeqdescNull2Builder {
 }
 pub struct GeqrhsNull1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&GeqrhsNull1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(&GeqrhsNull1Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3584,7 +3614,7 @@ impl GeqrhsNull1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4035,7 +4065,9 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.equationid_array.append_value(row.equationid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4085,7 +4117,7 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
         builder.parameterterm3_array.append_option(row.parameterterm3());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4145,7 +4177,7 @@ pub struct GeqrhsNull1Builder {
 }
 pub struct SpdcpcNull2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&SpdcpcNull2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(&SpdcpcNull2Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4154,7 +4186,7 @@ impl SpdcpcNull2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4450,7 +4482,9 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.connectionpointid_array.append_value(row.connectionpointid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4470,7 +4504,7 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.bidtype_array.append_value(row.bidtype());
     }
     fn finalize_builder(
@@ -4510,7 +4544,7 @@ pub struct SpdcpcNull2Builder {
 }
 pub struct SpdiccNull1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&SpdiccNull1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(&SpdiccNull1Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4519,7 +4553,7 @@ impl SpdiccNull1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4794,7 +4828,9 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.interconnectorid_array.append_value(row.interconnectorid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4814,7 +4850,7 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4850,7 +4886,7 @@ pub struct SpdiccNull1Builder {
 }
 pub struct SpdrcNull2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&SpdrcNull2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(&SpdrcNull2Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4859,7 +4895,7 @@ impl SpdrcNull2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5149,7 +5185,9 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.regionid_array.append_value(row.regionid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -5169,7 +5207,7 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.bidtype_array.append_value(row.bidtype());
     }
     fn finalize_builder(

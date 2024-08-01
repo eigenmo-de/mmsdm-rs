@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct PdpasaCasesolution3 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PdpasaCasesolution3Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PdpasaCasesolution3Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl PdpasaCasesolution3 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -537,7 +539,9 @@ impl mmsdm_core::ArrowSchema for PdpasaCasesolution3 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.pasaversion_array.append_option(row.pasaversion());
         builder
             .reservecondition_array
@@ -604,7 +608,7 @@ impl mmsdm_core::ArrowSchema for PdpasaCasesolution3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .reliabilitylrcdemandoption_array
             .append_option({
@@ -744,7 +748,9 @@ pub struct PdpasaCasesolution3Builder {
 }
 pub struct PdpasaConstraintsolution1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PdpasaConstraintsolution1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PdpasaConstraintsolution1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -753,7 +759,7 @@ impl PdpasaConstraintsolution1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1083,10 +1089,12 @@ impl mmsdm_core::ArrowSchema for PdpasaConstraintsolution1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
         builder
             .capacityrhs_array
@@ -1117,7 +1125,7 @@ impl mmsdm_core::ArrowSchema for PdpasaConstraintsolution1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.runtype_array.append_value(row.runtype());
         builder.studyregionid_array.append_value(row.studyregionid());
     }
@@ -1164,7 +1172,9 @@ pub struct PdpasaConstraintsolution1Builder {
 }
 pub struct PdpasaInterconnectorsoln1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PdpasaInterconnectorsoln1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PdpasaInterconnectorsoln1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1173,7 +1183,7 @@ impl PdpasaInterconnectorsoln1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1592,10 +1602,12 @@ impl mmsdm_core::ArrowSchema for PdpasaInterconnectorsoln1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.interconnectorid_array.append_value(row.interconnectorid());
         builder
             .capacitymwflow_array
@@ -1644,7 +1656,7 @@ impl mmsdm_core::ArrowSchema for PdpasaInterconnectorsoln1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.runtype_array.append_value(row.runtype());
         builder
             .exportlimitconstraintid_array
@@ -1709,7 +1721,9 @@ pub struct PdpasaInterconnectorsoln1Builder {
 }
 pub struct PdpasaRegionsolution7 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PdpasaRegionsolution7Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PdpasaRegionsolution7Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1718,7 +1732,7 @@ impl PdpasaRegionsolution7 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2692,10 +2706,12 @@ impl mmsdm_core::ArrowSchema for PdpasaRegionsolution7 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .demand10_array
@@ -2852,7 +2868,7 @@ impl mmsdm_core::ArrowSchema for PdpasaRegionsolution7 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .aggregatepasaavailability_array
             .append_option({

@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct AsofferOfferagcdata1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&AsofferOfferagcdata1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &AsofferOfferagcdata1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl AsofferOfferagcdata1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -427,7 +429,9 @@ impl mmsdm_core::ArrowSchema for AsofferOfferagcdata1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.contractid_array.append_value(row.contractid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -464,12 +468,14 @@ impl mmsdm_core::ArrowSchema for AsofferOfferagcdata1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder.filename_array.append_option(row.filename());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .periodid_array
             .append_value({
@@ -551,7 +557,9 @@ pub struct AsofferOfferagcdata1Builder {
 }
 pub struct AsofferOfferastrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&AsofferOfferastrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &AsofferOfferastrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -560,7 +568,7 @@ impl AsofferOfferastrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -818,7 +826,9 @@ impl mmsdm_core::ArrowSchema for AsofferOfferastrk1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -830,7 +840,7 @@ impl mmsdm_core::ArrowSchema for AsofferOfferastrk1 {
         builder.filename_array.append_option(row.filename());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -863,7 +873,9 @@ pub struct AsofferOfferastrk1Builder {
 }
 pub struct AsofferOfferlsheddata1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&AsofferOfferlsheddata1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &AsofferOfferlsheddata1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -872,7 +884,7 @@ impl AsofferOfferlsheddata1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1211,7 +1223,9 @@ impl mmsdm_core::ArrowSchema for AsofferOfferlsheddata1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.contractid_array.append_value(row.contractid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1230,12 +1244,14 @@ impl mmsdm_core::ArrowSchema for AsofferOfferlsheddata1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder.filename_array.append_option(row.filename());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .periodid_array
             .append_value({
@@ -1287,7 +1303,9 @@ pub struct AsofferOfferlsheddata1Builder {
 }
 pub struct AsofferOfferrestartdata1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&AsofferOfferrestartdata1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &AsofferOfferrestartdata1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1296,7 +1314,7 @@ impl AsofferOfferrestartdata1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1641,7 +1659,7 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrestartdata1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.contractid_array.append_value(row.contractid());
-        builder.offerdate_array.append_value(row.offerdate.timestamp_millis());
+        builder.offerdate_array.append_value(row.offerdate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1652,12 +1670,14 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrestartdata1 {
         builder.availability_array.append_option(row.availability());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder.filename_array.append_option(row.filename());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .periodid_array
             .append_value({
@@ -1709,7 +1729,9 @@ pub struct AsofferOfferrestartdata1Builder {
 }
 pub struct AsofferOfferrpowerdata1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&AsofferOfferrpowerdata1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &AsofferOfferrpowerdata1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1718,7 +1740,7 @@ impl AsofferOfferrpowerdata1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2093,7 +2115,9 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrpowerdata1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.contractid_array.append_value(row.contractid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2137,12 +2161,14 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrpowerdata1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder.filename_array.append_option(row.filename());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

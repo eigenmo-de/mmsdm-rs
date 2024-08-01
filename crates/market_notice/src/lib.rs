@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct MarketNoticeMarketnoticedata1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketNoticeMarketnoticedata1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketNoticeMarketnoticedata1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl MarketNoticeMarketnoticedata1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -329,12 +331,14 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticedata1 {
             });
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.effectivedate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.typeid_array.append_option(row.typeid());
         builder.noticetype_array.append_option(row.noticetype());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.reason_array.append_option(row.reason());
         builder.externalreference_array.append_option(row.externalreference());
     }
@@ -375,7 +379,9 @@ pub struct MarketNoticeMarketnoticedata1Builder {
 }
 pub struct MarketNoticeMarketnoticetype1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketNoticeMarketnoticetype1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketNoticeMarketnoticetype1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -384,7 +390,7 @@ impl MarketNoticeMarketnoticetype1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -621,7 +627,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticetype1 {
         builder.raisedby_array.append_option(row.raisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -651,7 +657,9 @@ pub struct MarketNoticeMarketnoticetype1Builder {
 }
 pub struct MarketNoticeParticipantnoticetrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketNoticeParticipantnoticetrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketNoticeParticipantnoticetrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -660,7 +668,7 @@ impl MarketNoticeParticipantnoticetrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -877,7 +885,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeParticipantnoticetrk1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct MccCasesolution1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MccCasesolution1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MccCasesolution1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl MccCasesolution1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -178,7 +180,9 @@ impl mmsdm_core::ArrowSchema for MccCasesolution1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -199,7 +203,9 @@ pub struct MccCasesolution1Builder {
 }
 pub struct MccConstraintsolution1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MccConstraintsolution1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MccConstraintsolution1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -208,7 +214,7 @@ impl MccConstraintsolution1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -430,7 +436,9 @@ impl mmsdm_core::ArrowSchema for MccConstraintsolution1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
         builder
             .rhs_array

@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct MeterdataAggregateReads1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MeterdataAggregateReads1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MeterdataAggregateReads1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl MeterdataAggregateReads1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -376,7 +378,9 @@ impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder.connectionpointid_array.append_value(row.connectionpointid());
         builder.meter_type_array.append_value(row.meter_type());
         builder.frmp_array.append_value(row.frmp());
@@ -404,7 +408,7 @@ impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -452,7 +456,9 @@ pub struct MeterdataAggregateReads1Builder {
 }
 pub struct MeterdataIndividualReads1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MeterdataIndividualReads1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MeterdataIndividualReads1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -461,7 +467,7 @@ impl MeterdataIndividualReads1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -843,7 +849,9 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder.meter_id_array.append_value(row.meter_id());
         builder.meter_id_suffix_array.append_value(row.meter_id_suffix());
         builder.frmp_array.append_value(row.frmp());
@@ -873,7 +881,7 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -927,7 +935,9 @@ pub struct MeterdataIndividualReads1Builder {
 }
 pub struct MeterdataInterconnector1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MeterdataInterconnector1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MeterdataInterconnector1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -936,7 +946,7 @@ impl MeterdataInterconnector1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1233,7 +1243,9 @@ impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder.interconnectorid_array.append_value(row.interconnectorid());
         builder
             .periodid_array
@@ -1262,7 +1274,7 @@ impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1301,7 +1313,9 @@ pub struct MeterdataInterconnector1Builder {
 }
 pub struct MeterdataMeterdataSaps1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MeterdataMeterdataSaps1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MeterdataMeterdataSaps1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1310,7 +1324,7 @@ impl MeterdataMeterdataSaps1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1672,7 +1686,9 @@ impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder.connectionpoint_id_array.append_value(row.connectionpoint_id());
         builder.meter_type_array.append_value(row.meter_type());
         builder.frmp_array.append_value(row.frmp());
@@ -1704,7 +1720,7 @@ impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1752,7 +1768,9 @@ pub struct MeterdataMeterdataSaps1Builder {
 }
 pub struct MeterdataWdrReads1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MeterdataWdrReads1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MeterdataWdrReads1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1761,7 +1779,7 @@ impl MeterdataWdrReads1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2204,7 +2222,9 @@ impl mmsdm_core::ArrowSchema for MeterdataWdrReads1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder.meter_id_array.append_value(row.meter_id());
         builder.tni_array.append_option(row.tni());
         builder.frmp_array.append_option(row.frmp());

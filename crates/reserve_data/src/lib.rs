@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct MtpasaReservelimit1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaReservelimit1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaReservelimit1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl MtpasaReservelimit1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -298,10 +300,12 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .version_datetime_array
-            .append_value(row.version_datetime.timestamp_millis());
+            .append_value(row.version_datetime.and_utc().timestamp_millis());
         builder.reservelimitid_array.append_value(row.reservelimitid());
         builder.description_array.append_option(row.description());
         builder
@@ -315,7 +319,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -351,7 +355,9 @@ pub struct MtpasaReservelimit1Builder {
 }
 pub struct MtpasaReservelimitRegion1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaReservelimitRegion1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaReservelimitRegion1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -360,7 +366,7 @@ impl MtpasaReservelimitRegion1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -636,10 +642,12 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .version_datetime_array
-            .append_value(row.version_datetime.timestamp_millis());
+            .append_value(row.version_datetime.and_utc().timestamp_millis());
         builder.reservelimitid_array.append_value(row.reservelimitid());
         builder.regionid_array.append_value(row.regionid());
         builder
@@ -653,7 +661,7 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -689,7 +697,9 @@ pub struct MtpasaReservelimitRegion1Builder {
 }
 pub struct MtpasaReservelimitSet1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaReservelimitSet1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaReservelimitSet1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -698,7 +708,7 @@ impl MtpasaReservelimitSet1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1006,19 +1016,23 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .version_datetime_array
-            .append_value(row.version_datetime.timestamp_millis());
+            .append_value(row.version_datetime.and_utc().timestamp_millis());
         builder.reservelimit_set_id_array.append_option(row.reservelimit_set_id());
         builder.description_array.append_option(row.description());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1057,7 +1071,9 @@ pub struct MtpasaReservelimitSet1Builder {
 }
 pub struct ReserveDataReserve1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&ReserveDataReserve1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &ReserveDataReserve1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1066,7 +1082,7 @@ impl ReserveDataReserve1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1538,7 +1554,9 @@ impl mmsdm_core::ArrowSchema for ReserveDataReserve1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1610,7 +1628,7 @@ impl mmsdm_core::ArrowSchema for ReserveDataReserve1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .pasareserve_array
             .append_option({

@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct GdInstructGdinstruct1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&GdInstructGdinstruct1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &GdInstructGdinstruct1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl GdInstructGdinstruct1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -521,18 +523,20 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder.participantid_array.append_option(row.participantid());
         builder
             .issuedtime_array
-            .append_option(row.issuedtime.map(|val| val.timestamp_millis()));
+            .append_option(row.issuedtime.map(|val| val.and_utc().timestamp_millis()));
         builder
             .targettime_array
-            .append_option(row.targettime.map(|val| val.timestamp_millis()));
+            .append_option(row.targettime.map(|val| val.and_utc().timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -595,7 +599,9 @@ pub struct GdInstructGdinstruct1Builder {
 }
 pub struct GdInstructInstructionsubtype1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&GdInstructInstructionsubtype1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &GdInstructInstructionsubtype1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -604,7 +610,7 @@ impl GdInstructInstructionsubtype1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -846,7 +852,7 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructionsubtype1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -876,7 +882,9 @@ pub struct GdInstructInstructionsubtype1Builder {
 }
 pub struct GdInstructInstructiontype1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&GdInstructInstructiontype1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &GdInstructInstructiontype1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -885,7 +893,7 @@ impl GdInstructInstructiontype1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1124,7 +1132,7 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructiontype1 {
         builder.regionid_array.append_option(row.regionid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

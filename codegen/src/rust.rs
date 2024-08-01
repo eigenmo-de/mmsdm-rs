@@ -145,7 +145,7 @@ impl mms::TableColumn {
     fn as_arrow_array_extractor(&self) -> String {
         let extractor = match (&self.data_type, self.mandatory) {
             (_, _) if self.is_dispatch_period() || self.is_trading_period() => {
-                format!("row.{}.start().timestamp_millis()", self.rust_field_name())
+                format!("row.{}.start().and_utc().timestamp_millis()", self.rust_field_name())
             }
             // (_, false) if self.comment.to_uppercase().contains("YYYYMMDDPPP") || self.comment.to_uppercase().contains("YYYYMMDDPP") => {
             //     format!("row.{}.map(|v| v.start().timestamp_millis())", self.rust_field_name())
@@ -157,11 +157,11 @@ impl mms::TableColumn {
             //     format!("row.{}.map(|v| v.start().timestamp_millis())", self.rust_field_name())
             // }
             (mms::DataType::Date | mms::DataType::DateTime, true) => {
-                format!("row.{}.timestamp_millis()", self.rust_field_name())
+                format!("row.{}.and_utc().timestamp_millis()", self.rust_field_name())
             }
             (mms::DataType::Date | mms::DataType::DateTime, false) => {
                 format!(
-                    "row.{}.map(|val| val.timestamp_millis())",
+                    "row.{}.map(|val| val.and_utc().timestamp_millis())",
                     self.rust_field_name()
                 )
             }
@@ -369,7 +369,7 @@ fn codegen_struct(
 ) -> anyhow::Result<()> {
     let mut manager_struct = codegen::Struct::new(&pdr_report.get_rust_manager_struct_name());
     manager_struct.vis("pub");
-    manager_struct.field("extract_row_partition", format!("alloc::boxed::Box<dyn Fn(&{}<'_>) -> mmsdm_core::PartitionValue>", pdr_report.get_rust_struct_name()));
+    manager_struct.field("extract_row_partition", format!("alloc::boxed::Box<dyn Fn(&{}<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static>", pdr_report.get_rust_struct_name()));
     manager_struct.field("row_partition_key", "mmsdm_core::PartitionKey");
     manager_struct.fmt(fmtr)?;
 
@@ -379,7 +379,7 @@ fn codegen_struct(
         let func = manager_impl.new_fn("new");
         func.vis("pub");
         func.arg("row_partition_key", "mmsdm_core::PartitionKey");
-        func.arg("func", "impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + 'static");
+        func.arg("func", "impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static");
         
         func.ret("Self");
 

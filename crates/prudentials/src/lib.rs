@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct PrudentialCompanyPosition1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PrudentialCompanyPosition1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PrudentialCompanyPosition1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl PrudentialCompanyPosition1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -512,7 +514,7 @@ impl mmsdm_core::ArrowSchema for PrudentialCompanyPosition1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .prudential_date_array
-            .append_value(row.prudential_date.timestamp_millis());
+            .append_value(row.prudential_date.and_utc().timestamp_millis());
         builder.runno_array.append_value(row.runno);
         builder.company_id_array.append_value(row.company_id());
         builder
@@ -652,7 +654,7 @@ impl mmsdm_core::ArrowSchema for PrudentialCompanyPosition1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -729,7 +731,9 @@ pub struct PrudentialCompanyPosition1Builder {
 }
 pub struct PrudentialRuntrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PrudentialRuntrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PrudentialRuntrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -738,7 +742,7 @@ impl PrudentialRuntrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -986,15 +990,17 @@ impl mmsdm_core::ArrowSchema for PrudentialRuntrk1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .prudential_date_array
-            .append_value(row.prudential_date.timestamp_millis());
+            .append_value(row.prudential_date.and_utc().timestamp_millis());
         builder.runno_array.append_value(row.runno);
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

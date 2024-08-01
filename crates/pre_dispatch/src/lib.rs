@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct PredispatchBlockedConstraints1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchBlockedConstraints1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchBlockedConstraints1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl PredispatchBlockedConstraints1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -203,7 +205,7 @@ impl mmsdm_core::ArrowSchema for PredispatchBlockedConstraints1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
     }
     fn finalize_builder(
@@ -228,7 +230,9 @@ pub struct PredispatchBlockedConstraints1Builder {
 }
 pub struct PredispatchCaseSolution1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchCaseSolution1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchCaseSolution1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -237,7 +241,7 @@ impl PredispatchCaseSolution1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -763,7 +767,7 @@ impl mmsdm_core::ArrowSchema for PredispatchCaseSolution1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -909,7 +913,7 @@ impl mmsdm_core::ArrowSchema for PredispatchCaseSolution1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .intervention_array
             .append_value({
@@ -998,7 +1002,9 @@ pub struct PredispatchCaseSolution1Builder {
 }
 pub struct PredispatchConstraintSolution5 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchConstraintSolution5Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchConstraintSolution5Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1007,7 +1013,7 @@ impl PredispatchConstraintSolution5 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1423,7 +1429,7 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -1434,7 +1440,9 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
                     })
             });
         builder.constraintid_array.append_value(row.constraintid());
-        builder.periodid_array.append_value(row.periodid.start().timestamp_millis());
+        builder
+            .periodid_array
+            .append_value(row.periodid.start().and_utc().timestamp_millis());
         builder
             .intervention_array
             .append_value({
@@ -1471,12 +1479,14 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder.duid_array.append_option(row.duid());
         builder
             .genconid_effectivedate_array
-            .append_option(row.genconid_effectivedate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.genconid_effectivedate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .genconid_versionno_array
             .append_option({
@@ -1554,7 +1564,9 @@ pub struct PredispatchConstraintSolution5Builder {
 }
 pub struct PredispatchInterconnectorSoln3 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchInterconnectorSoln3Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchInterconnectorSoln3Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1563,7 +1575,7 @@ impl PredispatchInterconnectorSoln3 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2161,7 +2173,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -2227,8 +2239,8 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .exportlimit_array
             .append_option({
@@ -2402,7 +2414,9 @@ pub struct PredispatchInterconnectorSoln3Builder {
 }
 pub struct PredispatchInterconnectrSens1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchInterconnectrSens1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchInterconnectrSens1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2411,7 +2425,7 @@ impl PredispatchInterconnectrSens1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3498,7 +3512,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -3517,7 +3531,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .intervention_active_array
             .append_option({
@@ -3916,7 +3930,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4087,7 +4101,9 @@ pub struct PredispatchInterconnectrSens1Builder {
 }
 pub struct PredispatchUnitSolution4 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchUnitSolution4Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchUnitSolution4Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4096,7 +4112,7 @@ impl PredispatchUnitSolution4 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5420,7 +5436,7 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution4 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -5649,8 +5665,8 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution4 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .lowerreg_array
             .append_option({
@@ -6167,7 +6183,9 @@ pub struct PredispatchUnitSolution4Builder {
 }
 pub struct PredispatchOffertrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchOffertrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchOffertrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -6176,7 +6194,7 @@ impl PredispatchOffertrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -6484,22 +6502,24 @@ impl mmsdm_core::ArrowSchema for PredispatchOffertrk1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.bidtype_array.append_value(row.bidtype());
         builder.periodid_array.append_value(row.periodid());
         builder
             .bidsettlementdate_array
-            .append_option(row.bidsettlementdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.bidsettlementdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .bidofferdate_array
-            .append_option(row.bidofferdate.map(|val| val.timestamp_millis()));
+            .append_option(row.bidofferdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .datetime_array
-            .append_option(row.datetime.map(|val| val.timestamp_millis()));
+            .append_option(row.datetime.map(|val| val.and_utc().timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -6541,7 +6561,9 @@ pub struct PredispatchOffertrk1Builder {
 }
 pub struct PredispatchRegionPrices2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchRegionPrices2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchRegionPrices2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -6550,7 +6572,7 @@ impl PredispatchRegionPrices2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -7345,7 +7367,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices2 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -7528,8 +7550,8 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .raise6secrrp_array
             .append_option({
@@ -7742,7 +7764,9 @@ pub struct PredispatchRegionPrices2Builder {
 }
 pub struct PredispatchPricesensitivities1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchPricesensitivities1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchPricesensitivities1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -7751,7 +7775,7 @@ impl PredispatchPricesensitivities1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -8835,7 +8859,7 @@ impl mmsdm_core::ArrowSchema for PredispatchPricesensitivities1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -9108,8 +9132,8 @@ impl mmsdm_core::ArrowSchema for PredispatchPricesensitivities1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .rrpeep29_array
             .append_option({
@@ -9424,7 +9448,9 @@ pub struct PredispatchPricesensitivities1Builder {
 }
 pub struct PredispatchRegionSolution8 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchRegionSolution8Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchRegionSolution8Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -9433,7 +9459,7 @@ impl PredispatchRegionSolution8 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -11848,7 +11874,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution8 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -12373,8 +12399,8 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution8 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .initialsupply_array
             .append_option({
@@ -13339,7 +13365,9 @@ pub struct PredispatchRegionSolution8Builder {
 }
 pub struct PredispatchScenarioDemand1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchScenarioDemand1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchScenarioDemand1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -13348,7 +13376,7 @@ impl PredispatchScenarioDemand1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -13579,7 +13607,9 @@ impl mmsdm_core::ArrowSchema for PredispatchScenarioDemand1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder.versionno_array.append_value(row.versionno);
         builder.scenario_array.append_value(row.scenario);
         builder.regionid_array.append_value(row.regionid());
@@ -13616,7 +13646,9 @@ pub struct PredispatchScenarioDemand1Builder {
 }
 pub struct PredispatchScenarioDemandTrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchScenarioDemandTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchScenarioDemandTrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -13625,7 +13657,7 @@ impl PredispatchScenarioDemandTrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -13874,15 +13906,19 @@ impl mmsdm_core::ArrowSchema for PredispatchScenarioDemandTrk1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder.versionno_array.append_value(row.versionno);
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -13915,7 +13951,9 @@ pub struct PredispatchScenarioDemandTrk1Builder {
 }
 pub struct PredispatchRegionfcasrequirement2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchRegionfcasrequirement2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchRegionfcasrequirement2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -13924,7 +13962,7 @@ impl PredispatchRegionfcasrequirement2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -14413,7 +14451,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -14430,13 +14468,17 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.periodid_array.append_value(row.periodid.start().timestamp_millis());
+        builder
+            .periodid_array
+            .append_value(row.periodid.start().and_utc().timestamp_millis());
         builder.genconid_array.append_value(row.genconid());
         builder.regionid_array.append_value(row.regionid());
         builder.bidtype_array.append_value(row.bidtype());
         builder
             .genconeffectivedate_array
-            .append_option(row.genconeffectivedate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.genconeffectivedate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .genconversionno_array
             .append_option({
@@ -14455,10 +14497,10 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
                         val.mantissa()
                     })
             });
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .base_cost_array
             .append_option({
@@ -14584,7 +14626,9 @@ pub struct PredispatchRegionfcasrequirement2Builder {
 }
 pub struct PredispatchLocalPrice1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchLocalPrice1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchLocalPrice1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -14593,7 +14637,7 @@ impl PredispatchLocalPrice1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -14876,8 +14920,8 @@ impl mmsdm_core::ArrowSchema for PredispatchLocalPrice1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.periodid_array.append_option(row.periodid());
         builder
@@ -14900,7 +14944,7 @@ impl mmsdm_core::ArrowSchema for PredispatchLocalPrice1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -14939,7 +14983,9 @@ pub struct PredispatchLocalPrice1Builder {
 }
 pub struct PredispatchMnspbidtrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&PredispatchMnspbidtrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &PredispatchMnspbidtrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -14948,7 +14994,7 @@ impl PredispatchMnspbidtrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -15276,16 +15322,20 @@ impl mmsdm_core::ArrowSchema for PredispatchMnspbidtrk1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder.linkid_array.append_value(row.linkid());
-        builder.periodid_array.append_value(row.periodid.start().timestamp_millis());
+        builder
+            .periodid_array
+            .append_value(row.periodid.start().and_utc().timestamp_millis());
         builder.participantid_array.append_option(row.participantid());
         builder
             .settlementdate_array
-            .append_option(row.settlementdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.settlementdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .offerdate_array
-            .append_option(row.offerdate.map(|val| val.timestamp_millis()));
+            .append_option(row.offerdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .versionno_array
             .append_option({
@@ -15297,10 +15347,10 @@ impl mmsdm_core::ArrowSchema for PredispatchMnspbidtrk1 {
             });
         builder
             .datetime_array
-            .append_option(row.datetime.map(|val| val.timestamp_millis()));
+            .append_option(row.datetime.map(|val| val.and_utc().timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

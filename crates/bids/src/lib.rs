@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct OfferBiddayoffer3 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&OfferBiddayoffer3Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &OfferBiddayoffer3Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl OfferBiddayoffer3 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -834,8 +836,10 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer3 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.duid_array.append_value(row.duid());
         builder.bidtype_array.append_value(row.bidtype());
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
-        builder.offerdate_array.append_value(row.offerdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
+        builder.offerdate_array.append_value(row.offerdate.and_utc().timestamp_millis());
         builder.direction_array.append_value(row.direction());
         builder
             .versionno_array
@@ -995,7 +999,7 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer3 {
         builder.normalstatus_array.append_option(row.normalstatus());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .mr_factor_array
             .append_option({
@@ -1127,7 +1131,9 @@ pub struct OfferBiddayoffer3Builder {
 }
 pub struct BidBiddayofferD3 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&BidBiddayofferD3Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &BidBiddayofferD3Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1136,7 +1142,7 @@ impl BidBiddayofferD3 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1842,16 +1848,20 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD3 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.bidtype_array.append_value(row.bidtype());
         builder.direction_array.append_value(row.direction());
         builder
             .bidsettlementdate_array
-            .append_option(row.bidsettlementdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.bidsettlementdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .offerdate_array
-            .append_option(row.offerdate.map(|val| val.timestamp_millis()));
+            .append_option(row.offerdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .versionno_array
             .append_option({
@@ -2010,7 +2020,7 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD3 {
         builder.normalstatus_array.append_option(row.normalstatus());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .mr_factor_array
             .append_option({
@@ -2125,7 +2135,9 @@ pub struct BidBiddayofferD3Builder {
 }
 pub struct BidsBidofferfiletrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&BidsBidofferfiletrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &BidsBidofferfiletrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2134,7 +2146,7 @@ impl BidsBidofferfiletrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2541,21 +2553,25 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.offerdate_array.append_value(row.offerdate.timestamp_millis());
+        builder.offerdate_array.append_value(row.offerdate.and_utc().timestamp_millis());
         builder.filename_array.append_value(row.filename());
         builder.status_array.append_option(row.status());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.transaction_id_array.append_option(row.transaction_id());
         builder.reference_id_array.append_option(row.reference_id());
         builder
             .submission_timestamp_array
-            .append_option(row.submission_timestamp.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.submission_timestamp.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.comments_array.append_option(row.comments());
         builder.submission_method_array.append_option(row.submission_method());
     }
@@ -2611,7 +2627,9 @@ pub struct BidsBidofferfiletrk1Builder {
 }
 pub struct BidsBidofferperiod2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&BidsBidofferperiod2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &BidsBidofferperiod2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2620,7 +2638,7 @@ impl BidsBidofferperiod2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3261,8 +3279,12 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod2 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.duid_array.append_value(row.duid());
         builder.bidtype_array.append_value(row.bidtype());
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
+        builder
+            .tradingdate_array
+            .append_value(row.tradingdate.and_utc().timestamp_millis());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
         builder.direction_array.append_value(row.direction());
         builder
             .periodid_array
@@ -3542,7 +3564,9 @@ pub struct BidsBidofferperiod2Builder {
 }
 pub struct BidBidperofferD3 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&BidBidperofferD3Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &BidBidperofferD3Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3551,7 +3575,7 @@ impl BidBidperofferD3 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4279,19 +4303,23 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD3 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.bidtype_array.append_value(row.bidtype());
         builder.direction_array.append_value(row.direction());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder
             .bidsettlementdate_array
-            .append_option(row.bidsettlementdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.bidsettlementdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .offerdate_array
-            .append_option(row.offerdate.map(|val| val.timestamp_millis()));
+            .append_option(row.offerdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .periodid_array
             .append_option({
@@ -4474,7 +4502,7 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .pasaavailability_array
             .append_option({
@@ -4612,7 +4640,9 @@ pub struct BidBidperofferD3Builder {
 }
 pub struct BidsMnspBidofferperiod1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&BidsMnspBidofferperiod1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &BidsMnspBidofferperiod1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4621,7 +4651,7 @@ impl BidsMnspBidofferperiod1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5101,8 +5131,12 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.linkid_array.append_value(row.linkid());
-        builder.tradingdate_array.append_value(row.tradingdate.timestamp_millis());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
+        builder
+            .tradingdate_array
+            .append_value(row.tradingdate.and_utc().timestamp_millis());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
         builder
             .periodid_array
             .append_value({
@@ -5299,7 +5333,9 @@ pub struct BidsMnspBidofferperiod1Builder {
 }
 pub struct BidMnspDayoffer2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&BidMnspDayoffer2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &BidMnspDayoffer2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -5308,7 +5344,7 @@ impl BidMnspDayoffer2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5957,8 +5993,10 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
-        builder.offerdate_array.append_value(row.offerdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
+        builder.offerdate_array.append_value(row.offerdate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -6062,7 +6100,7 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .mr_factor_array
             .append_option({
@@ -6166,7 +6204,9 @@ pub struct BidMnspDayoffer2Builder {
 }
 pub struct OfferMtpasaOfferdata2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&OfferMtpasaOfferdata2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &OfferMtpasaOfferdata2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -6175,7 +6215,7 @@ impl OfferMtpasaOfferdata2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -6779,9 +6819,13 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
         builder.unitid_array.append_value(row.unitid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder.energy_array.append_option(row.energy);
         builder.capacity1_array.append_option(row.capacity1);
         builder.capacity2_array.append_option(row.capacity2);
@@ -6792,7 +6836,7 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
         builder.capacity7_array.append_option(row.capacity7);
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.unitstate1_array.append_option(row.unitstate1());
         builder.unitstate2_array.append_option(row.unitstate2());
         builder.unitstate3_array.append_option(row.unitstate3());
@@ -6905,7 +6949,9 @@ pub struct OfferMtpasaOfferdata2Builder {
 }
 pub struct OfferMtpasaOfferfiletrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&OfferMtpasaOfferfiletrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &OfferMtpasaOfferfiletrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -6914,7 +6960,7 @@ impl OfferMtpasaOfferfiletrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -7129,7 +7175,9 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferfiletrk1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.offerdatetime_array.append_value(row.offerdatetime.timestamp_millis());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
         builder.filename_array.append_option(row.filename());
     }
     fn finalize_builder(

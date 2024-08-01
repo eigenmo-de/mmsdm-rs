@@ -6,7 +6,7 @@ pub mod data_model;
 
 pub use mmsdm_core::*;
 
-#[cfg(feature = "chrono_tz")]
+#[cfg(feature = "chrono-tz")]
 // this is useful to get the datetime part of nem settlementdate / lastchanged fields
 pub fn to_nem_datetime(ndt: &chrono::NaiveDateTime) -> chrono::DateTime<chrono_tz::Tz> {
     chrono_tz::Australia::Brisbane
@@ -14,7 +14,7 @@ pub fn to_nem_datetime(ndt: &chrono::NaiveDateTime) -> chrono::DateTime<chrono_t
         .unwrap()
 }
 
-#[cfg(feature = "chrono_tz")]
+#[cfg(feature = "chrono-tz")]
 // this is useful to get the date part of nem settlementdate / lastchanged fields
 pub fn to_nem_date(ndt: &chrono::NaiveDateTime) -> chrono::NaiveDate {
     to_nem_datetime(ndt).date_naive()

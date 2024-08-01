@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct MtpasaCaseresult1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaCaseresult1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaCaseresult1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl MtpasaCaseresult1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -243,12 +245,14 @@ impl mmsdm_core::ArrowSchema for MtpasaCaseresult1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.plexos_version_array.append_option(row.plexos_version());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -278,7 +282,9 @@ pub struct MtpasaCaseresult1Builder {
 }
 pub struct MtpasaConstraintresult1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaConstraintresult1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaConstraintresult1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -287,7 +293,7 @@ impl MtpasaConstraintresult1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -728,15 +734,19 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
         builder.demand_poe_type_array.append_value(row.demand_poe_type());
-        builder.day_array.append_value(row.day.timestamp_millis());
+        builder.day_array.append_value(row.day.and_utc().timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.effectivedate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .versionno_array
             .append_option({
@@ -802,7 +812,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -865,7 +875,9 @@ pub struct MtpasaConstraintresult1Builder {
 }
 pub struct MtpasaConstraintsummary1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaConstraintsummary1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaConstraintsummary1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -874,7 +886,7 @@ impl MtpasaConstraintsummary1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1250,15 +1262,19 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
         builder.demand_poe_type_array.append_value(row.demand_poe_type());
-        builder.day_array.append_value(row.day.timestamp_millis());
+        builder.day_array.append_value(row.day.and_utc().timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.effectivedate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .versionno_array
             .append_option({
@@ -1280,7 +1296,7 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1331,7 +1347,9 @@ pub struct MtpasaConstraintsummary1Builder {
 }
 pub struct MtpasaDuidavailability3 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaDuidavailability3Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaDuidavailability3Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1340,7 +1358,7 @@ impl MtpasaDuidavailability3 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1689,8 +1707,8 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .publish_datetime_array
-            .append_value(row.publish_datetime.timestamp_millis());
-        builder.day_array.append_value(row.day.timestamp_millis());
+            .append_value(row.publish_datetime.and_utc().timestamp_millis());
+        builder.day_array.append_value(row.day.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder.duid_array.append_value(row.duid());
         builder
@@ -1704,10 +1722,12 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
             });
         builder
             .latest_offer_datetime_array
-            .append_option(row.latest_offer_datetime.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.latest_offer_datetime.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .carryoverstatus_array
             .append_option({
@@ -1766,7 +1786,9 @@ pub struct MtpasaDuidavailability3Builder {
 }
 pub struct MtpasaInterconnectorresult1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaInterconnectorresult1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaInterconnectorresult1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1775,7 +1797,7 @@ impl MtpasaInterconnectorresult1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2217,11 +2239,13 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
         builder.demand_poe_type_array.append_value(row.demand_poe_type());
-        builder.day_array.append_value(row.day.timestamp_millis());
+        builder.day_array.append_value(row.day.and_utc().timestamp_millis());
         builder.interconnectorid_array.append_value(row.interconnectorid());
         builder
             .periodid_array
@@ -2297,7 +2321,7 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2362,7 +2386,9 @@ pub struct MtpasaInterconnectorresult1Builder {
 }
 pub struct MtpasaLolpresult1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaLolpresult1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaLolpresult1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2371,7 +2397,7 @@ impl MtpasaLolpresult1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2756,10 +2782,12 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
-        builder.day_array.append_value(row.day.timestamp_millis());
+        builder.day_array.append_value(row.day.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .worst_interval_periodid_array
@@ -2809,7 +2837,7 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
         builder.lossofloadmagnitude_array.append_option(row.lossofloadmagnitude());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2863,7 +2891,9 @@ pub struct MtpasaLolpresult1Builder {
 }
 pub struct MtpasaRegionavailability4 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaRegionavailability4Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaRegionavailability4Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2872,7 +2902,7 @@ impl MtpasaRegionavailability4 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3361,8 +3391,8 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .publish_datetime_array
-            .append_value(row.publish_datetime.timestamp_millis());
-        builder.day_array.append_value(row.day.timestamp_millis());
+            .append_value(row.publish_datetime.and_utc().timestamp_millis());
+        builder.day_array.append_value(row.day.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .pasaavailability_scheduled_array
@@ -3375,7 +3405,9 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
             });
         builder
             .latest_offer_datetime_array
-            .append_option(row.latest_offer_datetime.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.latest_offer_datetime.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .energyunconstrainedcapacity_array
             .append_option({
@@ -3441,7 +3473,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .demand10min_array
             .append_option({
@@ -3561,7 +3593,9 @@ pub struct MtpasaRegionavailability4Builder {
 }
 pub struct MtpasaRegionavailtrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaRegionavailtrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaRegionavailtrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3570,7 +3604,7 @@ impl MtpasaRegionavailtrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3798,16 +3832,18 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailtrk1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .publish_datetime_array
-            .append_value(row.publish_datetime.timestamp_millis());
+            .append_value(row.publish_datetime.and_utc().timestamp_millis());
         builder
             .startdate_array
-            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+            .append_option(row.startdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .enddate_array
-            .append_option(row.enddate.map(|val| val.timestamp_millis()));
+            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .latest_offer_datetime_array
-            .append_option(row.latest_offer_datetime.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.latest_offer_datetime.map(|val| val.and_utc().timestamp_millis()),
+            );
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3837,7 +3873,9 @@ pub struct MtpasaRegionavailtrk1Builder {
 }
 pub struct MtpasaRegioniteration1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaRegioniteration1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaRegioniteration1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3846,7 +3884,7 @@ impl MtpasaRegioniteration1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4222,12 +4260,16 @@ impl mmsdm_core::ArrowSchema for MtpasaRegioniteration1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
         builder.demand_poe_type_array.append_value(row.demand_poe_type());
         builder.aggregation_period_array.append_value(row.aggregation_period());
-        builder.period_ending_array.append_value(row.period_ending.timestamp_millis());
+        builder
+            .period_ending_array
+            .append_value(row.period_ending.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder.use_iteration_id_array.append_value(row.use_iteration_id);
         builder
@@ -4250,7 +4292,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegioniteration1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4303,7 +4345,9 @@ pub struct MtpasaRegioniteration1Builder {
 }
 pub struct MtpasaRegionresult2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaRegionresult2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaRegionresult2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4312,7 +4356,7 @@ impl MtpasaRegionresult2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5125,11 +5169,13 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
         builder.demand_poe_type_array.append_value(row.demand_poe_type());
-        builder.day_array.append_value(row.day.timestamp_millis());
+        builder.day_array.append_value(row.day.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .periodid_array
@@ -5322,7 +5368,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .totalsemischedulegen90_array
             .append_option({
@@ -5524,7 +5570,9 @@ pub struct MtpasaRegionresult2Builder {
 }
 pub struct MtpasaRegionsummary1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MtpasaRegionsummary1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MtpasaRegionsummary1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -5533,7 +5581,7 @@ impl MtpasaRegionsummary1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -6249,12 +6297,16 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionsummary1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.run_no_array.append_value(row.run_no);
         builder.runtype_array.append_value(row.runtype());
         builder.demand_poe_type_array.append_value(row.demand_poe_type());
         builder.aggregation_period_array.append_value(row.aggregation_period());
-        builder.period_ending_array.append_value(row.period_ending.timestamp_millis());
+        builder
+            .period_ending_array
+            .append_value(row.period_ending.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .nativedemand_array
@@ -6456,7 +6508,7 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionsummary1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

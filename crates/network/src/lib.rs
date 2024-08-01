@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct NetworkEquipmentdetail2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&NetworkEquipmentdetail2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &NetworkEquipmentdetail2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl NetworkEquipmentdetail2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -358,15 +360,15 @@ impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
         builder.substationid_array.append_value(row.substationid());
         builder.equipmenttype_array.append_value(row.equipmenttype());
         builder.equipmentid_array.append_value(row.equipmentid());
-        builder.validfrom_array.append_value(row.validfrom.timestamp_millis());
+        builder.validfrom_array.append_value(row.validfrom.and_utc().timestamp_millis());
         builder
             .validto_array
-            .append_option(row.validto.map(|val| val.timestamp_millis()));
+            .append_option(row.validto.map(|val| val.and_utc().timestamp_millis()));
         builder.voltage_array.append_option(row.voltage());
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .elementid_array
             .append_value({
@@ -418,7 +420,9 @@ pub struct NetworkEquipmentdetail2Builder {
 }
 pub struct NetworkOutageconstraintset1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&NetworkOutageconstraintset1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &NetworkOutageconstraintset1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -427,7 +431,7 @@ impl NetworkOutageconstraintset1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -660,10 +664,12 @@ impl mmsdm_core::ArrowSchema for NetworkOutageconstraintset1 {
         builder.genconsetid_array.append_value(row.genconsetid());
         builder
             .startinterval_array
-            .append_option(row.startinterval.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.startinterval.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .endinterval_array
-            .append_option(row.endinterval.map(|val| val.timestamp_millis()));
+            .append_option(row.endinterval.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -693,7 +699,9 @@ pub struct NetworkOutageconstraintset1Builder {
 }
 pub struct NetworkOutagedetail4 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&NetworkOutagedetail4Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &NetworkOutagedetail4Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -702,7 +710,7 @@ impl NetworkOutagedetail4 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1252,13 +1260,15 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
         builder.substationid_array.append_value(row.substationid());
         builder.equipmenttype_array.append_value(row.equipmenttype());
         builder.equipmentid_array.append_value(row.equipmentid());
-        builder.starttime_array.append_value(row.starttime.timestamp_millis());
+        builder.starttime_array.append_value(row.starttime.and_utc().timestamp_millis());
         builder
             .endtime_array
-            .append_option(row.endtime.map(|val| val.timestamp_millis()));
+            .append_option(row.endtime.map(|val| val.and_utc().timestamp_millis()));
         builder
             .submitteddate_array
-            .append_option(row.submitteddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.submitteddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.outagestatuscode_array.append_option(row.outagestatuscode());
         builder.resubmitreason_array.append_option(row.resubmitreason());
         builder
@@ -1290,7 +1300,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.reason_array.append_option(row.reason());
         builder
             .issecondary_array
@@ -1303,10 +1313,14 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
             });
         builder
             .actual_starttime_array
-            .append_option(row.actual_starttime.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.actual_starttime.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .actual_endtime_array
-            .append_option(row.actual_endtime.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.actual_endtime.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.companyrefcode_array.append_option(row.companyrefcode());
         builder
             .elementid_array
@@ -1389,7 +1403,9 @@ pub struct NetworkOutagedetail4Builder {
 }
 pub struct NetworkOutagestatuscode1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&NetworkOutagestatuscode1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &NetworkOutagestatuscode1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1398,7 +1414,7 @@ impl NetworkOutagestatuscode1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1611,7 +1627,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagestatuscode1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1638,7 +1654,9 @@ pub struct NetworkOutagestatuscode1Builder {
 }
 pub struct NetworkRating1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&NetworkRating1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &NetworkRating1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1647,7 +1665,7 @@ impl NetworkRating1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2011,10 +2029,10 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.spd_id_array.append_value(row.spd_id());
-        builder.validfrom_array.append_value(row.validfrom.timestamp_millis());
+        builder.validfrom_array.append_value(row.validfrom.and_utc().timestamp_millis());
         builder
             .validto_array
-            .append_option(row.validto.map(|val| val.timestamp_millis()));
+            .append_option(row.validto.map(|val| val.and_utc().timestamp_millis()));
         builder.regionid_array.append_option(row.regionid());
         builder.substationid_array.append_option(row.substationid());
         builder.equipmenttype_array.append_option(row.equipmenttype());
@@ -2031,7 +2049,7 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2079,7 +2097,9 @@ pub struct NetworkRating1Builder {
 }
 pub struct NetworkRealtimerating1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&NetworkRealtimerating1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &NetworkRealtimerating1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2088,7 +2108,7 @@ impl NetworkRealtimerating1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2291,7 +2311,9 @@ impl mmsdm_core::ArrowSchema for NetworkRealtimerating1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder.spd_id_array.append_value(row.spd_id());
         builder
             .ratingvalue_array
@@ -2326,7 +2348,9 @@ pub struct NetworkRealtimerating1Builder {
 }
 pub struct NetworkStaticrating1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&NetworkStaticrating1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &NetworkStaticrating1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2335,7 +2359,7 @@ impl NetworkStaticrating1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2671,10 +2695,10 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
         builder.equipmentid_array.append_value(row.equipmentid());
         builder.ratinglevel_array.append_value(row.ratinglevel());
         builder.applicationid_array.append_value(row.applicationid());
-        builder.validfrom_array.append_value(row.validfrom.timestamp_millis());
+        builder.validfrom_array.append_value(row.validfrom.and_utc().timestamp_millis());
         builder
             .validto_array
-            .append_option(row.validto.map(|val| val.timestamp_millis()));
+            .append_option(row.validto.map(|val| val.and_utc().timestamp_millis()));
         builder
             .ratingvalue_array
             .append_option({
@@ -2686,7 +2710,7 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2731,7 +2755,9 @@ pub struct NetworkStaticrating1Builder {
 }
 pub struct NetworkSubstationdetail2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&NetworkSubstationdetail2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &NetworkSubstationdetail2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2740,7 +2766,7 @@ impl NetworkSubstationdetail2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3038,16 +3064,16 @@ impl mmsdm_core::ArrowSchema for NetworkSubstationdetail2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.substationid_array.append_value(row.substationid());
-        builder.validfrom_array.append_value(row.validfrom.timestamp_millis());
+        builder.validfrom_array.append_value(row.validfrom.and_utc().timestamp_millis());
         builder
             .validto_array
-            .append_option(row.validto.map(|val| val.timestamp_millis()));
+            .append_option(row.validto.map(|val| val.and_utc().timestamp_millis()));
         builder.description_array.append_option(row.description());
         builder.regionid_array.append_option(row.regionid());
         builder.ownerid_array.append_option(row.ownerid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

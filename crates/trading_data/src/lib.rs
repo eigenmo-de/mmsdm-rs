@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct TradingAverageprice301 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&TradingAverageprice301Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &TradingAverageprice301Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl TradingAverageprice301 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -281,7 +283,9 @@ impl mmsdm_core::ArrowSchema for TradingAverageprice301 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.perioddate_array.append_value(row.perioddate.timestamp_millis());
+        builder
+            .perioddate_array
+            .append_value(row.perioddate.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .periodid_array
@@ -302,7 +306,7 @@ impl mmsdm_core::ArrowSchema for TradingAverageprice301 {
         builder.price_confidence_array.append_option(row.price_confidence());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -338,7 +342,9 @@ pub struct TradingAverageprice301Builder {
 }
 pub struct TradingInterconnectorres2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&TradingInterconnectorres2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &TradingInterconnectorres2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -347,7 +353,7 @@ impl TradingInterconnectorres2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -657,7 +663,9 @@ impl mmsdm_core::ArrowSchema for TradingInterconnectorres2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -702,7 +710,7 @@ impl mmsdm_core::ArrowSchema for TradingInterconnectorres2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -744,7 +752,9 @@ pub struct TradingInterconnectorres2Builder {
 }
 pub struct TradingPrice3 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&TradingPrice3Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &TradingPrice3Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -753,7 +763,7 @@ impl TradingPrice3 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1467,7 +1477,9 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -1504,7 +1516,7 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
         builder.invalidflag_array.append_option(row.invalidflag());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .rop_array
             .append_option({

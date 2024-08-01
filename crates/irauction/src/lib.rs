@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct IrauctionConfigAuction1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionConfigAuction1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionConfigAuction1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl IrauctionConfigAuction1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -350,24 +352,26 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
         builder.auctionid_array.append_value(row.auctionid());
         builder
             .auctiondate_array
-            .append_option(row.auctiondate.map(|val| val.timestamp_millis()));
+            .append_option(row.auctiondate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .notifydate_array
-            .append_option(row.notifydate.map(|val| val.timestamp_millis()));
+            .append_option(row.notifydate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .startdate_array
-            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+            .append_option(row.startdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .enddate_array
-            .append_option(row.enddate.map(|val| val.timestamp_millis()));
+            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
         builder.description_array.append_option(row.description());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -412,7 +416,9 @@ pub struct IrauctionConfigAuction1Builder {
 }
 pub struct IrauctionConfigAuctionCalendar2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionConfigAuctionCalendar2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionConfigAuctionCalendar2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -421,7 +427,7 @@ impl IrauctionConfigAuctionCalendar2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -826,34 +832,44 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionCalendar2 {
             });
         builder
             .startdate_array
-            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+            .append_option(row.startdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .enddate_array
-            .append_option(row.enddate.map(|val| val.timestamp_millis()));
+            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .notifydate_array
-            .append_option(row.notifydate.map(|val| val.timestamp_millis()));
+            .append_option(row.notifydate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .paymentdate_array
-            .append_option(row.paymentdate.map(|val| val.timestamp_millis()));
+            .append_option(row.paymentdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .reconciliationdate_array
-            .append_option(row.reconciliationdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.reconciliationdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .prelimpurchasestmtdate_array
-            .append_option(row.prelimpurchasestmtdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.prelimpurchasestmtdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .prelimproceedsstmtdate_array
-            .append_option(row.prelimproceedsstmtdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.prelimproceedsstmtdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .finalpurchasestmtdate_array
-            .append_option(row.finalpurchasestmtdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.finalpurchasestmtdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .finalproceedsstmtdate_array
-            .append_option(row.finalproceedsstmtdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.finalproceedsstmtdate.map(|val| val.and_utc().timestamp_millis()),
+            );
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -909,7 +925,7 @@ pub struct IrauctionConfigAuctionIcAllocations2 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
             &IrauctionConfigAuctionIcAllocations2Row<'_>,
-        ) -> mmsdm_core::PartitionValue,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -918,7 +934,7 @@ impl IrauctionConfigAuctionIcAllocations2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1370,11 +1386,11 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
             });
         builder
             .changedate_array
-            .append_option(row.changedate.map(|val| val.timestamp_millis()));
+            .append_option(row.changedate.map(|val| val.and_utc().timestamp_millis()));
         builder.changedby_array.append_option(row.changedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .auctionfee_sales_array
             .append_option({
@@ -1439,7 +1455,7 @@ pub struct IrauctionConfigAuctionRevenueEstimate1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
             &IrauctionConfigAuctionRevenueEstimate1Row<'_>,
-        ) -> mmsdm_core::PartitionValue,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1448,7 +1464,7 @@ impl IrauctionConfigAuctionRevenueEstimate1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1866,10 +1882,10 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
             });
         builder
             .startdate_array
-            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+            .append_option(row.startdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .enddate_array
-            .append_option(row.enddate.map(|val| val.timestamp_millis()));
+            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .revenue_array
             .append_option({
@@ -1881,7 +1897,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1932,7 +1948,9 @@ pub struct IrauctionConfigAuctionRevenueEstimate1Builder {
 }
 pub struct IrauctionConfigAuctionRevenueTrack1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionConfigAuctionRevenueTrack1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionConfigAuctionRevenueTrack1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1941,7 +1959,7 @@ impl IrauctionConfigAuctionRevenueTrack1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2335,16 +2353,20 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
             });
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.effectivedate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.status_array.append_option(row.status());
         builder.documentref_array.append_option(row.documentref());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2392,7 +2414,9 @@ pub struct IrauctionConfigAuctionRevenueTrack1Builder {
 }
 pub struct IrauctionConfigAuctionRpEstimate1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionConfigAuctionRpEstimate1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionConfigAuctionRpEstimate1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2401,7 +2425,7 @@ impl IrauctionConfigAuctionRpEstimate1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2755,7 +2779,7 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2797,7 +2821,9 @@ pub struct IrauctionConfigAuctionRpEstimate1Builder {
 }
 pub struct IrauctionConfigAuctionTranche1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionConfigAuctionTranche1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionConfigAuctionTranche1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2806,7 +2832,7 @@ impl IrauctionConfigAuctionTranche1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3194,10 +3220,10 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
             });
         builder
             .auctiondate_array
-            .append_option(row.auctiondate.map(|val| val.timestamp_millis()));
+            .append_option(row.auctiondate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .notifydate_array
-            .append_option(row.notifydate.map(|val| val.timestamp_millis()));
+            .append_option(row.notifydate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .unitallocation_array
             .append_option({
@@ -3209,11 +3235,11 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
             });
         builder
             .changedate_array
-            .append_option(row.changedate.map(|val| val.timestamp_millis()));
+            .append_option(row.changedate.map(|val| val.and_utc().timestamp_millis()));
         builder.changedby_array.append_option(row.changedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3263,7 +3289,7 @@ pub struct SettlementConfigResiduecontractpayments1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
             &SettlementConfigResiduecontractpayments1Row<'_>,
-        ) -> mmsdm_core::PartitionValue,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3272,7 +3298,7 @@ impl SettlementConfigResiduecontractpayments1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3486,7 +3512,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigResiduecontractpayments1 {
         builder.participantid_array.append_value(row.participantid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3513,7 +3539,9 @@ pub struct SettlementConfigResiduecontractpayments1Builder {
 }
 pub struct IrauctionBidsFileTrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionBidsFileTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionBidsFileTrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3522,7 +3550,7 @@ impl IrauctionBidsFileTrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3848,13 +3876,13 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFileTrk1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.contractid_array.append_option(row.contractid());
         builder.participantid_array.append_value(row.participantid());
-        builder.loaddate_array.append_value(row.loaddate.timestamp_millis());
+        builder.loaddate_array.append_value(row.loaddate.and_utc().timestamp_millis());
         builder.filename_array.append_option(row.filename());
         builder.ackfilename_array.append_option(row.ackfilename());
         builder.status_array.append_option(row.status());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.auctionid_array.append_value(row.auctionid());
     }
     fn finalize_builder(
@@ -3897,7 +3925,9 @@ pub struct IrauctionBidsFileTrk1Builder {
 }
 pub struct IrauctionResidueBidTrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionResidueBidTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionResidueBidTrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3906,7 +3936,7 @@ impl IrauctionResidueBidTrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4188,10 +4218,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueBidTrk1 {
         builder.participantid_array.append_value(row.participantid());
         builder
             .bidloaddate_array
-            .append_option(row.bidloaddate.map(|val| val.timestamp_millis()));
+            .append_option(row.bidloaddate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.auctionid_array.append_value(row.auctionid());
     }
     fn finalize_builder(
@@ -4228,7 +4258,9 @@ pub struct IrauctionResidueBidTrk1Builder {
 }
 pub struct IrauctionResidueContracts1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionResidueContracts1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionResidueContracts1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4237,7 +4269,7 @@ impl IrauctionResidueContracts1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4801,32 +4833,36 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
         builder.contractid_array.append_option(row.contractid());
         builder
             .startdate_array
-            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+            .append_option(row.startdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .enddate_array
-            .append_option(row.enddate.map(|val| val.timestamp_millis()));
+            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .notifydate_array
-            .append_option(row.notifydate.map(|val| val.timestamp_millis()));
+            .append_option(row.notifydate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .auctiondate_array
-            .append_option(row.auctiondate.map(|val| val.timestamp_millis()));
+            .append_option(row.auctiondate.map(|val| val.and_utc().timestamp_millis()));
         builder.calcmethod_array.append_option(row.calcmethod());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .notifypostdate_array
-            .append_option(row.notifypostdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.notifypostdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.notifyby_array.append_option(row.notifyby());
         builder
             .postdate_array
-            .append_option(row.postdate.map(|val| val.timestamp_millis()));
+            .append_option(row.postdate.map(|val| val.and_utc().timestamp_millis()));
         builder.postedby_array.append_option(row.postedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.description_array.append_option(row.description());
         builder.auctionid_array.append_option(row.auctionid());
     }
@@ -4900,7 +4936,9 @@ pub struct IrauctionResidueContracts1Builder {
 }
 pub struct IrauctionResidueConData2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionResidueConData2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionResidueConData2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4909,7 +4947,7 @@ impl IrauctionResidueConData2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5267,7 +5305,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConData2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .secondary_units_sold_array
             .append_option({
@@ -5321,7 +5359,9 @@ pub struct IrauctionResidueConData2Builder {
 }
 pub struct IrauctionResidueConEstimatesTrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionResidueConEstimatesTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionResidueConEstimatesTrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -5330,7 +5370,7 @@ impl IrauctionResidueConEstimatesTrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5625,7 +5665,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5661,7 +5701,9 @@ pub struct IrauctionResidueConEstimatesTrk1Builder {
 }
 pub struct IrauctionResidueConFunds1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionResidueConFunds1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionResidueConFunds1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -5670,7 +5712,7 @@ impl IrauctionResidueConFunds1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -6091,7 +6133,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConFunds1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -6142,7 +6184,9 @@ pub struct IrauctionResidueConFunds1Builder {
 }
 pub struct IrauctionBidsFundsBid1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionBidsFundsBid1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionBidsFundsBid1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -6151,7 +6195,7 @@ impl IrauctionBidsFundsBid1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -6468,7 +6512,7 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.contractid_array.append_value(row.contractid());
         builder.participantid_array.append_value(row.participantid());
-        builder.loaddate_array.append_value(row.loaddate.timestamp_millis());
+        builder.loaddate_array.append_value(row.loaddate.and_utc().timestamp_millis());
         builder
             .optionid_array
             .append_value({
@@ -6489,7 +6533,7 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -6531,7 +6575,9 @@ pub struct IrauctionBidsFundsBid1Builder {
 }
 pub struct IrauctionResiduePriceBid1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionResiduePriceBid1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionResiduePriceBid1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -6540,7 +6586,7 @@ impl IrauctionResiduePriceBid1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -6834,7 +6880,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.contractid_array.append_option(row.contractid());
         builder.participantid_array.append_value(row.participantid());
-        builder.loaddate_array.append_value(row.loaddate.timestamp_millis());
+        builder.loaddate_array.append_value(row.loaddate.and_utc().timestamp_millis());
         builder
             .optionid_array
             .append_value({
@@ -6853,7 +6899,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.auctionid_array.append_value(row.auctionid());
     }
     fn finalize_builder(
@@ -6893,7 +6939,9 @@ pub struct IrauctionResiduePriceBid1Builder {
 }
 pub struct IrauctionResiduePriceFundsBid1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionResiduePriceFundsBid1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionResiduePriceFundsBid1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -6902,7 +6950,7 @@ impl IrauctionResiduePriceFundsBid1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -7245,7 +7293,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceFundsBid1 {
         builder.auctionid_array.append_value(row.auctionid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -7287,7 +7335,9 @@ pub struct IrauctionResiduePriceFundsBid1Builder {
 }
 pub struct IrauctionResiduePublicData1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionResiduePublicData1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionResiduePublicData1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -7296,7 +7346,7 @@ impl IrauctionResiduePublicData1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -7668,7 +7718,7 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePublicData1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -7713,7 +7763,9 @@ pub struct IrauctionResiduePublicData1Builder {
 }
 pub struct IrauctionResidueTrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionResidueTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionResidueTrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -7722,7 +7774,7 @@ impl IrauctionResidueTrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -8092,18 +8144,20 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
             });
         builder
             .rundate_array
-            .append_option(row.rundate.map(|val| val.timestamp_millis()));
+            .append_option(row.rundate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .postdate_array
-            .append_option(row.postdate.map(|val| val.timestamp_millis()));
+            .append_option(row.postdate.map(|val| val.and_utc().timestamp_millis()));
         builder.postedby_array.append_option(row.postedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.status_array.append_option(row.status());
         builder.auctionid_array.append_value(row.auctionid());
     }
@@ -8153,7 +8207,9 @@ pub struct IrauctionResidueTrk1Builder {
 }
 pub struct IrauctionSraCashSecurity1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionSraCashSecurity1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionSraCashSecurity1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -8162,7 +8218,7 @@ impl IrauctionSraCashSecurity1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -8515,7 +8571,9 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
         builder.participantid_array.append_option(row.participantid());
         builder
             .provision_date_array
-            .append_option(row.provision_date.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.provision_date.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .cash_amount_array
             .append_option({
@@ -8528,10 +8586,14 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
         builder.interest_acct_id_array.append_option(row.interest_acct_id());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .finalreturndate_array
-            .append_option(row.finalreturndate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.finalreturndate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .cash_security_returned_array
             .append_option({
@@ -8543,10 +8605,10 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
             });
         builder
             .deletiondate_array
-            .append_option(row.deletiondate.map(|val| val.timestamp_millis()));
+            .append_option(row.deletiondate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -8594,7 +8656,9 @@ pub struct IrauctionSraCashSecurity1Builder {
 }
 pub struct IrauctionSraFinancialAucpayDetail1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionSraFinancialAucpayDetail1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionSraFinancialAucpayDetail1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -8603,7 +8667,7 @@ impl IrauctionSraFinancialAucpayDetail1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -9159,7 +9223,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpayDetail1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -9228,7 +9292,9 @@ pub struct IrauctionSraFinancialAucpayDetail1Builder {
 }
 pub struct IrauctionSraFinancialAucpaySum1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionSraFinancialAucpaySum1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionSraFinancialAucpaySum1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -9237,7 +9303,7 @@ impl IrauctionSraFinancialAucpaySum1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -9613,7 +9679,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpaySum1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -9662,7 +9728,9 @@ pub struct IrauctionSraFinancialAucpaySum1Builder {
 }
 pub struct IrauctionSraFinancialAucMardetail1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionSraFinancialAucMardetail1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionSraFinancialAucMardetail1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -9671,7 +9739,7 @@ impl IrauctionSraFinancialAucMardetail1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -10011,7 +10079,9 @@ pub struct IrauctionSraFinancialAucMardetail1Builder {
 }
 pub struct IrauctionSraFinancialAucMargin1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionSraFinancialAucMargin1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionSraFinancialAucMargin1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -10020,7 +10090,7 @@ impl IrauctionSraFinancialAucMargin1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -10389,7 +10459,9 @@ pub struct IrauctionSraFinancialAucMargin1Builder {
 }
 pub struct IrauctionSraFinancialAucReceipts1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionSraFinancialAucReceipts1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionSraFinancialAucReceipts1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -10398,7 +10470,7 @@ impl IrauctionSraFinancialAucReceipts1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -10828,7 +10900,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucReceipts1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .proceeds_amount_array
             .append_option({
@@ -10903,7 +10975,9 @@ pub struct IrauctionSraFinancialAucReceipts1Builder {
 }
 pub struct IrauctionSraFinancialRuntrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionSraFinancialRuntrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionSraFinancialRuntrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -10912,7 +10986,7 @@ impl IrauctionSraFinancialRuntrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -11222,15 +11296,15 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialRuntrk1 {
         builder.runtype_array.append_option(row.runtype());
         builder
             .rundate_array
-            .append_option(row.rundate.map(|val| val.timestamp_millis()));
+            .append_option(row.rundate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .posteddate_array
-            .append_option(row.posteddate.map(|val| val.timestamp_millis()));
+            .append_option(row.posteddate.map(|val| val.and_utc().timestamp_millis()));
         builder.interest_versionno_array.append_option(row.interest_versionno);
         builder.makeup_versionno_array.append_option(row.makeup_versionno);
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -11275,7 +11349,9 @@ pub struct IrauctionSraFinancialRuntrk1Builder {
 }
 pub struct IrauctionSraOfferProduct1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionSraOfferProduct1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionSraOfferProduct1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -11284,7 +11360,7 @@ impl IrauctionSraOfferProduct1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -11632,7 +11708,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.auctionid_array.append_value(row.auctionid());
         builder.participantid_array.append_value(row.participantid());
-        builder.loaddate_array.append_value(row.loaddate.timestamp_millis());
+        builder.loaddate_array.append_value(row.loaddate.and_utc().timestamp_millis());
         builder.optionid_array.append_value(row.optionid);
         builder.interconnectorid_array.append_option(row.interconnectorid());
         builder.fromregionid_array.append_option(row.fromregionid());
@@ -11649,7 +11725,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
         builder.trancheid_array.append_option(row.trancheid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -11697,7 +11773,9 @@ pub struct IrauctionSraOfferProduct1Builder {
 }
 pub struct IrauctionSraOfferProfile1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionSraOfferProfile1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionSraOfferProfile1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -11706,7 +11784,7 @@ impl IrauctionSraOfferProfile1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -12007,13 +12085,13 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProfile1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.auctionid_array.append_value(row.auctionid());
         builder.participantid_array.append_value(row.participantid());
-        builder.loaddate_array.append_value(row.loaddate.timestamp_millis());
+        builder.loaddate_array.append_value(row.loaddate.and_utc().timestamp_millis());
         builder.filename_array.append_option(row.filename());
         builder.ackfilename_array.append_option(row.ackfilename());
         builder.transactionid_array.append_option(row.transactionid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -12052,7 +12130,9 @@ pub struct IrauctionSraOfferProfile1Builder {
 }
 pub struct IrauctionSraPrudentialCashSecurity1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionSraPrudentialCashSecurity1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionSraPrudentialCashSecurity1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -12061,7 +12141,7 @@ impl IrauctionSraPrudentialCashSecurity1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -12323,7 +12403,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .prudential_date_array
-            .append_value(row.prudential_date.timestamp_millis());
+            .append_value(row.prudential_date.and_utc().timestamp_millis());
         builder.prudential_runno_array.append_value(row.prudential_runno);
         builder.participantid_array.append_value(row.participantid());
         builder.cash_security_id_array.append_value(row.cash_security_id());
@@ -12368,7 +12448,9 @@ pub struct IrauctionSraPrudentialCashSecurity1Builder {
 }
 pub struct IrauctionSraPrudentialCompPosition1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionSraPrudentialCompPosition1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionSraPrudentialCompPosition1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -12377,7 +12459,7 @@ impl IrauctionSraPrudentialCompPosition1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -12650,7 +12732,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .prudential_date_array
-            .append_value(row.prudential_date.timestamp_millis());
+            .append_value(row.prudential_date.and_utc().timestamp_millis());
         builder.prudential_runno_array.append_value(row.prudential_runno);
         builder.participantid_array.append_value(row.participantid());
         builder
@@ -12716,7 +12798,9 @@ pub struct IrauctionSraPrudentialCompPosition1Builder {
 }
 pub struct IrauctionSraPrudentialExposure1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionSraPrudentialExposure1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionSraPrudentialExposure1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -12725,7 +12809,7 @@ impl IrauctionSraPrudentialExposure1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -13148,7 +13232,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .prudential_date_array
-            .append_value(row.prudential_date.timestamp_millis());
+            .append_value(row.prudential_date.and_utc().timestamp_millis());
         builder.prudential_runno_array.append_value(row.prudential_runno);
         builder.participantid_array.append_value(row.participantid());
         builder.sra_year_array.append_value(row.sra_year);
@@ -13159,7 +13243,9 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
         builder.auctionid_array.append_option(row.auctionid());
         builder
             .offer_submissiontime_array
-            .append_option(row.offer_submissiontime.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.offer_submissiontime.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .average_purchase_price_array
             .append_option({
@@ -13256,7 +13342,9 @@ pub struct IrauctionSraPrudentialExposure1Builder {
 }
 pub struct IrauctionSraPrudentialRun1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionSraPrudentialRun1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionSraPrudentialRun1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -13265,7 +13353,7 @@ impl IrauctionSraPrudentialRun1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -13450,7 +13538,7 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialRun1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .prudential_date_array
-            .append_value(row.prudential_date.timestamp_millis());
+            .append_value(row.prudential_date.and_utc().timestamp_millis());
         builder.prudential_runno_array.append_value(row.prudential_runno);
     }
     fn finalize_builder(
@@ -13475,7 +13563,9 @@ pub struct IrauctionSraPrudentialRun1Builder {
 }
 pub struct IrauctionValuationid1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&IrauctionValuationid1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &IrauctionValuationid1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -13484,7 +13574,7 @@ impl IrauctionValuationid1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -13695,7 +13785,7 @@ impl mmsdm_core::ArrowSchema for IrauctionValuationid1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

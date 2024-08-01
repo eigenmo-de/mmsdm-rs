@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct MarketConfigBidtypes1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketConfigBidtypes1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketConfigBidtypes1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl MarketConfigBidtypes1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -356,7 +358,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.bidtype_array.append_value(row.bidtype());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -386,7 +390,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
         builder.validationrule_array.append_option(row.validationrule());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.spdalias_array.append_option(row.spdalias());
     }
     fn finalize_builder(
@@ -432,7 +436,9 @@ pub struct MarketConfigBidtypes1Builder {
 }
 pub struct MarketConfigBidtypestrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketConfigBidtypestrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketConfigBidtypestrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -441,7 +447,7 @@ impl MarketConfigBidtypestrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -694,7 +700,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -704,11 +712,13 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -741,7 +751,9 @@ pub struct MarketConfigBidtypestrk1Builder {
 }
 pub struct MarketConfigFcasregusefactors1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketConfigFcasregusefactors1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketConfigFcasregusefactors1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -750,7 +762,7 @@ impl MarketConfigFcasregusefactors1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1044,7 +1056,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigFcasregusefactors1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1072,7 +1086,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigFcasregusefactors1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1111,7 +1125,9 @@ pub struct MarketConfigFcasregusefactors1Builder {
 }
 pub struct MarketConfigFcasregusefactorsTrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketConfigFcasregusefactorsTrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketConfigFcasregusefactorsTrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1120,7 +1136,7 @@ impl MarketConfigFcasregusefactorsTrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1350,7 +1366,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigFcasregusefactorsTrk1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1360,10 +1378,12 @@ impl mmsdm_core::ArrowSchema for MarketConfigFcasregusefactorsTrk1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1393,7 +1413,9 @@ pub struct MarketConfigFcasregusefactorsTrk1Builder {
 }
 pub struct MarketConfigInterconnector1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketConfigInterconnector1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketConfigInterconnector1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1402,7 +1424,7 @@ impl MarketConfigInterconnector1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1688,7 +1710,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1724,7 +1746,9 @@ pub struct MarketConfigInterconnector1Builder {
 }
 pub struct MarketConfigInterconnectoralloc1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketConfigInterconnectoralloc1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketConfigInterconnectoralloc1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1733,7 +1757,7 @@ impl MarketConfigInterconnectoralloc1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2032,7 +2056,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2054,7 +2080,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2095,7 +2121,7 @@ pub struct MarketConfigInterconnectorconstraint1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
             &MarketConfigInterconnectorconstraint1Row<'_>,
-        ) -> mmsdm_core::PartitionValue,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2104,7 +2130,7 @@ impl MarketConfigInterconnectorconstraint1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2718,7 +2744,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                         val.mantissa()
                     })
             });
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2767,7 +2795,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.dynamicrhs_array.append_option(row.dynamicrhs());
         builder
             .importlimit_array
@@ -2825,7 +2855,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .fcassupportunavailable_array
             .append_option({
@@ -2920,7 +2950,9 @@ pub struct MarketConfigInterconnectorconstraint1Builder {
 }
 pub struct MarketConfigIntraregionalloc1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketConfigIntraregionalloc1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketConfigIntraregionalloc1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2929,7 +2961,7 @@ impl MarketConfigIntraregionalloc1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3201,7 +3233,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -3222,7 +3256,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3258,7 +3292,9 @@ pub struct MarketConfigIntraregionalloc1Builder {
 }
 pub struct MarketConfigLossfactormodel1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketConfigLossfactormodel1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketConfigLossfactormodel1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3267,7 +3303,7 @@ impl MarketConfigLossfactormodel1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3542,7 +3578,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -3563,7 +3601,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3599,7 +3637,9 @@ pub struct MarketConfigLossfactormodel1Builder {
 }
 pub struct MarketConfigLossmodel1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketConfigLossmodel1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketConfigLossmodel1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3608,7 +3648,7 @@ impl MarketConfigLossmodel1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3927,7 +3967,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -3964,7 +4006,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4006,7 +4048,9 @@ pub struct MarketConfigLossmodel1Builder {
 }
 pub struct MarketConfigMarketPriceThresholds1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketConfigMarketPriceThresholds1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketConfigMarketPriceThresholds1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4015,7 +4059,7 @@ impl MarketConfigMarketPriceThresholds1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4325,7 +4369,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4362,11 +4408,13 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4409,7 +4457,9 @@ pub struct MarketConfigMarketPriceThresholds1Builder {
 }
 pub struct MarketConfigRegion1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketConfigRegion1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketConfigRegion1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4418,7 +4468,7 @@ impl MarketConfigRegion1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4654,7 +4704,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegion1 {
         builder.regionstatus_array.append_option(row.regionstatus());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4684,7 +4734,9 @@ pub struct MarketConfigRegion1Builder {
 }
 pub struct MarketConfigRegionstandingdata1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketConfigRegionstandingdata1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketConfigRegionstandingdata1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4693,7 +4745,7 @@ impl MarketConfigRegionstandingdata1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5053,7 +5105,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -5077,7 +5131,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .scalingfactor_array
@@ -5090,7 +5146,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5139,7 +5195,9 @@ pub struct MarketConfigRegionstandingdata1Builder {
 }
 pub struct MarketConfigTransmissionlossfactor2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&MarketConfigTransmissionlossfactor2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &MarketConfigTransmissionlossfactor2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -5148,7 +5206,7 @@ impl MarketConfigTransmissionlossfactor2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5457,7 +5515,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
                 val.rescale(5);
                 val.mantissa()
             });
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -5469,7 +5529,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
         builder.regionid_array.append_option(row.regionid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .secondary_tlf_array
             .append_option({

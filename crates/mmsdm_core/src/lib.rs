@@ -247,46 +247,6 @@ impl core::fmt::Display for PartitionValue {
     }
 }
 
-pub trait Partition: core::hash::Hash + PartialEq + Eq + PartialOrd + Ord + Copy {
-    fn key() -> PartitionKey;
-    fn value(&self) -> PartitionValue;
-}
-
-#[derive(PartialEq, Eq, Debug, Hash, Clone, Copy)]
-pub struct YearMonth {
-    pub year: i32,
-    pub month: chrono::Month,
-}
-
-impl PartialOrd for YearMonth {
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        self.cmp(&other).into()
-    }
-}
-
-impl Ord for YearMonth {
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        match self.year.cmp(&other.year) {
-            core::cmp::Ordering::Equal => self
-                .month
-                .number_from_month()
-                .cmp(&other.month.number_from_month()),
-            ord => ord,
-        }
-    }
-}
-
-// impl Partition for YearMonth {
-//     fn get_suffix(&self) -> String {
-//         format!("_{:02}_{:04}", self.month.number_from_month(), self.year)
-//     }
-// }
-// impl Partition for () {
-//     fn get_suffix(&self) -> String {
-//         String::new()
-//     }
-// }
-
 // / This trait is designed as a convenient way to extract a Vec of the desired Strct representing
 // / a row of the table from the `AemoFile` which represents the whole file.
 // / Most `AemoFiles` would contain multiple tables

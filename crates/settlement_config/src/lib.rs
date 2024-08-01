@@ -9,7 +9,7 @@ pub struct SettlementConfigAncillaryRecoverySplit2 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
             &SettlementConfigAncillaryRecoverySplit2Row<'_>,
-        ) -> mmsdm_core::PartitionValue,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -18,7 +18,7 @@ impl SettlementConfigAncillaryRecoverySplit2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -312,7 +312,9 @@ impl mmsdm_core::ArrowSchema for SettlementConfigAncillaryRecoverySplit2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -333,7 +335,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigAncillaryRecoverySplit2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .ace_portion_array
             .append_option({
@@ -381,7 +383,9 @@ pub struct SettlementConfigAncillaryRecoverySplit2Builder {
 }
 pub struct SettlementConfigMarketfee2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&SettlementConfigMarketfee2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &SettlementConfigMarketfee2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -390,7 +394,7 @@ impl SettlementConfigMarketfee2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -771,7 +775,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfee2 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.gl_tcode_array.append_option(row.gl_tcode());
         builder.gl_financialcode_array.append_option(row.gl_financialcode());
         builder.fee_class_array.append_option(row.fee_class());
@@ -824,7 +828,9 @@ pub struct SettlementConfigMarketfee2Builder {
 }
 pub struct SettlementConfigMarketfeedata1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&SettlementConfigMarketfeedata1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &SettlementConfigMarketfeedata1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -833,7 +839,7 @@ impl SettlementConfigMarketfeedata1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1094,7 +1100,9 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeedata1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .marketfeevalue_array
             .append_option({
@@ -1106,7 +1114,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeedata1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1139,7 +1147,9 @@ pub struct SettlementConfigMarketfeedata1Builder {
 }
 pub struct SettlementConfigMarketfeetrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&SettlementConfigMarketfeetrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &SettlementConfigMarketfeetrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1148,7 +1158,7 @@ impl SettlementConfigMarketfeetrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1413,14 +1423,18 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketfeetrk1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1453,7 +1467,9 @@ pub struct SettlementConfigMarketfeetrk1Builder {
 }
 pub struct SettlementConfigMarketFeeCatExcl1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&SettlementConfigMarketFeeCatExcl1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &SettlementConfigMarketFeeCatExcl1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1462,7 +1478,7 @@ impl SettlementConfigMarketFeeCatExcl1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1705,10 +1721,12 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExcl1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.marketfeeid_array.append_value(row.marketfeeid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .version_datetime_array
-            .append_value(row.version_datetime.timestamp_millis());
+            .append_value(row.version_datetime.and_utc().timestamp_millis());
         builder.participant_categoryid_array.append_value(row.participant_categoryid());
     }
     fn finalize_builder(
@@ -1741,7 +1759,7 @@ pub struct SettlementConfigMarketFeeCatExclTrk1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
             &SettlementConfigMarketFeeCatExclTrk1Row<'_>,
-        ) -> mmsdm_core::PartitionValue,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1750,7 +1768,7 @@ impl SettlementConfigMarketFeeCatExclTrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1992,13 +2010,15 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeCatExclTrk1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.marketfeeid_array.append_value(row.marketfeeid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .version_datetime_array
-            .append_value(row.version_datetime.timestamp_millis());
+            .append_value(row.version_datetime.and_utc().timestamp_millis());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2028,7 +2048,9 @@ pub struct SettlementConfigMarketFeeCatExclTrk1Builder {
 }
 pub struct SettlementConfigMarketFeeExclusion1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&SettlementConfigMarketFeeExclusion1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &SettlementConfigMarketFeeExclusion1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2037,7 +2059,7 @@ impl SettlementConfigMarketFeeExclusion1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2299,7 +2321,9 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusion1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2310,7 +2334,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusion1 {
         builder.marketfeeid_array.append_value(row.marketfeeid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2345,7 +2369,7 @@ pub struct SettlementConfigMarketFeeExclusionTrk1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
             &SettlementConfigMarketFeeExclusionTrk1Row<'_>,
-        ) -> mmsdm_core::PartitionValue,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2354,7 +2378,7 @@ impl SettlementConfigMarketFeeExclusionTrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2641,7 +2665,9 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusionTrk1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2652,10 +2678,12 @@ impl mmsdm_core::ArrowSchema for SettlementConfigMarketFeeExclusionTrk1 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2693,7 +2721,7 @@ pub struct SettlementConfigParticipantBandfeeAlloc1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
             &SettlementConfigParticipantBandfeeAlloc1Row<'_>,
-        ) -> mmsdm_core::PartitionValue,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2702,7 +2730,7 @@ impl SettlementConfigParticipantBandfeeAlloc1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3010,7 +3038,9 @@ impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
         builder.marketfeeid_array.append_value(row.marketfeeid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -3030,7 +3060,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3069,7 +3099,9 @@ pub struct SettlementConfigParticipantBandfeeAlloc1Builder {
 }
 pub struct SetcfgReallocation2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&SetcfgReallocation2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &SetcfgReallocation2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3078,7 +3110,7 @@ impl SetcfgReallocation2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3574,13 +3606,13 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocation2 {
         builder.debitreference_array.append_option(row.debitreference());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .startdate_array
-            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+            .append_option(row.startdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .enddate_array
-            .append_option(row.enddate.map(|val| val.timestamp_millis()));
+            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
         builder.current_stepid_array.append_option(row.current_stepid());
         builder.daytype_array.append_option(row.daytype());
         builder.reallocation_type_array.append_option(row.reallocation_type());
@@ -3656,7 +3688,9 @@ pub struct SetcfgReallocation2Builder {
 }
 pub struct SetcfgReallocationinterval1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&SetcfgReallocationinterval1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &SetcfgReallocationinterval1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3665,7 +3699,7 @@ impl SetcfgReallocationinterval1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -3914,7 +3948,7 @@ impl mmsdm_core::ArrowSchema for SetcfgReallocationinterval1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .nrp_array
             .append_option({
@@ -3958,7 +3992,7 @@ pub struct SettlementConfigSetcfgParticipantMpf1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
             &SettlementConfigSetcfgParticipantMpf1Row<'_>,
-        ) -> mmsdm_core::PartitionValue,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -3967,7 +4001,7 @@ impl SettlementConfigSetcfgParticipantMpf1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4279,7 +4313,9 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4300,7 +4336,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4341,7 +4377,7 @@ pub struct SettlementConfigSetcfgParticipantMpftrk1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
             &SettlementConfigSetcfgParticipantMpftrk1Row<'_>,
-        ) -> mmsdm_core::PartitionValue,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4350,7 +4386,7 @@ impl SettlementConfigSetcfgParticipantMpftrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4638,7 +4674,9 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.participantid_array.append_value(row.participantid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4649,10 +4687,12 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpftrk1 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4688,7 +4728,9 @@ pub struct SettlementConfigSetcfgParticipantMpftrk1Builder {
 }
 pub struct SetcfgSapsSettPrice1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&SetcfgSapsSettPrice1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &SetcfgSapsSettPrice1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4697,7 +4739,7 @@ impl SetcfgSapsSettPrice1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4988,12 +5030,12 @@ impl mmsdm_core::ArrowSchema for SetcfgSapsSettPrice1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.fromdate_array.append_value(row.fromdate.timestamp_millis());
-        builder.todate_array.append_value(row.todate.timestamp_millis());
+        builder.fromdate_array.append_value(row.fromdate.and_utc().timestamp_millis());
+        builder.todate_array.append_value(row.todate.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .version_datetime_array
-            .append_value(row.version_datetime.timestamp_millis());
+            .append_value(row.version_datetime.and_utc().timestamp_millis());
         builder
             .saps_rrp_array
             .append_option({
@@ -5014,7 +5056,7 @@ impl mmsdm_core::ArrowSchema for SetcfgSapsSettPrice1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5053,7 +5095,9 @@ pub struct SetcfgSapsSettPrice1Builder {
 }
 pub struct SettlementsConfigWdrrrCalendar1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&SettlementsConfigWdrrrCalendar1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &SettlementsConfigWdrrrCalendar1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -5062,7 +5106,7 @@ impl SettlementsConfigWdrrrCalendar1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5337,16 +5381,16 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrrrCalendar1 {
         builder.regionid_array.append_value(row.regionid());
         builder
             .version_datetime_array
-            .append_value(row.version_datetime.timestamp_millis());
+            .append_value(row.version_datetime.and_utc().timestamp_millis());
         builder
             .startdate_array
-            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+            .append_option(row.startdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .enddate_array
-            .append_option(row.enddate.map(|val| val.timestamp_millis()));
+            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5382,7 +5426,9 @@ pub struct SettlementsConfigWdrrrCalendar1Builder {
 }
 pub struct SettlementsConfigWdrReimburseRate1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&SettlementsConfigWdrReimburseRate1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &SettlementsConfigWdrReimburseRate1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -5391,7 +5437,7 @@ impl SettlementsConfigWdrReimburseRate1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5662,7 +5708,7 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrReimburseRate1 {
         builder.regionid_array.append_value(row.regionid());
         builder
             .version_datetime_array
-            .append_value(row.version_datetime.timestamp_millis());
+            .append_value(row.version_datetime.and_utc().timestamp_millis());
         builder
             .wdrrr_array
             .append_option({
@@ -5683,7 +5729,7 @@ impl mmsdm_core::ArrowSchema for SettlementsConfigWdrReimburseRate1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

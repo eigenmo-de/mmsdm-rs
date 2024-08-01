@@ -7,7 +7,9 @@ use chrono::Datelike as _;
 extern crate std;
 pub struct P5minBlockedConstraints1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&P5minBlockedConstraints1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &P5minBlockedConstraints1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -16,7 +18,7 @@ impl P5minBlockedConstraints1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -199,7 +201,9 @@ impl mmsdm_core::ArrowSchema for P5minBlockedConstraints1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
     }
     fn finalize_builder(
@@ -224,7 +228,9 @@ pub struct P5minBlockedConstraints1Builder {
 }
 pub struct P5minCasesolution2 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&P5minCasesolution2Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &P5minCasesolution2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -233,7 +239,7 @@ impl P5minCasesolution2 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -737,7 +743,9 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.startinterval_datetime_array.append_option(row.startinterval_datetime());
         builder
             .totalobjective_array
@@ -876,7 +884,7 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .intervention_array
             .append_value({
@@ -962,7 +970,9 @@ pub struct P5minCasesolution2Builder {
 }
 pub struct P5minConstraintsolution6 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&P5minConstraintsolution6Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &P5minConstraintsolution6Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -971,7 +981,7 @@ impl P5minConstraintsolution6 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1364,10 +1374,12 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
         builder
             .rhs_array
@@ -1398,11 +1410,13 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.duid_array.append_option(row.duid());
         builder
             .genconid_effectivedate_array
-            .append_option(row.genconid_effectivedate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.genconid_effectivedate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .genconid_versionno_array
             .append_option({
@@ -1481,7 +1495,9 @@ pub struct P5minConstraintsolution6Builder {
 }
 pub struct P5minFcasRequirment1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&P5minFcasRequirment1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &P5minFcasRequirment1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -1490,7 +1506,7 @@ impl P5minFcasRequirment1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -1951,10 +1967,12 @@ impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
         builder.regionid_array.append_value(row.regionid());
         builder.bidtype_array.append_value(row.bidtype());
@@ -1968,7 +1986,7 @@ impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
         builder
             .constraint_effectivedate_array
             .append_option(
-                row.constraint_effectivedate.map(|val| val.timestamp_millis()),
+                row.constraint_effectivedate.map(|val| val.and_utc().timestamp_millis()),
             );
         builder
             .constraint_versionno_array
@@ -2044,7 +2062,7 @@ impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2111,7 +2129,9 @@ pub struct P5minFcasRequirment1Builder {
 }
 pub struct P5minInterconnectorsoln4 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&P5minInterconnectorsoln4Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &P5minInterconnectorsoln4Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2120,7 +2140,7 @@ impl P5minInterconnectorsoln4 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -2703,11 +2723,13 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.interconnectorid_array.append_value(row.interconnectorid());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder
             .meteredmwflow_array
             .append_option({
@@ -2811,7 +2833,7 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .local_price_adjustment_export_array
             .append_option({
@@ -2942,7 +2964,9 @@ pub struct P5minInterconnectorsoln4Builder {
 }
 pub struct P5minIntersensitivities1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&P5minIntersensitivities1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &P5minIntersensitivities1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -2951,7 +2975,7 @@ impl P5minIntersensitivities1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4007,11 +4031,13 @@ impl mmsdm_core::ArrowSchema for P5minIntersensitivities1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.interconnectorid_array.append_value(row.interconnectorid());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder
             .intervention_array
             .append_value({
@@ -4417,7 +4443,7 @@ impl mmsdm_core::ArrowSchema for P5minIntersensitivities1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4582,7 +4608,9 @@ pub struct P5minIntersensitivities1Builder {
 }
 pub struct P5minLocalPrice1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&P5minLocalPrice1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &P5minLocalPrice1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4591,7 +4619,7 @@ impl P5minLocalPrice1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -4839,10 +4867,12 @@ impl mmsdm_core::ArrowSchema for P5minLocalPrice1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder
             .local_price_adjustment_array
@@ -4894,7 +4924,9 @@ pub struct P5minLocalPrice1Builder {
 }
 pub struct P5minPricesensitivities1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&P5minPricesensitivities1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &P5minPricesensitivities1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -4903,7 +4935,7 @@ impl P5minPricesensitivities1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -5952,11 +5984,13 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder
             .intervention_array
             .append_value({
@@ -6362,7 +6396,7 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -6527,7 +6561,9 @@ pub struct P5minPricesensitivities1Builder {
 }
 pub struct P5minRegionsolution9 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&P5minRegionsolution9Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &P5minRegionsolution9Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -6536,7 +6572,7 @@ impl P5minRegionsolution9 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -8810,10 +8846,12 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution9 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .rrp_array
@@ -9582,7 +9620,7 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution9 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .totalintermittentgeneration_array
             .append_option({
@@ -10205,7 +10243,9 @@ pub struct P5minRegionsolution9Builder {
 }
 pub struct P5minScenariodemand1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&P5minScenariodemand1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &P5minScenariodemand1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -10214,7 +10254,7 @@ impl P5minScenariodemand1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -10469,10 +10509,12 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemand1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .version_datetime_array
-            .append_value(row.version_datetime.timestamp_millis());
+            .append_value(row.version_datetime.and_utc().timestamp_millis());
         builder
             .scenario_array
             .append_value({
@@ -10522,7 +10564,9 @@ pub struct P5minScenariodemand1Builder {
 }
 pub struct P5minScenariodemandtrk1 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&P5minScenariodemandtrk1Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &P5minScenariodemandtrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -10531,7 +10575,7 @@ impl P5minScenariodemandtrk1 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -10764,16 +10808,20 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemandtrk1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .version_datetime_array
-            .append_value(row.version_datetime.timestamp_millis());
+            .append_value(row.version_datetime.and_utc().timestamp_millis());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -10803,7 +10851,9 @@ pub struct P5minScenariodemandtrk1Builder {
 }
 pub struct P5minUnitsolution6 {
     extract_row_partition: alloc::boxed::Box<
-        dyn Fn(&P5minUnitsolution6Row<'_>) -> mmsdm_core::PartitionValue,
+        dyn Fn(
+            &P5minUnitsolution6Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
@@ -10812,7 +10862,7 @@ impl P5minUnitsolution6 {
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
             &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + 'static,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     ) -> Self {
         Self {
             extract_row_partition: alloc::boxed::Box::new(func),
@@ -11743,10 +11793,12 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution6 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.connectionpointid_array.append_option(row.connectionpointid());
         builder
@@ -11958,7 +12010,7 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution6 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .semidispatchcap_array
             .append_option({
