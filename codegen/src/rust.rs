@@ -145,7 +145,10 @@ impl mms::TableColumn {
     fn as_arrow_array_extractor(&self) -> String {
         let extractor = match (&self.data_type, self.mandatory) {
             (_, _) if self.is_dispatch_period() || self.is_trading_period() => {
-                format!("row.{}.start().and_utc().timestamp_millis()", self.rust_field_name())
+                format!(
+                    "row.{}.start().and_utc().timestamp_millis()",
+                    self.rust_field_name()
+                )
             }
             // (_, false) if self.comment.to_uppercase().contains("YYYYMMDDPPP") || self.comment.to_uppercase().contains("YYYYMMDDPP") => {
             //     format!("row.{}.map(|v| v.start().timestamp_millis())", self.rust_field_name())
@@ -157,7 +160,10 @@ impl mms::TableColumn {
             //     format!("row.{}.map(|v| v.start().timestamp_millis())", self.rust_field_name())
             // }
             (mms::DataType::Date | mms::DataType::DateTime, true) => {
-                format!("row.{}.and_utc().timestamp_millis()", self.rust_field_name())
+                format!(
+                    "row.{}.and_utc().timestamp_millis()",
+                    self.rust_field_name()
+                )
             }
             (mms::DataType::Date | mms::DataType::DateTime, false) => {
                 format!(
@@ -380,10 +386,12 @@ fn codegen_struct(
         func.vis("pub");
         func.arg("row_partition_key", "mmsdm_core::PartitionKey");
         func.arg("func", "impl Fn(&<Self as mmsdm_core::GetTable>::Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static");
-        
+
         func.ret("Self");
 
-        func.line("Self { extract_row_partition: alloc::boxed::Box::new(func), row_partition_key, }");
+        func.line(
+            "Self { extract_row_partition: alloc::boxed::Box::new(func), row_partition_key, }",
+        );
 
         manager_impl.fmt(fmtr)?;
     }
@@ -737,12 +745,10 @@ fn codegen_impl_get_table(
     partition_name.ret("alloc::string::String");
     partition_name.arg_ref_self();
     partition_name.arg("row", "&Self::Row<'_>");
-    partition_name.line(
-        &format!(
-            r#"alloc::format!("{}_{{}}", self.partition_value(row))"#,
-            pdr_report.get_partition_base()
-        )
-    );
+    partition_name.line(&format!(
+        r#"alloc::format!("{}_{{}}", self.partition_value(row))"#,
+        pdr_report.get_partition_base()
+    ));
     current_impl.push_fn(partition_name);
 
     let mut partition_key = codegen::Function::new("partition_key");

@@ -283,9 +283,9 @@ pub trait GetTable: 'static {
     fn field_mapping_from_row<'a>(row: CsvRow<'a>) -> Result<Self::FieldMapping>;
 
     fn from_row<'a>(row: CsvRow<'a>, field_mapping: &Self::FieldMapping) -> Result<Self::Row<'a>>;
-    
+
     fn matches_file_key(key: &FileKey<'_>, version: i32) -> bool;
-    
+
     fn partition_value(&self, row: &Self::Row<'_>) -> PartitionValue;
     fn partition_name(&self, row: &Self::Row<'_>) -> String;
     fn partition_key(&self) -> PartitionKey;
@@ -299,8 +299,6 @@ pub enum RowValidation {
     Footer(AemoFooter),
     Headings(FileKey<'static>),
 }
-
-
 
 pub fn handle_row<'input, T>(
     mut csv: CsvRow<'input>,
@@ -319,9 +317,7 @@ where
                 Ok(None)
             }
         }
-        None => {
-            Err(Error::UnexpectedRowType(csv.join_fields()))
-        }
+        None => Err(Error::UnexpectedRowType(csv.join_fields())),
     }
 }
 
@@ -339,8 +335,7 @@ impl<'a> Clone for CsvRow<'a> {
 
 impl<'a> PartialEq for CsvRow<'a> {
     fn eq(&self, other: &Self) -> bool {
-        self.data.as_ref() == other.data.as_ref()
-            && self.indexes == other.indexes
+        self.data.as_ref() == other.data.as_ref() && self.indexes == other.indexes
     }
 }
 
@@ -374,7 +369,12 @@ impl CsvReader {
     }
 
     // TODO: verify that column orders are correct!
-    pub fn validate_row(&mut self, row: &str, out: &mut Vec<u8>, indexes_backing: &mut Vec<usize>) -> Result<Option<RowValidation>> {
+    pub fn validate_row(
+        &mut self,
+        row: &str,
+        out: &mut Vec<u8>,
+        indexes_backing: &mut Vec<usize>,
+    ) -> Result<Option<RowValidation>> {
         let csv = self.read_row(row, out, indexes_backing)?;
 
         match csv.record_type {
@@ -394,11 +394,16 @@ impl CsvReader {
                 csv.to_owned(),
             )?))),
             Some(RecordType::D) => Ok(None),
-            None => Err(Error::UnexpectedRowType(csv.join_fields()))
+            None => Err(Error::UnexpectedRowType(csv.join_fields())),
         }
     }
 
-    pub fn read_row<'a>(&mut self, data: &'a str, out: &'a mut Vec<u8>, indexes: &'a mut Vec<usize>) -> Result<CsvRow<'a>> {
+    pub fn read_row<'a>(
+        &mut self,
+        data: &'a str,
+        out: &'a mut Vec<u8>,
+        indexes: &'a mut Vec<usize>,
+    ) -> Result<CsvRow<'a>> {
         if !data.is_ascii() {
             return Err(Error::UnexpectedRowType(format!(
                 "Row contained non ascii characters: {data}"
@@ -424,10 +429,12 @@ impl CsvReader {
             // initialize all elements up to capacity
             indexes.iter_mut().for_each(|v| {
                 *v = 0;
-            });  
+            });
         }
 
-        let (status, _bytes_read, bytes_written, num_positions) = self.inner.read_record(data.as_bytes(), out.as_mut_slice(), indexes.as_mut_slice());
+        let (status, _bytes_read, bytes_written, num_positions) =
+            self.inner
+                .read_record(data.as_bytes(), out.as_mut_slice(), indexes.as_mut_slice());
 
         match status {
             // good parse
@@ -441,13 +448,24 @@ impl CsvReader {
             }),
             // should never happen due to data is empty check above
             ReadRecordResult::End => Err(Error::EmptyRow),
-            ReadRecordResult::InputEmpty => Err(Error::ParseRow(format!("InputEmpty for input {data}, out len {}, ends len {}", out.len(), indexes.len()))),
-            ReadRecordResult::OutputFull => Err(Error::ParseRow(format!("OutputFull for input {data}, out len {}, ends len {}", out.len(), indexes.len()))),
-            ReadRecordResult::OutputEndsFull => Err(Error::ParseRow(format!("OutputEndsFull for input {data}, out len {}, ends len {}", out.len(), indexes.len()))),
+            ReadRecordResult::InputEmpty => Err(Error::ParseRow(format!(
+                "InputEmpty for input {data}, out len {}, ends len {}",
+                out.len(),
+                indexes.len()
+            ))),
+            ReadRecordResult::OutputFull => Err(Error::ParseRow(format!(
+                "OutputFull for input {data}, out len {}, ends len {}",
+                out.len(),
+                indexes.len()
+            ))),
+            ReadRecordResult::OutputEndsFull => Err(Error::ParseRow(format!(
+                "OutputEndsFull for input {data}, out len {}, ends len {}",
+                out.len(),
+                indexes.len()
+            ))),
         }
     }
 }
-
 
 impl<'a> CsvRow<'a> {
     pub fn join_fields(&self) -> String {
@@ -486,7 +504,7 @@ impl<'a> CsvRow<'a> {
     fn get_start_of_field(&self, field_no: usize) -> Option<usize> {
         match field_no.checked_sub(1) {
             None => Some(0),
-            Some(field) => self.get_end_of_field(field)
+            Some(field) => self.get_end_of_field(field),
         }
     }
 
@@ -507,7 +525,6 @@ impl<'a> CsvRow<'a> {
             record_type: self.record_type,
         }
     }
-    
 
     pub fn range(&self, i: usize) -> Option<Range<usize>> {
         if i >= self.count_fields() {
@@ -1242,8 +1259,8 @@ mod tests {
         let mut indexes = Vec::from([0; 10_000]);
         let mut output = Vec::from([0; 10_000]);
         let mut reader = CsvReader::new();
-        let row =reader.read_row(&data, &mut output, &mut indexes).unwrap();
-        
+        let row = reader.read_row(&data, &mut output, &mut indexes).unwrap();
+
         dbg!(&row, row.iter_fields().collect::<Vec<_>>());
 
         AemoHeader::from_row(row).unwrap();
@@ -1255,7 +1272,7 @@ mod tests {
         let mut indexes = Vec::from([0; 10_000]);
         let mut output = Vec::from([0; 10_000]);
         let mut reader = CsvReader::new();
-        let row =reader.read_row(&data, &mut output, &mut indexes).unwrap();
+        let row = reader.read_row(&data, &mut output, &mut indexes).unwrap();
 
         assert_eq!(row.iter_fields().count(), 61);
 

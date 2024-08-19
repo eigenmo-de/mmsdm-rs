@@ -17,7 +17,6 @@ pub fn run() -> anyhow::Result<()> {
             continue;
         }
 
-
         let mut fmt_str = String::new();
         fmt_str.push_str("#![no_std]\n#![allow(unused_imports)]\nextern crate alloc;\nuse alloc::string::ToString;\nuse chrono::Datelike as _;\n#[cfg(feature = \"arrow\")]\nextern crate std;");
         let mut fmtr = codegen::Formatter::new(&mut fmt_str);
@@ -37,15 +36,11 @@ pub fn run() -> anyhow::Result<()> {
 
             match map.get(&mms_report) {
                 Some(pdr_report) => {
-
                     for column in table.columns().columns {
-
                         if (column.is_dispatch_period() && column.is_trading_period()) {
-
                             dbg!(&data_set, &table_key, column);
                         }
                     }
-                   
                 }
                 None => eprintln!("Cannot find PDR mapping for MMS Report: {mms_report:?}"),
             }

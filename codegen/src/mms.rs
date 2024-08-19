@@ -69,20 +69,24 @@ pub enum TableFrequency {
 impl TableFrequency {
     pub fn duration(&self) -> &'static str {
         match self {
-            TableFrequency::HalfHourly => r#"{
+            TableFrequency::HalfHourly => {
+                r#"{
                 const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(30) {
                     Some(d) => d,
                     None => panic!("invalid"),
                 };
                 D
-            }"#,
-            TableFrequency::FiveMinute => r#"{
+            }"#
+            }
+            TableFrequency::FiveMinute => {
+                r#"{
                 const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
                     Some(d) => d,
                     None => panic!("invalid"),
                 };
                 D
-            }"#,
+            }"#
+            }
             TableFrequency::Unknown => "chrono::TimeDelta::zero()",
         }
     }
@@ -117,12 +121,18 @@ impl TablePage {
         }
 
         // general 5min cases
-        if ["DISPATCH","P5MIN"].iter().any(|n| self.summary.name.starts_with(n)) {
+        if ["DISPATCH", "P5MIN"]
+            .iter()
+            .any(|n| self.summary.name.starts_with(n))
+        {
             return TableFrequency::FiveMinute;
         }
 
         // general 30min cases
-        if ["PREDISPATCH", "ROOFTOP"].iter().any(|n| self.summary.name.starts_with(n)) {
+        if ["PREDISPATCH", "ROOFTOP"]
+            .iter()
+            .any(|n| self.summary.name.starts_with(n))
+        {
             return TableFrequency::HalfHourly;
         }
 

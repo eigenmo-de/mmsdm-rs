@@ -1,15 +1,14 @@
 use structopt::StructOpt;
 
+mod analyse;
 mod json;
 mod mms;
 mod pdr;
 mod python;
 mod rust;
 mod sql_server_tables;
-mod analyse;
 
 pub const VERSION: &str = "5.3";
-
 
 #[derive(structopt::StructOpt)]
 #[structopt(about = "Code generation on the MMS Data Model")]

@@ -1,5 +1,8 @@
 extern crate std;
-use crate::{AemoHeader, CsvReader, Error, FileKey, GetTable, PartitionKey, PartitionValue, Result, RowValidation};
+use crate::{
+    AemoHeader, CsvReader, Error, FileKey, GetTable, PartitionKey, PartitionValue, Result,
+    RowValidation,
+};
 use alloc::{collections::BTreeSet, format, string::String, sync::Arc, vec::Vec};
 use core::ops::AddAssign;
 use std::{
@@ -35,7 +38,7 @@ where
 
             let mut last_heading = None;
 
-            let mut csv_reader= CsvReader::new();
+            let mut csv_reader = CsvReader::new();
 
             loop {
                 row_holder.clear();
@@ -97,7 +100,10 @@ where
         &self.header
     }
 
-    pub fn iter_closest<'sub_reader, T>(&'sub_reader mut self, manager: Arc<T>) -> Result<IterTyped<'sub_reader, T>>
+    pub fn iter_closest<'sub_reader, T>(
+        &'sub_reader mut self,
+        manager: Arc<T>,
+    ) -> Result<IterTyped<'sub_reader, T>>
     where
         T: GetTable,
         'reader: 'sub_reader,
@@ -115,10 +121,18 @@ where
 
         let field_mapping = T::field_mapping_from_row(closest_key.backing_data().to_owned())?;
 
-        Ok(IterTyped::new(manager, &closest_key, field_mapping,  BufReader::new(self.reader.by_index(0)?)))
+        Ok(IterTyped::new(
+            manager,
+            &closest_key,
+            field_mapping,
+            BufReader::new(self.reader.by_index(0)?),
+        ))
     }
 
-    pub fn iter_exact<'sub_reader, T>(&'sub_reader mut self, manager: Arc<T>) -> Result<IterTyped<'sub_reader, T>>
+    pub fn iter_exact<'sub_reader, T>(
+        &'sub_reader mut self,
+        manager: Arc<T>,
+    ) -> Result<IterTyped<'sub_reader, T>>
     where
         T: GetTable,
         'reader: 'sub_reader,
@@ -138,7 +152,12 @@ where
 
         let field_mapping = T::field_mapping_from_row(key.backing_data().to_owned())?;
 
-        Ok(IterTyped::new(manager, &key, field_mapping,  BufReader::new(self.reader.by_index(0)?)))
+        Ok(IterTyped::new(
+            manager,
+            &key,
+            field_mapping,
+            BufReader::new(self.reader.by_index(0)?),
+        ))
     }
 }
 
@@ -158,7 +177,12 @@ impl<'reader, T> IterTyped<'reader, T>
 where
     T: GetTable,
 {
-    pub fn new(manager: Arc<T> , key: &FileKey<'_>, mapping: T::FieldMapping, reader: BufReader<ZipFile<'reader>>) -> IterTyped<'reader, T> {
+    pub fn new(
+        manager: Arc<T>,
+        key: &FileKey<'_>,
+        mapping: T::FieldMapping,
+        reader: BufReader<ZipFile<'reader>>,
+    ) -> IterTyped<'reader, T> {
         IterTyped {
             inner: reader,
             ty: PhantomData,
@@ -183,9 +207,10 @@ where
         match self.inner.read_line(&mut self.buf) {
             Ok(0) => None,
             Ok(_) => Some(
-                self.reader.read_row(&self.buf, &mut self.output, &mut self.indexes_backing)
+                self.reader
+                    .read_row(&self.buf, &mut self.output, &mut self.indexes_backing)
                     .and_then(|csv| crate::handle_row::<T>(csv, self.version, &self.field_mapping))
-                    .transpose()
+                    .transpose(),
             ),
             Err(e) => Some(Some(Err(e.into()))),
         }
