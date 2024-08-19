@@ -1,19 +1,18 @@
 use anyhow::Context;
-use codegen::{Block, Scope};
-use heck::{ToShoutySnakeCase, ToSnakeCase, ToTitleCase, ToUpperCamelCase};
+use codegen::Scope;
+use heck::{ToSnakeCase, ToTitleCase, ToUpperCamelCase};
 use itertools::Itertools;
 use std::{
     collections::{self, HashMap},
     fmt::Debug,
     fs,
-    ops::ControlFlow,
     str,
 };
 
 use crate::VERSION;
 
 use crate::{mms, pdr};
-use crate::{mms::DataType, KW};
+use crate::KW;
 use serde::Deserialize;
 
 impl mms::DataType {

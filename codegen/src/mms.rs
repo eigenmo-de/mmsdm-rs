@@ -1,6 +1,6 @@
 use crate::KW;
 use anyhow::anyhow;
-use heck::{ToLowerCamelCase, ToSnakeCase, ToUpperCamelCase};
+use heck::ToSnakeCase;
 use scraper::{element_ref, html};
 use serde::{Deserialize, Serialize};
 use std::{collections, ops::ControlFlow, str};
