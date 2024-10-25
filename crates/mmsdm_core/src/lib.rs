@@ -409,11 +409,6 @@ impl CsvReader {
                 "Row contained non ascii characters: {data}"
             )));
         }
-        if !data.ends_with('\n') {
-            return Err(Error::UnexpectedRowType(format!(
-                "Row didn't finish with a newline, unable to parse. It's reccomended to use `BufRead::read_line` or similar which doesn't strip newlines. Data was: {data}"
-            )));
-        }
         if data.is_empty() {
             return Err(Error::EmptyRow);
         }
@@ -438,21 +433,43 @@ impl CsvReader {
 
         match status {
             // good parse
-            ReadRecordResult::Record => Ok(CsvRow {
-                // we could consider using from_utf8_unchecked here as it should be safe due to
-                // the input data being a valid str. howerver, the performance improvement
-                // of ~5% isn't worth it.
-                data: Cow::Borrowed(str::from_utf8(&out[0..bytes_written]).expect("valid UTF8")),
-                indexes: Cow::Borrowed(&indexes[0..num_positions]),
-                record_type: data[0..1].parse().ok(),
-            }),
+            ReadRecordResult::Record => {
+                let row = CsvRow {
+                    // we could consider using from_utf8_unchecked here as it should be safe due to
+                    // the input data being a valid str. howerver, the performance improvement
+                    // of ~5% isn't worth it.
+                    data: Cow::Borrowed(
+                        str::from_utf8(&out[0..bytes_written]).expect("valid UTF8"),
+                    ),
+                    indexes: Cow::Borrowed(&indexes[0..num_positions]),
+                    record_type: data[0..1].parse().ok(),
+                };
+                Ok(row)
+            }
             // should never happen due to data is empty check above
             ReadRecordResult::End => Err(Error::EmptyRow),
-            ReadRecordResult::InputEmpty => Err(Error::ParseRow(format!(
-                "InputEmpty for input {data}, out len {}, ends len {}",
-                out.len(),
-                indexes.len()
-            ))),
+            // this means we are on the last row, in a case where the row doesn't end with a newline
+            // so the input is now empty, but the parser doesn't count this as having parsed
+            // a full record just yet as there hasn't been a newline
+            ReadRecordResult::InputEmpty => {
+                // in this case, the last position is missed, for some unknown reason
+                // set the extra final postion equal to the number of bytes written
+                indexes[num_positions] = bytes_written;
+                let last_position = num_positions + 1;
+
+                let row = CsvRow {
+                    // we could consider using from_utf8_unchecked here as it should be safe due to
+                    // the input data being a valid str. howerver, the performance improvement
+                    // of ~5% isn't worth it.
+                    data: Cow::Borrowed(
+                        str::from_utf8(&out[0..bytes_written]).expect("valid UTF8"),
+                    ),
+                    indexes: Cow::Borrowed(&indexes[0..last_position]),
+                    record_type: data[0..1].parse().ok(),
+                };
+
+                Ok(row)
+            }
             ReadRecordResult::OutputFull => Err(Error::ParseRow(format!(
                 "OutputFull for input {data}, out len {}, ends len {}",
                 out.len(),
@@ -531,9 +548,6 @@ impl<'a> CsvRow<'a> {
             return None;
         }
 
-        // let lower = i.checked_sub(1).and_then(|idx| self.get_end_of_field(idx).map(|lower| lower + 1)).unwrap_or(0);
-        // let upper = self.get_end_of_field(i);
-
         Some(Range {
             start: self.get_start_of_field(i)?,
             end: self.get_end_of_field(i)?,
@@ -561,7 +575,7 @@ impl<'a> CsvRow<'a> {
     }
 
     pub fn count_fields(&self) -> usize {
-        self.indexes.len() + 1
+        self.indexes.len()
     }
     fn get(&self, idx: usize) -> Option<&str> {
         let range = self.range(idx)?;
