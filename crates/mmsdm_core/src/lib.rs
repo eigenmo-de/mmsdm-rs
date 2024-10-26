@@ -1,6 +1,7 @@
 #![deny(clippy::all)]
-//#![deny(warnings)]
+#![deny(warnings)]
 #![no_std]
+
 extern crate alloc;
 use core::{
     cmp::Ordering,
@@ -691,35 +692,6 @@ pub trait CompareWithPrimaryKey {
 //     fn latest_row(&mut self, row: Self) -> Self;
 // }
 
-// pub fn required_partitions<'data, T>(data: &[T]) -> BTreeSet<T::Partition>
-// where
-//     T: Send + GetTable<'data> + CompareWithRow<'data, Row = T>,
-// {
-//     data.iter().map(|row| row.partition_suffix()).collect()
-// }
-
-// in memory
-// the input map is all
-// pub fn merge_with_partitions<'data, T>(
-//     mut existing: BTreeMap<<T as GetTable<'data>>::Partition, collections::BTreeMap<T::PrimaryKey, T>>,
-//     data: &[T],
-// ) -> BTreeMap<<T as GetTable<'static>>::Partition, collections::BTreeMap<T::PrimaryKey, T>>
-// where
-//     T: Send + GetTable<'data> + CompareWithRow<'data, Row = T> + fmt::Debug,
-// {
-//     for row in data {
-//         let partition = row.partition_suffix();
-//         let pk = row.primary_key();
-//         if let Some(entry) = existing.get_mut(&partition) {
-//             entry.entry(pk).or_insert_with(|| row.to_owned());
-//         } else {
-//             existing.insert(partition, iter::once((pk, row.clone())).to_owned());
-//         }
-//     }
-
-//     existing
-// }
-
 // gets period, 1 based
 pub fn naive_time_to_five_min_period(nt: chrono::NaiveTime) -> NonZeroU16 {
     NonZeroU16::new(
@@ -916,6 +888,14 @@ pub mod mms_datetime {
     use chrono::{NaiveDate, NaiveDateTime, NaiveTime};
 
     pub fn parse(input: &str) -> Result<NaiveDateTime> {
+        if !input.is_ascii() {
+            return Err(Error::ParseDateInternal {
+                message: alloc::format!("Non ASCII values in input when parsing NaiveDateTime"),
+                input: input.to_string(),
+                format: "%Y/%m/%d %H:%M:%S",
+            });
+        }
+
         let dt = if input.starts_with('"') {
             if input.len() != 21 {
                 return Err(Error::ParseDateInternal {
@@ -1076,6 +1056,14 @@ pub mod mms_date {
     use chrono::NaiveDate;
 
     pub fn parse(input: &str) -> Result<NaiveDate> {
+        if !input.is_ascii() {
+            return Err(Error::ParseDateInternal {
+                message: alloc::format!("Non ASCII values in input when parsing NaiveDate"),
+                input: input.to_string(),
+                format: "%Y/%m/%d",
+            });
+        }
+
         if input.starts_with('"') {
             if input.len() != 12 {
                 return Err(Error::ParseDateInternal {
@@ -1084,7 +1072,7 @@ pub mod mms_date {
                         input.len()
                     ),
                     input: input.to_string(),
-                    format: "%Y/%m/%d %H:%M:%S",
+                    format: "%Y/%m/%d",
                 });
             }
 
@@ -1101,7 +1089,7 @@ pub mod mms_date {
             NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| Error::ParseDateInternal {
                 message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
                 input: input.to_string(),
-                format: "%Y/%m/%d %H:%M:%S",
+                format: "%Y/%m/%d",
             })
         } else {
             if input.len() != 10 {
@@ -1111,7 +1099,7 @@ pub mod mms_date {
                         input.len()
                     ),
                     input: input.to_string(),
-                    format: "%Y/%m/%d %H:%M:%S",
+                    format: "%Y/%m/%d",
                 });
             }
 
@@ -1128,7 +1116,7 @@ pub mod mms_date {
             NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| Error::ParseDateInternal {
                 message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
                 input: input.to_string(),
-                format: "%Y/%m/%d %H:%M:%S",
+                format: "%Y/%m/%d",
             })
         }
     }
@@ -1140,6 +1128,14 @@ pub mod mms_period_datepart {
     use chrono::NaiveDate;
 
     pub fn parse(input: &str) -> Result<NaiveDate> {
+        if !input.is_ascii() {
+            return Err(Error::ParseDateInternal {
+                message: alloc::format!("Non ASCII values in input when parsing NaiveDate"),
+                input: input.to_string(),
+                format: "%Y/%m/%d",
+            });
+        }
+
         if input.starts_with('"') {
             if input.len() != 10 {
                 return Err(Error::ParseDateInternal {
@@ -1148,7 +1144,7 @@ pub mod mms_period_datepart {
                         input.len()
                     ),
                     input: input.to_string(),
-                    format: "%Y/%m/%d %H:%M:%S",
+                    format: "%Y/%m/%d",
                 });
             }
 
@@ -1165,7 +1161,7 @@ pub mod mms_period_datepart {
             NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| Error::ParseDateInternal {
                 message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
                 input: input.to_string(),
-                format: "%Y/%m/%d %H:%M:%S",
+                format: "%Y/%m/%d",
             })
         } else {
             if input.len() != 8 {
@@ -1175,7 +1171,7 @@ pub mod mms_period_datepart {
                         input.len()
                     ),
                     input: input.to_string(),
-                    format: "%Y/%m/%d %H:%M:%S",
+                    format: "%Y/%m/%d",
                 });
             }
 
@@ -1192,7 +1188,7 @@ pub mod mms_period_datepart {
             NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| Error::ParseDateInternal {
                 message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
                 input: input.to_string(),
-                format: "%Y/%m/%d %H:%M:%S",
+                format: "%Y/%m/%d",
             })
         }
     }
@@ -1204,6 +1200,14 @@ pub mod mms_time {
     use chrono::NaiveTime;
 
     pub fn parse(input: &str) -> Result<NaiveTime> {
+        if !input.is_ascii() {
+            return Err(Error::ParseDateInternal {
+                message: alloc::format!("Non ASCII values in input when parsing NaiveTime"),
+                input: input.to_string(),
+                format: "%H:%M:%S",
+            });
+        }
+
         if input.starts_with('"') {
             if input.len() != 10 {
                 return Err(Error::ParseDateInternal {
@@ -1212,7 +1216,7 @@ pub mod mms_time {
                         input.len()
                     ),
                     input: input.to_string(),
-                    format: "%Y/%m/%d %H:%M:%S",
+                    format: "%H:%M:%S",
                 });
             }
 
@@ -1229,14 +1233,14 @@ pub mod mms_time {
             NaiveTime::from_hms_opt(hour, minute, second).ok_or_else(|| Error::ParseDateInternal {
                 message: alloc::format!("Invalid values for hms: {hour}:{minute}:{second}"),
                 input: input.to_string(),
-                format: "%Y/%m/%d %H:%M:%S",
+                format: "%H:%M:%S",
             })
         } else {
             if input.len() != 8 {
                 return Err(Error::ParseDateInternal {
                     message: alloc::format!("Incorrect length, expected 8 but got {}", input.len()),
                     input: input.to_string(),
-                    format: "%Y/%m/%d %H:%M:%S",
+                    format: "%H:%M:%S",
                 });
             }
 
@@ -1253,7 +1257,7 @@ pub mod mms_time {
             NaiveTime::from_hms_opt(hour, minute, second).ok_or_else(|| Error::ParseDateInternal {
                 message: alloc::format!("Invalid values for hms: {hour}:{minute}:{second}"),
                 input: input.to_string(),
-                format: "%Y/%m/%d %H:%M:%S",
+                format: "%H:%M:%S",
             })
         }
     }
@@ -1261,11 +1265,50 @@ pub mod mms_time {
 
 #[cfg(test)]
 mod tests {
+    use zip::ZipArchive;
+
     use super::*;
 
     extern crate std;
 
-    use std::dbg;
+    use std::io::Cursor;
+
+    static OLD_FORMAT: &'static [u8] =
+        include_bytes!("../../../PUBLIC_DVD_DAYTRACK_202407010000.zip");
+    static NEW_FORMAT: &'static [u8] =
+        include_bytes!("../../../PUBLIC_ARCHIVE#DAYTRACK#FILE01#202409010000.zip");
+
+    #[test]
+    fn test_full_parse_old() {
+        let mut archive = ZipArchive::new(Cursor::new(OLD_FORMAT)).unwrap();
+
+        let fr = FileReader::new(&mut archive).unwrap();
+
+        assert_eq!(fr.sub_files().len(), 1);
+
+        let (key, rows) = fr.sub_files().first_key_value().unwrap();
+
+        assert_eq!(key.data_set_name(), "SETTLEMENTS");
+        assert_eq!(key.table_name(), "DAYTRACK");
+        assert_eq!(key.version, 6);
+        assert_eq!(rows, &157); // data rows (D), doesn't include header (C), headings (I), or footer (C)
+    }
+
+    #[test]
+    fn test_full_parse_new() {
+        let mut archive = ZipArchive::new(Cursor::new(NEW_FORMAT)).unwrap();
+
+        let fr = FileReader::new(&mut archive).unwrap();
+
+        assert_eq!(fr.sub_files().len(), 1);
+
+        let (key, rows) = fr.sub_files().first_key_value().unwrap();
+
+        assert_eq!(key.data_set_name(), "SETTLEMENTS");
+        assert_eq!(key.table_name(), "DAYTRACK");
+        assert_eq!(key.version, 6);
+        assert_eq!(rows, &142); // data rows (D), doesn't include header (C), headings (I), or footer (C)
+    }
 
     #[test]
     fn test_csv_parse_header() {
@@ -1274,8 +1317,6 @@ mod tests {
         let mut output = Vec::from([0; 10_000]);
         let mut reader = CsvReader::new();
         let row = reader.read_row(&data, &mut output, &mut indexes).unwrap();
-
-        dbg!(&row, row.iter_fields().collect::<Vec<_>>());
 
         AemoHeader::from_row(row).unwrap();
     }

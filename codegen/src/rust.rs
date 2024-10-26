@@ -5,14 +5,13 @@ use itertools::Itertools;
 use std::{
     collections::{self, HashMap},
     fmt::Debug,
-    fs,
-    str,
+    fs, str,
 };
 
 use crate::VERSION;
 
-use crate::{mms, pdr};
 use crate::KW;
+use crate::{mms, pdr};
 use serde::Deserialize;
 
 impl mms::DataType {
