@@ -37,12 +37,6 @@ workspace = true
 features = ["std", "now"]
 default-features = false
 
-[dependencies.chrono-tz]
-workspace = true 
-optional = true
-default-features = false
-features = []
-
 [dependencies.arrow]
 workspace = true
 optional = true

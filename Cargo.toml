@@ -31,13 +31,8 @@ version = "0.4.33"
 features = ["alloc"]
 default-features = false
 
-[workspace.dependencies.chrono-tz]
-version = "0.9.0"
-default-features = false
-features = []
-
 [workspace.dependencies.arrow]
-version = "52.2.0"
+version = "54.0.0"
 default-features = false
 
 [workspace.dependencies.csv-core]

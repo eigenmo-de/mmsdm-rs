@@ -13,7 +13,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     dbg!(fr.header(), fr.sub_files());
 
-
     let file = File::open("./PUBLIC_DVD_BIDPEROFFER1_202407010000.zip")?;
 
     let mut archive = ZipArchive::new(file)?;
