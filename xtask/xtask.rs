@@ -4,14 +4,14 @@ use cargo::ops;
 use cargo::ops::CompileOptions;
 use cargo::ops::Packages;
 use cargo::util::command_prelude::CompileMode;
-use cargo::Config;
+use cargo::util::context::JobsConfig;
+use cargo::GlobalContext;
 use std::env;
 use std::path::Path;
 use std::process;
-use std::thread;
 
 fn main() -> anyhow::Result<()> {
-    let config = Config::default()?;
+    let config = GlobalContext::default()?;
     let workspace = Workspace::new(&Path::new("./Cargo.toml").canonicalize()?, &config)?;
 
     if let Some(arg) = env::args().nth(1) {
@@ -20,7 +20,7 @@ fn main() -> anyhow::Result<()> {
                 let base_compile_options = CompileOptions::new(&config, CompileMode::Build)?;
                 let build_config = BuildConfig::new(
                     &config,
-                    Some(thread::available_parallelism()?.get().try_into()?),
+                    Some(JobsConfig::String("default".to_string())),
                     false,
                     &[],
                     CompileMode::Build,
@@ -43,7 +43,7 @@ fn main() -> anyhow::Result<()> {
                 let base_compile_options = CompileOptions::new(&config, CompileMode::Build)?;
                 let build_config = BuildConfig::new(
                     &config,
-                    Some(thread::available_parallelism()?.get().try_into()?),
+                    Some(JobsConfig::String("default".to_string())),
                     false,
                     &[],
                     CompileMode::Build,
@@ -71,7 +71,7 @@ fn main() -> anyhow::Result<()> {
                 let base_compile_options = CompileOptions::new(&config, CompileMode::Build)?;
                 let build_config = BuildConfig::new(
                     &config,
-                    Some(thread::available_parallelism()?.get().try_into()?),
+                    Some(JobsConfig::String("default".to_string())),
                     false,
                     &[],
                     CompileMode::Build,

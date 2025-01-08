@@ -1,6 +1,6 @@
 use crate::KW;
 use anyhow::anyhow;
-use heck::{ToLowerCamelCase, ToSnakeCase, ToUpperCamelCase};
+use heck::ToSnakeCase;
 use scraper::{element_ref, html};
 use serde::{Deserialize, Serialize};
 use std::{collections, ops::ControlFlow, str};
@@ -60,6 +60,38 @@ pub struct TablePage {
     columns: TableColumns,
 }
 
+pub enum TableFrequency {
+    HalfHourly,
+    FiveMinute,
+    Unknown,
+}
+
+impl TableFrequency {
+    pub fn duration(&self) -> &'static str {
+        match self {
+            TableFrequency::HalfHourly => {
+                r#"{
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(30) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            }"#
+            }
+            TableFrequency::FiveMinute => {
+                r#"{
+                const D: chrono::TimeDelta = match chrono::TimeDelta::try_minutes(5) {
+                    Some(d) => d,
+                    None => panic!("invalid"),
+                };
+                D
+            }"#
+            }
+            TableFrequency::Unknown => "chrono::TimeDelta::zero()",
+        }
+    }
+}
+
 impl TablePage {
     pub fn has_any_string_columns(&self) -> bool {
         self.columns
@@ -80,6 +112,33 @@ impl TablePage {
             intervention.mandatory = true;
         }
         base
+    }
+
+    pub fn frequency(&self) -> TableFrequency {
+        // special cases
+        if self.summary.name == "NEGATIVE_RESIDUE" {
+            return TableFrequency::FiveMinute;
+        }
+
+        // general 5min cases
+        if ["DISPATCH", "P5MIN"]
+            .iter()
+            .any(|n| self.summary.name.starts_with(n))
+        {
+            return TableFrequency::FiveMinute;
+        }
+
+        // general 30min cases
+        if ["PREDISPATCH", "ROOFTOP"]
+            .iter()
+            .any(|n| self.summary.name.starts_with(n))
+        {
+            return TableFrequency::HalfHourly;
+        }
+
+        // fallback
+        // this should especially be used for cases where the resolution has changed over time (eg from 30 to 5)
+        TableFrequency::Unknown
     }
 
     pub fn find_column(&self, name: &str) -> ControlFlow<TableColumn, ()> {
@@ -347,18 +406,11 @@ pub struct TableColumn {
 
 impl TableColumn {
     pub fn is_trading_period(&self) -> bool {
-        (
-            matches!(self.data_type, DataType::Varchar { length } if length >= 10)
-            ||
-            matches!(self.data_type, DataType::Decimal { scale: 0, precision } if precision >= 10)   
-            || 
-            matches!(self.data_type, DataType::Integer { precision } if precision >= 10)
-        )
-        && 
-        !self.is_dispatch_period()
-        &&
-        (
-            self.comment.to_uppercase().contains("YYYYMMDDPP")
+        (matches!(self.data_type, DataType::Varchar { length } if length >= 10)
+            || matches!(self.data_type, DataType::Decimal { scale: 0, precision } if precision >= 10)
+            || matches!(self.data_type, DataType::Integer { precision } if precision >= 10))
+            && !self.is_dispatch_period()
+            && (self.comment.to_uppercase().contains("YYYYMMDDPP")
             || self.comment == "Date and Time of trading interval"
             // || self.comment.starts_with("Settlements Trading Interval")
             // || self.comment.starts_with("Settlement Trading Interval")
@@ -369,23 +421,14 @@ impl TableColumn {
             || self
                 .comment
                 .to_lowercase()
-                .contains("predispatch sequence number")
-        )
+                .contains("predispatch sequence number"))
     }
     pub fn is_dispatch_period(&self) -> bool {
-        (
-        matches!(self.data_type, DataType::Varchar { length } if length >= 11)
-        ||
-        matches!(self.data_type, DataType::Decimal { scale: 0, precision } if precision >= 11)   
-        || 
-        matches!(self.data_type, DataType::Integer { precision } if precision >= 11)
-        )
-        && 
-        (
-            self.comment.to_uppercase().contains("YYYYMMDDPPP")
-            || 
-            self.comment.contains("Settlement period")
-        )
+        (matches!(self.data_type, DataType::Varchar { length } if length >= 11)
+            || matches!(self.data_type, DataType::Decimal { scale: 0, precision } if precision >= 11)
+            || matches!(self.data_type, DataType::Integer { precision } if precision >= 11))
+            && (self.comment.to_uppercase().contains("YYYYMMDDPPP")
+                || self.comment.contains("Settlement period"))
     }
     pub fn data_stored_in_string(&self) -> bool {
         matches!(self.data_type, DataType::Char | DataType::Varchar { .. })

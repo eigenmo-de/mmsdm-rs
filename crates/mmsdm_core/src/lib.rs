@@ -1,6 +1,7 @@
 #![deny(clippy::all)]
-//#![deny(warnings)]
+#![deny(warnings)]
 #![no_std]
+
 extern crate alloc;
 use core::{
     cmp::Ordering,
@@ -229,42 +230,21 @@ impl<'a> fmt::Display for FileKey<'a> {
     }
 }
 
-pub trait Partition: core::hash::Hash + PartialEq + Eq + PartialOrd + Ord + Copy {
-    fn get_suffix(&self) -> String;
-}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct PartitionKey(pub &'static str);
 
-#[derive(PartialEq, Eq, Debug, Hash, Clone, Copy)]
-pub struct YearMonth {
-    pub year: i32,
-    pub month: chrono::Month,
-}
-
-impl PartialOrd for YearMonth {
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        self.cmp(&other).into()
+impl core::fmt::Display for PartitionKey {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(&self.0)
     }
 }
 
-impl Ord for YearMonth {
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        match self.year.cmp(&other.year) {
-            core::cmp::Ordering::Equal => self
-                .month
-                .number_from_month()
-                .cmp(&other.month.number_from_month()),
-            ord => ord,
-        }
-    }
-}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct PartitionValue(pub String);
 
-impl Partition for YearMonth {
-    fn get_suffix(&self) -> String {
-        format!("_{:02}_{:04}", self.month.number_from_month(), self.year)
-    }
-}
-impl Partition for () {
-    fn get_suffix(&self) -> String {
-        String::new()
+impl core::fmt::Display for PartitionValue {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(&self.0)
     }
 }
 
@@ -298,19 +278,19 @@ pub trait GetTable: 'static {
     const COLUMNS: &'static [&'static str];
     type Row<'a>;
     type PrimaryKey: PrimaryKey;
-    type Partition: Partition;
 
     type FieldMapping;
     // the row must be an I row with a matching file key
     fn field_mapping_from_row<'a>(row: CsvRow<'a>) -> Result<Self::FieldMapping>;
 
-    fn partition_suffix_from_row<'a>(row: CsvRow<'a>) -> Result<Self::Partition>;
     fn from_row<'a>(row: CsvRow<'a>, field_mapping: &Self::FieldMapping) -> Result<Self::Row<'a>>;
 
     fn matches_file_key(key: &FileKey<'_>, version: i32) -> bool;
 
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition;
-    fn partition_name(row: &Self::Row<'_>) -> String;
+    fn partition_value(&self, row: &Self::Row<'_>) -> PartitionValue;
+    fn partition_name(&self, row: &Self::Row<'_>) -> String;
+    fn partition_key(&self) -> PartitionKey;
+
     fn primary_key(row: &Self::Row<'_>) -> Self::PrimaryKey;
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static>;
 }
@@ -320,8 +300,6 @@ pub enum RowValidation {
     Footer(AemoFooter),
     Headings(FileKey<'static>),
 }
-
-
 
 pub fn handle_row<'input, T>(
     mut csv: CsvRow<'input>,
@@ -340,9 +318,7 @@ where
                 Ok(None)
             }
         }
-        None => {
-            Err(Error::UnexpectedRowType(csv.join_fields()))
-        }
+        None => Err(Error::UnexpectedRowType(csv.join_fields())),
     }
 }
 
@@ -360,8 +336,7 @@ impl<'a> Clone for CsvRow<'a> {
 
 impl<'a> PartialEq for CsvRow<'a> {
     fn eq(&self, other: &Self) -> bool {
-        self.data.as_ref() == other.data.as_ref()
-            && self.indexes == other.indexes
+        self.data.as_ref() == other.data.as_ref() && self.indexes == other.indexes
     }
 }
 
@@ -395,7 +370,12 @@ impl CsvReader {
     }
 
     // TODO: verify that column orders are correct!
-    pub fn validate_row(&mut self, row: &str, out: &mut Vec<u8>, indexes_backing: &mut Vec<usize>) -> Result<Option<RowValidation>> {
+    pub fn validate_row(
+        &mut self,
+        row: &str,
+        out: &mut Vec<u8>,
+        indexes_backing: &mut Vec<usize>,
+    ) -> Result<Option<RowValidation>> {
         let csv = self.read_row(row, out, indexes_backing)?;
 
         match csv.record_type {
@@ -415,19 +395,19 @@ impl CsvReader {
                 csv.to_owned(),
             )?))),
             Some(RecordType::D) => Ok(None),
-            None => Err(Error::UnexpectedRowType(csv.join_fields()))
+            None => Err(Error::UnexpectedRowType(csv.join_fields())),
         }
     }
 
-    pub fn read_row<'a>(&mut self, data: &'a str, out: &'a mut Vec<u8>, indexes: &'a mut Vec<usize>) -> Result<CsvRow<'a>> {
+    pub fn read_row<'a>(
+        &mut self,
+        data: &'a str,
+        out: &'a mut Vec<u8>,
+        indexes: &'a mut Vec<usize>,
+    ) -> Result<CsvRow<'a>> {
         if !data.is_ascii() {
             return Err(Error::UnexpectedRowType(format!(
                 "Row contained non ascii characters: {data}"
-            )));
-        }
-        if !data.ends_with('\n') {
-            return Err(Error::UnexpectedRowType(format!(
-                "Row didn't finish with a newline, unable to parse. It's reccomended to use `BufRead::read_line` or similar which doesn't strip newlines. Data was: {data}"
             )));
         }
         if data.is_empty() {
@@ -445,30 +425,65 @@ impl CsvReader {
             // initialize all elements up to capacity
             indexes.iter_mut().for_each(|v| {
                 *v = 0;
-            });  
+            });
         }
 
-        let (status, _bytes_read, bytes_written, num_positions) = self.inner.read_record(data.as_bytes(), out.as_mut_slice(), indexes.as_mut_slice());
+        let (status, _bytes_read, bytes_written, num_positions) =
+            self.inner
+                .read_record(data.as_bytes(), out.as_mut_slice(), indexes.as_mut_slice());
 
         match status {
             // good parse
-            ReadRecordResult::Record => Ok(CsvRow {
-                // we could consider using from_utf8_unchecked here as it should be safe due to
-                // the input data being a valid str. howerver, the performance improvement
-                // of ~5% isn't worth it.
-                data: Cow::Borrowed(str::from_utf8(&out[0..bytes_written]).expect("valid UTF8")),
-                indexes: Cow::Borrowed(&indexes[0..num_positions]),
-                record_type: data[0..1].parse().ok(),
-            }),
+            ReadRecordResult::Record => {
+                let row = CsvRow {
+                    // we could consider using from_utf8_unchecked here as it should be safe due to
+                    // the input data being a valid str. howerver, the performance improvement
+                    // of ~5% isn't worth it.
+                    data: Cow::Borrowed(
+                        str::from_utf8(&out[0..bytes_written]).expect("valid UTF8"),
+                    ),
+                    indexes: Cow::Borrowed(&indexes[0..num_positions]),
+                    record_type: data[0..1].parse().ok(),
+                };
+                Ok(row)
+            }
             // should never happen due to data is empty check above
             ReadRecordResult::End => Err(Error::EmptyRow),
-            ReadRecordResult::InputEmpty => Err(Error::ParseRow(format!("InputEmpty for input {data}, out len {}, ends len {}", out.len(), indexes.len()))),
-            ReadRecordResult::OutputFull => Err(Error::ParseRow(format!("OutputFull for input {data}, out len {}, ends len {}", out.len(), indexes.len()))),
-            ReadRecordResult::OutputEndsFull => Err(Error::ParseRow(format!("OutputEndsFull for input {data}, out len {}, ends len {}", out.len(), indexes.len()))),
+            // this means we are on the last row, in a case where the row doesn't end with a newline
+            // so the input is now empty, but the parser doesn't count this as having parsed
+            // a full record just yet as there hasn't been a newline
+            ReadRecordResult::InputEmpty => {
+                // in this case, the last position is missed, for some unknown reason
+                // set the extra final postion equal to the number of bytes written
+                indexes[num_positions] = bytes_written;
+                let last_position = num_positions + 1;
+
+                let row = CsvRow {
+                    // we could consider using from_utf8_unchecked here as it should be safe due to
+                    // the input data being a valid str. howerver, the performance improvement
+                    // of ~5% isn't worth it.
+                    data: Cow::Borrowed(
+                        str::from_utf8(&out[0..bytes_written]).expect("valid UTF8"),
+                    ),
+                    indexes: Cow::Borrowed(&indexes[0..last_position]),
+                    record_type: data[0..1].parse().ok(),
+                };
+
+                Ok(row)
+            }
+            ReadRecordResult::OutputFull => Err(Error::ParseRow(format!(
+                "OutputFull for input {data}, out len {}, ends len {}",
+                out.len(),
+                indexes.len()
+            ))),
+            ReadRecordResult::OutputEndsFull => Err(Error::ParseRow(format!(
+                "OutputEndsFull for input {data}, out len {}, ends len {}",
+                out.len(),
+                indexes.len()
+            ))),
         }
     }
 }
-
 
 impl<'a> CsvRow<'a> {
     pub fn join_fields(&self) -> String {
@@ -507,7 +522,7 @@ impl<'a> CsvRow<'a> {
     fn get_start_of_field(&self, field_no: usize) -> Option<usize> {
         match field_no.checked_sub(1) {
             None => Some(0),
-            Some(field) => self.get_end_of_field(field)
+            Some(field) => self.get_end_of_field(field),
         }
     }
 
@@ -528,15 +543,11 @@ impl<'a> CsvRow<'a> {
             record_type: self.record_type,
         }
     }
-    
 
     pub fn range(&self, i: usize) -> Option<Range<usize>> {
         if i >= self.count_fields() {
             return None;
         }
-
-        // let lower = i.checked_sub(1).and_then(|idx| self.get_end_of_field(idx).map(|lower| lower + 1)).unwrap_or(0);
-        // let upper = self.get_end_of_field(i);
 
         Some(Range {
             start: self.get_start_of_field(i)?,
@@ -565,7 +576,7 @@ impl<'a> CsvRow<'a> {
     }
 
     pub fn count_fields(&self) -> usize {
-        self.indexes.len() + 1
+        self.indexes.len()
     }
     fn get(&self, idx: usize) -> Option<&str> {
         let range = self.range(idx)?;
@@ -679,35 +690,6 @@ pub trait CompareWithPrimaryKey {
 // // should the other 'row' be returned
 // pub trait LatestRow<'data>: GetTable<'data> + CompareWithRow<'data, Row = Self<'data>> {
 //     fn latest_row(&mut self, row: Self) -> Self;
-// }
-
-// pub fn required_partitions<'data, T>(data: &[T]) -> BTreeSet<T::Partition>
-// where
-//     T: Send + GetTable<'data> + CompareWithRow<'data, Row = T>,
-// {
-//     data.iter().map(|row| row.partition_suffix()).collect()
-// }
-
-// in memory
-// the input map is all
-// pub fn merge_with_partitions<'data, T>(
-//     mut existing: BTreeMap<<T as GetTable<'data>>::Partition, collections::BTreeMap<T::PrimaryKey, T>>,
-//     data: &[T],
-// ) -> BTreeMap<<T as GetTable<'static>>::Partition, collections::BTreeMap<T::PrimaryKey, T>>
-// where
-//     T: Send + GetTable<'data> + CompareWithRow<'data, Row = T> + fmt::Debug,
-// {
-//     for row in data {
-//         let partition = row.partition_suffix();
-//         let pk = row.primary_key();
-//         if let Some(entry) = existing.get_mut(&partition) {
-//             entry.entry(pk).or_insert_with(|| row.to_owned());
-//         } else {
-//             existing.insert(partition, iter::once((pk, row.clone())).to_owned());
-//         }
-//     }
-
-//     existing
 // }
 
 // gets period, 1 based
@@ -906,6 +888,14 @@ pub mod mms_datetime {
     use chrono::{NaiveDate, NaiveDateTime, NaiveTime};
 
     pub fn parse(input: &str) -> Result<NaiveDateTime> {
+        if !input.is_ascii() {
+            return Err(Error::ParseDateInternal {
+                message: alloc::format!("Non ASCII values in input when parsing NaiveDateTime"),
+                input: input.to_string(),
+                format: "%Y/%m/%d %H:%M:%S",
+            });
+        }
+
         let dt = if input.starts_with('"') {
             if input.len() != 21 {
                 return Err(Error::ParseDateInternal {
@@ -1066,6 +1056,14 @@ pub mod mms_date {
     use chrono::NaiveDate;
 
     pub fn parse(input: &str) -> Result<NaiveDate> {
+        if !input.is_ascii() {
+            return Err(Error::ParseDateInternal {
+                message: alloc::format!("Non ASCII values in input when parsing NaiveDate"),
+                input: input.to_string(),
+                format: "%Y/%m/%d",
+            });
+        }
+
         if input.starts_with('"') {
             if input.len() != 12 {
                 return Err(Error::ParseDateInternal {
@@ -1074,7 +1072,7 @@ pub mod mms_date {
                         input.len()
                     ),
                     input: input.to_string(),
-                    format: "%Y/%m/%d %H:%M:%S",
+                    format: "%Y/%m/%d",
                 });
             }
 
@@ -1091,7 +1089,7 @@ pub mod mms_date {
             NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| Error::ParseDateInternal {
                 message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
                 input: input.to_string(),
-                format: "%Y/%m/%d %H:%M:%S",
+                format: "%Y/%m/%d",
             })
         } else {
             if input.len() != 10 {
@@ -1101,7 +1099,7 @@ pub mod mms_date {
                         input.len()
                     ),
                     input: input.to_string(),
-                    format: "%Y/%m/%d %H:%M:%S",
+                    format: "%Y/%m/%d",
                 });
             }
 
@@ -1118,7 +1116,7 @@ pub mod mms_date {
             NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| Error::ParseDateInternal {
                 message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
                 input: input.to_string(),
-                format: "%Y/%m/%d %H:%M:%S",
+                format: "%Y/%m/%d",
             })
         }
     }
@@ -1130,6 +1128,14 @@ pub mod mms_period_datepart {
     use chrono::NaiveDate;
 
     pub fn parse(input: &str) -> Result<NaiveDate> {
+        if !input.is_ascii() {
+            return Err(Error::ParseDateInternal {
+                message: alloc::format!("Non ASCII values in input when parsing NaiveDate"),
+                input: input.to_string(),
+                format: "%Y/%m/%d",
+            });
+        }
+
         if input.starts_with('"') {
             if input.len() != 10 {
                 return Err(Error::ParseDateInternal {
@@ -1138,7 +1144,7 @@ pub mod mms_period_datepart {
                         input.len()
                     ),
                     input: input.to_string(),
-                    format: "%Y/%m/%d %H:%M:%S",
+                    format: "%Y/%m/%d",
                 });
             }
 
@@ -1155,7 +1161,7 @@ pub mod mms_period_datepart {
             NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| Error::ParseDateInternal {
                 message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
                 input: input.to_string(),
-                format: "%Y/%m/%d %H:%M:%S",
+                format: "%Y/%m/%d",
             })
         } else {
             if input.len() != 8 {
@@ -1165,7 +1171,7 @@ pub mod mms_period_datepart {
                         input.len()
                     ),
                     input: input.to_string(),
-                    format: "%Y/%m/%d %H:%M:%S",
+                    format: "%Y/%m/%d",
                 });
             }
 
@@ -1182,7 +1188,7 @@ pub mod mms_period_datepart {
             NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| Error::ParseDateInternal {
                 message: alloc::format!("Invalid values for ymd: {year}-{month}-{day}"),
                 input: input.to_string(),
-                format: "%Y/%m/%d %H:%M:%S",
+                format: "%Y/%m/%d",
             })
         }
     }
@@ -1194,6 +1200,14 @@ pub mod mms_time {
     use chrono::NaiveTime;
 
     pub fn parse(input: &str) -> Result<NaiveTime> {
+        if !input.is_ascii() {
+            return Err(Error::ParseDateInternal {
+                message: alloc::format!("Non ASCII values in input when parsing NaiveTime"),
+                input: input.to_string(),
+                format: "%H:%M:%S",
+            });
+        }
+
         if input.starts_with('"') {
             if input.len() != 10 {
                 return Err(Error::ParseDateInternal {
@@ -1202,7 +1216,7 @@ pub mod mms_time {
                         input.len()
                     ),
                     input: input.to_string(),
-                    format: "%Y/%m/%d %H:%M:%S",
+                    format: "%H:%M:%S",
                 });
             }
 
@@ -1219,14 +1233,14 @@ pub mod mms_time {
             NaiveTime::from_hms_opt(hour, minute, second).ok_or_else(|| Error::ParseDateInternal {
                 message: alloc::format!("Invalid values for hms: {hour}:{minute}:{second}"),
                 input: input.to_string(),
-                format: "%Y/%m/%d %H:%M:%S",
+                format: "%H:%M:%S",
             })
         } else {
             if input.len() != 8 {
                 return Err(Error::ParseDateInternal {
                     message: alloc::format!("Incorrect length, expected 8 but got {}", input.len()),
                     input: input.to_string(),
-                    format: "%Y/%m/%d %H:%M:%S",
+                    format: "%H:%M:%S",
                 });
             }
 
@@ -1243,7 +1257,7 @@ pub mod mms_time {
             NaiveTime::from_hms_opt(hour, minute, second).ok_or_else(|| Error::ParseDateInternal {
                 message: alloc::format!("Invalid values for hms: {hour}:{minute}:{second}"),
                 input: input.to_string(),
-                format: "%Y/%m/%d %H:%M:%S",
+                format: "%H:%M:%S",
             })
         }
     }
@@ -1251,11 +1265,50 @@ pub mod mms_time {
 
 #[cfg(test)]
 mod tests {
+    use zip::ZipArchive;
+
     use super::*;
 
     extern crate std;
 
-    use std::dbg;
+    use std::io::Cursor;
+
+    static OLD_FORMAT: &'static [u8] =
+        include_bytes!("../../../PUBLIC_DVD_DAYTRACK_202407010000.zip");
+    static NEW_FORMAT: &'static [u8] =
+        include_bytes!("../../../PUBLIC_ARCHIVE#DAYTRACK#FILE01#202409010000.zip");
+
+    #[test]
+    fn test_full_parse_old() {
+        let mut archive = ZipArchive::new(Cursor::new(OLD_FORMAT)).unwrap();
+
+        let fr = FileReader::new(&mut archive).unwrap();
+
+        assert_eq!(fr.sub_files().len(), 1);
+
+        let (key, rows) = fr.sub_files().first_key_value().unwrap();
+
+        assert_eq!(key.data_set_name(), "SETTLEMENTS");
+        assert_eq!(key.table_name(), "DAYTRACK");
+        assert_eq!(key.version, 6);
+        assert_eq!(rows, &157); // data rows (D), doesn't include header (C), headings (I), or footer (C)
+    }
+
+    #[test]
+    fn test_full_parse_new() {
+        let mut archive = ZipArchive::new(Cursor::new(NEW_FORMAT)).unwrap();
+
+        let fr = FileReader::new(&mut archive).unwrap();
+
+        assert_eq!(fr.sub_files().len(), 1);
+
+        let (key, rows) = fr.sub_files().first_key_value().unwrap();
+
+        assert_eq!(key.data_set_name(), "SETTLEMENTS");
+        assert_eq!(key.table_name(), "DAYTRACK");
+        assert_eq!(key.version, 6);
+        assert_eq!(rows, &142); // data rows (D), doesn't include header (C), headings (I), or footer (C)
+    }
 
     #[test]
     fn test_csv_parse_header() {
@@ -1263,9 +1316,7 @@ mod tests {
         let mut indexes = Vec::from([0; 10_000]);
         let mut output = Vec::from([0; 10_000]);
         let mut reader = CsvReader::new();
-        let row =reader.read_row(&data, &mut output, &mut indexes).unwrap();
-        
-        dbg!(&row, row.iter_fields().collect::<Vec<_>>());
+        let row = reader.read_row(&data, &mut output, &mut indexes).unwrap();
 
         AemoHeader::from_row(row).unwrap();
     }
@@ -1276,7 +1327,7 @@ mod tests {
         let mut indexes = Vec::from([0; 10_000]);
         let mut output = Vec::from([0; 10_000]);
         let mut reader = CsvReader::new();
-        let row =reader.read_row(&data, &mut output, &mut indexes).unwrap();
+        let row = reader.read_row(&data, &mut output, &mut indexes).unwrap();
 
         assert_eq!(row.iter_fields().count(), 61);
 

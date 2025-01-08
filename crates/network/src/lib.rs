@@ -5,12 +5,32 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct NetworkEquipmentdetail2;
+pub struct NetworkEquipmentdetail2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &NetworkEquipmentdetail2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkEquipmentdetail2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkEquipmentdetail2Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## NETWORK_EQUIPMENTDETAIL
-///  _NETWORK_EQUIPMENTDETAIL Provides details on equipment that may have outages or ratings. A single piece of equipment may have multiple records if its details change.<br>A line will typically have at least two valid records at a time, once for each end of the line.<br>_
+///  _NETWORK_EQUIPMENTDETAIL Provides details on equipment that may have outages or ratings. A single piece of equipment may have multiple records if its details change.<br>A line will typically have at least two valid records at a time, once for each end of the line._
 ///
 /// * Data Set Name: Network
 /// * File Name: Equipmentdetail
@@ -31,7 +51,7 @@ pub struct NetworkEquipmentdetail2Mapping([usize; 9]);
 pub struct NetworkEquipmentdetail2Row<'data> {
     /// ID uniquely identifying the substation this equipment is located at
     pub substationid: core::ops::Range<usize>,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
+    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit
     pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this type of equipment at this substation
     pub equipmentid: core::ops::Range<usize>,
@@ -39,7 +59,7 @@ pub struct NetworkEquipmentdetail2Row<'data> {
     pub validfrom: chrono::NaiveDateTime,
     /// The date that this record applies until (exclusive)
     pub validto: Option<chrono::NaiveDateTime>,
-    /// The voltage in KV for this equipment.<br>Transformers may have multiple voltages defined.<br>E.g. 132_110_33<br>
+    /// The voltage in KV for this equipment.<br>Transformers may have multiple voltages defined.<br>E.g. 132_110_33
     pub voltage: core::ops::Range<usize>,
     /// A short description for this equipment.
     pub description: core::ops::Range<usize>,
@@ -113,7 +133,6 @@ impl mmsdm_core::GetTable for NetworkEquipmentdetail2 {
     type Row<'row> = NetworkEquipmentdetail2Row<'row>;
     type FieldMapping = NetworkEquipmentdetail2Mapping;
     type PrimaryKey = NetworkEquipmentdetail2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -181,11 +200,6 @@ impl mmsdm_core::GetTable for NetworkEquipmentdetail2 {
         }
         Ok(NetworkEquipmentdetail2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -199,9 +213,14 @@ impl mmsdm_core::GetTable for NetworkEquipmentdetail2 {
             validfrom: row.validfrom,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_equipmentdetail_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_equipmentdetail_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkEquipmentdetail2Row {
@@ -341,15 +360,15 @@ impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
         builder.substationid_array.append_value(row.substationid());
         builder.equipmenttype_array.append_value(row.equipmenttype());
         builder.equipmentid_array.append_value(row.equipmentid());
-        builder.validfrom_array.append_value(row.validfrom.timestamp_millis());
+        builder.validfrom_array.append_value(row.validfrom.and_utc().timestamp_millis());
         builder
             .validto_array
-            .append_option(row.validto.map(|val| val.timestamp_millis()));
+            .append_option(row.validto.map(|val| val.and_utc().timestamp_millis()));
         builder.voltage_array.append_option(row.voltage());
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .elementid_array
             .append_value({
@@ -399,7 +418,27 @@ pub struct NetworkEquipmentdetail2Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     elementid_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct NetworkOutageconstraintset1;
+pub struct NetworkOutageconstraintset1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &NetworkOutageconstraintset1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkOutageconstraintset1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkOutageconstraintset1Mapping([usize; 4]);
 /// # Summary
 ///
@@ -454,7 +493,6 @@ impl mmsdm_core::GetTable for NetworkOutageconstraintset1 {
     type Row<'row> = NetworkOutageconstraintset1Row<'row>;
     type FieldMapping = NetworkOutageconstraintset1Mapping;
     type PrimaryKey = NetworkOutageconstraintset1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -512,11 +550,6 @@ impl mmsdm_core::GetTable for NetworkOutageconstraintset1 {
         }
         Ok(NetworkOutageconstraintset1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -527,9 +560,14 @@ impl mmsdm_core::GetTable for NetworkOutageconstraintset1 {
             outageid: row.outageid,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_outageconstraintset_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_outageconstraintset_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkOutageconstraintset1Row {
@@ -626,10 +664,12 @@ impl mmsdm_core::ArrowSchema for NetworkOutageconstraintset1 {
         builder.genconsetid_array.append_value(row.genconsetid());
         builder
             .startinterval_array
-            .append_option(row.startinterval.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.startinterval.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .endinterval_array
-            .append_option(row.endinterval.map(|val| val.timestamp_millis()));
+            .append_option(row.endinterval.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -657,7 +697,27 @@ pub struct NetworkOutageconstraintset1Builder {
     startinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     endinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct NetworkOutagedetail4;
+pub struct NetworkOutagedetail4 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &NetworkOutagedetail4Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkOutagedetail4 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkOutagedetail4Mapping([usize; 19]);
 /// # Summary
 ///
@@ -686,7 +746,7 @@ pub struct NetworkOutagedetail4Row<'data> {
     pub outageid: rust_decimal::Decimal,
     /// The substation this equipment is located at
     pub substationid: core::ops::Range<usize>,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
+    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit
     pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this equipment at this substation, and based on its type
     pub equipmentid: core::ops::Range<usize>,
@@ -696,9 +756,9 @@ pub struct NetworkOutagedetail4Row<'data> {
     pub endtime: Option<chrono::NaiveDateTime>,
     /// The date and time this outage was first submitted
     pub submitteddate: Option<chrono::NaiveDateTime>,
-    /// A code representing the status of the outage.<br>The OUTAGESTATUSCODE table will store a detailed description of each code.<br>
+    /// A code representing the status of the outage.<br>The OUTAGESTATUSCODE table will store a detailed description of each code.
     pub outagestatuscode: core::ops::Range<usize>,
-    /// Changes to an outage key details may require the outage to be resubmitted.<br>A new outage id will then be allocated and the outage will be reassessed.<br>This field will detail the reason for the change.<br>
+    /// Changes to an outage key details may require the outage to be resubmitted.<br>A new outage id will then be allocated and the outage will be reassessed.<br>This field will detail the reason for the change.
     pub resubmitreason: core::ops::Range<usize>,
     /// The new outage id created from a resubmit.
     pub resubmitoutageid: Option<rust_decimal::Decimal>,
@@ -830,7 +890,6 @@ impl mmsdm_core::GetTable for NetworkOutagedetail4 {
     type Row<'row> = NetworkOutagedetail4Row<'row>;
     type FieldMapping = NetworkOutagedetail4Mapping;
     type PrimaryKey = NetworkOutagedetail4PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -948,11 +1007,6 @@ impl mmsdm_core::GetTable for NetworkOutagedetail4 {
         }
         Ok(NetworkOutagedetail4Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -967,9 +1021,14 @@ impl mmsdm_core::GetTable for NetworkOutagedetail4 {
             substationid: row.substationid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_outagedetail_v4".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_outagedetail_v4_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkOutagedetail4Row {
@@ -1201,13 +1260,15 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
         builder.substationid_array.append_value(row.substationid());
         builder.equipmenttype_array.append_value(row.equipmenttype());
         builder.equipmentid_array.append_value(row.equipmentid());
-        builder.starttime_array.append_value(row.starttime.timestamp_millis());
+        builder.starttime_array.append_value(row.starttime.and_utc().timestamp_millis());
         builder
             .endtime_array
-            .append_option(row.endtime.map(|val| val.timestamp_millis()));
+            .append_option(row.endtime.map(|val| val.and_utc().timestamp_millis()));
         builder
             .submitteddate_array
-            .append_option(row.submitteddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.submitteddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.outagestatuscode_array.append_option(row.outagestatuscode());
         builder.resubmitreason_array.append_option(row.resubmitreason());
         builder
@@ -1239,7 +1300,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.reason_array.append_option(row.reason());
         builder
             .issecondary_array
@@ -1252,10 +1313,14 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
             });
         builder
             .actual_starttime_array
-            .append_option(row.actual_starttime.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.actual_starttime.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .actual_endtime_array
-            .append_option(row.actual_endtime.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.actual_endtime.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.companyrefcode_array.append_option(row.companyrefcode());
         builder
             .elementid_array
@@ -1336,7 +1401,27 @@ pub struct NetworkOutagedetail4Builder {
     companyrefcode_array: arrow::array::builder::StringBuilder,
     elementid_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct NetworkOutagestatuscode1;
+pub struct NetworkOutagestatuscode1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &NetworkOutagestatuscode1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkOutagestatuscode1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkOutagestatuscode1Mapping([usize; 3]);
 /// # Summary
 ///
@@ -1401,7 +1486,6 @@ impl mmsdm_core::GetTable for NetworkOutagestatuscode1 {
     type Row<'row> = NetworkOutagestatuscode1Row<'row>;
     type FieldMapping = NetworkOutagestatuscode1Mapping;
     type PrimaryKey = NetworkOutagestatuscode1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1448,11 +1532,6 @@ impl mmsdm_core::GetTable for NetworkOutagestatuscode1 {
         }
         Ok(NetworkOutagestatuscode1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1462,9 +1541,14 @@ impl mmsdm_core::GetTable for NetworkOutagestatuscode1 {
             outagestatuscode: row.outagestatuscode().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_outagestatuscode_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_outagestatuscode_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkOutagestatuscode1Row {
@@ -1543,7 +1627,7 @@ impl mmsdm_core::ArrowSchema for NetworkOutagestatuscode1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1568,12 +1652,32 @@ pub struct NetworkOutagestatuscode1Builder {
     description_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct NetworkRating1;
+pub struct NetworkRating1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &NetworkRating1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkRating1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkRating1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## NETWORK_RATING
-///  _NETWORK_RATING defines a list of the equipment ratings that may be used as inputs to market constraints.<br>If the rating is flagged as dynamic then in real-time the rating will be dynamically determined and the static value will be used as a fallback value should the dynamic value fail.<br>Note:<br>In some rare cases equipment has ratings provided from more than one TNSP. This is identified by a different SPD Id. The value used in the NEM is normally the more restrictive of the two values.<br>_
+///  _NETWORK_RATING defines a list of the equipment ratings that may be used as inputs to market constraints.<br>If the rating is flagged as dynamic then in real-time the rating will be dynamically determined and the static value will be used as a fallback value should the dynamic value fail.<br>Note:<br>In some rare cases equipment has ratings provided from more than one TNSP. This is identified by a different SPD Id. The value used in the NEM is normally the more restrictive of the two values._
 ///
 /// * Data Set Name: Network
 /// * File Name: Rating
@@ -1599,13 +1703,13 @@ pub struct NetworkRating1Row<'data> {
     pub regionid: core::ops::Range<usize>,
     /// The substation the equipment is located at
     pub substationid: core::ops::Range<usize>,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
+    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit
     pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this equipment at this substation, and based on its type
     pub equipmentid: core::ops::Range<usize>,
-    /// The rating level of the value used, one of:<br>NORM = Continuous rating value. Applied under pre-contingent conditions.<br>EMER = Continuous rating value. Applied under pre-contingent conditions<br>LDSH = Load Shedding<br>
+    /// The rating level of the value used, one of:<br>NORM = Continuous rating value. Applied under pre-contingent conditions.<br>EMER = Continuous rating value. Applied under pre-contingent conditions<br>LDSH = Load Shedding
     pub ratinglevel: core::ops::Range<usize>,
-    /// One of:<br>1 = Normally uses dynamic ratings<br>0 = No dynamic ratings, static ratings are used<br>
+    /// One of:<br>1 = Normally uses dynamic ratings<br>0 = No dynamic ratings, static ratings are used
     pub isdynamic: Option<rust_decimal::Decimal>,
     /// The time that this record was last changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -1707,7 +1811,6 @@ impl mmsdm_core::GetTable for NetworkRating1 {
     type Row<'row> = NetworkRating1Row<'row>;
     type FieldMapping = NetworkRating1Mapping;
     type PrimaryKey = NetworkRating1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1776,11 +1879,6 @@ impl mmsdm_core::GetTable for NetworkRating1 {
         }
         Ok(NetworkRating1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1791,9 +1889,14 @@ impl mmsdm_core::GetTable for NetworkRating1 {
             validfrom: row.validfrom,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_rating_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_rating_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkRating1Row {
@@ -1926,10 +2029,10 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.spd_id_array.append_value(row.spd_id());
-        builder.validfrom_array.append_value(row.validfrom.timestamp_millis());
+        builder.validfrom_array.append_value(row.validfrom.and_utc().timestamp_millis());
         builder
             .validto_array
-            .append_option(row.validto.map(|val| val.timestamp_millis()));
+            .append_option(row.validto.map(|val| val.and_utc().timestamp_millis()));
         builder.regionid_array.append_option(row.regionid());
         builder.substationid_array.append_option(row.substationid());
         builder.equipmenttype_array.append_option(row.equipmenttype());
@@ -1946,7 +2049,7 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1992,7 +2095,27 @@ pub struct NetworkRating1Builder {
     isdynamic_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct NetworkRealtimerating1;
+pub struct NetworkRealtimerating1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &NetworkRealtimerating1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkRealtimerating1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkRealtimerating1Mapping([usize; 3]);
 /// # Summary
 ///
@@ -2043,7 +2166,6 @@ impl mmsdm_core::GetTable for NetworkRealtimerating1 {
     type Row<'row> = NetworkRealtimerating1Row<'row>;
     type FieldMapping = NetworkRealtimerating1Mapping;
     type PrimaryKey = NetworkRealtimerating1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2095,23 +2217,6 @@ impl mmsdm_core::GetTable for NetworkRealtimerating1 {
         }
         Ok(NetworkRealtimerating1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let settlementdate = row
-            .get_custom_parsed_at_idx(
-                "settlementdate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(settlementdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(settlementdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2122,20 +2227,14 @@ impl mmsdm_core::GetTable for NetworkRealtimerating1 {
             spd_id: row.spd_id().to_string(),
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "network_realtimerating_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_realtimerating_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkRealtimerating1Row {
@@ -2212,7 +2311,9 @@ impl mmsdm_core::ArrowSchema for NetworkRealtimerating1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder.spd_id_array.append_value(row.spd_id());
         builder
             .ratingvalue_array
@@ -2245,12 +2346,32 @@ pub struct NetworkRealtimerating1Builder {
     spd_id_array: arrow::array::builder::StringBuilder,
     ratingvalue_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct NetworkStaticrating1;
+pub struct NetworkStaticrating1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &NetworkStaticrating1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkStaticrating1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkStaticrating1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## NETWORK_STATICRATING
-///  _NETWORK_STATICRATING lists the static rating values that will apply for a Rating Application ID.<br>This data does not provide information for when the rating actually applies in the NEM. This is dependent on the Rating Application definition.<br>For information on the Rating Applications please refer to the information published on the AEMO website under the topic "Transmission Equipment Ratings". The Rating Applications are referred to as Alternate Value Application Ratings.<br>Ratings that normally use dynamic values will also have static rating values defined. These are used as a fallback if the dynamic rating fails.<br>_
+///  _NETWORK_STATICRATING lists the static rating values that will apply for a Rating Application ID.<br>This data does not provide information for when the rating actually applies in the NEM. This is dependent on the Rating Application definition.<br>For information on the Rating Applications please refer to the information published on the AEMO website under the topic "Transmission Equipment Ratings". The Rating Applications are referred to as Alternate Value Application Ratings.<br>Ratings that normally use dynamic values will also have static rating values defined. These are used as a fallback if the dynamic rating fails._
 ///
 /// * Data Set Name: Network
 /// * File Name: Staticrating
@@ -2272,7 +2393,7 @@ pub struct NetworkStaticrating1Mapping([usize; 9]);
 pub struct NetworkStaticrating1Row<'data> {
     /// The substation the equipment is located at
     pub substationid: core::ops::Range<usize>,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit<br>
+    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit
     pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this type of equipment at this substation
     pub equipmentid: core::ops::Range<usize>,
@@ -2284,7 +2405,7 @@ pub struct NetworkStaticrating1Row<'data> {
     pub validfrom: chrono::NaiveDateTime,
     /// The date that this record applies until (exclusive)
     pub validto: Option<chrono::NaiveDateTime>,
-    /// The rating value in MVA that applies. This may be positive or negative depending on which side of the nominal MW flow direction the rating value applies.<br>Flow into a transmission device is positive, flow out of the device is negative.<br>
+    /// The rating value in MVA that applies. This may be positive or negative depending on which side of the nominal MW flow direction the rating value applies.<br>Flow into a transmission device is positive, flow out of the device is negative.
     pub ratingvalue: Option<rust_decimal::Decimal>,
     /// The time that this record was last changed.
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -2336,7 +2457,6 @@ impl mmsdm_core::GetTable for NetworkStaticrating1 {
     type Row<'row> = NetworkStaticrating1Row<'row>;
     type FieldMapping = NetworkStaticrating1Mapping;
     type PrimaryKey = NetworkStaticrating1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2404,11 +2524,6 @@ impl mmsdm_core::GetTable for NetworkStaticrating1 {
         }
         Ok(NetworkStaticrating1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2423,9 +2538,14 @@ impl mmsdm_core::GetTable for NetworkStaticrating1 {
             validfrom: row.validfrom,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_staticrating_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_staticrating_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkStaticrating1Row {
@@ -2575,10 +2695,10 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
         builder.equipmentid_array.append_value(row.equipmentid());
         builder.ratinglevel_array.append_value(row.ratinglevel());
         builder.applicationid_array.append_value(row.applicationid());
-        builder.validfrom_array.append_value(row.validfrom.timestamp_millis());
+        builder.validfrom_array.append_value(row.validfrom.and_utc().timestamp_millis());
         builder
             .validto_array
-            .append_option(row.validto.map(|val| val.timestamp_millis()));
+            .append_option(row.validto.map(|val| val.and_utc().timestamp_millis()));
         builder
             .ratingvalue_array
             .append_option({
@@ -2590,7 +2710,7 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2633,7 +2753,27 @@ pub struct NetworkStaticrating1Builder {
     ratingvalue_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct NetworkSubstationdetail2;
+pub struct NetworkSubstationdetail2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &NetworkSubstationdetail2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl NetworkSubstationdetail2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct NetworkSubstationdetail2Mapping([usize; 7]);
 /// # Summary
 ///
@@ -2736,7 +2876,6 @@ impl mmsdm_core::GetTable for NetworkSubstationdetail2 {
     type Row<'row> = NetworkSubstationdetail2Row<'row>;
     type FieldMapping = NetworkSubstationdetail2Mapping;
     type PrimaryKey = NetworkSubstationdetail2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2797,11 +2936,6 @@ impl mmsdm_core::GetTable for NetworkSubstationdetail2 {
         }
         Ok(NetworkSubstationdetail2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2812,9 +2946,14 @@ impl mmsdm_core::GetTable for NetworkSubstationdetail2 {
             validfrom: row.validfrom,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "network_substationdetail_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("network_substationdetail_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         NetworkSubstationdetail2Row {
@@ -2925,16 +3064,16 @@ impl mmsdm_core::ArrowSchema for NetworkSubstationdetail2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.substationid_array.append_value(row.substationid());
-        builder.validfrom_array.append_value(row.validfrom.timestamp_millis());
+        builder.validfrom_array.append_value(row.validfrom.and_utc().timestamp_millis());
         builder
             .validto_array
-            .append_option(row.validto.map(|val| val.timestamp_millis()));
+            .append_option(row.validto.map(|val| val.and_utc().timestamp_millis()));
         builder.description_array.append_option(row.description());
         builder.regionid_array.append_option(row.regionid());
         builder.ownerid_array.append_option(row.ownerid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

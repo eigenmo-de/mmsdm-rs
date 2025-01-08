@@ -5,7 +5,27 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct GenericConstraintEmsmaster1;
+pub struct GenericConstraintEmsmaster1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &GenericConstraintEmsmaster1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl GenericConstraintEmsmaster1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct GenericConstraintEmsmaster1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -91,7 +111,6 @@ impl mmsdm_core::GetTable for GenericConstraintEmsmaster1 {
     type Row<'row> = GenericConstraintEmsmaster1Row<'row>;
     type FieldMapping = GenericConstraintEmsmaster1Mapping;
     type PrimaryKey = GenericConstraintEmsmaster1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -140,11 +159,6 @@ impl mmsdm_core::GetTable for GenericConstraintEmsmaster1 {
         }
         Ok(GenericConstraintEmsmaster1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -155,9 +169,14 @@ impl mmsdm_core::GetTable for GenericConstraintEmsmaster1 {
             spd_type: row.spd_type().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "generic_constraint_emsmaster_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("generic_constraint_emsmaster_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         GenericConstraintEmsmaster1Row {
@@ -253,7 +272,7 @@ impl mmsdm_core::ArrowSchema for GenericConstraintEmsmaster1 {
         builder.grouping_id_array.append_option(row.grouping_id());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -284,12 +303,32 @@ pub struct GenericConstraintEmsmaster1Builder {
     grouping_id_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct GencondataNull6;
+pub struct GencondataNull6 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &GencondataNull6Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl GencondataNull6 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct GencondataNull6Mapping([usize; 26]);
 /// # Summary
 ///
 /// ## GENCONDATA
-///  _GENCONDATA sets out the generic constraints contained within a generic constraint set invoked in PASA, predispatch and dispatch.<br>Fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes.<br>_
+///  _GENCONDATA sets out the generic constraints contained within a generic constraint set invoked in PASA, predispatch and dispatch.<br>Fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes._
 ///
 /// * Data Set Name: Gencondata
 /// * File Name: Null
@@ -623,7 +662,6 @@ impl mmsdm_core::GetTable for GencondataNull6 {
     type Row<'row> = GencondataNull6Row<'row>;
     type FieldMapping = GencondataNull6Mapping;
     type PrimaryKey = GencondataNull6PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -729,23 +767,6 @@ impl mmsdm_core::GetTable for GencondataNull6 {
         }
         Ok(GencondataNull6Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -757,20 +778,14 @@ impl mmsdm_core::GetTable for GencondataNull6 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "gencondata_null_v6_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("gencondata_null_v6_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         GencondataNull6Row {
@@ -1023,7 +1038,9 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1055,7 +1072,9 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .dynamicrhs_array
@@ -1068,7 +1087,7 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.dispatch_array.append_option(row.dispatch());
         builder.predispatch_array.append_option(row.predispatch());
         builder.stpasa_array.append_option(row.stpasa());
@@ -1184,7 +1203,27 @@ pub struct GencondataNull6Builder {
     lor_array: arrow::array::builder::StringBuilder,
     force_scada_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct GenconsetNull1;
+pub struct GenconsetNull1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &GenconsetNull1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl GenconsetNull1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct GenconsetNull1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -1257,7 +1296,6 @@ impl mmsdm_core::GetTable for GenconsetNull1 {
     type Row<'row> = GenconsetNull1Row<'row>;
     type FieldMapping = GenconsetNull1Mapping;
     type PrimaryKey = GenconsetNull1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1328,23 +1366,6 @@ impl mmsdm_core::GetTable for GenconsetNull1 {
         }
         Ok(GenconsetNull1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1357,20 +1378,14 @@ impl mmsdm_core::GetTable for GenconsetNull1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "genconset_null_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("genconset_null_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         GenconsetNull1Row {
@@ -1489,7 +1504,9 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.genconsetid_array.append_value(row.genconsetid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1500,7 +1517,9 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
         builder.genconid_array.append_value(row.genconid());
         builder
             .genconeffdate_array
-            .append_option(row.genconeffdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.genconeffdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .genconversionno_array
             .append_option({
@@ -1512,7 +1531,7 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1549,12 +1568,32 @@ pub struct GenconsetNull1Builder {
     genconversionno_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct GenconsetinvokeNull2;
+pub struct GenconsetinvokeNull2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &GenconsetinvokeNull2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl GenconsetinvokeNull2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct GenconsetinvokeNull2Mapping([usize; 14]);
 /// # Summary
 ///
 /// ## GENCONSETINVOKE
-///  _GENCONSETINVOKE provides details of invoked and revoked generic constraints. GENCONSETINVOKE is the key table for determining what constraints are active in dispatch, predispatch and PASA.<br>GENCONSETINVOKE also indicates whether constraints are for interconnector limits, ancillary services, etc.<br>_
+///  _GENCONSETINVOKE provides details of invoked and revoked generic constraints. GENCONSETINVOKE is the key table for determining what constraints are active in dispatch, predispatch and PASA.<br>GENCONSETINVOKE also indicates whether constraints are for interconnector limits, ancillary services, etc._
 ///
 /// * Data Set Name: Genconsetinvoke
 /// * File Name: Null
@@ -1696,7 +1735,6 @@ impl mmsdm_core::GetTable for GenconsetinvokeNull2 {
     type Row<'row> = GenconsetinvokeNull2Row<'row>;
     type FieldMapping = GenconsetinvokeNull2Mapping;
     type PrimaryKey = GenconsetinvokeNull2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1785,11 +1823,6 @@ impl mmsdm_core::GetTable for GenconsetinvokeNull2 {
         }
         Ok(GenconsetinvokeNull2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1800,9 +1833,14 @@ impl mmsdm_core::GetTable for GenconsetinvokeNull2 {
             intervention: row.intervention().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "genconsetinvoke_null_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("genconsetinvoke_null_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         GenconsetinvokeNull2Row {
@@ -1973,7 +2011,7 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.invocation_id_array.append_value(row.invocation_id);
-        builder.startdate_array.append_value(row.startdate.timestamp_millis());
+        builder.startdate_array.append_value(row.startdate.and_utc().timestamp_millis());
         builder
             .startperiod_array
             .append_value({
@@ -1984,7 +2022,7 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
         builder.genconsetid_array.append_value(row.genconsetid());
         builder
             .enddate_array
-            .append_option(row.enddate.map(|val| val.timestamp_millis()));
+            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .endperiod_array
             .append_option({
@@ -2000,13 +2038,17 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
         builder.asconstrainttype_array.append_option(row.asconstrainttype());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .startintervaldatetime_array
-            .append_option(row.startintervaldatetime.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.startintervaldatetime.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .endintervaldatetime_array
-            .append_option(row.endintervaldatetime.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.endintervaldatetime.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.systemnormal_array.append_option(row.systemnormal());
     }
     fn finalize_builder(
@@ -2065,7 +2107,27 @@ pub struct GenconsetinvokeNull2Builder {
     endintervaldatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     systemnormal_array: arrow::array::builder::StringBuilder,
 }
-pub struct GenconsettrkNull2;
+pub struct GenconsettrkNull2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &GenconsettrkNull2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl GenconsettrkNull2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct GenconsettrkNull2Mapping([usize; 11]);
 /// # Summary
 ///
@@ -2222,7 +2284,6 @@ impl mmsdm_core::GetTable for GenconsettrkNull2 {
     type Row<'row> = GenconsettrkNull2Row<'row>;
     type FieldMapping = GenconsettrkNull2Mapping;
     type PrimaryKey = GenconsettrkNull2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2292,23 +2353,6 @@ impl mmsdm_core::GetTable for GenconsettrkNull2 {
         }
         Ok(GenconsettrkNull2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2320,20 +2364,14 @@ impl mmsdm_core::GetTable for GenconsettrkNull2 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "genconsettrk_null_v2_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("genconsettrk_null_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         GenconsettrkNull2Row {
@@ -2478,7 +2516,9 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.genconsetid_array.append_value(row.genconsetid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2490,10 +2530,12 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.coverage_array.append_option(row.coverage());
         builder.modifications_array.append_option(row.modifications());
         builder.systemnormal_array.append_option(row.systemnormal());
@@ -2546,12 +2588,30 @@ pub struct GenconsettrkNull2Builder {
     systemnormal_array: arrow::array::builder::StringBuilder,
     outage_array: arrow::array::builder::StringBuilder,
 }
-pub struct GcrhsNull1;
+pub struct GcrhsNull1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&GcrhsNull1Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl GcrhsNull1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct GcrhsNull1Mapping([usize; 15]);
 /// # Summary
 ///
 /// ## GENERICCONSTRAINTRHS
-///  _GENERICCONSTRAINTRHS sets out details of generic constraint Right Hand Side (RHS) formulations for dispatch (DS), predispatch (PD) and Short Term PASA (ST). GENERICCONSTRAINTRHS also includes general expressions (EQ) used in the dispatch, predispatch and PASA time frames.<br>GENERICCONSTRAINTRHS replaces data previously available via the "Constraint Library” Excel spreadsheet.<br>_
+///  _GENERICCONSTRAINTRHS sets out details of generic constraint Right Hand Side (RHS) formulations for dispatch (DS), predispatch (PD) and Short Term PASA (ST). GENERICCONSTRAINTRHS also includes general expressions (EQ) used in the dispatch, predispatch and PASA time frames.<br>GENERICCONSTRAINTRHS replaces data previously available via the "Constraint Library” Excel spreadsheet._
 ///
 /// * Data Set Name: Gcrhs
 /// * File Name: Null
@@ -2724,7 +2784,6 @@ impl mmsdm_core::GetTable for GcrhsNull1 {
     type Row<'row> = GcrhsNull1Row<'row>;
     type FieldMapping = GcrhsNull1Mapping;
     type PrimaryKey = GcrhsNull1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2813,23 +2872,6 @@ impl mmsdm_core::GetTable for GcrhsNull1 {
         }
         Ok(GcrhsNull1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2843,20 +2885,14 @@ impl mmsdm_core::GetTable for GcrhsNull1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "gcrhs_null_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("gcrhs_null_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         GcrhsNull1Row {
@@ -3036,7 +3072,9 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.genconid_array.append_value(row.genconid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -3087,7 +3125,7 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
         builder.parameterterm3_array.append_option(row.parameterterm3());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3148,7 +3186,27 @@ pub struct GcrhsNull1Builder {
     parameterterm3_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct GeqdescNull2;
+pub struct GeqdescNull2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &GeqdescNull2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl GeqdescNull2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct GeqdescNull2Mapping([usize; 9]);
 /// # Summary
 ///
@@ -3307,7 +3365,6 @@ impl mmsdm_core::GetTable for GeqdescNull2 {
     type Row<'row> = GeqdescNull2Row<'row>;
     type FieldMapping = GeqdescNull2Mapping;
     type PrimaryKey = GeqdescNull2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3360,11 +3417,6 @@ impl mmsdm_core::GetTable for GeqdescNull2 {
         }
         Ok(GeqdescNull2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3374,9 +3426,14 @@ impl mmsdm_core::GetTable for GeqdescNull2 {
             equationid: row.equationid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "geqdesc_null_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("geqdesc_null_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         GeqdescNull2Row {
@@ -3497,7 +3554,7 @@ impl mmsdm_core::ArrowSchema for GeqdescNull2 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.impact_array.append_option(row.impact());
         builder.source_array.append_option(row.source());
         builder.limittype_array.append_option(row.limittype());
@@ -3546,7 +3603,25 @@ pub struct GeqdescNull2Builder {
     modifications_array: arrow::array::builder::StringBuilder,
     additionalnotes_array: arrow::array::builder::StringBuilder,
 }
-pub struct GeqrhsNull1;
+pub struct GeqrhsNull1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&GeqrhsNull1Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl GeqrhsNull1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct GeqrhsNull1Mapping([usize; 14]);
 /// # Summary
 ///
@@ -3716,7 +3791,6 @@ impl mmsdm_core::GetTable for GeqrhsNull1 {
     type Row<'row> = GeqrhsNull1Row<'row>;
     type FieldMapping = GeqrhsNull1Mapping;
     type PrimaryKey = GeqrhsNull1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3804,23 +3878,6 @@ impl mmsdm_core::GetTable for GeqrhsNull1 {
         }
         Ok(GeqrhsNull1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3833,20 +3890,14 @@ impl mmsdm_core::GetTable for GeqrhsNull1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "geqrhs_null_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("geqrhs_null_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         GeqrhsNull1Row {
@@ -4014,7 +4065,9 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.equationid_array.append_value(row.equationid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4064,7 +4117,7 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
         builder.parameterterm3_array.append_option(row.parameterterm3());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4122,7 +4175,25 @@ pub struct GeqrhsNull1Builder {
     parameterterm3_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct SpdcpcNull2;
+pub struct SpdcpcNull2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&SpdcpcNull2Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SpdcpcNull2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SpdcpcNull2Mapping([usize; 7]);
 /// # Summary
 ///
@@ -4202,7 +4273,6 @@ impl mmsdm_core::GetTable for SpdcpcNull2 {
     type Row<'row> = SpdcpcNull2Row<'row>;
     type FieldMapping = SpdcpcNull2Mapping;
     type PrimaryKey = SpdcpcNull2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4268,23 +4338,6 @@ impl mmsdm_core::GetTable for SpdcpcNull2 {
         }
         Ok(SpdcpcNull2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4298,20 +4351,14 @@ impl mmsdm_core::GetTable for SpdcpcNull2 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "spdcpc_null_v2_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("spdcpc_null_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SpdcpcNull2Row {
@@ -4435,7 +4482,9 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.connectionpointid_array.append_value(row.connectionpointid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4455,7 +4504,7 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.bidtype_array.append_value(row.bidtype());
     }
     fn finalize_builder(
@@ -4493,7 +4542,25 @@ pub struct SpdcpcNull2Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     bidtype_array: arrow::array::builder::StringBuilder,
 }
-pub struct SpdiccNull1;
+pub struct SpdiccNull1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&SpdiccNull1Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SpdiccNull1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SpdiccNull1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -4565,7 +4632,6 @@ impl mmsdm_core::GetTable for SpdiccNull1 {
     type Row<'row> = SpdiccNull1Row<'row>;
     type FieldMapping = SpdiccNull1Mapping;
     type PrimaryKey = SpdiccNull1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4630,23 +4696,6 @@ impl mmsdm_core::GetTable for SpdiccNull1 {
         }
         Ok(SpdiccNull1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4659,20 +4708,14 @@ impl mmsdm_core::GetTable for SpdiccNull1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "spdicc_null_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("spdicc_null_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SpdiccNull1Row {
@@ -4785,7 +4828,9 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.interconnectorid_array.append_value(row.interconnectorid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4805,7 +4850,7 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4839,7 +4884,25 @@ pub struct SpdiccNull1Builder {
     factor_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct SpdrcNull2;
+pub struct SpdrcNull2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&SpdrcNull2Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SpdrcNull2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct SpdrcNull2Mapping([usize; 7]);
 /// # Summary
 ///
@@ -4916,7 +4979,6 @@ impl mmsdm_core::GetTable for SpdrcNull2 {
     type Row<'row> = SpdrcNull2Row<'row>;
     type FieldMapping = SpdrcNull2Mapping;
     type PrimaryKey = SpdrcNull2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4982,23 +5044,6 @@ impl mmsdm_core::GetTable for SpdrcNull2 {
         }
         Ok(SpdrcNull2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -5012,20 +5057,14 @@ impl mmsdm_core::GetTable for SpdrcNull2 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "spdrc_null_v2_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("spdrc_null_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         SpdrcNull2Row {
@@ -5146,7 +5185,9 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.regionid_array.append_value(row.regionid());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -5166,7 +5207,7 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.bidtype_array.append_value(row.bidtype());
     }
     fn finalize_builder(

@@ -5,7 +5,27 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct BillingConfigBillingcalendar2;
+pub struct BillingConfigBillingcalendar2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &BillingConfigBillingcalendar2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingConfigBillingcalendar2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingConfigBillingcalendar2Mapping([usize; 10]);
 /// # Summary
 ///
@@ -81,7 +101,6 @@ impl mmsdm_core::GetTable for BillingConfigBillingcalendar2 {
     type Row<'row> = BillingConfigBillingcalendar2Row<'row>;
     type FieldMapping = BillingConfigBillingcalendar2Mapping;
     type PrimaryKey = BillingConfigBillingcalendar2PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -180,11 +199,6 @@ impl mmsdm_core::GetTable for BillingConfigBillingcalendar2 {
         }
         Ok(BillingConfigBillingcalendar2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -195,9 +209,14 @@ impl mmsdm_core::GetTable for BillingConfigBillingcalendar2 {
             weekno: row.weekno,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_config_billingcalendar_v2".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_config_billingcalendar_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingConfigBillingcalendar2Row {
@@ -362,33 +381,35 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
             });
         builder
             .startdate_array
-            .append_option(row.startdate.map(|val| val.timestamp_millis()));
+            .append_option(row.startdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .enddate_array
-            .append_option(row.enddate.map(|val| val.timestamp_millis()));
+            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .preliminarystatementdate_array
             .append_option(
-                row.preliminarystatementdate.map(|val| val.timestamp_millis()),
+                row.preliminarystatementdate.map(|val| val.and_utc().timestamp_millis()),
             );
         builder
             .finalstatementdate_array
-            .append_option(row.finalstatementdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.finalstatementdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .paymentdate_array
-            .append_option(row.paymentdate.map(|val| val.timestamp_millis()));
+            .append_option(row.paymentdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .revision1_statementdate_array
             .append_option(
-                row.revision1_statementdate.map(|val| val.timestamp_millis()),
+                row.revision1_statementdate.map(|val| val.and_utc().timestamp_millis()),
             );
         builder
             .revision2_statementdate_array
             .append_option(
-                row.revision2_statementdate.map(|val| val.timestamp_millis()),
+                row.revision2_statementdate.map(|val| val.and_utc().timestamp_millis()),
             );
     }
     fn finalize_builder(
@@ -436,12 +457,32 @@ pub struct BillingConfigBillingcalendar2Builder {
     revision1_statementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     revision2_statementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingConfigGstBasClass1;
+pub struct BillingConfigGstBasClass1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &BillingConfigGstBasClass1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingConfigGstBasClass1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingConfigGstBasClass1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## GST_BAS_CLASS
-///  _GST_BAS_CLASS contains a static list of BAS (Business Activity Statement) classifications supported by the MMS. _
+///  _GST_BAS_CLASS contains a static list of BAS (Business Activity Statement) classifications supported by the MMS._
 ///
 /// * Data Set Name: Billing Config
 /// * File Name: Gst Bas Class
@@ -499,7 +540,6 @@ impl mmsdm_core::GetTable for BillingConfigGstBasClass1 {
     type Row<'row> = BillingConfigGstBasClass1Row<'row>;
     type FieldMapping = BillingConfigGstBasClass1Mapping;
     type PrimaryKey = BillingConfigGstBasClass1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -546,11 +586,6 @@ impl mmsdm_core::GetTable for BillingConfigGstBasClass1 {
         }
         Ok(BillingConfigGstBasClass1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -560,9 +595,14 @@ impl mmsdm_core::GetTable for BillingConfigGstBasClass1 {
             bas_class: row.bas_class().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_config_gst_bas_class_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_config_gst_bas_class_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingConfigGstBasClass1Row {
@@ -641,7 +681,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstBasClass1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -666,7 +706,27 @@ pub struct BillingConfigGstBasClass1Builder {
     description_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingConfigGstRate1;
+pub struct BillingConfigGstRate1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &BillingConfigGstRate1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingConfigGstRate1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingConfigGstRate1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -727,7 +787,6 @@ impl mmsdm_core::GetTable for BillingConfigGstRate1 {
     type Row<'row> = BillingConfigGstRate1Row<'row>;
     type FieldMapping = BillingConfigGstRate1Mapping;
     type PrimaryKey = BillingConfigGstRate1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -791,23 +850,6 @@ impl mmsdm_core::GetTable for BillingConfigGstRate1 {
         }
         Ok(BillingConfigGstRate1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -819,20 +861,14 @@ impl mmsdm_core::GetTable for BillingConfigGstRate1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "billing_config_gst_rate_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_config_gst_rate_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingConfigGstRate1Row {
@@ -932,7 +968,9 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstRate1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -952,7 +990,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstRate1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -983,7 +1021,27 @@ pub struct BillingConfigGstRate1Builder {
     gst_rate_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingConfigGstTransactionClass1;
+pub struct BillingConfigGstTransactionClass1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &BillingConfigGstTransactionClass1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingConfigGstTransactionClass1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingConfigGstTransactionClass1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -1051,7 +1109,6 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionClass1 {
     type Row<'row> = BillingConfigGstTransactionClass1Row<'row>;
     type FieldMapping = BillingConfigGstTransactionClass1Mapping;
     type PrimaryKey = BillingConfigGstTransactionClass1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1110,23 +1167,6 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionClass1 {
         }
         Ok(BillingConfigGstTransactionClass1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1139,20 +1179,16 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionClass1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "billing_config_gst_transaction_class_v1_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "billing_config_gst_transaction_class_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingConfigGstTransactionClass1Row {
@@ -1257,7 +1293,9 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionClass1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1269,7 +1307,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionClass1 {
         builder.bas_class_array.append_value(row.bas_class());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1300,12 +1338,32 @@ pub struct BillingConfigGstTransactionClass1Builder {
     bas_class_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingConfigGstTransactionType1;
+pub struct BillingConfigGstTransactionType1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &BillingConfigGstTransactionType1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingConfigGstTransactionType1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingConfigGstTransactionType1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## GST_TRANSACTION_TYPE
-///  _GST_TRANSACTION_TYPE shows a static list of transaction types supported by the MMS. _
+///  _GST_TRANSACTION_TYPE shows a static list of transaction types supported by the MMS._
 ///
 /// * Data Set Name: Billing Config
 /// * File Name: Gst Transaction Type
@@ -1398,7 +1456,6 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionType1 {
     type Row<'row> = BillingConfigGstTransactionType1Row<'row>;
     type FieldMapping = BillingConfigGstTransactionType1Mapping;
     type PrimaryKey = BillingConfigGstTransactionType1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1447,11 +1504,6 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionType1 {
         }
         Ok(BillingConfigGstTransactionType1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1461,9 +1513,16 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionType1 {
             transaction_type: row.transaction_type().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_config_gst_transaction_type_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "billing_config_gst_transaction_type_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingConfigGstTransactionType1Row {
@@ -1559,7 +1618,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionType1 {
         builder.gl_tcode_array.append_option(row.gl_tcode());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1590,7 +1649,27 @@ pub struct BillingConfigGstTransactionType1Builder {
     gl_tcode_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingConfigSecdepositInterestRate1;
+pub struct BillingConfigSecdepositInterestRate1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &BillingConfigSecdepositInterestRate1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingConfigSecdepositInterestRate1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingConfigSecdepositInterestRate1Mapping([usize; 4]);
 /// # Summary
 ///
@@ -1650,7 +1729,6 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositInterestRate1 {
     type Row<'row> = BillingConfigSecdepositInterestRate1Row<'row>;
     type FieldMapping = BillingConfigSecdepositInterestRate1Mapping;
     type PrimaryKey = BillingConfigSecdepositInterestRate1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1708,23 +1786,6 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositInterestRate1 {
         }
         Ok(BillingConfigSecdepositInterestRate1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1738,20 +1799,16 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositInterestRate1 {
             version_datetime: row.version_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "billing_config_secdeposit_interest_rate_v1_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "billing_config_secdeposit_interest_rate_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingConfigSecdepositInterestRate1Row {
@@ -1852,10 +1909,12 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositInterestRate1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.interest_acct_id_array.append_value(row.interest_acct_id());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .version_datetime_array
-            .append_value(row.version_datetime.timestamp_millis());
+            .append_value(row.version_datetime.and_utc().timestamp_millis());
         builder
             .interest_rate_array
             .append_option({
@@ -1892,7 +1951,27 @@ pub struct BillingConfigSecdepositInterestRate1Builder {
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interest_rate_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingConfigSecdepositProvision1;
+pub struct BillingConfigSecdepositProvision1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &BillingConfigSecdepositProvision1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingConfigSecdepositProvision1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct BillingConfigSecdepositProvision1Mapping([usize; 9]);
 /// # Summary
 ///
@@ -1997,7 +2076,6 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositProvision1 {
     type Row<'row> = BillingConfigSecdepositProvision1Row<'row>;
     type FieldMapping = BillingConfigSecdepositProvision1Mapping;
     type PrimaryKey = BillingConfigSecdepositProvision1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2072,11 +2150,6 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositProvision1 {
         }
         Ok(BillingConfigSecdepositProvision1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2087,9 +2160,16 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositProvision1 {
             security_deposit_id: row.security_deposit_id().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "billing_config_secdeposit_provision_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "billing_config_secdeposit_provision_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         BillingConfigSecdepositProvision1Row {
@@ -2220,7 +2300,9 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositProvision1 {
         builder.participantid_array.append_value(row.participantid());
         builder
             .transaction_date_array
-            .append_option(row.transaction_date.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.transaction_date.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .maturity_contractyear_array
             .append_option({

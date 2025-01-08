@@ -5,7 +5,27 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct MarketNoticeMarketnoticedata1;
+pub struct MarketNoticeMarketnoticedata1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketNoticeMarketnoticedata1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketNoticeMarketnoticedata1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketNoticeMarketnoticedata1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -117,7 +137,6 @@ impl mmsdm_core::GetTable for MarketNoticeMarketnoticedata1 {
     type Row<'row> = MarketNoticeMarketnoticedata1Row<'row>;
     type FieldMapping = MarketNoticeMarketnoticedata1Mapping;
     type PrimaryKey = MarketNoticeMarketnoticedata1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -179,11 +198,6 @@ impl mmsdm_core::GetTable for MarketNoticeMarketnoticedata1 {
         }
         Ok(MarketNoticeMarketnoticedata1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -193,9 +207,14 @@ impl mmsdm_core::GetTable for MarketNoticeMarketnoticedata1 {
             noticeid: row.noticeid,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "market_notice_marketnoticedata_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("market_notice_marketnoticedata_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketNoticeMarketnoticedata1Row {
@@ -312,12 +331,14 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticedata1 {
             });
         builder
             .effectivedate_array
-            .append_option(row.effectivedate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.effectivedate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.typeid_array.append_option(row.typeid());
         builder.noticetype_array.append_option(row.noticetype());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.reason_array.append_option(row.reason());
         builder.externalreference_array.append_option(row.externalreference());
     }
@@ -356,7 +377,27 @@ pub struct MarketNoticeMarketnoticedata1Builder {
     reason_array: arrow::array::builder::StringBuilder,
     externalreference_array: arrow::array::builder::StringBuilder,
 }
-pub struct MarketNoticeMarketnoticetype1;
+pub struct MarketNoticeMarketnoticetype1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketNoticeMarketnoticetype1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketNoticeMarketnoticetype1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketNoticeMarketnoticetype1Mapping([usize; 4]);
 /// # Summary
 ///
@@ -435,7 +476,6 @@ impl mmsdm_core::GetTable for MarketNoticeMarketnoticetype1 {
     type Row<'row> = MarketNoticeMarketnoticetype1Row<'row>;
     type FieldMapping = MarketNoticeMarketnoticetype1Mapping;
     type PrimaryKey = MarketNoticeMarketnoticetype1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -483,11 +523,6 @@ impl mmsdm_core::GetTable for MarketNoticeMarketnoticetype1 {
         }
         Ok(MarketNoticeMarketnoticetype1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -497,9 +532,14 @@ impl mmsdm_core::GetTable for MarketNoticeMarketnoticetype1 {
             typeid: row.typeid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "market_notice_marketnoticetype_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("market_notice_marketnoticetype_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketNoticeMarketnoticetype1Row {
@@ -587,7 +627,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticetype1 {
         builder.raisedby_array.append_option(row.raisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -615,7 +655,27 @@ pub struct MarketNoticeMarketnoticetype1Builder {
     raisedby_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct MarketNoticeParticipantnoticetrk1;
+pub struct MarketNoticeParticipantnoticetrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketNoticeParticipantnoticetrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketNoticeParticipantnoticetrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketNoticeParticipantnoticetrk1Mapping([usize; 3]);
 /// # Summary
 ///
@@ -667,7 +727,6 @@ impl mmsdm_core::GetTable for MarketNoticeParticipantnoticetrk1 {
     type Row<'row> = MarketNoticeParticipantnoticetrk1Row<'row>;
     type FieldMapping = MarketNoticeParticipantnoticetrk1Mapping;
     type PrimaryKey = MarketNoticeParticipantnoticetrk1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -719,11 +778,6 @@ impl mmsdm_core::GetTable for MarketNoticeParticipantnoticetrk1 {
         }
         Ok(MarketNoticeParticipantnoticetrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -734,9 +788,16 @@ impl mmsdm_core::GetTable for MarketNoticeParticipantnoticetrk1 {
             participantid: row.participantid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "market_notice_participantnoticetrk_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "market_notice_participantnoticetrk_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketNoticeParticipantnoticetrk1Row {
@@ -824,7 +885,7 @@ impl mmsdm_core::ArrowSchema for MarketNoticeParticipantnoticetrk1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

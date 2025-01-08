@@ -5,7 +5,27 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct StpasaCasesolution3;
+pub struct StpasaCasesolution3 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &StpasaCasesolution3Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl StpasaCasesolution3 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct StpasaCasesolution3Mapping([usize; 19]);
 /// # Summary
 ///
@@ -165,7 +185,6 @@ impl mmsdm_core::GetTable for StpasaCasesolution3 {
     type Row<'row> = StpasaCasesolution3Row<'row>;
     type FieldMapping = StpasaCasesolution3Mapping;
     type PrimaryKey = StpasaCasesolution3PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -301,23 +320,6 @@ impl mmsdm_core::GetTable for StpasaCasesolution3 {
         }
         Ok(StpasaCasesolution3Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let run_datetime = row
-            .get_custom_parsed_at_idx(
-                "run_datetime",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(run_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(run_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -327,20 +329,14 @@ impl mmsdm_core::GetTable for StpasaCasesolution3 {
             run_datetime: row.run_datetime,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.run_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.run_datetime).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "stpasa_casesolution_v3_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("stpasa_casesolution_v3_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         StpasaCasesolution3Row {
@@ -543,7 +539,9 @@ impl mmsdm_core::ArrowSchema for StpasaCasesolution3 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder.pasaversion_array.append_option(row.pasaversion());
         builder
             .reservecondition_array
@@ -610,7 +608,7 @@ impl mmsdm_core::ArrowSchema for StpasaCasesolution3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .reliabilitylrcdemandoption_array
             .append_option({
@@ -748,7 +746,27 @@ pub struct StpasaCasesolution3Builder {
     reliability_lrcuigf_option_array: arrow::array::builder::Decimal128Builder,
     outage_lrcuigf_option_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct StpasaConstraintsolution3;
+pub struct StpasaConstraintsolution3 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &StpasaConstraintsolution3Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl StpasaConstraintsolution3 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct StpasaConstraintsolution3Mapping([usize; 9]);
 /// # Summary
 ///
@@ -833,7 +851,6 @@ impl mmsdm_core::GetTable for StpasaConstraintsolution3 {
     type Row<'row> = StpasaConstraintsolution3Row<'row>;
     type FieldMapping = StpasaConstraintsolution3Mapping;
     type PrimaryKey = StpasaConstraintsolution3PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -911,23 +928,6 @@ impl mmsdm_core::GetTable for StpasaConstraintsolution3 {
         }
         Ok(StpasaConstraintsolution3Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -941,20 +941,14 @@ impl mmsdm_core::GetTable for StpasaConstraintsolution3 {
             studyregionid: row.studyregionid().to_string(),
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "stpasa_constraintsolution_v3_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("stpasa_constraintsolution_v3_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         StpasaConstraintsolution3Row {
@@ -1096,10 +1090,12 @@ impl mmsdm_core::ArrowSchema for StpasaConstraintsolution3 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
         builder
             .capacityrhs_array
@@ -1130,7 +1126,7 @@ impl mmsdm_core::ArrowSchema for StpasaConstraintsolution3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.runtype_array.append_value(row.runtype());
         builder.studyregionid_array.append_value(row.studyregionid());
     }
@@ -1175,7 +1171,27 @@ pub struct StpasaConstraintsolution3Builder {
     runtype_array: arrow::array::builder::StringBuilder,
     studyregionid_array: arrow::array::builder::StringBuilder,
 }
-pub struct StpasaInterconnectorsoln3;
+pub struct StpasaInterconnectorsoln3 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &StpasaInterconnectorsoln3Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl StpasaInterconnectorsoln3 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct StpasaInterconnectorsoln3Mapping([usize; 13]);
 /// # Summary
 ///
@@ -1303,7 +1319,6 @@ impl mmsdm_core::GetTable for StpasaInterconnectorsoln3 {
     type Row<'row> = StpasaInterconnectorsoln3Row<'row>;
     type FieldMapping = StpasaInterconnectorsoln3Mapping;
     type PrimaryKey = StpasaInterconnectorsoln3PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1397,23 +1412,6 @@ impl mmsdm_core::GetTable for StpasaInterconnectorsoln3 {
         }
         Ok(StpasaInterconnectorsoln3Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1427,20 +1425,14 @@ impl mmsdm_core::GetTable for StpasaInterconnectorsoln3 {
             studyregionid: row.studyregionid().to_string(),
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "stpasa_interconnectorsoln_v3_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("stpasa_interconnectorsoln_v3_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         StpasaInterconnectorsoln3Row {
@@ -1612,10 +1604,12 @@ impl mmsdm_core::ArrowSchema for StpasaInterconnectorsoln3 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.interconnectorid_array.append_value(row.interconnectorid());
         builder
             .capacitymwflow_array
@@ -1664,7 +1658,7 @@ impl mmsdm_core::ArrowSchema for StpasaInterconnectorsoln3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.runtype_array.append_value(row.runtype());
         builder
             .exportlimitconstraintid_array
@@ -1727,7 +1721,27 @@ pub struct StpasaInterconnectorsoln3Builder {
     importlimitconstraintid_array: arrow::array::builder::StringBuilder,
     studyregionid_array: arrow::array::builder::StringBuilder,
 }
-pub struct StpasaRegionsolution7;
+pub struct StpasaRegionsolution7 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &StpasaRegionsolution7Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl StpasaRegionsolution7 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct StpasaRegionsolution7Mapping([usize; 45]);
 /// # Summary
 ///
@@ -1793,7 +1807,7 @@ pub struct StpasaRegionsolution7Row<'data> {
     pub aggregatescheduledload: Option<rust_decimal::Decimal>,
     /// Last changed date of this record
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Sum of  PASAAVAILABILITY quantities offered by all Scheduled Generators in a given Region for a given PERIODID.
+    /// Sum of PASAAVAILABILITY for all scheduled generating units and the Unconstrained Intermittent Generation Forecasts (UIGF) for all semi-scheduled generating units in a given Region for a given PERIODID.<br>For the RELIABILITY_LRC and OUTAGE_LRC runs, UIGF is the POE90 forecast. For the LOR run, UIGF is the POE50 forecast.
     pub aggregatepasaavailability: Option<rust_decimal::Decimal>,
     /// Type of run. Values are RELIABILITY_LRC, OUTAGE_LRC and LOR.
     pub runtype: core::ops::Range<usize>,
@@ -1952,7 +1966,6 @@ impl mmsdm_core::GetTable for StpasaRegionsolution7 {
     type Row<'row> = StpasaRegionsolution7Row<'row>;
     type FieldMapping = StpasaRegionsolution7Mapping;
     type PrimaryKey = StpasaRegionsolution7PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2251,23 +2264,6 @@ impl mmsdm_core::GetTable for StpasaRegionsolution7 {
         }
         Ok(StpasaRegionsolution7Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let interval_datetime = row
-            .get_custom_parsed_at_idx(
-                "interval_datetime",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(interval_datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2280,20 +2276,14 @@ impl mmsdm_core::GetTable for StpasaRegionsolution7 {
             runtype: row.runtype().to_string(),
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.interval_datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.interval_datetime).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "stpasa_regionsolution_v7_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("stpasa_regionsolution_v7_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         StpasaRegionsolution7Row {
@@ -2718,10 +2708,12 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.run_datetime_array.append_value(row.run_datetime.timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
         builder
             .interval_datetime_array
-            .append_value(row.interval_datetime.timestamp_millis());
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .demand10_array
@@ -2878,7 +2870,7 @@ impl mmsdm_core::ArrowSchema for StpasaRegionsolution7 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .aggregatepasaavailability_array
             .append_option({

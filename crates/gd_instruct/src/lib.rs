@@ -5,7 +5,27 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct GdInstructGdinstruct1;
+pub struct GdInstructGdinstruct1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &GdInstructGdinstruct1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl GdInstructGdinstruct1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct GdInstructGdinstruct1Mapping([usize; 15]);
 /// # Summary
 ///
@@ -206,7 +226,6 @@ impl mmsdm_core::GetTable for GdInstructGdinstruct1 {
     type Row<'row> = GdInstructGdinstruct1Row<'row>;
     type FieldMapping = GdInstructGdinstruct1Mapping;
     type PrimaryKey = GdInstructGdinstruct1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -293,11 +312,6 @@ impl mmsdm_core::GetTable for GdInstructGdinstruct1 {
         }
         Ok(GdInstructGdinstruct1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -307,9 +321,14 @@ impl mmsdm_core::GetTable for GdInstructGdinstruct1 {
             id: row.id,
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "gd_instruct_gdinstruct_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("gd_instruct_gdinstruct_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         GdInstructGdinstruct1Row {
@@ -504,18 +523,20 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder.participantid_array.append_option(row.participantid());
         builder
             .issuedtime_array
-            .append_option(row.issuedtime.map(|val| val.timestamp_millis()));
+            .append_option(row.issuedtime.map(|val| val.and_utc().timestamp_millis()));
         builder
             .targettime_array
-            .append_option(row.targettime.map(|val| val.timestamp_millis()));
+            .append_option(row.targettime.map(|val| val.and_utc().timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -576,7 +597,27 @@ pub struct GdInstructGdinstruct1Builder {
     targettime_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct GdInstructInstructionsubtype1;
+pub struct GdInstructInstructionsubtype1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &GdInstructInstructionsubtype1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl GdInstructInstructionsubtype1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct GdInstructInstructionsubtype1Mapping([usize; 4]);
 /// # Summary
 ///
@@ -653,7 +694,6 @@ impl mmsdm_core::GetTable for GdInstructInstructionsubtype1 {
     type Row<'row> = GdInstructInstructionsubtype1Row<'row>;
     type FieldMapping = GdInstructInstructionsubtype1Mapping;
     type PrimaryKey = GdInstructInstructionsubtype1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -702,11 +742,6 @@ impl mmsdm_core::GetTable for GdInstructInstructionsubtype1 {
         }
         Ok(GdInstructInstructionsubtype1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -717,9 +752,14 @@ impl mmsdm_core::GetTable for GdInstructInstructionsubtype1 {
             instructiontypeid: row.instructiontypeid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "gd_instruct_instructionsubtype_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("gd_instruct_instructionsubtype_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         GdInstructInstructionsubtype1Row {
@@ -812,7 +852,7 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructionsubtype1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -840,7 +880,27 @@ pub struct GdInstructInstructionsubtype1Builder {
     description_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct GdInstructInstructiontype1;
+pub struct GdInstructInstructiontype1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &GdInstructInstructiontype1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl GdInstructInstructiontype1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct GdInstructInstructiontype1Mapping([usize; 4]);
 /// # Summary
 ///
@@ -922,7 +982,6 @@ impl mmsdm_core::GetTable for GdInstructInstructiontype1 {
     type Row<'row> = GdInstructInstructiontype1Row<'row>;
     type FieldMapping = GdInstructInstructiontype1Mapping;
     type PrimaryKey = GdInstructInstructiontype1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -970,11 +1029,6 @@ impl mmsdm_core::GetTable for GdInstructInstructiontype1 {
         }
         Ok(GdInstructInstructiontype1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -984,9 +1038,14 @@ impl mmsdm_core::GetTable for GdInstructInstructiontype1 {
             instructiontypeid: row.instructiontypeid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "gd_instruct_instructiontype_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("gd_instruct_instructiontype_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         GdInstructInstructiontype1Row {
@@ -1073,7 +1132,7 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructiontype1 {
         builder.regionid_array.append_option(row.regionid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

@@ -5,12 +5,32 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct MarketConfigBidtypes1;
+pub struct MarketConfigBidtypes1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigBidtypes1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigBidtypes1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketConfigBidtypes1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## BIDTYPES
-///  _BIDTYPES, together with the associated tracking data in BIDTYPESTRK, define a set of ancillary services with bidding parameters from a given date.<br>BIDTYPES is static data describing each type of bid quantity, the number of applicable bands, how many days ahead a price lock down becomes effective and the validation rule that applies.<br>_
+///  _BIDTYPES, together with the associated tracking data in BIDTYPESTRK, define a set of ancillary services with bidding parameters from a given date.<br>BIDTYPES is static data describing each type of bid quantity, the number of applicable bands, how many days ahead a price lock down becomes effective and the validation rule that applies._
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Bidtypes
@@ -118,7 +138,6 @@ impl mmsdm_core::GetTable for MarketConfigBidtypes1 {
     type Row<'row> = MarketConfigBidtypes1Row<'row>;
     type FieldMapping = MarketConfigBidtypes1Mapping;
     type PrimaryKey = MarketConfigBidtypes1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -191,23 +210,6 @@ impl mmsdm_core::GetTable for MarketConfigBidtypes1 {
         }
         Ok(MarketConfigBidtypes1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -219,20 +221,14 @@ impl mmsdm_core::GetTable for MarketConfigBidtypes1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "market_config_bidtypes_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("market_config_bidtypes_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketConfigBidtypes1Row {
@@ -362,7 +358,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder.bidtype_array.append_value(row.bidtype());
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -392,7 +390,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
         builder.validationrule_array.append_option(row.validationrule());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder.spdalias_array.append_option(row.spdalias());
     }
     fn finalize_builder(
@@ -436,7 +434,27 @@ pub struct MarketConfigBidtypes1Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     spdalias_array: arrow::array::builder::StringBuilder,
 }
-pub struct MarketConfigBidtypestrk1;
+pub struct MarketConfigBidtypestrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigBidtypestrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigBidtypestrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketConfigBidtypestrk1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -505,7 +523,6 @@ impl mmsdm_core::GetTable for MarketConfigBidtypestrk1 {
     type Row<'row> = MarketConfigBidtypestrk1Row<'row>;
     type FieldMapping = MarketConfigBidtypestrk1Mapping;
     type PrimaryKey = MarketConfigBidtypestrk1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -569,23 +586,6 @@ impl mmsdm_core::GetTable for MarketConfigBidtypestrk1 {
         }
         Ok(MarketConfigBidtypestrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -596,20 +596,14 @@ impl mmsdm_core::GetTable for MarketConfigBidtypestrk1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "market_config_bidtypestrk_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("market_config_bidtypestrk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketConfigBidtypestrk1Row {
@@ -706,7 +700,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -716,11 +712,13 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -751,7 +749,689 @@ pub struct MarketConfigBidtypestrk1Builder {
     authorisedby_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct MarketConfigInterconnector1;
+pub struct MarketConfigFcasregusefactors1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigFcasregusefactors1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigFcasregusefactors1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct MarketConfigFcasregusefactors1Mapping([usize; 7]);
+/// # Summary
+///
+/// ## FCAS_REGU_USAGE_FACTORS
+///  _Stores the proportion of enabled regulation FCAS dispatch that is typically consumed for frequency regulation. Used to calculate the projected state of charge for energy storage systems._
+///
+/// * Data Set Name: Market Config
+/// * File Name: Fcasregusefactors
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * BIDTYPE
+/// * EFFECTIVEDATE
+/// * PERIODID
+/// * REGIONID
+/// * VERSIONNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigFcasregusefactors1Row<'data> {
+    /// The effective date for this regulation FCAS usage factor
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version with respect to effective date
+    pub versionno: rust_decimal::Decimal,
+    /// Unique RegionID
+    pub regionid: core::ops::Range<usize>,
+    /// The type of regulation FCAS service [RAISEREG,LOWERREG]
+    pub bidtype: core::ops::Range<usize>,
+    /// The Period ID (1 - 48) within the calendar day to which this usage factor applies
+    pub periodid: rust_decimal::Decimal,
+    /// The proportion of cleared regulation FCAS that is assumed to be used within a dispatch interval. Expressed as a fractional amount between 0 and 1
+    pub usage_factor: Option<rust_decimal::Decimal>,
+    /// The last time the data has been changed/updated
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigFcasregusefactors1Row<'data> {
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+    pub fn bidtype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.bidtype.clone())
+    }
+}
+impl mmsdm_core::GetTable for MarketConfigFcasregusefactors1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "FCASREGUSEFACTORS";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigFcasregusefactors1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "REGIONID",
+        "BIDTYPE",
+        "PERIODID",
+        "USAGE_FACTOR",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MarketConfigFcasregusefactors1Row<'row>;
+    type FieldMapping = MarketConfigFcasregusefactors1Mapping;
+    type PrimaryKey = MarketConfigFcasregusefactors1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigFcasregusefactors1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            regionid: row.get_range("regionid", field_mapping.0[2])?,
+            bidtype: row.get_range("bidtype", field_mapping.0[3])?,
+            periodid: row
+                .get_custom_parsed_at_idx(
+                    "periodid",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            usage_factor: row
+                .get_opt_custom_parsed_at_idx(
+                    "usage_factor",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigFcasregusefactors1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigFcasregusefactors1PrimaryKey {
+        MarketConfigFcasregusefactors1PrimaryKey {
+            bidtype: row.bidtype().to_string(),
+            effectivedate: row.effectivedate,
+            periodid: row.periodid,
+            regionid: row.regionid().to_string(),
+            versionno: row.versionno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "market_config_fcasregusefactors_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigFcasregusefactors1Row {
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            regionid: row.regionid.clone(),
+            bidtype: row.bidtype.clone(),
+            periodid: row.periodid.clone(),
+            usage_factor: row.usage_factor.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigFcasregusefactors1PrimaryKey {
+    pub bidtype: alloc::string::String,
+    pub effectivedate: chrono::NaiveDateTime,
+    pub periodid: rust_decimal::Decimal,
+    pub regionid: alloc::string::String,
+    pub versionno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for MarketConfigFcasregusefactors1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigFcasregusefactors1Row<'data> {
+    type Row<'other> = MarketConfigFcasregusefactors1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.bidtype() == row.bidtype() && self.effectivedate == row.effectivedate
+            && self.periodid == row.periodid && self.regionid() == row.regionid()
+            && self.versionno == row.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for MarketConfigFcasregusefactors1Row<'data> {
+    type PrimaryKey = MarketConfigFcasregusefactors1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype() == key.bidtype && self.effectivedate == key.effectivedate
+            && self.periodid == key.periodid && self.regionid() == key.regionid
+            && self.versionno == key.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigFcasregusefactors1PrimaryKey {
+    type Row<'other> = MarketConfigFcasregusefactors1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.bidtype == row.bidtype() && self.effectivedate == row.effectivedate
+            && self.periodid == row.periodid && self.regionid == row.regionid()
+            && self.versionno == row.versionno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for MarketConfigFcasregusefactors1PrimaryKey {
+    type PrimaryKey = MarketConfigFcasregusefactors1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype == key.bidtype && self.effectivedate == key.effectivedate
+            && self.periodid == key.periodid && self.regionid == key.regionid
+            && self.versionno == key.versionno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for MarketConfigFcasregusefactors1 {
+    type Builder = MarketConfigFcasregusefactors1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "bidtype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "usage_factor",
+                    arrow::datatypes::DataType::Decimal128(8, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        MarketConfigFcasregusefactors1Builder {
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            usage_factor_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(8, 3)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.regionid_array.append_value(row.regionid());
+        builder.bidtype_array.append_value(row.bidtype());
+        builder
+            .periodid_array
+            .append_value({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .usage_factor_array
+            .append_option({
+                row.usage_factor
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bidtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.usage_factor_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct MarketConfigFcasregusefactors1Builder {
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    bidtype_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::builder::Decimal128Builder,
+    usage_factor_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct MarketConfigFcasregusefactorsTrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigFcasregusefactorsTrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigFcasregusefactorsTrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct MarketConfigFcasregusefactorsTrk1Mapping([usize; 4]);
+/// # Summary
+///
+/// ## FCAS_REGU_USAGE_FACTORS_TRK
+///  _Stores the proportion of enabled regulation FCAS dispatch that is typically consumed for frequency regulation. Used to calculate the projected state of charge for energy storage systems._
+///
+/// * Data Set Name: Market Config
+/// * File Name: Fcasregusefactors Trk
+/// * Data Version: 1
+///
+///
+///
+///
+///
+/// # Primary Key Columns
+///
+/// * EFFECTIVEDATE
+/// * VERSIONNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigFcasregusefactorsTrk1Row<'data> {
+    /// The effective date for this regulation FCAS usage factor
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version of the date with respect to effective date
+    pub versionno: rust_decimal::Decimal,
+    /// The date time that this set of usage factors was authorised
+    pub authoriseddate: Option<chrono::NaiveDateTime>,
+    /// The last time the data has been changed/updated
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: core::marker::PhantomData<&'data ()>,
+}
+impl<'data> MarketConfigFcasregusefactorsTrk1Row<'data> {}
+impl mmsdm_core::GetTable for MarketConfigFcasregusefactorsTrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "FCASREGUSEFACTORS_TRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigFcasregusefactorsTrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "AUTHORISEDDATE",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MarketConfigFcasregusefactorsTrk1Row<'row>;
+    type FieldMapping = MarketConfigFcasregusefactorsTrk1Mapping;
+    type PrimaryKey = MarketConfigFcasregusefactorsTrk1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigFcasregusefactorsTrk1Row {
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            authoriseddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "authoriseddate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: core::marker::PhantomData,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigFcasregusefactorsTrk1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigFcasregusefactorsTrk1PrimaryKey {
+        MarketConfigFcasregusefactorsTrk1PrimaryKey {
+            effectivedate: row.effectivedate,
+            versionno: row.versionno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "market_config_fcasregusefactors_trk_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigFcasregusefactorsTrk1Row {
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            authoriseddate: row.authoriseddate.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: core::marker::PhantomData,
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigFcasregusefactorsTrk1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub versionno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for MarketConfigFcasregusefactorsTrk1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigFcasregusefactorsTrk1Row<'data> {
+    type Row<'other> = MarketConfigFcasregusefactorsTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.versionno == row.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for MarketConfigFcasregusefactorsTrk1Row<'data> {
+    type PrimaryKey = MarketConfigFcasregusefactorsTrk1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate && self.versionno == key.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigFcasregusefactorsTrk1PrimaryKey {
+    type Row<'other> = MarketConfigFcasregusefactorsTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.versionno == row.versionno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for MarketConfigFcasregusefactorsTrk1PrimaryKey {
+    type PrimaryKey = MarketConfigFcasregusefactorsTrk1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate && self.versionno == key.versionno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for MarketConfigFcasregusefactorsTrk1 {
+    type Builder = MarketConfigFcasregusefactorsTrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "authoriseddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        MarketConfigFcasregusefactorsTrk1Builder {
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .authoriseddate_array
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.authoriseddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct MarketConfigFcasregusefactorsTrk1Builder {
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct MarketConfigInterconnector1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigInterconnector1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigInterconnector1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketConfigInterconnector1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -862,7 +1542,6 @@ impl mmsdm_core::GetTable for MarketConfigInterconnector1 {
     type Row<'row> = MarketConfigInterconnector1Row<'row>;
     type FieldMapping = MarketConfigInterconnector1Mapping;
     type PrimaryKey = MarketConfigInterconnector1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -912,11 +1591,6 @@ impl mmsdm_core::GetTable for MarketConfigInterconnector1 {
         }
         Ok(MarketConfigInterconnector1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -926,9 +1600,14 @@ impl mmsdm_core::GetTable for MarketConfigInterconnector1 {
             interconnectorid: row.interconnectorid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "market_config_interconnector_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("market_config_interconnector_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketConfigInterconnector1Row {
@@ -1031,7 +1710,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
         builder.description_array.append_option(row.description());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1065,7 +1744,27 @@ pub struct MarketConfigInterconnector1Builder {
     description_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct MarketConfigInterconnectoralloc1;
+pub struct MarketConfigInterconnectoralloc1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigInterconnectoralloc1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigInterconnectoralloc1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketConfigInterconnectoralloc1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -1145,7 +1844,6 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectoralloc1 {
     type Row<'row> = MarketConfigInterconnectoralloc1Row<'row>;
     type FieldMapping = MarketConfigInterconnectoralloc1Mapping;
     type PrimaryKey = MarketConfigInterconnectoralloc1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1211,23 +1909,6 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectoralloc1 {
         }
         Ok(MarketConfigInterconnectoralloc1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1241,20 +1922,16 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectoralloc1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "market_config_interconnectoralloc_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "market_config_interconnectoralloc_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketConfigInterconnectoralloc1Row {
@@ -1379,7 +2056,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -1401,7 +2080,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1438,7 +2117,27 @@ pub struct MarketConfigInterconnectoralloc1Builder {
     allocation_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct MarketConfigInterconnectorconstraint1;
+pub struct MarketConfigInterconnectorconstraint1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigInterconnectorconstraint1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigInterconnectorconstraint1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketConfigInterconnectorconstraint1Mapping([usize; 22]);
 /// # Summary
 ///
@@ -1618,7 +2317,6 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectorconstraint1 {
     type Row<'row> = MarketConfigInterconnectorconstraint1Row<'row>;
     type FieldMapping = MarketConfigInterconnectorconstraint1Mapping;
     type PrimaryKey = MarketConfigInterconnectorconstraint1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1764,23 +2462,6 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectorconstraint1 {
         }
         Ok(MarketConfigInterconnectorconstraint1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                6,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1794,20 +2475,16 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectorconstraint1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "market_config_interconnectorconstraint_v1_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "market_config_interconnectorconstraint_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketConfigInterconnectorconstraint1Row {
@@ -2067,7 +2744,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                         val.mantissa()
                     })
             });
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2116,7 +2795,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.dynamicrhs_array.append_option(row.dynamicrhs());
         builder
             .importlimit_array
@@ -2174,7 +2855,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .fcassupportunavailable_array
             .append_option({
@@ -2267,7 +2948,27 @@ pub struct MarketConfigInterconnectorconstraint1Builder {
     fcassupportunavailable_array: arrow::array::builder::Decimal128Builder,
     ictype_array: arrow::array::builder::StringBuilder,
 }
-pub struct MarketConfigIntraregionalloc1;
+pub struct MarketConfigIntraregionalloc1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigIntraregionalloc1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigIntraregionalloc1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketConfigIntraregionalloc1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -2336,7 +3037,6 @@ impl mmsdm_core::GetTable for MarketConfigIntraregionalloc1 {
     type Row<'row> = MarketConfigIntraregionalloc1Row<'row>;
     type FieldMapping = MarketConfigIntraregionalloc1Mapping;
     type PrimaryKey = MarketConfigIntraregionalloc1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2401,23 +3101,6 @@ impl mmsdm_core::GetTable for MarketConfigIntraregionalloc1 {
         }
         Ok(MarketConfigIntraregionalloc1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2430,20 +3113,14 @@ impl mmsdm_core::GetTable for MarketConfigIntraregionalloc1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "market_config_intraregionalloc_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("market_config_intraregionalloc_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketConfigIntraregionalloc1Row {
@@ -2556,7 +3233,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2577,7 +3256,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2611,7 +3290,27 @@ pub struct MarketConfigIntraregionalloc1Builder {
     allocation_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct MarketConfigLossfactormodel1;
+pub struct MarketConfigLossfactormodel1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigLossfactormodel1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigLossfactormodel1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketConfigLossfactormodel1Mapping([usize; 6]);
 /// # Summary
 ///
@@ -2683,7 +3382,6 @@ impl mmsdm_core::GetTable for MarketConfigLossfactormodel1 {
     type Row<'row> = MarketConfigLossfactormodel1Row<'row>;
     type FieldMapping = MarketConfigLossfactormodel1Mapping;
     type PrimaryKey = MarketConfigLossfactormodel1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2748,23 +3446,6 @@ impl mmsdm_core::GetTable for MarketConfigLossfactormodel1 {
         }
         Ok(MarketConfigLossfactormodel1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -2777,20 +3458,14 @@ impl mmsdm_core::GetTable for MarketConfigLossfactormodel1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "market_config_lossfactormodel_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("market_config_lossfactormodel_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketConfigLossfactormodel1Row {
@@ -2903,7 +3578,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -2924,7 +3601,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -2958,7 +3635,27 @@ pub struct MarketConfigLossfactormodel1Builder {
     demandcoefficient_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct MarketConfigLossmodel1;
+pub struct MarketConfigLossmodel1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigLossmodel1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigLossmodel1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketConfigLossmodel1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -3047,7 +3744,6 @@ impl mmsdm_core::GetTable for MarketConfigLossmodel1 {
     type Row<'row> = MarketConfigLossmodel1Row<'row>;
     type FieldMapping = MarketConfigLossmodel1Mapping;
     type PrimaryKey = MarketConfigLossmodel1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3124,23 +3820,6 @@ impl mmsdm_core::GetTable for MarketConfigLossmodel1 {
         }
         Ok(MarketConfigLossmodel1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3153,20 +3832,14 @@ impl mmsdm_core::GetTable for MarketConfigLossmodel1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "market_config_lossmodel_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("market_config_lossmodel_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketConfigLossmodel1Row {
@@ -3294,7 +3967,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -3331,7 +4006,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3371,7 +4046,27 @@ pub struct MarketConfigLossmodel1Builder {
     lossfactor_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct MarketConfigMarketPriceThresholds1;
+pub struct MarketConfigMarketPriceThresholds1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigMarketPriceThresholds1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigMarketPriceThresholds1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketConfigMarketPriceThresholds1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -3452,7 +4147,6 @@ impl mmsdm_core::GetTable for MarketConfigMarketPriceThresholds1 {
     type Row<'row> = MarketConfigMarketPriceThresholds1Row<'row>;
     type FieldMapping = MarketConfigMarketPriceThresholds1Mapping;
     type PrimaryKey = MarketConfigMarketPriceThresholds1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3534,23 +4228,6 @@ impl mmsdm_core::GetTable for MarketConfigMarketPriceThresholds1 {
         }
         Ok(MarketConfigMarketPriceThresholds1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3561,20 +4238,16 @@ impl mmsdm_core::GetTable for MarketConfigMarketPriceThresholds1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "market_config_market_price_thresholds_v1_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "market_config_market_price_thresholds_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketConfigMarketPriceThresholds1Row {
@@ -3696,7 +4369,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -3733,11 +4408,13 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3778,7 +4455,27 @@ pub struct MarketConfigMarketPriceThresholds1Builder {
     authorisedby_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct MarketConfigRegion1;
+pub struct MarketConfigRegion1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigRegion1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigRegion1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketConfigRegion1Mapping([usize; 4]);
 /// # Summary
 ///
@@ -3857,7 +4554,6 @@ impl mmsdm_core::GetTable for MarketConfigRegion1 {
     type Row<'row> = MarketConfigRegion1Row<'row>;
     type FieldMapping = MarketConfigRegion1Mapping;
     type PrimaryKey = MarketConfigRegion1PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -3905,11 +4601,6 @@ impl mmsdm_core::GetTable for MarketConfigRegion1 {
         }
         Ok(MarketConfigRegion1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3919,9 +4610,14 @@ impl mmsdm_core::GetTable for MarketConfigRegion1 {
             regionid: row.regionid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "market_config_region_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("market_config_region_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketConfigRegion1Row {
@@ -4008,7 +4704,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegion1 {
         builder.regionstatus_array.append_option(row.regionstatus());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4036,7 +4732,27 @@ pub struct MarketConfigRegion1Builder {
     regionstatus_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct MarketConfigRegionstandingdata1;
+pub struct MarketConfigRegionstandingdata1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigRegionstandingdata1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigRegionstandingdata1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketConfigRegionstandingdata1Mapping([usize; 10]);
 /// # Summary
 ///
@@ -4150,7 +4866,6 @@ impl mmsdm_core::GetTable for MarketConfigRegionstandingdata1 {
     type Row<'row> = MarketConfigRegionstandingdata1Row<'row>;
     type FieldMapping = MarketConfigRegionstandingdata1Mapping;
     type PrimaryKey = MarketConfigRegionstandingdata1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4230,23 +4945,6 @@ impl mmsdm_core::GetTable for MarketConfigRegionstandingdata1 {
         }
         Ok(MarketConfigRegionstandingdata1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4258,20 +4956,16 @@ impl mmsdm_core::GetTable for MarketConfigRegionstandingdata1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "market_config_regionstandingdata_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "market_config_regionstandingdata_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketConfigRegionstandingdata1Row {
@@ -4411,7 +5105,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4435,7 +5131,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
             });
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .scalingfactor_array
@@ -4448,7 +5146,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4495,7 +5193,27 @@ pub struct MarketConfigRegionstandingdata1Builder {
     scalingfactor_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct MarketConfigTransmissionlossfactor2;
+pub struct MarketConfigTransmissionlossfactor2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigTransmissionlossfactor2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigTransmissionlossfactor2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct MarketConfigTransmissionlossfactor2Mapping([usize; 7]);
 /// # Summary
 ///
@@ -4518,7 +5236,7 @@ pub struct MarketConfigTransmissionlossfactor2Mapping([usize; 7]);
 /// * VERSIONNO
 #[derive(Debug, PartialEq, Eq)]
 pub struct MarketConfigTransmissionlossfactor2Row<'data> {
-    /// Transmission Loss Factor
+    /// Used in Bidding, Dispatch and Settlements. For Bidding and Dispatch, where the DUID is a BDU with DISPATCHTYPE of BIDIRECTIONAL, the TLF for the load component of the BDU. For Settlements, where dual TLFs apply, the primary TLF is applied to all energy (load and generation) when the Net Energy Flow of the ConnectionPointID in the interval is negative (net load).
     pub transmissionlossfactor: rust_decimal::Decimal,
     /// Effective date of record
     pub effectivedate: chrono::NaiveDateTime,
@@ -4526,11 +5244,11 @@ pub struct MarketConfigTransmissionlossfactor2Row<'data> {
     pub versionno: rust_decimal::Decimal,
     /// Connection Point ID
     pub connectionpointid: core::ops::Range<usize>,
-    /// &nbsp;
+    /// Region Identifier
     pub regionid: core::ops::Range<usize>,
     /// Record creation timestamp
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Secondary transmission loss factor applied in settlements for generator purchases.
+    /// Used in Bidding, Dispatch and Settlements, only populated where Dual TLFs apply. For Bidding and Dispatch, the TLF for the generation component of a BDU, when null the TRANSMISSIONLOSSFACTOR is used for both the load and generation components. For Settlements, the secondary TLF is applied to all energy (load and generation) when the Net Energy Flow of the ConnectionPointID in the interval is positive (net generation).
     pub secondary_tlf: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
@@ -4579,7 +5297,6 @@ impl mmsdm_core::GetTable for MarketConfigTransmissionlossfactor2 {
     type Row<'row> = MarketConfigTransmissionlossfactor2Row<'row>;
     type FieldMapping = MarketConfigTransmissionlossfactor2Mapping;
     type PrimaryKey = MarketConfigTransmissionlossfactor2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -4650,23 +5367,6 @@ impl mmsdm_core::GetTable for MarketConfigTransmissionlossfactor2 {
         }
         Ok(MarketConfigTransmissionlossfactor2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                5,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -4680,20 +5380,16 @@ impl mmsdm_core::GetTable for MarketConfigTransmissionlossfactor2 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "market_config_transmissionlossfactor_v2_{}_{}", Self::partition_suffix(&
-            row).year, Self::partition_suffix(& row).month.number_from_month()
+            "market_config_transmissionlossfactor_v2_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         MarketConfigTransmissionlossfactor2Row {
@@ -4819,7 +5515,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
                 val.rescale(5);
                 val.mantissa()
             });
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder
             .versionno_array
             .append_value({
@@ -4831,7 +5529,7 @@ impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
         builder.regionid_array.append_option(row.regionid());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .secondary_tlf_array
             .append_option({

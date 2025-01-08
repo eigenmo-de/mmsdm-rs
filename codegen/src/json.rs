@@ -1,6 +1,6 @@
-use crate::{mms};
-use std::{collections, fs, iter, string, thread, time::Duration};
+use crate::mms;
 use crate::VERSION;
+use std::{collections, fs, iter, string, thread, time::Duration};
 
 lazy_static::lazy_static! {
     static ref TR: scraper::Selector = scraper::Selector::parse("tr").unwrap();

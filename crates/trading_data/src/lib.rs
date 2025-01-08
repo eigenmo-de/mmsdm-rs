@@ -5,7 +5,27 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct TradingAverageprice301;
+pub struct TradingAverageprice301 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &TradingAverageprice301Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl TradingAverageprice301 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct TradingAverageprice301Mapping([usize; 6]);
 /// # Summary
 ///
@@ -80,7 +100,6 @@ impl mmsdm_core::GetTable for TradingAverageprice301 {
     type Row<'row> = TradingAverageprice301Row<'row>;
     type FieldMapping = TradingAverageprice301Mapping;
     type PrimaryKey = TradingAverageprice301PrimaryKey;
-    type Partition = ();
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -145,11 +164,6 @@ impl mmsdm_core::GetTable for TradingAverageprice301 {
         }
         Ok(TradingAverageprice301Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        _row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        Ok(())
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -160,9 +174,14 @@ impl mmsdm_core::GetTable for TradingAverageprice301 {
             regionid: row.regionid().to_string(),
         }
     }
-    fn partition_suffix(_row: &Self::Row<'_>) -> Self::Partition {}
-    fn partition_name(_row: &Self::Row<'_>) -> alloc::string::String {
-        "trading_averageprice30_v1".to_string()
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("trading_averageprice30_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         TradingAverageprice301Row {
@@ -264,7 +283,9 @@ impl mmsdm_core::ArrowSchema for TradingAverageprice301 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.perioddate_array.append_value(row.perioddate.timestamp_millis());
+        builder
+            .perioddate_array
+            .append_value(row.perioddate.and_utc().timestamp_millis());
         builder.regionid_array.append_value(row.regionid());
         builder
             .periodid_array
@@ -285,7 +306,7 @@ impl mmsdm_core::ArrowSchema for TradingAverageprice301 {
         builder.price_confidence_array.append_option(row.price_confidence());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -319,12 +340,32 @@ pub struct TradingAverageprice301Builder {
     price_confidence_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct TradingInterconnectorres2;
+pub struct TradingInterconnectorres2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &TradingInterconnectorres2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl TradingInterconnectorres2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct TradingInterconnectorres2Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## TRADINGINTERCONNECT
-///  _TRADINGINTERCONNECT shows the Interconnector flows for the 5 minutes Trading Interval.<br>Prior to 5 Minute Settlements, this was the average of the six 5 minute dispatch intervals within the 30 minute period.<br>_
+///  _TRADINGINTERCONNECT shows the Interconnector flows for the 5 minutes Trading Interval.<br>Prior to 5 Minute Settlements, this was the average of the six 5 minute dispatch intervals within the 30 minute period._
 ///
 /// * Data Set Name: Trading
 /// * File Name: Interconnectorres
@@ -396,7 +437,6 @@ impl mmsdm_core::GetTable for TradingInterconnectorres2 {
     type Row<'row> = TradingInterconnectorres2Row<'row>;
     type FieldMapping = TradingInterconnectorres2Mapping;
     type PrimaryKey = TradingInterconnectorres2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -478,23 +518,6 @@ impl mmsdm_core::GetTable for TradingInterconnectorres2 {
         }
         Ok(TradingInterconnectorres2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let settlementdate = row
-            .get_custom_parsed_at_idx(
-                "settlementdate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(settlementdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(settlementdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -507,20 +530,14 @@ impl mmsdm_core::GetTable for TradingInterconnectorres2 {
             settlementdate: row.settlementdate,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "trading_interconnectorres_v2_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("trading_interconnectorres_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         TradingInterconnectorres2Row {
@@ -646,7 +663,9 @@ impl mmsdm_core::ArrowSchema for TradingInterconnectorres2 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -691,7 +710,7 @@ impl mmsdm_core::ArrowSchema for TradingInterconnectorres2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -731,7 +750,27 @@ pub struct TradingInterconnectorres2Builder {
     mwlosses_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct TradingPrice3;
+pub struct TradingPrice3 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &TradingPrice3Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl TradingPrice3 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct TradingPrice3Mapping([usize; 30]);
 /// # Summary
 ///
@@ -917,7 +956,6 @@ impl mmsdm_core::GetTable for TradingPrice3 {
     type Row<'row> = TradingPrice3Row<'row>;
     type FieldMapping = TradingPrice3Mapping;
     type PrimaryKey = TradingPrice3PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1121,23 +1159,6 @@ impl mmsdm_core::GetTable for TradingPrice3 {
         }
         Ok(TradingPrice3Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let settlementdate = row
-            .get_custom_parsed_at_idx(
-                "settlementdate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(settlementdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(settlementdate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1150,20 +1171,14 @@ impl mmsdm_core::GetTable for TradingPrice3 {
             settlementdate: row.settlementdate,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.settlementdate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.settlementdate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "trading_price_v3_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("trading_price_v3_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         TradingPrice3Row {
@@ -1462,7 +1477,9 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.settlementdate_array.append_value(row.settlementdate.timestamp_millis());
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -1499,7 +1516,7 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
         builder.invalidflag_array.append_option(row.invalidflag());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .rop_array
             .append_option({

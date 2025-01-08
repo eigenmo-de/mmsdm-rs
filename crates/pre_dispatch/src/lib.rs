@@ -5,7 +5,27 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct PredispatchBlockedConstraints1;
+pub struct PredispatchBlockedConstraints1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchBlockedConstraints1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchBlockedConstraints1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PredispatchBlockedConstraints1Mapping([usize; 2]);
 /// # Summary
 ///
@@ -49,7 +69,6 @@ impl mmsdm_core::GetTable for PredispatchBlockedConstraints1 {
     type Row<'row> = PredispatchBlockedConstraints1Row<'row>;
     type FieldMapping = PredispatchBlockedConstraints1Mapping;
     type PrimaryKey = PredispatchBlockedConstraints1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -91,19 +110,6 @@ impl mmsdm_core::GetTable for PredispatchBlockedConstraints1 {
         }
         Ok(PredispatchBlockedConstraints1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let predispatchseqno: mmsdm_core::TradingPeriod = row
-            .get_parsed_at_idx("predispatchseqno", 4)?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(predispatchseqno).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(predispatchseqno).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -114,20 +120,16 @@ impl mmsdm_core::GetTable for PredispatchBlockedConstraints1 {
             predispatchseqno: row.predispatchseqno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.predispatchseqno).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.predispatchseqno).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "predispatch_blocked_constraints_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "predispatch_blocked_constraints_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PredispatchBlockedConstraints1Row {
@@ -203,7 +205,7 @@ impl mmsdm_core::ArrowSchema for PredispatchBlockedConstraints1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder.constraintid_array.append_value(row.constraintid());
     }
     fn finalize_builder(
@@ -226,7 +228,27 @@ pub struct PredispatchBlockedConstraints1Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     constraintid_array: arrow::array::builder::StringBuilder,
 }
-pub struct PredispatchCaseSolution1;
+pub struct PredispatchCaseSolution1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchCaseSolution1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchCaseSolution1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PredispatchCaseSolution1Mapping([usize; 20]);
 /// # Summary
 ///
@@ -356,7 +378,6 @@ impl mmsdm_core::GetTable for PredispatchCaseSolution1 {
     type Row<'row> = PredispatchCaseSolution1Row<'row>;
     type FieldMapping = PredispatchCaseSolution1Mapping;
     type PrimaryKey = PredispatchCaseSolution1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -506,19 +527,6 @@ impl mmsdm_core::GetTable for PredispatchCaseSolution1 {
         }
         Ok(PredispatchCaseSolution1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let predispatchseqno: mmsdm_core::TradingPeriod = row
-            .get_parsed_at_idx("predispatchseqno", 4)?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(predispatchseqno).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(predispatchseqno).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -530,20 +538,14 @@ impl mmsdm_core::GetTable for PredispatchCaseSolution1 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.predispatchseqno).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.predispatchseqno).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "predispatch_case_solution_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("predispatch_case_solution_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PredispatchCaseSolution1Row {
@@ -765,7 +767,7 @@ impl mmsdm_core::ArrowSchema for PredispatchCaseSolution1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_value({
@@ -911,7 +913,7 @@ impl mmsdm_core::ArrowSchema for PredispatchCaseSolution1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .intervention_array
             .append_value({
@@ -998,12 +1000,32 @@ pub struct PredispatchCaseSolution1Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct PredispatchConstraintSolution5;
+pub struct PredispatchConstraintSolution5 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchConstraintSolution5Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchConstraintSolution5 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PredispatchConstraintSolution5Mapping([usize; 14]);
 /// # Summary
 ///
 /// ## PREDISPATCHCONSTRAINT
-///  _PREDISPATCHCONSTRAINT sets out constraints that are binding in each predispatch run and interconnector constraints (whether binding or not). Only binding and interconnector constraints are reported. Binding contracts have marginal value greater than $0. Interconnector constraints are listed so RHS values can be reported for ST PASA.<br>Constraint solutions only report fixed loading /MR constraints on the next day.<br>_
+///  _PREDISPATCHCONSTRAINT sets out constraints that are binding in each predispatch run and interconnector constraints (whether binding or not). Only binding and interconnector constraints are reported. Binding contracts have marginal value greater than $0. Interconnector constraints are listed so RHS values can be reported for ST PASA.<br>Constraint solutions only report fixed loading /MR constraints on the next day._
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Constraint Solution
@@ -1104,7 +1126,6 @@ impl mmsdm_core::GetTable for PredispatchConstraintSolution5 {
     type Row<'row> = PredispatchConstraintSolution5Row<'row>;
     type FieldMapping = PredispatchConstraintSolution5Mapping;
     type PrimaryKey = PredispatchConstraintSolution5PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1208,19 +1229,6 @@ impl mmsdm_core::GetTable for PredispatchConstraintSolution5 {
         }
         Ok(PredispatchConstraintSolution5Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let datetime = row
-            .get_custom_parsed_at_idx("datetime", 13, mmsdm_core::mms_datetime::parse)?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1232,20 +1240,16 @@ impl mmsdm_core::GetTable for PredispatchConstraintSolution5 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.datetime).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "predispatch_constraint_solution_v5_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "predispatch_constraint_solution_v5_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PredispatchConstraintSolution5Row {
@@ -1425,7 +1429,7 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -1436,7 +1440,9 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
                     })
             });
         builder.constraintid_array.append_value(row.constraintid());
-        builder.periodid_array.append_value(row.periodid.start().timestamp_millis());
+        builder
+            .periodid_array
+            .append_value(row.periodid.start().and_utc().timestamp_millis());
         builder
             .intervention_array
             .append_value({
@@ -1473,12 +1479,14 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder.duid_array.append_option(row.duid());
         builder
             .genconid_effectivedate_array
-            .append_option(row.genconid_effectivedate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.genconid_effectivedate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .genconid_versionno_array
             .append_option({
@@ -1554,12 +1562,32 @@ pub struct PredispatchConstraintSolution5Builder {
     genconid_versionno_array: arrow::array::builder::Decimal128Builder,
     lhs_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct PredispatchInterconnectorSoln3;
+pub struct PredispatchInterconnectorSoln3 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchInterconnectorSoln3Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchInterconnectorSoln3 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PredispatchInterconnectorSoln3Mapping([usize; 23]);
 /// # Summary
 ///
 /// ## PREDISPATCHINTERCONNECTORRES
-///  _PREDISPATCHINTERCONNECTORRES records Interconnector flows and losses for the periods calculated in each predispatch run. Only binding and interconnector constraints are reported.<br>Some fields are for the Frequency Controlled Ancillary Services export and import limits and extra reporting of the generic constraint setting the energy import and export limits.<br>_
+///  _PREDISPATCHINTERCONNECTORRES records Interconnector flows and losses for the periods calculated in each predispatch run. Only binding and interconnector constraints are reported.<br>Some fields are for the Frequency Controlled Ancillary Services export and import limits and extra reporting of the generic constraint setting the energy import and export limits._
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Interconnector Soln
@@ -1726,7 +1754,6 @@ impl mmsdm_core::GetTable for PredispatchInterconnectorSoln3 {
     type Row<'row> = PredispatchInterconnectorSoln3Row<'row>;
     type FieldMapping = PredispatchInterconnectorSoln3Mapping;
     type PrimaryKey = PredispatchInterconnectorSoln3PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -1879,19 +1906,6 @@ impl mmsdm_core::GetTable for PredispatchInterconnectorSoln3 {
         }
         Ok(PredispatchInterconnectorSoln3Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let datetime = row
-            .get_custom_parsed_at_idx("datetime", 15, mmsdm_core::mms_datetime::parse)?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -1903,20 +1917,16 @@ impl mmsdm_core::GetTable for PredispatchInterconnectorSoln3 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.datetime).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "predispatch_interconnector_soln_v3_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "predispatch_interconnector_soln_v3_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PredispatchInterconnectorSoln3Row {
@@ -2163,7 +2173,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -2229,8 +2239,8 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .exportlimit_array
             .append_option({
@@ -2402,7 +2412,27 @@ pub struct PredispatchInterconnectorSoln3Builder {
     local_price_adjustment_import_array: arrow::array::builder::Decimal128Builder,
     locally_constrained_import_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct PredispatchInterconnectrSens1;
+pub struct PredispatchInterconnectrSens1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchInterconnectrSens1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchInterconnectrSens1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PredispatchInterconnectrSens1Mapping([usize; 51]);
 /// # Summary
 ///
@@ -2661,7 +2691,6 @@ impl mmsdm_core::GetTable for PredispatchInterconnectrSens1 {
     type Row<'row> = PredispatchInterconnectrSens1Row<'row>;
     type FieldMapping = PredispatchInterconnectrSens1Mapping;
     type PrimaryKey = PredispatchInterconnectrSens1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -2992,19 +3021,6 @@ impl mmsdm_core::GetTable for PredispatchInterconnectrSens1 {
         }
         Ok(PredispatchInterconnectrSens1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let datetime = row
-            .get_custom_parsed_at_idx("datetime", 9, mmsdm_core::mms_datetime::parse)?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -3016,20 +3032,14 @@ impl mmsdm_core::GetTable for PredispatchInterconnectrSens1 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.datetime).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "predispatch_interconnectr_sens_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("predispatch_interconnectr_sens_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PredispatchInterconnectrSens1Row {
@@ -3502,7 +3512,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -3521,7 +3531,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .intervention_active_array
             .append_option({
@@ -3920,7 +3930,7 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4089,8 +4099,28 @@ pub struct PredispatchInterconnectrSens1Builder {
     mwflow43_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct PredispatchUnitSolution3;
-pub struct PredispatchUnitSolution3Mapping([usize; 59]);
+pub struct PredispatchUnitSolution4 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchUnitSolution4Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchUnitSolution4 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PredispatchUnitSolution4Mapping([usize; 64]);
 /// # Summary
 ///
 /// ## PREDISPATCHLOAD
@@ -4098,7 +4128,7 @@ pub struct PredispatchUnitSolution3Mapping([usize; 59]);
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Unit Solution
-/// * Data Version: 3
+/// * Data Version: 4
 ///
 /// # Description
 ///  Source Own (confidential) data updates every thirty minutes, with whole market data for the day before available as part of next day market data. Note ** A flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The flag is defined using the low 3 bits as follows: Flag Name Bit Description Enabled 0 The unit is enabled to provide this ancillary service type. Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. Interpretation of the bit-flags as a number gives the following possibilities (i.e. other combinations are not possible): Numeric Value Bit (2,1,0) Meaning 0 000 Not stranded, not trapped, not enabled. 1 001 Not stranded, not trapped, is enabled. 3 011 Not stranded, is trapped, is enabled. 4 100 Is stranded, not trapped, not enabled. For example, testing for availability can be done by checking for odd (=available) or even (=unavailable) number (e.g.  mod(flag,2)  results in 0 for unavailable and 1 for available). *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values.
@@ -4111,7 +4141,7 @@ pub struct PredispatchUnitSolution3Mapping([usize; 59]);
 /// * DUID
 /// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
-pub struct PredispatchUnitSolution3Row<'data> {
+pub struct PredispatchUnitSolution4Row<'data> {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     pub predispatchseqno: mmsdm_core::TradingPeriod,
     /// SPD Predispatch run no, typically 1. It increments if the case is re-run.
@@ -4130,9 +4160,9 @@ pub struct PredispatchUnitSolution3Row<'data> {
     pub agcstatus: Option<rust_decimal::Decimal>,
     /// Dispatch mode of unit for fast start (1-4)
     pub dispatchmode: Option<rust_decimal::Decimal>,
-    /// Initial MW at start of first period. For periods subsequent to the first period of a Pre-Dispatch run, this value represents the cleared target for the previous period of that Pre-Dispatch run.
+    /// Initial MW at start of first period. For periods subsequent to the first period of a Pre-Dispatch run, this value represents the cleared target for the previous period of that Pre-Dispatch run. Negative values when Bi-directional Unit start from importing power, otherwise positive.
     pub initialmw: Option<rust_decimal::Decimal>,
-    /// Target MW at end of period
+    /// Target MW for end of period. Negative values when Bi-directional Unit is importing power, otherwise positive.
     pub totalcleared: Option<rust_decimal::Decimal>,
     /// Lower 5 min MW target in period
     pub lower5min: Option<rust_decimal::Decimal>,
@@ -4230,9 +4260,19 @@ pub struct PredispatchUnitSolution3Row<'data> {
     pub raise1secactualavailability: Option<rust_decimal::Decimal>,
     /// Trapezium adjusted Lower 1Sec Availability
     pub lower1secactualavailability: Option<rust_decimal::Decimal>,
+    /// BDU only. The energy storage at the start of this dispatch interval (MWh)
+    pub initial_energy_storage: Option<rust_decimal::Decimal>,
+    /// BDU only. The projected energy storage based on cleared energy and regulation FCAS dispatch (MWh).<br>Participants may use negative values as an indicator of the relative “error” in profiling Max Availability to reflect energy limits
+    pub energy_storage: Option<rust_decimal::Decimal>,
+    /// BDU only - Minimum Energy Storage constraint limit (MWh)
+    pub energy_storage_min: Option<rust_decimal::Decimal>,
+    /// BDU only - Maximum Energy Storage constraint limit (MWh)
+    pub energy_storage_max: Option<rust_decimal::Decimal>,
+    /// BDU only. Load side availability (BidOfferPeriod.MAXAVAIL where DIRECTION = LOAD)
+    pub min_availability: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> PredispatchUnitSolution3Row<'data> {
+impl<'data> PredispatchUnitSolution4Row<'data> {
     pub fn duid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
     }
@@ -4261,11 +4301,11 @@ impl<'data> PredispatchUnitSolution3Row<'data> {
         }
     }
 }
-impl mmsdm_core::GetTable for PredispatchUnitSolution3 {
-    const VERSION: i32 = 3;
+impl mmsdm_core::GetTable for PredispatchUnitSolution4 {
+    const VERSION: i32 = 4;
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "UNIT_SOLUTION";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchUnitSolution3Mapping([
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchUnitSolution4Mapping([
         4,
         5,
         6,
@@ -4325,6 +4365,11 @@ impl mmsdm_core::GetTable for PredispatchUnitSolution3 {
         60,
         61,
         62,
+        63,
+        64,
+        65,
+        66,
+        67,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -4386,16 +4431,20 @@ impl mmsdm_core::GetTable for PredispatchUnitSolution3 {
         "LOWER1SECFLAGS",
         "RAISE1SECACTUALAVAILABILITY",
         "LOWER1SECACTUALAVAILABILITY",
+        "INITIAL_ENERGY_STORAGE",
+        "ENERGY_STORAGE",
+        "ENERGY_STORAGE_MIN",
+        "ENERGY_STORAGE_MAX",
+        "MIN_AVAILABILITY",
     ];
-    type Row<'row> = PredispatchUnitSolution3Row<'row>;
-    type FieldMapping = PredispatchUnitSolution3Mapping;
-    type PrimaryKey = PredispatchUnitSolution3PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
+    type Row<'row> = PredispatchUnitSolution4Row<'row>;
+    type FieldMapping = PredispatchUnitSolution4Mapping;
+    type PrimaryKey = PredispatchUnitSolution4PrimaryKey;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(PredispatchUnitSolution3Row {
+        Ok(PredispatchUnitSolution4Row {
             predispatchseqno: row
                 .get_parsed_at_idx("predispatchseqno", field_mapping.0[0])?,
             runno: row
@@ -4732,6 +4781,36 @@ impl mmsdm_core::GetTable for PredispatchUnitSolution3 {
                     field_mapping.0[58],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            initial_energy_storage: row
+                .get_opt_custom_parsed_at_idx(
+                    "initial_energy_storage",
+                    field_mapping.0[59],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            energy_storage: row
+                .get_opt_custom_parsed_at_idx(
+                    "energy_storage",
+                    field_mapping.0[60],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            energy_storage_min: row
+                .get_opt_custom_parsed_at_idx(
+                    "energy_storage_min",
+                    field_mapping.0[61],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            energy_storage_max: row
+                .get_opt_custom_parsed_at_idx(
+                    "energy_storage_max",
+                    field_mapping.0[62],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            min_availability: row
+                .get_opt_custom_parsed_at_idx(
+                    "min_availability",
+                    field_mapping.0[63],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -4763,49 +4842,30 @@ impl mmsdm_core::GetTable for PredispatchUnitSolution3 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(PredispatchUnitSolution3Mapping(base_mapping))
-    }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let datetime = row
-            .get_custom_parsed_at_idx("datetime", 34, mmsdm_core::mms_datetime::parse)?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(datetime).month(),
-                )
-                .unwrap(),
-        })
+        Ok(PredispatchUnitSolution4Mapping(base_mapping))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> PredispatchUnitSolution3PrimaryKey {
-        PredispatchUnitSolution3PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> PredispatchUnitSolution4PrimaryKey {
+        PredispatchUnitSolution4PrimaryKey {
             datetime: row.datetime,
             duid: row.duid().to_string(),
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.datetime).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "predispatch_unit_solution_v3_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("predispatch_unit_solution_v4_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        PredispatchUnitSolution3Row {
+        PredispatchUnitSolution4Row {
             predispatchseqno: row.predispatchseqno.clone(),
             runno: row.runno.clone(),
             duid: row.duid.clone(),
@@ -4865,48 +4925,53 @@ impl mmsdm_core::GetTable for PredispatchUnitSolution3 {
             lower1secflags: row.lower1secflags.clone(),
             raise1secactualavailability: row.raise1secactualavailability.clone(),
             lower1secactualavailability: row.lower1secactualavailability.clone(),
+            initial_energy_storage: row.initial_energy_storage.clone(),
+            energy_storage: row.energy_storage.clone(),
+            energy_storage_min: row.energy_storage_min.clone(),
+            energy_storage_max: row.energy_storage_max.clone(),
+            min_availability: row.min_availability.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PredispatchUnitSolution3PrimaryKey {
+pub struct PredispatchUnitSolution4PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub duid: alloc::string::String,
     pub intervention: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for PredispatchUnitSolution3PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for PredispatchUnitSolution3Row<'data> {
-    type Row<'other> = PredispatchUnitSolution3Row<'other>;
+impl mmsdm_core::PrimaryKey for PredispatchUnitSolution4PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PredispatchUnitSolution4Row<'data> {
+    type Row<'other> = PredispatchUnitSolution4Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.datetime == row.datetime && self.duid() == row.duid()
             && self.intervention == row.intervention
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for PredispatchUnitSolution3Row<'data> {
-    type PrimaryKey = PredispatchUnitSolution3PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PredispatchUnitSolution4Row<'data> {
+    type PrimaryKey = PredispatchUnitSolution4PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.duid() == key.duid
             && self.intervention == key.intervention
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for PredispatchUnitSolution3PrimaryKey {
-    type Row<'other> = PredispatchUnitSolution3Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for PredispatchUnitSolution4PrimaryKey {
+    type Row<'other> = PredispatchUnitSolution4Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.datetime == row.datetime && self.duid == row.duid()
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for PredispatchUnitSolution3PrimaryKey {
-    type PrimaryKey = PredispatchUnitSolution3PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchUnitSolution4PrimaryKey {
+    type PrimaryKey = PredispatchUnitSolution4PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.duid == key.duid
             && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for PredispatchUnitSolution3 {
-    type Builder = PredispatchUnitSolution3Builder;
+impl mmsdm_core::ArrowSchema for PredispatchUnitSolution4 {
+    type Builder = PredispatchUnitSolution4Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -5214,11 +5279,36 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution3 {
                     arrow::datatypes::DataType::Decimal128(16, 6),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "initial_energy_storage",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "energy_storage",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "energy_storage_min",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "energy_storage_max",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "min_availability",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        PredispatchUnitSolution3Builder {
+        PredispatchUnitSolution4Builder {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -5331,12 +5421,22 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution3 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lower1secactualavailability_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            initial_energy_storage_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            energy_storage_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            energy_storage_min_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            energy_storage_max_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            min_availability_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -5565,8 +5665,8 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution3 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .lowerreg_array
             .append_option({
@@ -5819,6 +5919,51 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution3 {
                         val.mantissa()
                     })
             });
+        builder
+            .initial_energy_storage_array
+            .append_option({
+                row.initial_energy_storage
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .energy_storage_array
+            .append_option({
+                row.energy_storage
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .energy_storage_min_array
+            .append_option({
+                row.energy_storage_min
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .energy_storage_max_array
+            .append_option({
+                row.energy_storage_max
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .min_availability_array
+            .append_option({
+                row.min_availability
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5954,13 +6099,23 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution3 {
                     alloc::sync::Arc::new(
                         builder.lower1secactualavailability_array.finish(),
                     ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.initial_energy_storage_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.energy_storage_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.energy_storage_min_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.energy_storage_max_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.min_availability_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct PredispatchUnitSolution3Builder {
+pub struct PredispatchUnitSolution4Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     duid_array: arrow::array::builder::StringBuilder,
@@ -6020,8 +6175,33 @@ pub struct PredispatchUnitSolution3Builder {
     lower1secflags_array: arrow::array::builder::Decimal128Builder,
     raise1secactualavailability_array: arrow::array::builder::Decimal128Builder,
     lower1secactualavailability_array: arrow::array::builder::Decimal128Builder,
+    initial_energy_storage_array: arrow::array::builder::Decimal128Builder,
+    energy_storage_array: arrow::array::builder::Decimal128Builder,
+    energy_storage_min_array: arrow::array::builder::Decimal128Builder,
+    energy_storage_max_array: arrow::array::builder::Decimal128Builder,
+    min_availability_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct PredispatchOffertrk1;
+pub struct PredispatchOffertrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchOffertrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchOffertrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PredispatchOffertrk1Mapping([usize; 8]);
 /// # Summary
 ///
@@ -6101,7 +6281,6 @@ impl mmsdm_core::GetTable for PredispatchOffertrk1 {
     type Row<'row> = PredispatchOffertrk1Row<'row>;
     type FieldMapping = PredispatchOffertrk1Mapping;
     type PrimaryKey = PredispatchOffertrk1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -6169,19 +6348,6 @@ impl mmsdm_core::GetTable for PredispatchOffertrk1 {
         }
         Ok(PredispatchOffertrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let predispatchseqno: mmsdm_core::TradingPeriod = row
-            .get_parsed_at_idx("predispatchseqno", 4)?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(predispatchseqno).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(predispatchseqno).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -6194,20 +6360,14 @@ impl mmsdm_core::GetTable for PredispatchOffertrk1 {
             predispatchseqno: row.predispatchseqno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.predispatchseqno).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.predispatchseqno).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "predispatch_offertrk_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("predispatch_offertrk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PredispatchOffertrk1Row {
@@ -6342,22 +6502,24 @@ impl mmsdm_core::ArrowSchema for PredispatchOffertrk1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.bidtype_array.append_value(row.bidtype());
         builder.periodid_array.append_value(row.periodid());
         builder
             .bidsettlementdate_array
-            .append_option(row.bidsettlementdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.bidsettlementdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .bidofferdate_array
-            .append_option(row.bidofferdate.map(|val| val.timestamp_millis()));
+            .append_option(row.bidofferdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .datetime_array
-            .append_option(row.datetime.map(|val| val.timestamp_millis()));
+            .append_option(row.datetime.map(|val| val.and_utc().timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -6397,7 +6559,27 @@ pub struct PredispatchOffertrk1Builder {
     datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct PredispatchRegionPrices2;
+pub struct PredispatchRegionPrices2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchRegionPrices2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchRegionPrices2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PredispatchRegionPrices2Mapping([usize; 35]);
 /// # Summary
 ///
@@ -6590,7 +6772,6 @@ impl mmsdm_core::GetTable for PredispatchRegionPrices2 {
     type Row<'row> = PredispatchRegionPrices2Row<'row>;
     type FieldMapping = PredispatchRegionPrices2Mapping;
     type PrimaryKey = PredispatchRegionPrices2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -6825,19 +7006,6 @@ impl mmsdm_core::GetTable for PredispatchRegionPrices2 {
         }
         Ok(PredispatchRegionPrices2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let datetime = row
-            .get_custom_parsed_at_idx("datetime", 28, mmsdm_core::mms_datetime::parse)?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -6849,20 +7017,14 @@ impl mmsdm_core::GetTable for PredispatchRegionPrices2 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.datetime).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "predispatch_region_prices_v2_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("predispatch_region_prices_v2_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PredispatchRegionPrices2Row {
@@ -7205,7 +7367,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices2 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -7388,8 +7550,8 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices2 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .raise6secrrp_array
             .append_option({
@@ -7600,7 +7762,27 @@ pub struct PredispatchRegionPrices2Builder {
     raise1secrrp_array: arrow::array::builder::Decimal128Builder,
     lower1secrrp_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct PredispatchPricesensitivities1;
+pub struct PredispatchPricesensitivities1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchPricesensitivities1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchPricesensitivities1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PredispatchPricesensitivities1Mapping([usize; 51]);
 /// # Summary
 ///
@@ -7857,7 +8039,6 @@ impl mmsdm_core::GetTable for PredispatchPricesensitivities1 {
     type Row<'row> = PredispatchPricesensitivities1Row<'row>;
     type FieldMapping = PredispatchPricesensitivities1Mapping;
     type PrimaryKey = PredispatchPricesensitivities1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -8188,19 +8369,6 @@ impl mmsdm_core::GetTable for PredispatchPricesensitivities1 {
         }
         Ok(PredispatchPricesensitivities1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let datetime = row
-            .get_custom_parsed_at_idx("datetime", 38, mmsdm_core::mms_datetime::parse)?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -8212,20 +8380,14 @@ impl mmsdm_core::GetTable for PredispatchPricesensitivities1 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.datetime).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "predispatch_pricesensitivities_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("predispatch_pricesensitivities_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PredispatchPricesensitivities1Row {
@@ -8697,7 +8859,7 @@ impl mmsdm_core::ArrowSchema for PredispatchPricesensitivities1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -8970,8 +9132,8 @@ impl mmsdm_core::ArrowSchema for PredispatchPricesensitivities1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .rrpeep29_array
             .append_option({
@@ -9284,16 +9446,36 @@ pub struct PredispatchPricesensitivities1Builder {
     rrpeep42_array: arrow::array::builder::Decimal128Builder,
     rrpeep43_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct PredispatchRegionSolution7;
-pub struct PredispatchRegionSolution7Mapping([usize; 120]);
+pub struct PredispatchRegionSolution8 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchRegionSolution8Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchRegionSolution8 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PredispatchRegionSolution8Mapping([usize; 125]);
 /// # Summary
 ///
 /// ## PREDISPATCHREGIONSUM
-///  _PREDISPATCHREGIONSUM sets out the overall regional Pre-Dispatch results for base case details (excluding price). _
+///  _PREDISPATCHREGIONSUM sets out the overall regional Pre-Dispatch results for base case details (excluding price)._
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Region Solution
-/// * Data Version: 7
+/// * Data Version: 8
 ///
 /// # Description
 ///  PREDISPATCHREGIONSUM includes the forecast demand (total demand) and Frequency Control Ancillary Services (FCAS) requirements (specifically, for the Raise Regulation and Lower Regulation Ancillary Services plus improvements to demand calculations). PREDISPATCHREGIONSUM updates each half-hour with the latest Pre-Dispatch details for the remaining period. Regional demand can be calculated as total demand plus dispatchable load (i.e. Regional demand = Total Demand + Dispatchable Load) Source PREDISPATCHREGIONSUM updates every thirty minutes. Note *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values. From 16 February 2006, the old reserve values are no longer populated (i.e. are null), being LORSurplus and LRCSurplus. For more details on the changes to Reporting of Reserve Condition Data, refer to AEMO Communication 2042. For the best available indicator of reserve condition in each of the regions of the NEM for each trading interval, refer to the latest run of the Pre-Dispatch PASA (see table PDPASA_REGIONSOLUTION).
@@ -9306,7 +9488,7 @@ pub struct PredispatchRegionSolution7Mapping([usize; 120]);
 /// * REGIONID
 /// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
-pub struct PredispatchRegionSolution7Row<'data> {
+pub struct PredispatchRegionSolution8Row<'data> {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     pub predispatchseqno: mmsdm_core::TradingPeriod,
     /// LP Solver Pre-Dispatch run no, typically 1. It increments if the case is re-run.
@@ -9547,9 +9729,19 @@ pub struct PredispatchRegionSolution7Row<'data> {
     pub raise1secactualavailability: Option<rust_decimal::Decimal>,
     /// Trapezium adjusted Lower1Sec availability (summated from UnitSolution)
     pub lower1secactualavailability: Option<rust_decimal::Decimal>,
+    /// Regional aggregated energy storage where the DUID type is BDU (MWh)
+    pub bdu_energy_storage: Option<rust_decimal::Decimal>,
+    /// Total available load side BDU summated for region (MW)
+    pub bdu_min_avail: Option<rust_decimal::Decimal>,
+    /// Total available generation side BDU summated for region (MW)
+    pub bdu_max_avail: Option<rust_decimal::Decimal>,
+    /// Regional aggregated cleared MW where the DUID type is BDU. Net of export (Generation)
+    pub bdu_clearedmw_gen: Option<rust_decimal::Decimal>,
+    /// Regional aggregated cleared MW where the DUID type is BDU. Net of import (Load)
+    pub bdu_clearedmw_load: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> PredispatchRegionSolution7Row<'data> {
+impl<'data> PredispatchRegionSolution8Row<'data> {
     pub fn regionid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
     }
@@ -9566,11 +9758,11 @@ impl<'data> PredispatchRegionSolution7Row<'data> {
         }
     }
 }
-impl mmsdm_core::GetTable for PredispatchRegionSolution7 {
-    const VERSION: i32 = 7;
+impl mmsdm_core::GetTable for PredispatchRegionSolution8 {
+    const VERSION: i32 = 8;
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "REGION_SOLUTION";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchRegionSolution7Mapping([
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchRegionSolution8Mapping([
         4,
         5,
         6,
@@ -9691,6 +9883,11 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution7 {
         121,
         122,
         123,
+        124,
+        125,
+        126,
+        127,
+        128,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -9813,16 +10010,20 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution7 {
         "LOWER1SECLOCALDISPATCH",
         "RAISE1SECACTUALAVAILABILITY",
         "LOWER1SECACTUALAVAILABILITY",
+        "BDU_ENERGY_STORAGE",
+        "BDU_MIN_AVAIL",
+        "BDU_MAX_AVAIL",
+        "BDU_CLEAREDMW_GEN",
+        "BDU_CLEAREDMW_LOAD",
     ];
-    type Row<'row> = PredispatchRegionSolution7Row<'row>;
-    type FieldMapping = PredispatchRegionSolution7Mapping;
-    type PrimaryKey = PredispatchRegionSolution7PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
+    type Row<'row> = PredispatchRegionSolution8Row<'row>;
+    type FieldMapping = PredispatchRegionSolution8Mapping;
+    type PrimaryKey = PredispatchRegionSolution8PrimaryKey;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(PredispatchRegionSolution7Row {
+        Ok(PredispatchRegionSolution8Row {
             predispatchseqno: row
                 .get_parsed_at_idx("predispatchseqno", field_mapping.0[0])?,
             runno: row
@@ -10529,6 +10730,36 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution7 {
                     field_mapping.0[119],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            bdu_energy_storage: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_energy_storage",
+                    field_mapping.0[120],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            bdu_min_avail: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_min_avail",
+                    field_mapping.0[121],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            bdu_max_avail: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_max_avail",
+                    field_mapping.0[122],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            bdu_clearedmw_gen: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_clearedmw_gen",
+                    field_mapping.0[123],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            bdu_clearedmw_load: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_clearedmw_load",
+                    field_mapping.0[124],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -10560,49 +10791,30 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution7 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(PredispatchRegionSolution7Mapping(base_mapping))
-    }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let datetime = row
-            .get_custom_parsed_at_idx("datetime", 66, mmsdm_core::mms_datetime::parse)?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(datetime).month(),
-                )
-                .unwrap(),
-        })
+        Ok(PredispatchRegionSolution8Mapping(base_mapping))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> PredispatchRegionSolution7PrimaryKey {
-        PredispatchRegionSolution7PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> PredispatchRegionSolution8PrimaryKey {
+        PredispatchRegionSolution8PrimaryKey {
             datetime: row.datetime,
             regionid: row.regionid().to_string(),
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.datetime).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "predispatch_region_solution_v7_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("predispatch_region_solution_v8_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        PredispatchRegionSolution7Row {
+        PredispatchRegionSolution8Row {
             predispatchseqno: row.predispatchseqno.clone(),
             runno: row.runno.clone(),
             regionid: row.regionid.clone(),
@@ -10723,48 +10935,53 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution7 {
             lower1seclocaldispatch: row.lower1seclocaldispatch.clone(),
             raise1secactualavailability: row.raise1secactualavailability.clone(),
             lower1secactualavailability: row.lower1secactualavailability.clone(),
+            bdu_energy_storage: row.bdu_energy_storage.clone(),
+            bdu_min_avail: row.bdu_min_avail.clone(),
+            bdu_max_avail: row.bdu_max_avail.clone(),
+            bdu_clearedmw_gen: row.bdu_clearedmw_gen.clone(),
+            bdu_clearedmw_load: row.bdu_clearedmw_load.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PredispatchRegionSolution7PrimaryKey {
+pub struct PredispatchRegionSolution8PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub regionid: alloc::string::String,
     pub intervention: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for PredispatchRegionSolution7PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionSolution7Row<'data> {
-    type Row<'other> = PredispatchRegionSolution7Row<'other>;
+impl mmsdm_core::PrimaryKey for PredispatchRegionSolution8PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionSolution8Row<'data> {
+    type Row<'other> = PredispatchRegionSolution8Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.datetime == row.datetime && self.regionid() == row.regionid()
             && self.intervention == row.intervention
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution7Row<'data> {
-    type PrimaryKey = PredispatchRegionSolution7PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution8Row<'data> {
+    type PrimaryKey = PredispatchRegionSolution8PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid() == key.regionid
             && self.intervention == key.intervention
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionSolution7PrimaryKey {
-    type Row<'other> = PredispatchRegionSolution7Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionSolution8PrimaryKey {
+    type Row<'other> = PredispatchRegionSolution8Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid()
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution7PrimaryKey {
-    type PrimaryKey = PredispatchRegionSolution7PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution8PrimaryKey {
+    type PrimaryKey = PredispatchRegionSolution8PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
             && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for PredispatchRegionSolution7 {
-    type Builder = PredispatchRegionSolution7Builder;
+impl mmsdm_core::ArrowSchema for PredispatchRegionSolution8 {
+    type Builder = PredispatchRegionSolution8Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -11377,11 +11594,36 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution7 {
                     arrow::datatypes::DataType::Decimal128(16, 6),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "bdu_energy_storage",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "bdu_min_avail",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "bdu_max_avail",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "bdu_clearedmw_gen",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "bdu_clearedmw_load",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        PredispatchRegionSolution7Builder {
+        PredispatchRegionSolution8Builder {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -11617,12 +11859,22 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution7 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lower1secactualavailability_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            bdu_energy_storage_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            bdu_min_avail_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            bdu_max_avail_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            bdu_clearedmw_gen_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            bdu_clearedmw_load_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -12147,8 +12399,8 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution7 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .initialsupply_array
             .append_option({
@@ -12662,6 +12914,51 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution7 {
                         val.mantissa()
                     })
             });
+        builder
+            .bdu_energy_storage_array
+            .append_option({
+                row.bdu_energy_storage
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .bdu_min_avail_array
+            .append_option({
+                row.bdu_min_avail
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .bdu_max_avail_array
+            .append_option({
+                row.bdu_max_avail
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .bdu_clearedmw_gen_array
+            .append_option({
+                row.bdu_clearedmw_gen
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .bdu_clearedmw_load_array
+            .append_option({
+                row.bdu_clearedmw_load
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -12923,13 +13220,23 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution7 {
                     alloc::sync::Arc::new(
                         builder.lower1secactualavailability_array.finish(),
                     ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bdu_energy_storage_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bdu_min_avail_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bdu_max_avail_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bdu_clearedmw_gen_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bdu_clearedmw_load_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct PredispatchRegionSolution7Builder {
+pub struct PredispatchRegionSolution8Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     regionid_array: arrow::array::builder::StringBuilder,
@@ -13050,8 +13357,33 @@ pub struct PredispatchRegionSolution7Builder {
     lower1seclocaldispatch_array: arrow::array::builder::Decimal128Builder,
     raise1secactualavailability_array: arrow::array::builder::Decimal128Builder,
     lower1secactualavailability_array: arrow::array::builder::Decimal128Builder,
+    bdu_energy_storage_array: arrow::array::builder::Decimal128Builder,
+    bdu_min_avail_array: arrow::array::builder::Decimal128Builder,
+    bdu_max_avail_array: arrow::array::builder::Decimal128Builder,
+    bdu_clearedmw_gen_array: arrow::array::builder::Decimal128Builder,
+    bdu_clearedmw_load_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct PredispatchScenarioDemand1;
+pub struct PredispatchScenarioDemand1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchScenarioDemand1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchScenarioDemand1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PredispatchScenarioDemand1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -13112,7 +13444,6 @@ impl mmsdm_core::GetTable for PredispatchScenarioDemand1 {
     type Row<'row> = PredispatchScenarioDemand1Row<'row>;
     type FieldMapping = PredispatchScenarioDemand1Mapping;
     type PrimaryKey = PredispatchScenarioDemand1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -13161,23 +13492,6 @@ impl mmsdm_core::GetTable for PredispatchScenarioDemand1 {
         }
         Ok(PredispatchScenarioDemand1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -13190,20 +13504,14 @@ impl mmsdm_core::GetTable for PredispatchScenarioDemand1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "predispatch_scenario_demand_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("predispatch_scenario_demand_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PredispatchScenarioDemand1Row {
@@ -13299,7 +13607,9 @@ impl mmsdm_core::ArrowSchema for PredispatchScenarioDemand1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder.versionno_array.append_value(row.versionno);
         builder.scenario_array.append_value(row.scenario);
         builder.regionid_array.append_value(row.regionid());
@@ -13334,7 +13644,27 @@ pub struct PredispatchScenarioDemand1Builder {
     regionid_array: arrow::array::builder::StringBuilder,
     deltamw_array: arrow::array::builder::Int64Builder,
 }
-pub struct PredispatchScenarioDemandTrk1;
+pub struct PredispatchScenarioDemandTrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchScenarioDemandTrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchScenarioDemandTrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PredispatchScenarioDemandTrk1Mapping([usize; 5]);
 /// # Summary
 ///
@@ -13402,7 +13732,6 @@ impl mmsdm_core::GetTable for PredispatchScenarioDemandTrk1 {
     type Row<'row> = PredispatchScenarioDemandTrk1Row<'row>;
     type FieldMapping = PredispatchScenarioDemandTrk1Mapping;
     type PrimaryKey = PredispatchScenarioDemandTrk1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -13461,23 +13790,6 @@ impl mmsdm_core::GetTable for PredispatchScenarioDemandTrk1 {
         }
         Ok(PredispatchScenarioDemandTrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let effectivedate = row
-            .get_custom_parsed_at_idx(
-                "effectivedate",
-                4,
-                mmsdm_core::mms_datetime::parse,
-            )?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(effectivedate).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -13488,20 +13800,16 @@ impl mmsdm_core::GetTable for PredispatchScenarioDemandTrk1 {
             versionno: row.versionno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.effectivedate).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.effectivedate).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "predispatch_scenario_demand_trk_v1_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "predispatch_scenario_demand_trk_v1_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PredispatchScenarioDemandTrk1Row {
@@ -13598,15 +13906,19 @@ impl mmsdm_core::ArrowSchema for PredispatchScenarioDemandTrk1 {
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder.effectivedate_array.append_value(row.effectivedate.timestamp_millis());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
         builder.versionno_array.append_value(row.versionno);
         builder.authorisedby_array.append_option(row.authorisedby());
         builder
             .authoriseddate_array
-            .append_option(row.authoriseddate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.authoriseddate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -13637,7 +13949,27 @@ pub struct PredispatchScenarioDemandTrk1Builder {
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct PredispatchRegionfcasrequirement2;
+pub struct PredispatchRegionfcasrequirement2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchRegionfcasrequirement2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchRegionfcasrequirement2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PredispatchRegionfcasrequirement2Mapping([usize; 18]);
 /// # Summary
 ///
@@ -13758,7 +14090,6 @@ impl mmsdm_core::GetTable for PredispatchRegionfcasrequirement2 {
     type Row<'row> = PredispatchRegionfcasrequirement2Row<'row>;
     type FieldMapping = PredispatchRegionfcasrequirement2Mapping;
     type PrimaryKey = PredispatchRegionfcasrequirement2PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -13881,19 +14212,6 @@ impl mmsdm_core::GetTable for PredispatchRegionfcasrequirement2 {
         }
         Ok(PredispatchRegionfcasrequirement2Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let datetime = row
-            .get_custom_parsed_at_idx("datetime", 14, mmsdm_core::mms_datetime::parse)?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -13907,20 +14225,16 @@ impl mmsdm_core::GetTable for PredispatchRegionfcasrequirement2 {
             intervention: row.intervention,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.datetime).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "predispatch_regionfcasrequirement_v2_{}_{}", Self::partition_suffix(& row)
-            .year, Self::partition_suffix(& row).month.number_from_month()
+            "predispatch_regionfcasrequirement_v2_{}", self.partition_value(row)
         )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PredispatchRegionfcasrequirement2Row {
@@ -14137,7 +14451,7 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder
             .runno_array
             .append_option({
@@ -14154,13 +14468,17 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
                 val.rescale(0);
                 val.mantissa()
             });
-        builder.periodid_array.append_value(row.periodid.start().timestamp_millis());
+        builder
+            .periodid_array
+            .append_value(row.periodid.start().and_utc().timestamp_millis());
         builder.genconid_array.append_value(row.genconid());
         builder.regionid_array.append_value(row.regionid());
         builder.bidtype_array.append_value(row.bidtype());
         builder
             .genconeffectivedate_array
-            .append_option(row.genconeffectivedate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.genconeffectivedate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .genconversionno_array
             .append_option({
@@ -14179,10 +14497,10 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
                         val.mantissa()
                     })
             });
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
         builder
             .base_cost_array
             .append_option({
@@ -14306,7 +14624,27 @@ pub struct PredispatchRegionfcasrequirement2Builder {
     recovery_factor_cmpf_array: arrow::array::builder::Decimal128Builder,
     recovery_factor_crmpf_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct PredispatchLocalPrice1;
+pub struct PredispatchLocalPrice1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchLocalPrice1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchLocalPrice1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PredispatchLocalPrice1Mapping([usize; 7]);
 /// # Summary
 ///
@@ -14385,7 +14723,6 @@ impl mmsdm_core::GetTable for PredispatchLocalPrice1 {
     type Row<'row> = PredispatchLocalPrice1Row<'row>;
     type FieldMapping = PredispatchLocalPrice1Mapping;
     type PrimaryKey = PredispatchLocalPrice1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -14452,19 +14789,6 @@ impl mmsdm_core::GetTable for PredispatchLocalPrice1 {
         }
         Ok(PredispatchLocalPrice1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let datetime = row
-            .get_custom_parsed_at_idx("datetime", 5, mmsdm_core::mms_datetime::parse)?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(datetime).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -14475,20 +14799,14 @@ impl mmsdm_core::GetTable for PredispatchLocalPrice1 {
             duid: row.duid().to_string(),
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.datetime).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.datetime).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "predispatch_local_price_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("predispatch_local_price_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PredispatchLocalPrice1Row {
@@ -14602,8 +14920,8 @@ impl mmsdm_core::ArrowSchema for PredispatchLocalPrice1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
-        builder.datetime_array.append_value(row.datetime.timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
         builder.duid_array.append_value(row.duid());
         builder.periodid_array.append_option(row.periodid());
         builder
@@ -14626,7 +14944,7 @@ impl mmsdm_core::ArrowSchema for PredispatchLocalPrice1 {
             });
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -14663,7 +14981,27 @@ pub struct PredispatchLocalPrice1Builder {
     locally_constrained_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct PredispatchMnspbidtrk1;
+pub struct PredispatchMnspbidtrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchMnspbidtrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchMnspbidtrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
 pub struct PredispatchMnspbidtrk1Mapping([usize; 9]);
 /// # Summary
 ///
@@ -14752,7 +15090,6 @@ impl mmsdm_core::GetTable for PredispatchMnspbidtrk1 {
     type Row<'row> = PredispatchMnspbidtrk1Row<'row>;
     type FieldMapping = PredispatchMnspbidtrk1Mapping;
     type PrimaryKey = PredispatchMnspbidtrk1PrimaryKey;
-    type Partition = mmsdm_core::YearMonth;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
@@ -14826,19 +15163,6 @@ impl mmsdm_core::GetTable for PredispatchMnspbidtrk1 {
         }
         Ok(PredispatchMnspbidtrk1Mapping(base_mapping))
     }
-    fn partition_suffix_from_row<'a>(
-        row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::Partition> {
-        let predispatchseqno: mmsdm_core::TradingPeriod = row
-            .get_parsed_at_idx("predispatchseqno", 4)?;
-        Ok(mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(predispatchseqno).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(predispatchseqno).month(),
-                )
-                .unwrap(),
-        })
-    }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
@@ -14850,20 +15174,14 @@ impl mmsdm_core::GetTable for PredispatchMnspbidtrk1 {
             predispatchseqno: row.predispatchseqno,
         }
     }
-    fn partition_suffix(row: &Self::Row<'_>) -> Self::Partition {
-        mmsdm_core::YearMonth {
-            year: chrono::NaiveDateTime::from(row.predispatchseqno).year(),
-            month: num_traits::FromPrimitive::from_u32(
-                    chrono::NaiveDateTime::from(row.predispatchseqno).month(),
-                )
-                .unwrap(),
-        }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
     }
-    fn partition_name(row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "predispatch_mnspbidtrk_v1_{}_{}", Self::partition_suffix(& row).year,
-            Self::partition_suffix(& row).month.number_from_month()
-        )
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("predispatch_mnspbidtrk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
         PredispatchMnspbidtrk1Row {
@@ -15004,16 +15322,20 @@ impl mmsdm_core::ArrowSchema for PredispatchMnspbidtrk1 {
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
         builder
             .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().timestamp_millis());
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
         builder.linkid_array.append_value(row.linkid());
-        builder.periodid_array.append_value(row.periodid.start().timestamp_millis());
+        builder
+            .periodid_array
+            .append_value(row.periodid.start().and_utc().timestamp_millis());
         builder.participantid_array.append_option(row.participantid());
         builder
             .settlementdate_array
-            .append_option(row.settlementdate.map(|val| val.timestamp_millis()));
+            .append_option(
+                row.settlementdate.map(|val| val.and_utc().timestamp_millis()),
+            );
         builder
             .offerdate_array
-            .append_option(row.offerdate.map(|val| val.timestamp_millis()));
+            .append_option(row.offerdate.map(|val| val.and_utc().timestamp_millis()));
         builder
             .versionno_array
             .append_option({
@@ -15025,10 +15347,10 @@ impl mmsdm_core::ArrowSchema for PredispatchMnspbidtrk1 {
             });
         builder
             .datetime_array
-            .append_option(row.datetime.map(|val| val.timestamp_millis()));
+            .append_option(row.datetime.map(|val| val.and_utc().timestamp_millis()));
         builder
             .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.timestamp_millis()));
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,

@@ -3,9 +3,10 @@ extern crate std;
 
 use std::io::{Read, Seek};
 
+use alloc::sync::Arc;
 pub use arrow::{array::RecordBatch, datatypes::Schema};
 
-use crate::{FileReader, GetTable};
+use crate::{FileReader, GetTable, PartitionValue};
 
 pub trait ArrowSchema: GetTable {
     fn schema() -> arrow::datatypes::Schema;
@@ -18,13 +19,14 @@ pub trait ArrowSchema: GetTable {
 pub fn accumulate_batch<'a, R: Read + Seek, T: ArrowSchema, F>(
     reader: &mut FileReader<'a, R>,
     mut filter: F,
+    manager: Arc<T>,
 ) -> crate::Result<arrow::array::RecordBatch>
 where
     F: FnMut(&T::Row<'_>) -> bool,
 {
     let mut builder = T::new_builder();
 
-    let mut iter = reader.iter_closest::<T>()?;
+    let mut iter = reader.iter_closest::<T>(manager)?;
     while let Some(maybe_row) = iter.next() {
         let Some(row) = maybe_row.transpose()? else {
             continue;
@@ -40,9 +42,14 @@ where
 
 pub fn partition_to_batch<'a, R: Read + Seek, T: ArrowSchema>(
     reader: &mut FileReader<'a, R>,
-    partition: T::Partition,
+    partition: PartitionValue,
+    manager: Arc<T>,
 ) -> crate::Result<arrow::array::RecordBatch>
 where
 {
-    accumulate_batch::<_, T, _>(reader, |row| T::partition_suffix(&row) == partition)
+    accumulate_batch::<_, T, _>(
+        reader,
+        |row| manager.partition_value(&row) == partition,
+        manager.clone(),
+    )
 }
