@@ -8,7 +8,7 @@ mod python;
 mod rust;
 mod sql_server_tables;
 
-pub const VERSION: &str = "5.3";
+pub const VERSION: &str = "5.4";
 
 #[derive(structopt::StructOpt)]
 #[structopt(about = "Code generation on the MMS Data Model")]
@@ -27,6 +27,7 @@ fn main() {
 
 #[tokio::main]
 async fn run() -> Result<(), anyhow::Error> {
+    env_logger::Builder::new().filter_level(log::LevelFilter::Info).init();
     match AemoCodegen::from_args() {
         AemoCodegen::SqlServerTables => {
             sql_server_tables::run()?;
