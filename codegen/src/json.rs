@@ -17,6 +17,7 @@ use syn::token;
 use crate::mms;
 use crate::VERSION;
 use core::fmt;
+use std::arch::x86_64;
 use std::cell::Ref;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
@@ -44,16 +45,20 @@ pub struct Element {
 
 impl fmt::Display for Element {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "<{} {}>\n",
-            self.name,
-            self.attributes
-                .iter()
-                .map(|(k, v)| format!("{k}=\"{v}\""))
-                .collect::<Vec<_>>()
-                .join(" ")
-        )?;
+        if self.attributes.is_empty() {
+            write!(f, "<{}>\n", self.name,)?;
+        } else {
+            write!(
+                f,
+                "<{} {}>\n",
+                self.name,
+                self.attributes
+                    .iter()
+                    .map(|(k, v)| format!("{k}=\"{v}\""))
+                    .collect::<Vec<_>>()
+                    .join(" ")
+            )?;
+        }
         for child in self.children.iter().rev() {
             match child {
                 ElementOrContent::Content(content) => {
@@ -70,44 +75,257 @@ impl fmt::Display for Element {
         Ok(())
     }
 }
+impl Element {
+    fn get_descendant(&self, position: &[usize]) -> Option<&ElementOrContent> {
+        if position.is_empty() {
+            return None;
+        }
+        let mut iter = position.iter();
+        let first = iter.next()?;
 
-struct ElementIterDfs<'a> {
+        let mut x = self.children.get(*first)?;
+
+        for idx in iter {
+            match x {
+                // content can't be indexed, force a pop
+                ElementOrContent::Content(c) => {
+                    return None;
+                }
+                ElementOrContent::Element(element) => {
+                    x = element.children.get(*idx)?;
+                }
+            }
+        }
+
+        Some(x)
+    }
+}
+
+struct ElementDecendantsIterDfs<'a> {
     src: &'a Element,
     cursor: Vec<usize>,
 }
 
-impl<'a> Iterator for ElementIterDfs<'a> {
+impl<'a> Iterator for ElementDecendantsIterDfs<'a> {
     type Item = &'a ElementOrContent;
 
     fn next(&mut self) -> Option<Self::Item> {
-        todo!()
+        // get the descendant according to the current position
+        // then set up the psoition of the desired next value
+
+        loop {
+            match self.src.get_descendant(&self.cursor) {
+                Some(el) => {
+                    // because we got a descendant, keep going deeper
+                    dbg!(&self.cursor);
+                    self.cursor.push(0);
+                    return Some(el);
+                }
+                None => {
+                    // descendant didn't exist
+                    // go up a level and try to explore the next parent's descendants
+                    self.cursor.pop()?;
+
+                    // if this returns None it is the end of the iterator...
+                    let last = self.cursor.last_mut()?;
+                    *last = last.checked_add(1)?;
+                }
+            }
+        }
     }
 }
 
+// struct ElementDecendantsIterBfs<'a> {
+//     src: &'a Element,
+//     cursor: Vec<usize>,
+//     max_depth: usize,
+// }
 
-enum DfsOrContent {
-    Dfs()
+// impl<'a> Iterator for ElementDecendantsIterBfs<'a> {
+//     type Item = &'a ElementOrContent;
+
+//     fn next(&mut self) -> Option<Self::Item> {
+
+//         // get the descendant according to the current position
+//         // then set up the psoition of the desired next value
+
+//         // [0], [1], [2], [0,0], [0,1], [1,0], [1,1], [0,0,0], [0,0,1]
+
+//         loop {
+//             if self.cursor.len() > self.max_depth {
+//                 return None;
+//             }
+
+//             match self.src.get_descendant(&self.cursor) {
+//                 Some(el) => {
+//                     dbg!(&self.cursor);
+//                     // because we got a child, find the next sibling
+//                     // if this returns None it is the end of the iterator...
+//                     let last = self.cursor.last_mut()?;
+//                     *last = last.checked_add(1)?;
+//                     return Some(el);
+//                 }
+//                 None => {
+//                     // descendant didn't exist
+//                     // revert current last index to 0 and then go one level deeper
+//                     for (location, idx) in self.cursor.iter_mut().enumerate() {
+//                         if location = self.cursor.len() {
+
+//                         } else {
+
+//                         }
+//                     }
+//                     self.cursor.push(0);
+
+//                 }
+//             }
+//         }
+//     }
+// }
+
+impl From<Element> for ElementOrContent {
+    fn from(value: Element) -> Self {
+        ElementOrContent::Element(value)
+    }
+}
+
+impl From<String> for ElementOrContent {
+    fn from(value: String) -> Self {
+        ElementOrContent::Content(value)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::{collections::HashMap, hash::Hash};
+
+    use super::{Element, ElementOrContent};
+
+    #[test]
+    fn test_dfs() {
+        let el = Element {
+            name: "div0".into(),
+            attributes: HashMap::new(),
+            children: [
+                ElementOrContent::Element(Element {
+                    name: "div1-0".into(),
+                    attributes: HashMap::new(),
+                    children: [
+                        ElementOrContent::Element(Element {
+                            name: "div2-0".into(),
+                            attributes: HashMap::new(),
+                            children: [
+                                "test_str3-0".to_string().into(),
+                                Element {
+                                    name: "div3-1".into(),
+                                    attributes: HashMap::new(),
+                                    children: [
+                                        Element {
+                                            name: "div4-0".into(),
+                                            attributes: HashMap::new(),
+                                            children: [].into(),
+                                        }
+                                        .into(),
+                                        Element {
+                                            name: "div4-1".into(),
+                                            attributes: HashMap::new(),
+                                            children: [].into(),
+                                        }
+                                        .into(),
+                                    ]
+                                    .into(),
+                                }
+                                .into(),
+                            ]
+                            .into(),
+                        }),
+                        Element {
+                            name: "div2-2".into(),
+                            attributes: HashMap::new(),
+                            children: [].into(),
+                        }
+                        .into(),
+                        Element {
+                            name: "div2-3".into(),
+                            attributes: HashMap::new(),
+                            children: [].into(),
+                        }
+                        .into(),
+                    ]
+                    .into(),
+                }),
+                ElementOrContent::Element(Element {
+                    name: "div1-1".into(),
+                    attributes: HashMap::new(),
+                    children: [].into(),
+                }),
+                ElementOrContent::Content("middle_str1-2".to_string()),
+                Element {
+                    name: "div1-3".into(),
+                    attributes: HashMap::new(),
+                    children: [].into(),
+                }
+                .into(),
+                Element {
+                    name: "div1-4".into(),
+                    attributes: HashMap::new(),
+                    children: [].into(),
+                }
+                .into(),
+            ]
+            .into(),
+        };
+
+        for item in el.iter_dfs() {
+            dbg!(item);
+        }
+
+        assert_eq!(el.iter_dfs().count(), 12);
+
+        assert_eq!(
+            el.iter_dfs().last().unwrap().element().unwrap().name,
+            "div1-4"
+        );
+        // assert_eq!(el.iter_bfs(5).count(), 12);
+        // assert_eq!(el.iter_bfs(5).last().unwrap().element().unwrap().name, "div4-1");
+    }
 }
 
 impl Element {
-    fn iter_dfs<'a>(&'a self) -> ElementIterDfs<'a> {
-        ElementIterDfs {
+    fn iter_dfs<'a>(&'a self) -> ElementDecendantsIterDfs<'a> {
+        ElementDecendantsIterDfs {
             src: self,
-            cursor: Vec::new(),
+            cursor: Vec::from([0]),
         }
     }
-    fn iter_dfs2<'a>(&'a self) -> impl Iterator<Item = &'a ElementOrContent> {
-        self.children.iter().flat_map(|x| match x {
-            x @ ElementOrContent::Element(element) => iter::once(x).chain(element.iter_dfs2()),
-            x => iter::once(x),
-        })
-    }
+    // fn iter_bfs<'a>(&'a self, max_depth: usize) -> ElementDecendantsIterBfs<'a> {
+    //     ElementDecendantsIterBfs {
+    //         src: self,
+    //         cursor: { let mut v = Vec::with_capacity(max_depth + 1); v.push(0); v },
+    //         max_depth,
+    //     }
+    // }
 }
 
 #[derive(Debug, Clone)]
 enum ElementOrContent {
     Content(String),
     Element(Element),
+}
+
+impl ElementOrContent {
+    fn element(&self) -> Option<&Element> {
+        match self {
+            ElementOrContent::Content(_) => None,
+            ElementOrContent::Element(element) => Some(element),
+        }
+    }
+    fn content(&self) -> Option<&str> {
+        match self {
+            ElementOrContent::Content(s) => Some(s),
+            ElementOrContent::Element(_) => None,
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -147,6 +365,8 @@ impl DfsTree {
                                 accumulated_children.len()
                             );
                             el.children.extend(accumulated_children);
+
+                            el.children.reverse();
 
                             self.data.push(ElementOrContent::Element(el));
 
@@ -206,8 +426,6 @@ impl ElementParser {
 
         let DfsTree { mut data } = tokenizer.sink.data.into_inner()?;
 
-        dbg!(data.last());
-
         match data.pop() {
             Some(ElementOrContent::Element(root)) if data.is_empty() => Ok(root),
             x => {
@@ -239,287 +457,29 @@ impl TokenSink for ElementParser {
     }
 }
 
-#[derive(Clone, Default)]
-enum PackagePageParser {
-    #[default]
-    Start,
-    GotTableGrid,
-    GotAPackage {
-        url: Url,
-    },
-    LeftTableGrid,
-}
+// GotColumn {
+//     name: String,
+//     comment: String,
+//     description: String,
+//     notes: BTreeMap<String, String>,
+//     primary_key: Vec<String>,
+// },
 
-struct PackagePageParserCell {
-    data: RefCell<anyhow::Result<BTreeMap<String, Url>>>,
-    state: RefCell<PackagePageParser>,
-}
-
-impl PackagePageParserCell {
-    fn parse_from_string(s: String) -> anyhow::Result<BTreeMap<String, Url>> {
-        let sink = PackagePageParserCell {
-            data: RefCell::new(Ok(BTreeMap::new())),
-            state: Default::default(),
-        };
-
-        let tokenizer = Tokenizer::new(sink, TokenizerOpts::default());
-
-        let bq = BufferQueue::default();
-        bq.push_back(s.into());
-        _ = tokenizer.feed(&bq);
-        tokenizer.end();
-
-        let data = tokenizer.sink.data.into_inner()?;
-
-        Ok(data)
-    }
-}
-
-impl TokenSink for PackagePageParserCell {
-    type Handle = ();
-    fn process_token(
-        &self,
-        token: html5ever::tokenizer::Token,
-        _line_number: u64,
-    ) -> html5ever::tokenizer::TokenSinkResult<Self::Handle> {
-        if self.data.borrow().is_err() {
-            // short circuit on error
-            return TokenSinkResult::Continue;
-        }
-
-        // info!("Got token {token:?}");
-
-        let state = self.state.borrow().clone();
-
-        match (state, token) {
-            (PackagePageParser::Start, html5ever::tokenizer::Token::TagToken(tag))
-                if tag.kind == StartTag
-                    && tag.name == *"table"
-                    && tag
-                        .attrs
-                        .iter()
-                        .any(|i| i.name.local == *"class" && i.value.as_ref() == "Grid") =>
-            {
-                // info!("got table[class=Grid]");
-                *self.state.borrow_mut() = PackagePageParser::GotTableGrid;
-            }
-
-            (PackagePageParser::GotTableGrid, html5ever::tokenizer::Token::TagToken(tag))
-                if tag.kind == StartTag && tag.name == *"a" =>
-            {
-                // info!("got apacakge");
-                let Some(attr) = tag.attrs.iter().find(|a| a.name.local == *"href") else {
-                    *self.data.borrow_mut() = Err(anyhow!("no href on `a`: {:?}", tag.attrs));
-                    return TokenSinkResult::Continue;
-                };
-
-                let proposed = format!("{BASE}/{}", attr.value);
-                let mut url = match proposed.parse::<Url>() {
-                    Ok(u) => u,
-
-                    Err(e) => {
-                        *self.data.borrow_mut() =
-                            Err(anyhow!("Error parsing `{proposed}` as url: {e:?}"));
-                        return TokenSinkResult::Continue;
-                    }
-                };
-                url.set_fragment(None);
-
-                *self.state.borrow_mut() = PackagePageParser::GotAPackage { url };
-            }
-
-            (
-                PackagePageParser::GotAPackage { url },
-                html5ever::tokenizer::Token::CharacterTokens(package),
-            ) => {
-                // info!("got text");
-                // wouldn't have reached here if it was an error state;
-                // can't have the borrow last the whole time otherwise the second borrow will cause a problem
-                self.data
-                    .borrow_mut()
-                    .as_mut()
-                    .unwrap()
-                    .insert(package.to_string(), url);
-                *self.state.borrow_mut() = PackagePageParser::GotTableGrid;
-            }
-            (PackagePageParser::GotTableGrid, html5ever::tokenizer::Token::TagToken(tag))
-                if tag.kind == EndTag && tag.name == *"table" =>
-            {
-                // info!("got end table");
-                *self.state.borrow_mut() = PackagePageParser::LeftTableGrid;
-            }
-
-            (_, html5ever::tokenizer::Token::ParseError(cow)) => {
-                *self.data.borrow_mut() = Err(anyhow!("Parsing error: {cow}"));
-            }
-            _ => {
-                // info!("got other");
-                // *self.state.borrow_mut() = PackagePageParser::Base;
-            }
-        };
-
-        TokenSinkResult::Continue
-    }
-}
-
-#[derive(Clone, Default)]
-enum TablePageParser {
-    #[default]
-    Start,
-    GotTableGrid,
-    LeftTableGrid,
-}
-
-struct TablePageParserCell {
-    data: RefCell<anyhow::Result<BTreeSet<Url>>>,
-    state: RefCell<TablePageParser>,
-}
-
-impl TablePageParserCell {
-    fn parse_from_string(s: String) -> anyhow::Result<BTreeSet<Url>> {
-        let sink = TablePageParserCell {
-            data: RefCell::new(Ok(BTreeSet::new())),
-            state: Default::default(),
-        };
-
-        let tokenizer = Tokenizer::new(sink, TokenizerOpts::default());
-
-        let bq = BufferQueue::default();
-        bq.push_back(s.into());
-        let res = tokenizer.feed(&bq);
-        match res {
-            TokenizerResult::Done => (),
-            TokenizerResult::Script(_) => bail!("unexpected"),
-        }
-
-        tokenizer.end();
-
-        let data = tokenizer
-            .sink
-            .data
-            .into_inner()
-            .context("Parsing tables page")?;
-
-        Ok(data)
-    }
-}
-
-impl TokenSink for TablePageParserCell {
-    type Handle = ();
-    fn process_token(
-        &self,
-        token: html5ever::tokenizer::Token,
-        _line_number: u64,
-    ) -> html5ever::tokenizer::TokenSinkResult<Self::Handle> {
-        if self.data.borrow().is_err() {
-            // short circuit on error
-            return TokenSinkResult::Continue;
-        }
-
-        // info!("Got token {token:?}");
-
-        let state = self.state.borrow().clone();
-
-        match (state, token) {
-            (TablePageParser::Start, html5ever::tokenizer::Token::TagToken(tag))
-                if tag.kind == StartTag
-                    && tag.name == *"table"
-                    && tag
-                        .attrs
-                        .iter()
-                        .any(|i| i.name.local == *"class" && i.value.as_ref() == "Grid") =>
-            {
-                // info!("got table[class=Grid]");
-                *self.state.borrow_mut() = TablePageParser::GotTableGrid;
-            }
-
-            (TablePageParser::GotTableGrid, html5ever::tokenizer::Token::TagToken(tag))
-                if tag.kind == StartTag && tag.name == *"a" =>
-            {
-                // info!("got apacakge");
-                let Some(attr) = tag.attrs.iter().find(|a| a.name.local == *"href") else {
-                    *self.data.borrow_mut() = Err(anyhow!("no href on `a`: {:?}", tag.attrs));
-                    return TokenSinkResult::Continue;
-                };
-
-                let proposed = format!("{BASE}/{}", attr.value);
-                let mut url = match proposed.parse::<Url>() {
-                    Ok(u) => u,
-
-                    Err(e) => {
-                        *self.data.borrow_mut() =
-                            Err(anyhow!("Error parsing `{proposed}` as url: {e:?}"));
-                        return TokenSinkResult::Continue;
-                    }
-                };
-                info!("Got table url: {url}");
-
-                // remove the hash
-                url.set_fragment(None);
-                self.data.borrow_mut().as_mut().unwrap().insert(url);
-            }
-            (TablePageParser::GotTableGrid, html5ever::tokenizer::Token::TagToken(tag))
-                if tag.kind == EndTag && tag.name == *"table" =>
-            {
-                // info!("got end table");
-                *self.state.borrow_mut() = TablePageParser::LeftTableGrid;
-            }
-
-            (_, html5ever::tokenizer::Token::ParseError(cow)) => {
-                *self.data.borrow_mut() = Err(anyhow!("Parsing error: {cow}"));
-            }
-            _ => {
-                // info!("got other");
-                // *self.state.borrow_mut() = PackagePageParser::Base;
-            }
-        };
-
-        TokenSinkResult::Continue
-    }
-}
-
-#[derive(Clone, Default)]
-enum TableParser {
-    #[default]
-    Start,
-    StartedTable {
-        name: String,
-    },
-    GotComment {
-        name: String,
-        comment: String,
-    },
-    GotDescription {
-        name: String,
-        comment: String,
-        description: String,
-    },
-    GotNotes {
-        name: String,
-        comment: String,
-        description: String,
-        notes: BTreeMap<String, String>,
-    },
-    GotPk {
-        name: String,
-        comment: String,
-        description: String,
-        notes: BTreeMap<String, String>,
-        primary_key: Vec<String>,
-    },
-    GotColumn {
-        name: String,
-        comment: String,
-        description: String,
-        notes: BTreeMap<String, String>,
-        primary_key: Vec<String>,
-    },
-    GotTableGrid,
-    LeftTableGrid,
+fn add_path(url: &Url, path: &str) -> Url {
+    let mut x = url.clone();
+    x.path_segments_mut().unwrap().push(path);
+    x
 }
 
 pub async fn run() -> anyhow::Result<()> {
-    let url = "https://nemweb.com.au/Reports/Current/MMSDataModelReport/Electricity/Electricity%20Data%20Model%20Report_files/Elec2.htm";
+    let base = "https://nemweb.com.au/Reports/Current/MMSDataModelReport/Electricity/Electricity%20Data%20Model%20Report_files";
+    let base_url = base.parse::<Url>()?;
+    let url = {
+        let mut x = base_url.clone();
+        x.path_segments_mut().unwrap().push("Elec2.htm");
+        x
+    };
+
     let mut headers = reqwest::header::HeaderMap::new();
     headers.insert(
         reqwest::header::ACCEPT,
@@ -543,11 +503,68 @@ pub async fn run() -> anyhow::Result<()> {
 
     // dbg!(&tree);
 
-    println!("{tree}");
+    // println!("{tree}");
 
-    panic!("bye");
+    // panic!("bye");
 
-    let mut package_with_table_urls = BTreeMap::<String, BTreeSet<Url>>::new();
+
+    let mut package_with_table_urls = BTreeMap::<(usize, String), Url>::new();
+
+    let first_table = tree
+        .iter_dfs()
+        .filter_map(|e| e.element())
+        .filter(|el| el.name == "table")
+        .next()
+        .ok_or_else(|| anyhow!("No table found"))?;
+
+    println!("{first_table}");
+
+    for a in first_table
+        .iter_dfs()
+        .filter_map(|n| n.element())
+        .filter(|el| el.name == "a")
+    {
+        let content = a
+            .children
+            .get(0)
+            .and_then(|n| n.content())
+            .ok_or_else(|| anyhow!("Expected content missing"))?;
+        let url_str = a
+            .attributes
+            .get("href")
+            .ok_or_else(|| anyhow!("Missing href attr for {content}"))?.replace("#1", "");
+
+        dbg!(&url_str);
+
+        let url_str_number =  url_str.replace("Elec", "").replace(".htm", "").parse::<usize>().with_context(|| format!("Parsing number from {url_str}"))?;
+        package_with_table_urls.insert((url_str_number, content.to_string()), {
+            let mut x = base_url.clone();
+            x.path_segments_mut().unwrap().push(&url_str);
+            x
+        });
+    }
+
+    dbg!(&package_with_table_urls);
+
+    for ((idx, name), base_url) in package_with_table_urls.iter().peekable() {
+        // this finds the baseline URL
+        // we then need iterate by 1 to find the data url
+        // then we need to iterate with _1, _2, etc, then iterate the top level by 1, continuing until we reach the next url.
+
+        // option 2 is: assume that the _n never goes above ... 3?
+        // and assume that after the last item, we never have to go past say, 80.
+        // then just grab all the urls.
+        let mut current_idx = idx;
+
+        let next_idx = 
+        loop {
+            if current_idx 
+
+            current_idx += 1;
+
+        }
+
+    }
 
     // for (package_name, mut url) in data
     //     .into_iter()
