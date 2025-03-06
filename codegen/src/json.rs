@@ -11,6 +11,7 @@ use html5ever::tokenizer::Tokenizer;
 use html5ever::tokenizer::TokenizerOpts;
 use html5ever::tokenizer::TokenizerResult;
 use log::info;
+use reqwest::StatusCode;
 use reqwest::Url;
 use syn::token;
 
@@ -25,6 +26,7 @@ use std::collections::BTreeSet;
 use std::collections::HashMap;
 use std::hash::Hash;
 use std::mem;
+use std::ops::Bound;
 use std::ops::DerefMut;
 use std::{collections, fs, iter, string, thread, time::Duration};
 
@@ -337,6 +339,11 @@ impl DfsTree {
     fn handle_token(&mut self, token: Token) -> anyhow::Result<()> {
         info!("Adding element: {token:?}");
 
+        // consider a check on the length of the data vec here to avoid exhaustion?
+        if self.data.len() > 1_000_000 {
+            bail!("too many elements - probably a DOS");
+        }
+
         match token {
             html5ever::tokenizer::Token::TagToken(tag) if tag.kind == StartTag => {
                 let new_element = Element {
@@ -488,7 +495,7 @@ pub async fn run() -> anyhow::Result<()> {
         ),
     );
     let client = reqwest::ClientBuilder::new()
-        .user_agent("Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0")
+        .user_agent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0")
         .default_headers(headers)
         .build()?;
     let body = client.get(url).send().await?.text().await?;
@@ -507,8 +514,7 @@ pub async fn run() -> anyhow::Result<()> {
 
     // panic!("bye");
 
-
-    let mut package_with_table_urls = BTreeMap::<(usize, String), Url>::new();
+    let mut package_with_table_urls = BTreeMap::<usize, (String, Url)>::new();
 
     let first_table = tree
         .iter_dfs()
@@ -532,21 +538,28 @@ pub async fn run() -> anyhow::Result<()> {
         let url_str = a
             .attributes
             .get("href")
-            .ok_or_else(|| anyhow!("Missing href attr for {content}"))?.replace("#1", "");
+            .ok_or_else(|| anyhow!("Missing href attr for {content}"))?
+            .replace("#1", "");
 
         dbg!(&url_str);
 
-        let url_str_number =  url_str.replace("Elec", "").replace(".htm", "").parse::<usize>().with_context(|| format!("Parsing number from {url_str}"))?;
-        package_with_table_urls.insert((url_str_number, content.to_string()), {
+        let url_str_number = url_str
+            .replace("Elec", "")
+            .replace(".htm", "")
+            .parse::<usize>()
+            .with_context(|| format!("Parsing number from {url_str}"))?;
+        package_with_table_urls.insert(url_str_number, {
             let mut x = base_url.clone();
             x.path_segments_mut().unwrap().push(&url_str);
-            x
+            (content.to_string(), x)
         });
     }
 
-    dbg!(&package_with_table_urls);
+    // dbg!(&package_with_table_urls);
 
-    for ((idx, name), base_url) in package_with_table_urls.iter().peekable() {
+    
+
+    for (current_idx, (_, _)) in package_with_table_urls.iter() {
         // this finds the baseline URL
         // we then need iterate by 1 to find the data url
         // then we need to iterate with _1, _2, etc, then iterate the top level by 1, continuing until we reach the next url.
@@ -554,14 +567,50 @@ pub async fn run() -> anyhow::Result<()> {
         // option 2 is: assume that the _n never goes above ... 3?
         // and assume that after the last item, we never have to go past say, 80.
         // then just grab all the urls.
-        let mut current_idx = idx;
 
-        let next_idx = 
-        loop {
-            if current_idx 
 
-            current_idx += 1;
+        let next_idx = package_with_table_urls
+            .keys()
+            .filter(|x| *x > current_idx)
+            .next()
+            .copied()
+            .unwrap_or_else(|| current_idx + 5);
 
+        for detail_idx in *current_idx..next_idx {
+            for underscore_idx in 0..=5 {
+                // try to get the detail page
+
+                let target_path = if underscore_idx == 0 {
+                    format!("Elec{detail_idx}.htm")
+                } else {
+                    format!("Elec{detail_idx}_{underscore_idx}.htm")
+                };
+
+                let target_url = {
+                    let mut x = base_url.clone();
+                    x.path_segments_mut().unwrap().push(&target_path);
+                    x
+                };
+                tokio::time::sleep(Duration::from_millis(1000)).await;
+
+                let resp = client.get(target_url.clone()).send().await?;
+
+                match resp.status() {
+                    StatusCode::OK => (),
+                    StatusCode::NOT_FOUND => {
+                        continue;
+                    }
+                    other => {
+                        bail!("Unexpected status code for request at {target_url}: {other}");
+                    }
+                }
+
+                let html = resp.text().await?;
+                info!("Got data from {target_path}");
+
+                tokio::fs::write(&format!("./cache/{target_path}"), html).await?;
+                // parse the html
+            }
         }
 
     }
