@@ -2,11 +2,13 @@ use structopt::StructOpt;
 
 mod analyse;
 mod json;
+mod download;
 mod mms;
 mod pdr;
 mod python;
 mod rust;
 mod sql_server_tables;
+mod html_tree;
 
 pub const VERSION: &str = "5.4";
 
@@ -18,6 +20,7 @@ enum AemoCodegen {
     SqlServerTables,
     Python,
     Analyse,
+    Download,
 }
 fn main() {
     if let Err(e) = run() {
@@ -40,6 +43,9 @@ async fn run() -> Result<(), anyhow::Error> {
         }
         AemoCodegen::Json => {
             json::run().await?;
+        }
+        AemoCodegen::Download => {
+            download::run().await?;
         }
         AemoCodegen::Python => {
             python::run()?;

@@ -49,6 +49,7 @@ impl Report {
     }
 }
 
+
 pub type Packages = collections::BTreeMap<String, collections::BTreeMap<String, TablePage>>;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
