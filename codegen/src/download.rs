@@ -6,12 +6,10 @@ use reqwest::StatusCode;
 use reqwest::Url;
 
 use crate::html_tree::ElementParser;
-use crate::mms;
 
 use std::collections::BTreeMap;
 
-use std::{collections, time::Duration};
-
+use std::time::Duration;
 
 fn add_path(url: &Url, path: &str) -> Url {
     let mut x = url.clone();
@@ -41,6 +39,7 @@ pub async fn run() -> anyhow::Result<()> {
         .user_agent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0")
         .default_headers(headers)
         .build()?;
+
     let body = client.get(url).send().await?.text().await?;
 
     let tree = ElementParser::parse_from_string(body).context("parsing elements")?;
@@ -48,19 +47,13 @@ pub async fn run() -> anyhow::Result<()> {
     let mut package_with_table_urls = BTreeMap::<usize, (String, Url)>::new();
 
     let first_table = tree
-        .iter_dfs()
-        .filter_map(|e| e.element())
-        .filter(|el| el.name == "table")
+        .iter_dfs_elements_of_tag("table")
         .next()
         .ok_or_else(|| anyhow!("No table found"))?;
 
     println!("{first_table}");
 
-    for a in first_table
-        .iter_dfs()
-        .filter_map(|n| n.element())
-        .filter(|el| el.name == "a")
-    {
+    for a in first_table.iter_dfs_elements_of_tag("a") {
         let content = a
             .children
             .get(0)
@@ -94,7 +87,6 @@ pub async fn run() -> anyhow::Result<()> {
         // option 2 is: assume that the _n never goes above ... 3?
         // and assume that after the last item, we never have to go past say, 80.
         // then just grab all the urls.
-
 
         let next_idx = package_with_table_urls
             .keys()
@@ -139,9 +131,7 @@ pub async fn run() -> anyhow::Result<()> {
                 // parse the html
             }
         }
-
     }
 
-  
     Ok(())
 }

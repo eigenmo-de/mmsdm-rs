@@ -115,6 +115,74 @@ impl<'a> Iterator for ElementDecendantsIterDfs<'a> {
     }
 }
 
+pub struct ElementDecendantsFilteredIterDfs<'a> {
+    iter: ElementDecendantsIterDfs<'a>,
+    filter: Box<dyn Fn(&ElementOrContent) -> bool>,
+}
+
+impl<'a> Iterator for ElementDecendantsFilteredIterDfs<'a> {
+    type Item = &'a ElementOrContent;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            match self.iter.next() {
+                Some(x) => {
+                    if (self.filter)(x) {
+                        return Some(x);
+                    }
+                }
+                None => return None,
+            }
+        }
+    }
+}
+
+pub struct ElementDecendantsFilteredElementOnlyIterDfs<'a> {
+    iter: ElementDecendantsIterDfs<'a>,
+    filter: Box<dyn Fn(&Element) -> bool>,
+}
+
+impl<'a> Iterator for ElementDecendantsFilteredElementOnlyIterDfs<'a> {
+    type Item = &'a Element;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            match self.iter.next() {
+                Some(ElementOrContent::Element(e)) => {
+                    if (self.filter)(e) {
+                        return Some(e);
+                    }
+                }
+                Some(ElementOrContent::Content(_)) => (),
+                None => return None,
+            }
+        }
+    }
+}
+
+pub struct ElementDecendantsFilteredContentOnlyIterDfs<'a> {
+    iter: ElementDecendantsIterDfs<'a>,
+    filter: Box<dyn Fn(&String) -> bool>,
+}
+
+impl<'a> Iterator for ElementDecendantsFilteredContentOnlyIterDfs<'a> {
+    type Item = &'a String;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            match self.iter.next() {
+                Some(ElementOrContent::Content(e)) => {
+                    if (self.filter)(e) {
+                        return Some(e);
+                    }
+                }
+                Some(ElementOrContent::Element(_)) => (),
+                None => return None,
+            }
+        }
+    }
+}
+
 // struct ElementDecendantsIterBfs<'a> {
 //     src: &'a Element,
 //     cursor: Vec<usize>,
@@ -276,6 +344,48 @@ impl Element {
         ElementDecendantsIterDfs {
             src: self,
             cursor: Vec::from([0]),
+        }
+    }
+    pub fn iter_dfs_elements<'a>(&'a self) -> ElementDecendantsFilteredElementOnlyIterDfs<'a> {
+        ElementDecendantsFilteredElementOnlyIterDfs {
+            iter: self.iter_dfs(),
+            filter: Box::new(|_| true),
+        }
+    }
+    pub fn iter_dfs_content<'a>(&'a self) -> ElementDecendantsFilteredContentOnlyIterDfs<'a> {
+        ElementDecendantsFilteredContentOnlyIterDfs {
+            iter: self.iter_dfs(),
+            filter: Box::new(|_| true),
+        }
+    }
+
+    pub fn iter_dfs_elements_of_tag<'a, 'b>(
+        &'a self,
+        tag: &'b str,
+    ) -> ElementDecendantsFilteredElementOnlyIterDfs<'a> {
+        let tag = tag.to_string();
+        ElementDecendantsFilteredElementOnlyIterDfs {
+            iter: self.iter_dfs(),
+            filter: Box::new(move |x| x.name == tag),
+        }
+    }
+    pub fn iter_dfs_elements_filtered<'a>(
+        &'a self,
+        filter: impl Fn(&Element) -> bool + 'static,
+    ) -> ElementDecendantsFilteredElementOnlyIterDfs<'a> {
+        ElementDecendantsFilteredElementOnlyIterDfs {
+            iter: self.iter_dfs(),
+            filter: Box::new(filter),
+        }
+    }
+
+    pub fn iter_dfs_filtered<'a>(
+        &'a self,
+        filter: impl Fn(&ElementOrContent) -> bool + 'static,
+    ) -> ElementDecendantsFilteredIterDfs<'a> {
+        ElementDecendantsFilteredIterDfs {
+            iter: self.iter_dfs(),
+            filter: Box::new(filter),
         }
     }
     // fn iter_bfs<'a>(&'a self, max_depth: usize) -> ElementDecendantsIterBfs<'a> {

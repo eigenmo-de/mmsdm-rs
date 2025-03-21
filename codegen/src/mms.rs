@@ -1,20 +1,8 @@
 use crate::KW;
 use anyhow::anyhow;
 use heck::ToSnakeCase;
-use scraper::{element_ref, html};
 use serde::{Deserialize, Serialize};
 use std::{collections, ops::ControlFlow, str};
-
-lazy_static::lazy_static! {
-    static ref TR: scraper::Selector = scraper::Selector::parse("tr").unwrap();
-    static ref TD: scraper::Selector = scraper::Selector::parse("td").unwrap();
-    static ref TABLE: scraper::Selector = scraper::Selector::parse("table").unwrap();
-    static ref A: scraper::Selector = scraper::Selector::parse("a").unwrap();
-    static ref P: scraper::Selector = scraper::Selector::parse("p").unwrap();
-    static ref H3: scraper::Selector = scraper::Selector::parse("h3").unwrap();
-    static ref SPAN: scraper::Selector = scraper::Selector::parse("span").unwrap();
-
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq)]
 pub struct Report {
@@ -214,65 +202,65 @@ impl TablePage {
     pub fn get_summary_name(&self) -> String {
         self.summary.get_name()
     }
-    pub fn from_html(mut docs: Vec<html::Html>) -> anyhow::Result<TablePage> {
-        let first = docs.remove(0);
-        let mut headings = first.select(&H3);
-        // extract the table name.  This is unkwnown but is always the first
-        let table_name = headings.next().unwrap();
-        let summary = element_ref::ElementRef::wrap(
-            table_name.next_sibling().unwrap().next_sibling().unwrap(),
-        )
-        .unwrap();
+    // pub fn from_html(mut docs: Vec<html::Html>) -> anyhow::Result<TablePage> {
+    //     let first = docs.remove(0);
+    //     let mut headings = first.select(&H3);
+    //     // extract the table name.  This is unkwnown but is always the first
+    //     let table_name = headings.next().unwrap();
+    //     let summary = element_ref::ElementRef::wrap(
+    //         table_name.next_sibling().unwrap().next_sibling().unwrap(),
+    //     )
+    //     .unwrap();
 
-        // now get other info
-        let mut details = collections::HashMap::new();
-        for h3 in headings {
-            let detail_type = h3.select(&A).next().unwrap().inner_html();
-            let detail_table =
-                element_ref::ElementRef::wrap(h3.next_sibling().unwrap().next_sibling().unwrap())
-                    .unwrap();
-            if detail_type != "Index" {
-                details.insert(detail_type.replace(' ', ""), detail_table);
-            }
-        }
+    //     // now get other info
+    //     let mut details = collections::HashMap::new();
+    //     for h3 in headings {
+    //         let detail_type = h3.select(&A).next().unwrap().inner_html();
+    //         let detail_table =
+    //             element_ref::ElementRef::wrap(h3.next_sibling().unwrap().next_sibling().unwrap())
+    //                 .unwrap();
+    //         if detail_type != "Index" {
+    //             details.insert(detail_type.replace(' ', ""), detail_table);
+    //         }
+    //     }
 
-        let mut extra_columns = Vec::new();
-        for doc in docs.iter() {
-            let h3 = doc.select(&H3).next().unwrap();
-            let heading = h3.inner_html();
-            if heading.trim() != "Content" {
-                dbg!(heading);
-                break;
-            }
-            let tab = doc.select(&TABLE).next().unwrap();
+    //     let mut extra_columns = Vec::new();
+    //     for doc in docs.iter() {
+    //         let h3 = doc.select(&H3).next().unwrap();
+    //         let heading = h3.inner_html();
+    //         if heading.trim() != "Content" {
+    //             dbg!(heading);
+    //             break;
+    //         }
+    //         let tab = doc.select(&TABLE).next().unwrap();
 
-            let col = TableColumns::from_html(&tab)?;
-            extra_columns.push(col);
-        }
+    //         let col = TableColumns::from_html(&tab)?;
+    //         extra_columns.push(col);
+    //     }
 
-        let mut first_column_set = details
-            .get("Content")
-            .ok_or_else(|| anyhow!("Missing required field Content"))
-            .and_then(TableColumns::from_html)?;
+    //     let mut first_column_set = details
+    //         .get("Content")
+    //         .ok_or_else(|| anyhow!("Missing required field Content"))
+    //         .and_then(TableColumns::from_html)?;
 
-        for extra in extra_columns {
-            first_column_set.add_columns(extra);
-        }
+    //     for extra in extra_columns {
+    //         first_column_set.add_columns(extra);
+    //     }
 
-        let table_info = TablePage {
-            columns: first_column_set,
-            description: crate::swap_nonreq(
-                details.get("Description").map(Description::from_html),
-            )?,
-            notes: crate::swap_nonreq(details.get("Notes").map(TableNotes::from_html))?,
-            primary_key_columns: details
-                .get("PrimaryKeyColumns")
-                .ok_or_else(|| anyhow!("Missing required field Primary Key Columns"))
-                .and_then(PkColumns::from_html)?,
-            summary: TableSummary::from_html(&summary)?,
-        };
-        Ok(table_info)
-    }
+    //     let table_info = TablePage {
+    //         columns: first_column_set,
+    //         description: crate::swap_nonreq(
+    //             details.get("Description").map(Description::from_html),
+    //         )?,
+    //         notes: crate::swap_nonreq(details.get("Notes").map(TableNotes::from_html))?,
+    //         primary_key_columns: details
+    //             .get("PrimaryKeyColumns")
+    //             .ok_or_else(|| anyhow!("Missing required field Primary Key Columns"))
+    //             .and_then(PkColumns::from_html)?,
+    //         summary: TableSummary::from_html(&summary)?,
+    //     };
+    //     Ok(table_info)
+    // }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -285,28 +273,28 @@ impl TableSummary {
     pub fn get_name(&self) -> String {
         self.name.clone()
     }
-    fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableSummary> {
-        let mut cells = tab.select(&TD);
-        let name_el = cells
-            .nth(1)
-            .ok_or_else(|| anyhow!("Name cell missing from sumary table"))?;
-        let name = name_el
-            .select(&A)
-            .next()
-            .ok_or_else(|| anyhow!("No content in summary table name"))?
-            .inner_html()
-            .replace([' ', '\n'], "");
-        let comment_el = cells
-            .nth(1)
-            .ok_or_else(|| anyhow!("Comment cell missing from summary table"))?;
-        let comment = comment_el
-            .select(&P)
-            .next()
-            .ok_or_else(|| anyhow!("No content in summary table comment cell"))?
-            .inner_html()
-            .replace('\n', "");
-        Ok(TableSummary { name, comment })
-    }
+    // fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableSummary> {
+    //     let mut cells = tab.select(&TD);
+    //     let name_el = cells
+    //         .nth(1)
+    //         .ok_or_else(|| anyhow!("Name cell missing from sumary table"))?;
+    //     let name = name_el
+    //         .select(&A)
+    //         .next()
+    //         .ok_or_else(|| anyhow!("No content in summary table name"))?
+    //         .inner_html()
+    //         .replace([' ', '\n'], "");
+    //     let comment_el = cells
+    //         .nth(1)
+    //         .ok_or_else(|| anyhow!("Comment cell missing from summary table"))?;
+    //     let comment = comment_el
+    //         .select(&P)
+    //         .next()
+    //         .ok_or_else(|| anyhow!("No content in summary table comment cell"))?
+    //         .inner_html()
+    //         .replace('\n', "");
+    //     Ok(TableSummary { name, comment })
+    // }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -315,14 +303,14 @@ pub struct PkColumns {
 }
 
 impl PkColumns {
-    fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<PkColumns> {
-        let cols = tab
-            .select(&P)
-            .skip(1)
-            .map(|er| er.inner_html().replace('\n', ""))
-            .collect();
-        Ok(PkColumns { cols })
-    }
+    // fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<PkColumns> {
+    //     let cols = tab
+    //         .select(&P)
+    //         .skip(1)
+    //         .map(|er| er.inner_html().replace('\n', ""))
+    //         .collect();
+    //     Ok(PkColumns { cols })
+    // }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -331,14 +319,14 @@ pub struct Description {
 }
 
 impl Description {
-    fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<Description> {
-        let inner = tab
-            .select(&SPAN)
-            .map(|er| er.inner_html())
-            .collect::<Vec<_>>()
-            .join(" ");
-        Ok(Description { inner })
-    }
+    // fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<Description> {
+    //     let inner = tab
+    //         .select(&SPAN)
+    //         .map(|er| er.inner_html())
+    //         .collect::<Vec<_>>()
+    //         .join(" ");
+    //     Ok(Description { inner })
+    // }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -347,14 +335,14 @@ pub struct TableNotes {
 }
 
 impl TableNotes {
-    fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableNotes> {
-        let notes = tab
-            .select(&TR)
-            .skip(1)
-            .map(|el| TableNote::from_html(&el))
-            .collect::<anyhow::Result<Vec<_>>>()?;
-        Ok(TableNotes { notes })
-    }
+    // fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableNotes> {
+    //     let notes = tab
+    //         .select(&TR)
+    //         .skip(1)
+    //         .map(|el| TableNote::from_html(&el))
+    //         .collect::<anyhow::Result<Vec<_>>>()?;
+    //     Ok(TableNotes { notes })
+    // }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -365,17 +353,17 @@ pub struct TableNote {
 }
 
 impl TableNote {
-    fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableNote> {
-        let mut cells = tab.select(&P);
-        let name = cells.next().unwrap().inner_html().replace('\n', "");
-        let comment = cells.next().unwrap().inner_html().replace('\n', "");
-        let value = cells.next().unwrap().inner_html().replace('\n', "");
-        Ok(TableNote {
-            name,
-            comment,
-            value,
-        })
-    }
+    // fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableNote> {
+    //     let mut cells = tab.select(&P);
+    //     let name = cells.next().unwrap().inner_html().replace('\n', "");
+    //     let comment = cells.next().unwrap().inner_html().replace('\n', "");
+    //     let value = cells.next().unwrap().inner_html().replace('\n', "");
+    //     Ok(TableNote {
+    //         name,
+    //         comment,
+    //         value,
+    //     })
+    // }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -387,14 +375,14 @@ impl TableColumns {
     fn add_columns(&mut self, mut other: TableColumns) {
         self.columns.append(&mut other.columns);
     }
-    fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableColumns> {
-        let columns = tab
-            .select(&TR)
-            .skip(1)
-            .map(|el| TableColumn::from_html(&el))
-            .collect::<anyhow::Result<Vec<_>>>()?;
-        Ok(TableColumns { columns })
-    }
+    // fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableColumns> {
+    //     let columns = tab
+    //         .select(&TR)
+    //         .skip(1)
+    //         .map(|el| TableColumn::from_html(&el))
+    //         .collect::<anyhow::Result<Vec<_>>>()?;
+    //     Ok(TableColumns { columns })
+    // }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -447,24 +435,24 @@ impl TableColumn {
             field_name
         }
     }
-    fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableColumn> {
-        let mut cells = tab.select(&P);
-        let name = cells.next().unwrap().inner_html().replace('\n', "");
-        let data_type = cells
-            .next()
-            .unwrap()
-            .inner_html()
-            .replace(['\n', ' '], "")
-            .parse()?;
-        let mandatory = cells.next().unwrap().inner_html().starts_with('X');
-        let comment = cells.next().unwrap().inner_html().replace('\n', "");
-        Ok(TableColumn {
-            name,
-            data_type,
-            mandatory,
-            comment,
-        })
-    }
+    // fn from_html(tab: &element_ref::ElementRef) -> anyhow::Result<TableColumn> {
+    //     let mut cells = tab.select(&P);
+    //     let name = cells.next().unwrap().inner_html().replace('\n', "");
+    //     let data_type = cells
+    //         .next()
+    //         .unwrap()
+    //         .inner_html()
+    //         .replace(['\n', ' '], "")
+    //         .parse()?;
+    //     let mandatory = cells.next().unwrap().inner_html().starts_with('X');
+    //     let comment = cells.next().unwrap().inner_html().replace('\n', "");
+    //     Ok(TableColumn {
+    //         name,
+    //         data_type,
+    //         mandatory,
+    //         comment,
+    //     })
+    // }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

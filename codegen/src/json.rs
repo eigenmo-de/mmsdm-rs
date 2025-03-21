@@ -1,60 +1,79 @@
+use std::collections::BTreeMap;
 
-
-use crate::html_tree::ElementParser;
-
-
+use crate::html_tree::{Element, ElementParser};
+use anyhow::anyhow;
 
 const PACKAGES_TO_SKIP: &[&str] = &["CONFIGURATION", "HISTORICAL_TABLES", "VOLTAGE_INSTRUCTIONS"];
 
+// fn parse_tables(el: &Element) -> PackageTables {
 
-fn parse_tables(el: &Element) -> PackageTables {
-
-}
+// }
 
 pub async fn run() -> anyhow::Result<()> {
     let mut files = Vec::new();
-    let mut readdir =  tokio::fs::read_dir("./cache").await?;
+    let mut readdir = tokio::fs::read_dir("./cache").await?;
 
     while let Some(item) = readdir.next_entry().await? {
-        
         files.push(item.path());
     }
 
-
-
     let mut current_package = String::new();
-
-
-
 
     let package_file = tokio::fs::read_to_string("./cache/Elec5.htm").await?;
 
     let parsed = ElementParser::parse_from_string(package_file)?;
 
+    // the title
+    let form = parsed
+        .iter_dfs_elements_of_tag("table")
+        .filter(|e| e.attributes.get("class").map(|x| x.as_str()) == Some("Form"))
+        .next()
+        .ok_or_else(|| anyhow!("Missing Form table"))?;
 
-    for el in parsed.iter_dfs().take(25) {
-        match el {
-            crate::html_tree::ElementOrContent::Content(c) => {
-                println!("{c}");
-            }
-            crate::html_tree::ElementOrContent::Element(element) => {
-                println!("{}", element.name);
-            }
-        }
-        
+    let [title, description] = form
+        .iter_dfs_elements_of_tag("tr")
+        .filter_map(|tr| Some(tr.children.get(1)?.element()?.iter_dfs_content().next()?))
+        .collect::<Vec<_>>()[..]
+    else {
+        todo!("danm");
+    };
+
+    dbg!(title, description);
+
+    let tables_grid = parsed
+        .iter_dfs_elements_of_tag("table")
+        .filter(|e| e.attributes.get("class").map(|x| x.as_str()) == Some("Grid"))
+        .next()
+        .ok_or_else(|| anyhow!("Missing Grid table"))?;
+
+    let mut tables = BTreeMap::new();
+    for tr in tables_grid.iter_dfs_elements_of_tag("tr") {
+        let [name, description, visibility] = tr.iter_dfs_content().collect::<Vec<_>>()[..] else {
+            todo!("danm");
+        };
+        tables.insert(name, (description, visibility));
     }
+
+    dbg!(tables);
+
+    // for el in parsed.iter_dfs().take(25) {
+    //     match el {
+    //         crate::html_tree::ElementOrContent::Content(c) => {
+    //             println!("{c}");
+    //         }
+    //         crate::html_tree::ElementOrContent::Element(element) => {
+    //             println!("{}", element.name);
+    //         }
+    //     }
+    // }
 
     // find all the package pages (including extras...)
 
     // find all the table pages (including extras)
-    
+
     // concat the table pages into reasonable groups
 
     // println!("{}", parsed);
-
-
-
-
 
     // for (package_name, mut url) in data
     //     .into_iter()
