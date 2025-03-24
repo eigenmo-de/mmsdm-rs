@@ -1,7 +1,8 @@
 use std::collections::BTreeMap;
 
 use crate::html_tree::{Element, ElementParser};
-use anyhow::anyhow;
+use anyhow::{anyhow, bail};
+use log::{error, info};
 
 const PACKAGES_TO_SKIP: &[&str] = &["CONFIGURATION", "HISTORICAL_TABLES", "VOLTAGE_INSTRUCTIONS"];
 
@@ -9,21 +10,20 @@ const PACKAGES_TO_SKIP: &[&str] = &["CONFIGURATION", "HISTORICAL_TABLES", "VOLTA
 
 // }
 
-pub async fn run() -> anyhow::Result<()> {
-    let mut files = Vec::new();
-    let mut readdir = tokio::fs::read_dir("./cache").await?;
+#[derive(Clone, Debug)]
+struct Package {
+    comment: String,
+    tables: BTreeMap<String, PackageTable>,
+}
 
-    while let Some(item) = readdir.next_entry().await? {
-        files.push(item.path());
-    }
+#[derive(Clone, Debug)]
+struct PackageTable {
+    link: String,
+    visibility: String,
+    comment: String,
+}
 
-    let mut current_package = String::new();
-
-    let package_file = tokio::fs::read_to_string("./cache/Elec5.htm").await?;
-
-    let parsed = ElementParser::parse_from_string(package_file)?;
-
-    // the title
+pub fn parse_package(parsed: &Element) -> anyhow::Result<(String, Package)> {
     let form = parsed
         .iter_dfs_elements_of_tag("table")
         .filter(|e| e.attributes.get("class").map(|x| x.as_str()) == Some("Form"))
@@ -35,7 +35,7 @@ pub async fn run() -> anyhow::Result<()> {
         .filter_map(|tr| Some(tr.children.get(1)?.element()?.iter_dfs_content().next()?))
         .collect::<Vec<_>>()[..]
     else {
-        todo!("danm");
+        bail!("no `tr` with package name/comment available")
     };
 
     dbg!(title, description);
@@ -47,168 +47,81 @@ pub async fn run() -> anyhow::Result<()> {
         .ok_or_else(|| anyhow!("Missing Grid table"))?;
 
     let mut tables = BTreeMap::new();
+
     for tr in tables_grid.iter_dfs_elements_of_tag("tr") {
-        let [name, description, visibility] = tr.iter_dfs_content().collect::<Vec<_>>()[..] else {
-            todo!("danm");
+        let [name, comment, visibility] = tr.iter_dfs_content().collect::<Vec<_>>()[..] else {
+            bail!("unable to extract three columns from row: {tr:?}")
         };
-        tables.insert(name, (description, visibility));
+
+        if name == "Name" {
+            continue;
+        }
+
+        let Some(a_element) = tr.iter_dfs_elements_of_tag("a").next() else {
+            bail!("no `a` element in row: {tr:?}")
+        };
+        let Some(link) = a_element.attributes.get("href").cloned() else {
+            bail!("`a` element present but no href attribute in row: {tr:?}")
+        };
+
+        tables.insert(
+            name.clone(),
+            PackageTable {
+                link,
+                visibility: visibility.clone(),
+                comment: comment.clone(),
+            },
+        );
     }
 
-    dbg!(tables);
+    Ok((
+        title.clone(),
+        Package {
+            comment: description.clone(),
+            tables,
+        },
+    ))
+}
 
-    // for el in parsed.iter_dfs().take(25) {
-    //     match el {
-    //         crate::html_tree::ElementOrContent::Content(c) => {
-    //             println!("{c}");
-    //         }
-    //         crate::html_tree::ElementOrContent::Element(element) => {
-    //             println!("{}", element.name);
-    //         }
-    //     }
-    // }
+pub async fn run() -> anyhow::Result<()> {
+    let mut files = Vec::new();
+    let mut readdir = tokio::fs::read_dir("./cache").await?;
 
-    // find all the package pages (including extras...)
+    while let Some(item) = readdir.next_entry().await? {
+        files.push(item.path());
+    }
 
-    // find all the table pages (including extras)
+    let mut packages = BTreeMap::new();
 
-    // concat the table pages into reasonable groups
+    for file in files.iter() {
+        // go through all cached files
+        // and try to parse a package from each file.
 
-    // println!("{}", parsed);
+        info!("attempting to parse package from: {}", file.display());
+        let package_file = tokio::fs::read_to_string(file).await?;
 
-    // for (package_name, mut url) in data
-    //     .into_iter()
-    //     .filter(|(k, _)| !PACKAGES_TO_SKIP.contains(&k.as_str()))
-    // {
-    //     let urls = [url.clone(), {
-    //         // secondary url that is _sometimes_ needed
-    //         url.set_path(&url.path().replace(".htm", "_1.htm"));
-    //         url
-    //     }];
+        let parsed = ElementParser::parse_from_string(package_file)?;
 
-    //     for url in urls {
-    //         info!("Getting data for pacakge {package_name} at {url}");
+        // the title
 
-    //         let req = client.get(url.clone()).send().await?;
+        match parse_package(&parsed) {
+            Ok((name, package)) if PACKAGES_TO_SKIP.contains(&name.as_str()) => {
+                info!("Skipping package: {name} with {} tables", package.tables.len());
+                continue;
+            }
+            Ok((name, package)) => {
 
-    //         if req.status().as_u16() == 404 {
-    //             info!("Didn't find _1 url for {package_name} - not all packages have a _1 url so this is normal.");
-    //             // the only case we can continue on error
-    //             continue;
-    //         }
+                match packages.get_mut(key)
+                packages.insert(name, package);
+            }
+            Err(e) => {
+                error!("Error parsing package: {e:?}");
+                continue;
+            }
+        }
+    }
 
-    //         let data = req
-    //             .error_for_status()
-    //             .context(package_name.to_string())?
-    //             .text()
-    //             .await?;
+    dbg!(packages);
 
-    //         let parsed = TablePageParserCell::parse_from_string(data)
-    //             .with_context(|| format!("Parsing data for {package_name}"))?;
-
-    //         match package_with_table_urls.get_mut(&package_name) {
-    //             Some(existing) => {
-    //                 existing.extend(parsed);
-    //             }
-    //             None => {
-    //                 package_with_table_urls.insert(package_name.clone(), parsed);
-    //             }
-    //         }
-    //         // avoid getting rate limited...
-    //         tokio::time::sleep(Duration::from_millis(500)).await;
-    //     }
-    // }
-
-    // All the links down the left side of the page
-    // which are organized in a nested tree, first layer
-    // is the "Package" and inside the package there are
-    // multiple "Tables".
-
-    // for el in doc.select(&A) {
-    //     dbg!(&current_package);
-    //     let text = el.inner_html();
-    //     dbg!(&text);
-    //     if text.starts_with("Package:") {
-    //         dbg!(&text);
-    //         let package = text.split(' ').nth(1).map(string::ToString::to_string);
-
-    //         // We need to keep the name of the package that we are
-    //         // currently getting tables for
-    //         current_package = package.clone();
-    //     } else if text.starts_with("Table:") {
-    //         // slow down so we don't get rate limited
-    //         thread::sleep(Duration::from_millis(300));
-
-    //         // We can only deal with a "Table" link
-    //         // if we are dealing with a "Package".
-    //         if let Some(current) = current_package.clone() {
-    //             // get the link and remove everything after the #
-    //             let link_val = el
-    //                 .value()
-    //                 .attr("href")
-    //                 .unwrap()
-    //                 .split(".htm#")
-    //                 .next()
-    //                 .unwrap();
-
-    //             dbg!(&link_val);
-
-    //             // some tables have tons of columns and have a paginated
-    //             // column listing, such that for each page we have to ask
-    //             // for the base url, as well as _1, _2, etc, until we
-    //             // stop recieving a successfull HTTP response.
-    //             let mut docs = Vec::new();
-    //             let inner_url = format!("{}/{}.htm", BASE_URL, link_val);
-
-    //             let res = client.get(&inner_url).send().await?;
-
-    //             // skip tables from packages we don't want to deal with
-    //             if res.status().as_u16() != 200 {
-    //                 panic!("Link: {}, {}", inner_url, res.status());
-    //             }
-
-    //             if !PACKAGES_TO_SKIP.contains(&current.as_str()) {
-    //                 let body = res.text().await?;
-    //                 let inner_doc = scraper::Html::parse_document(&body);
-    //                 let mut doc_pages_to_get = Vec::new();
-
-    //                 for pl in inner_doc.select(&A) {
-    //                     if let Some(href) = pl.value().attr("href") {
-    //                         let page_links = href.split(".htm#").next().unwrap();
-    //                         if LINK_MATCH.captures(page_links).is_some() {
-    //                             doc_pages_to_get.push(page_links.to_string());
-    //                         }
-    //                     }
-    //                 }
-
-    //                 docs.push(inner_doc);
-
-    //                 for l in doc_pages_to_get {
-    //                     let get_url = format!("{}/{}", BASE_URL, l);
-    //                     let res = client.get(&get_url).send().await?;
-
-    //                     if res.status().as_u16() != 200 {
-    //                         panic!("Link a: {}, {}", get_url, res.status());
-    //                     }
-
-    //                     let body = res.text().await?;
-    //                     let inner_doc = scraper::Html::parse_document(&body);
-
-    //                     docs.push(inner_doc);
-    //                 }
-
-    //                 let table_info = mms::TablePage::from_html(docs)?;
-    //                 let key = table_info.get_summary_name();
-
-    //                 info.entry(current)
-    //                     .and_modify(|e| {
-    //                         e.insert(key.clone(), table_info.clone());
-    //                     })
-    //                     .or_insert_with(|| iter::once((key, table_info)).collect());
-    //             }
-    //         }
-    //     };
-    // }
-    // let asstr = serde_json::to_string(&info).unwrap();
-    // fs::write(format!("mmsdm_v{VERSION}.json"), asstr).unwrap();
     Ok(())
 }

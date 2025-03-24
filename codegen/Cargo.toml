@@ -1,6 +1,6 @@
 [package]
 name = "mmsdm-codegen"
-version = "0.1.0"
+version = "0.0.0"
 authors = ["Eric Sheppard <eric@eigenmo.de>", "Nayika Sheppard <nayika@eigenmo.de>"]
 edition = "2018"
 license = "MIT"
