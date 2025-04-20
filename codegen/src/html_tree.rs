@@ -7,7 +7,7 @@ use html5ever::tokenizer::TokenSink;
 use html5ever::tokenizer::TokenSinkResult;
 use html5ever::tokenizer::Tokenizer;
 use html5ever::tokenizer::TokenizerOpts;
-use log::info;
+use log::debug;
 
 use core::fmt;
 
@@ -425,7 +425,7 @@ struct DfsTree {
 
 impl DfsTree {
     fn handle_token(&mut self, token: Token) -> anyhow::Result<()> {
-        info!("Adding element: {token:?}");
+        debug!("Adding element: {token:?}");
 
         // consider a check on the length of the data vec here to avoid exhaustion?
         if self.data.len() > 1_000_000 {
@@ -453,7 +453,7 @@ impl DfsTree {
                 while let Some(el) = self.data.pop() {
                     match el {
                         ElementOrContent::Element(mut el) if tag.name == el.name => {
-                            info!(
+                            debug!(
                                 "Checking el {} against tag {} - adding {} children",
                                 el.name,
                                 tag.name,
@@ -491,12 +491,12 @@ impl DfsTree {
                 bail!("Parsing error: {cow}");
             }
             _ => {
-                // info!("got other");
+                // debug!("got other");
                 // *self.state.borrow_mut() = PackagePageParser::Base;
             }
         };
 
-        dbg!(&self.data.len());
+        // dbg!(&self.data.len());
 
         Ok(())
     }
