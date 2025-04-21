@@ -395,6 +395,17 @@ impl Element {
     //         max_depth,
     //     }
     // }
+
+    pub fn iter_child_elements<'a, 'b>(
+        &'a self,
+    ) -> impl Iterator<Item = &'b Element> 
+    where 'a: 'b {
+
+        self.children.iter().filter_map(|n| match n {
+            ElementOrContent::Content(_) => None,
+            ElementOrContent::Element(element) => Some(element),
+        })
+    }
 }
 
 #[derive(Debug, Clone)]

@@ -1,10 +1,10 @@
-use std::{any, collections::BTreeMap, path::PathBuf, str::FromStr};
+use std::{any, collections::BTreeMap, f32::consts::E, path::PathBuf, str::FromStr};
 
 use crate::{
     html_tree::{Element, ElementParser},
     mms::{DataType, TableNotes},
 };
-use anyhow::{anyhow, bail, ensure, Context};
+use anyhow::{Context, anyhow, bail, ensure};
 use html5ever::tokenizer::Token::EOFToken;
 use log::{error, info};
 
@@ -107,7 +107,7 @@ struct Table {
     // preserve ordering
     primary_key_columns: Vec<String>,
     // preserve ordering
-    index_columns: Vec<String>,
+    index_columns: (Vec<String>, Vec<String>),
     // preserve ordering
     content: Vec<TableColumn>,
 }
@@ -126,43 +126,129 @@ struct TableColumn {
     comment: String,
 }
 
+fn parse_name_and_comment(table: &Element) -> anyhow::Result<(String, String)> {
+    let name_and_comment = table
+        .iter_dfs_elements_of_tag("td")
+        .filter_map(|el| {
+            if el.attributes.get("width")? != "75%" {
+                return None;
+            };
+            el.iter_dfs_content().next().cloned()
+        })
+        .collect::<Vec<_>>();
+
+    let [name, comment] = name_and_comment.as_slice() else {
+        bail!("Unable to find name and comment within data: {name_and_comment:?}");
+    };
+
+    Ok((name.to_string(), comment.to_string()))
+}
+
+fn parse_description(table: &Element) -> String {
+    table
+        .iter_dfs_content()
+        .map(|s| s.as_str())
+        .collect::<String>()
+}
+
+fn parse_notes(table: &Element) -> anyhow::Result<BTreeMap<String, TableNote>> {
+    table
+        .iter_dfs_elements_of_tag("tr")
+        .skip(1)
+        .map(anyhow::Ok)
+        .map(|res| {
+            let row = res?;
+
+            let name = row
+                .iter_dfs_elements_of_tag("td")
+                .nth(0)
+                .ok_or_else(|| anyhow!("Missing td at index [0] in table note"))?
+                .iter_dfs_content()
+                .map(|s| s.as_str())
+                .collect::<String>();
+
+            let comment = row
+                .iter_dfs_elements_of_tag("td")
+                .nth(1)
+                .ok_or_else(|| anyhow!("Missing td at index [1] in table note"))?
+                .iter_dfs_content()
+                .map(|s| s.as_str())
+                .collect::<String>();
+
+            let value = row
+                .iter_dfs_elements_of_tag("td")
+                .nth(2)
+                .ok_or_else(|| anyhow!("Missing td at index [2] in table note"))?
+                .iter_dfs_content()
+                .map(|s| s.as_str())
+                .collect::<String>();
+
+            Ok((name, TableNote { comment, value }))
+        })
+        .collect::<anyhow::Result<BTreeMap<String, TableNote>>>()
+}
+
+fn parse_column_names(table: &Element) -> Vec<String> {
+    table
+        .iter_dfs_elements_of_tag("tr")
+        .skip(1)
+        .filter_map(|el| el.iter_dfs_content().next())
+        .cloned()
+        .collect::<Vec<_>>()
+}
+
+fn parse_content(table: &Element) -> anyhow::Result<Vec<TableColumn>> {
+    let mut columns = Vec::new();
+    Ok(columns)
+}
+
 fn parse_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, Table>> {
     let mut parsed_tables = BTreeMap::new();
 
-    let table_starts = parsed
-        .iter_dfs_elements_of_tag("h2")
-        .filter(|el| {
-            el.iter_dfs_content()
-                .next()
-                .map(|c| c.starts_with("Table:"))
-                .unwrap_or(false)
+    let body_el = parsed
+        .iter_dfs_elements_of_tag("body")
+        .next()
+        .ok_or_else(|| anyhow!("Missing body element"))?;
+
+    let table_starts = body_el
+        .iter_child_elements()
+        .enumerate()
+        .filter_map(|(idx, el)| {
+            if el.name == "h2"
+                && el
+                    .iter_dfs_content()
+                    .next()
+                    .map(|c| c.starts_with("Table:"))
+                    .unwrap_or(false)
+            {
+                Some(idx)
+            } else {
+                None
+            }
         })
-        .collect::<Vec<_>>();
+        .collect::<Vec<usize>>();
 
     for table in table_starts {
         // get the next five/six tables: commnet, description, notes, pk, maybe index, content,
 
-        let headings = table
-            .iter_dfs_elements_of_tag("h3")
+        let headings = body_el
+            .iter_child_elements()
+            .skip(table)
+            .filter(|el| el.name == "h3")
             .map(|el| {
                 el.iter_dfs_content()
                     .map(|s| s.as_str())
                     .collect::<String>()
             })
-            .take(6)
+            .take(7)
             .collect::<Vec<_>>();
 
-        let tables = table
-            .iter_dfs_elements_of_tag("table")
-            .take(6)
+        let tables = body_el
+            .iter_child_elements()
+            .skip(table)
+            .filter(|el| el.name == "table")
+            .take(7)
             .collect::<Vec<_>>();
-
-        ensure!(
-            headings.len() >= 5,
-            "Headings of len {} is too short: {:?}",
-            headings.len(),
-            headings
-        );
 
         // item[0] => comment
         // item[1] => description
@@ -171,115 +257,54 @@ fn parse_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, Table>> {
         // item[4] => index OR content
         // item[5] => IF item[4] == index, content, ELSE skip
 
-        let name_and_comment = tables[0]
-            .iter_dfs_elements_of_tag("td")
-            .filter_map(|el| {
-                if el.attributes.get("width")? != "75%" {
-                    return None;
-                };
-                el.iter_dfs_content().next().cloned()
-            })
-            .collect::<Vec<_>>();
+        let (name, comment) = parse_name_and_comment(tables[0])?;
 
-        let [name, comment] = name_and_comment.as_slice() else {
-            bail!("");
+        let find_heading = |heading, nth| {
+            headings
+                .iter()
+                .enumerate()
+                .filter(|(_, h)| h.starts_with(heading))
+                .nth(nth)
+                .ok_or_else(|| {
+                    anyhow!(
+                        "No {heading} heading available for table {name} in headings {headings:?}"
+                    )
+                })
+                .map(|(idx, _)| idx)
         };
 
-        ensure!(
-            headings[1] == "Description",
-            "Parsing table {name}: Unexpected heading at [1], should be Description but was {}",
-            headings[1]
-        );
+        let description_index = find_heading("Description", 0).ok();
+        let notes_index = find_heading("Notes", 0)?;
+        let primary_key_columns_index = find_heading("Primary Key Columns", 0)?;
+        let index_columns_index_1st = find_heading("Index Columns", 0).ok();
+        let index_columns_index_2nd = find_heading("Index Columns", 1).ok();
+        let content_index = find_heading("Content", 0)?;
 
-        let description = tables[1]
-            .iter_dfs_content()
-            .map(|s| s.as_str())
-            .collect::<String>();
-
-        ensure!(
-            headings[2] == "Notes",
-            "Parsing table {name}: Unexpected heading at [2], should be Notes but was {}",
-            headings[2]
-        );
-
-        let notes = tables[2]
-            .iter_dfs_elements_of_tag("tr")
-            .skip(1)
-            .map(anyhow::Ok)
-            .map(|res| {
-                let row = res?;
-
-                let name = row
-                    .iter_dfs_elements_of_tag("td")
-                    .nth(0)
-                    .ok_or_else(|| anyhow!("Missing td at index [0] in table note"))?
-                    .iter_dfs_content()
-                    .map(|s| s.as_str())
-                    .collect::<String>();
-
-                let comment = row
-                    .iter_dfs_elements_of_tag("td")
-                    .nth(1)
-                    .ok_or_else(|| anyhow!("Missing td at index [1] in table note"))?
-                    .iter_dfs_content()
-                    .map(|s| s.as_str())
-                    .collect::<String>();
-
-                let value = row
-                    .iter_dfs_elements_of_tag("td")
-                    .nth(2)
-                    .ok_or_else(|| anyhow!("Missing td at index [2] in table note"))?
-                    .iter_dfs_content()
-                    .map(|s| s.as_str())
-                    .collect::<String>();
-
-                Ok((name, TableNote { comment, value }))
-            })
-            .collect::<anyhow::Result<BTreeMap<String, TableNote>>>()
+        let description = match description_index {
+            Some(idx) => parse_description(tables[idx]),
+            None => String::new(),
+        };
+        let notes = parse_notes(tables[notes_index])
             .with_context(|| format!("Error parsing notes for table {name}"))?;
-
-        let (primary_key_columns, index_columns, content) = if headings[3] == "Primary Key Columns"
-        {
-            let pk = tables[3]
-                .iter_dfs_elements_of_tag("tr")
-                .skip(1)
-                .filter_map(|el| el.iter_dfs_content().next())
-                .cloned()
-                .collect::<Vec<_>>();
-
-            ensure!(headings[4] == "Content", "");
-
-            (pk, Vec::new(), Vec::new())
-        } else {
-            let pk = tables[3]
-                .iter_dfs_elements_of_tag("tr")
-                .skip(1)
-                .filter_map(|el| el.iter_dfs_content().next())
-                .cloned()
-                .collect::<Vec<_>>();
-
-            ensure!(headings[4] == "Index", "");
-
-            let index = tables[4]
-                .iter_dfs_elements_of_tag("tr")
-                .skip(1)
-                .filter_map(|el| el.iter_dfs_content().next())
-                .cloned()
-                .collect::<Vec<_>>();
-            
-            ensure!(headings[5] == "content", "");
-
-            (pk, index, Vec::new())
+        let primary_key_columns = parse_column_names(tables[primary_key_columns_index]);
+        let index_1st = match index_columns_index_1st {
+            Some(idx) => parse_column_names(tables[idx]),
+            None => Vec::new(),
         };
+        let index_2nd = match index_columns_index_2nd {
+            Some(idx) => parse_column_names(tables[idx]),
+            None => Vec::new(),
+        };
+        let content = parse_content(tables[content_index])?;
 
         parsed_tables.insert(
-            name.to_string(),
+            name,
             Table {
-                comment: comment.to_string(),
+                comment,
                 description,
                 notes,
                 primary_key_columns,
-                index_columns,
+                index_columns: (index_1st, index_2nd),
                 content,
             },
         );
