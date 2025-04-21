@@ -6,6 +6,7 @@ use crate::{
 };
 use anyhow::{Context, anyhow, bail, ensure};
 use html5ever::tokenizer::Token::EOFToken;
+use indexmap::IndexMap;
 use log::{error, info, warn};
 
 const PACKAGES_TO_SKIP: &[&str] = &["CONFIGURATION", "HISTORICAL_TABLES", "VOLTAGE_INSTRUCTIONS"];
@@ -371,12 +372,6 @@ fn parse_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, Table>> {
     Ok(parsed_tables)
 }
 
-// page types
-// a) package:X
-// b) package... continued
-// c) table
-// d) table... continued
-
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct FileNameParts {
     pub number: u16,
@@ -431,7 +426,8 @@ pub async fn run() -> anyhow::Result<()> {
         );
     }
 
-    let mut packages = BTreeMap::<String, Package>::new();
+    let mut packages = IndexMap::<String, Package>::new();
+    let mut tables = IndexMap::<String, Table>::new();
 
     for (_, file) in files.iter() {
         // go through all cached files
@@ -441,8 +437,6 @@ pub async fn run() -> anyhow::Result<()> {
         let package_file = tokio::fs::read_to_string(file).await?;
 
         let parsed = ElementParser::parse_from_string(package_file)?;
-
-        // the title
 
         if parsed
             .iter_dfs_elements_of_tag("h2")
@@ -454,6 +448,12 @@ pub async fn run() -> anyhow::Result<()> {
             info!("Diagram only page in file {}, skipping", file.display());
             continue;
         }
+
+        // page types
+        // a) package:X
+        // b) package... continued
+        // c) table
+        // d) table... continued
 
         match parse_package(&parsed) {
             Ok((name, package)) if PACKAGES_TO_SKIP.contains(&name.as_str()) => {
@@ -495,6 +495,17 @@ pub async fn run() -> anyhow::Result<()> {
                     continued.len()
                 );
 
+                let Some((_, last_package)) = packages.last_mut() else {
+                    bail!("No last package available");
+                };
+
+                for (n, pt) in continued {
+                    let name = n.clone();
+                    if let Some(_) = last_package.tables.insert(n, pt) {
+                        bail!("Duplicate table {name}");
+                    }
+                }
+
                 continue;
             }
             Err(e) => {
@@ -506,12 +517,14 @@ pub async fn run() -> anyhow::Result<()> {
         }
 
         match parse_tables(&parsed) {
-            Ok(tables) => {
+            Ok(new_tables) => {
                 info!(
                     "Successfully parsed page {} as tables with {} tables schemas",
                     file.display(),
-                    tables.len()
+                    new_tables.len()
                 );
+
+                tables.extend(new_tables);
 
                 continue;
             }
@@ -531,6 +544,12 @@ pub async fn run() -> anyhow::Result<()> {
                     continued.len()
                 );
 
+                let Some((_, last_table)) = tables.last_mut() else {
+                    bail!("No last package available");
+                };
+
+                last_table.content.extend(continued);
+
                 continue;
             }
             Err(e) => {
@@ -543,8 +562,6 @@ pub async fn run() -> anyhow::Result<()> {
 
         bail!("Unable to parse page {}", file.display());
     }
-
-    // dbg!(packages);
 
     Ok(())
 }

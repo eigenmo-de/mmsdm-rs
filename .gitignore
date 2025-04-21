@@ -4,3 +4,4 @@
 codegen/target
 __pycache__
 Cargo.lock
+cache/*
