@@ -2,12 +2,16 @@ use std::{any, collections::BTreeMap, f32::consts::E, path::PathBuf, str::FromSt
 
 use crate::{
     html_tree::{Element, ElementParser},
-    mms::{DataType, TableNotes},
+    mms::{DataType, TableColumn, TableNotes},
 };
 use anyhow::{Context, anyhow, bail, ensure};
 use html5ever::tokenizer::Token::EOFToken;
 use indexmap::IndexMap;
 use log::{error, info, warn};
+use serde::{Deserialize, Serialize};
+use tokio::{fs, io::AsyncWriteExt};
+
+use crate::VERSION;
 
 const PACKAGES_TO_SKIP: &[&str] = &["CONFIGURATION", "HISTORICAL_TABLES", "VOLTAGE_INSTRUCTIONS"];
 
@@ -15,10 +19,10 @@ const PACKAGES_TO_SKIP: &[&str] = &["CONFIGURATION", "HISTORICAL_TABLES", "VOLTA
 
 // }
 
-#[derive(Clone, Debug)]
-struct Package {
-    comment: String,
-    tables: BTreeMap<String, PackageTable>,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Package {
+    pub comment: String,
+    pub tables: BTreeMap<String, PackageTable>,
 }
 
 impl Package {
@@ -33,11 +37,11 @@ impl Package {
     }
 }
 
-#[derive(Clone, Debug)]
-struct PackageTable {
-    link: String,
-    visibility: String,
-    comment: String,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PackageTable {
+    pub link: String,
+    pub visibility: String,
+    pub comment: String,
 }
 
 fn parse_package_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, PackageTable>> {
@@ -112,31 +116,141 @@ fn parse_package(parsed: &Element) -> anyhow::Result<(String, Package)> {
     ))
 }
 
-#[derive(Clone, Debug)]
-struct Table {
-    comment: String,
-    description: String,
-    notes: BTreeMap<String, TableNote>,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Table {
+    pub comment: String,
+    pub description: String,
+    pub notes: BTreeMap<String, TableNote>,
     // preserve ordering
-    primary_key_columns: Vec<String>,
+    pub primary_key_columns: Vec<String>,
     // preserve ordering
-    index_columns: (Vec<String>, Vec<String>, Vec<String>),
+    pub index_columns: (Vec<String>, Vec<String>, Vec<String>),
     // preserve ordering
+    // must be accessed via the `columns()` method
     content: Vec<TableColumn>,
 }
 
-#[derive(Clone, Debug)]
-struct TableNote {
-    comment: String,
-    value: String,
+impl Table {
+    pub fn has_any_string_columns(&self) -> bool {
+        self.content
+            .iter()
+            .any(|c| matches!(c.data_type, DataType::Char | DataType::Varchar { .. }))
+    }
+    pub fn columns(&self) -> impl Iterator<Item = TableColumn> {
+        // if intervention exists, it must be mandatory
+        // as it must also be in the primary key
+
+        self.content.clone().into_iter().map(|mut c| {
+            if c.name.to_lowercase() == "intervention" {
+                c.mandatory = true;
+            };
+            c
+        })
+    }
+
+    // pub fn frequency(&self) -> TableFrequency {
+    //     // special cases
+    //     if self.summary.name == "NEGATIVE_RESIDUE" {
+    //         return TableFrequency::FiveMinute;
+    //     }
+
+    //     // general 5min cases
+    //     if ["DISPATCH", "P5MIN"]
+    //         .iter()
+    //         .any(|n| self.summary.name.starts_with(n))
+    //     {
+    //         return TableFrequency::FiveMinute;
+    //     }
+
+    //     // general 30min cases
+    //     if ["PREDISPATCH", "ROOFTOP"]
+    //         .iter()
+    //         .any(|n| self.summary.name.starts_with(n))
+    //     {
+    //         return TableFrequency::HalfHourly;
+    //     }
+
+    //     // fallback
+    //     // this should especially be used for cases where the resolution has changed over time (eg from 30 to 5)
+    //     TableFrequency::Unknown
+    // }
+
+    // pub fn find_column(&self, name: &str) -> ControlFlow<TableColumn, ()> {
+    //     // make sure in pk
+    //     if !self
+    //         .primary_key_columns()
+    //         .cols
+    //         .iter()
+    //         .any(|c| c.to_lowercase() == name)
+    //     {
+    //         return ControlFlow::Continue(());
+    //     }
+
+    //     if let Some(col) = self
+    //         .columns
+    //         .columns
+    //         .iter()
+    //         .find(|c| c.name.to_lowercase() == name)
+    //     {
+    //         // make sure mandatory
+    //         if !col.mandatory {
+    //             return ControlFlow::Continue(());
+    //         }
+
+    //         return ControlFlow::Break(col.clone());
+    //     }
+
+    //     ControlFlow::Continue(())
+    // }
+
+    // pub fn partition_column(&self) -> ControlFlow<TableColumn, ()> {
+    //     // in preference order
+    //     self.find_column("predispatchseqno")?;
+    //     self.find_column("effectivedate")?;
+    //     self.find_column("tradingdate")?;
+    //     self.find_column("interval_datetime")?;
+    //     self.find_column("settlementdate")?;
+    //     self.find_column("day")?;
+    //     self.find_column("offerdate")?;
+    //     // these specific tables have `Integer(3 or 4)` periodid which represents the relative interval only
+    //     if !["IRFMAMOUNT", "REALLOCATIONINTERVAL"].contains(&self.summary.name.as_str()) {
+    //         self.find_column("periodid")?;
+    //     }
+    //     self.find_column("datetime")?;
+
+    //     // these are more like transaction time so
+    //     // they are last preference
+    //     self.find_column("run_datetime")?;
+    //     self.find_column("offerdatetime")?;
+    //     self.find_column("publish_datetime")?;
+
+    //     ControlFlow::Continue(())
+    // }
+
+    pub fn primary_key_columns(&self) -> Vec<String> {
+        let mut base = self.primary_key_columns.clone();
+
+        // if intervention exists, it must be in the primary key
+        if let Some(intervention) = self
+            .columns()
+            .find(|c| c.name.to_lowercase() == "intervention")
+        {
+            if !base.contains(&intervention.name) {
+                base.push(intervention.name.to_string());
+            }
+        }
+
+        base
+    }
+    // pub fn get_summary_name(&self) -> String {
+    //     self.summary.get_name()
+    // }
 }
 
-#[derive(Clone, Debug)]
-struct TableColumn {
-    name: String,
-    data_type: DataType,
-    mandatory: bool,
-    comment: String,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TableNote {
+    pub comment: String,
+    pub value: String,
 }
 
 fn parse_name_and_comment(table: &Element) -> anyhow::Result<(String, String)> {
@@ -411,7 +525,7 @@ impl FromStr for FileNameParts {
     }
 }
 
-pub async fn run() -> anyhow::Result<()> {
+pub async fn run() -> anyhow::Result<DataModel> {
     let mut files = BTreeMap::<FileNameParts, PathBuf>::new();
     let mut readdir = tokio::fs::read_dir("./cache").await?;
 
@@ -563,5 +677,11 @@ pub async fn run() -> anyhow::Result<()> {
         bail!("Unable to parse page {}", file.display());
     }
 
-    Ok(())
+    Ok(DataModel { packages, tables })
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DataModel {
+    pub packages: IndexMap<String, Package>,
+    pub tables: IndexMap<String, Table>,
 }

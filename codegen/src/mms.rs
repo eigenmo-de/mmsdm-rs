@@ -50,7 +50,7 @@ pub struct TablePage {
 
 pub enum TableFrequency {
     HalfHourly,
-    FiveMinute,
+    FiveMinute, 
     Unknown,
 }
 

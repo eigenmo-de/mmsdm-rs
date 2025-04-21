@@ -1,4 +1,7 @@
+use anyhow::Context;
+use log::info;
 use structopt::StructOpt;
+use tokio::io::{AsyncReadExt, AsyncSeekExt, AsyncWriteExt};
 
 mod analyse;
 mod download;
@@ -33,18 +36,44 @@ async fn run() -> Result<(), anyhow::Error> {
     env_logger::Builder::new()
         .filter_level(log::LevelFilter::Info)
         .init();
+
+    let file_name = format!("mmsdm_v{VERSION}.json");
     match AemoCodegen::from_args() {
         AemoCodegen::SqlServerTables => {
             sql_server_tables::run()?;
         }
         AemoCodegen::Rust => {
-            rust::run()?;
+            let mut data = String::new();
+            let mut f = tokio::fs::OpenOptions::new()
+                .read(true)
+                .open(&file_name)
+                .await
+                .with_context(|| format!("Opening file: `{file_name}`"))?;
+
+            f.read_to_string(&mut data).await?;
+            let de = serde_json::from_str(&data)?;
+
+            info!("Generating rust code");
+            rust::run(de)?;
         }
         AemoCodegen::Analyse => {
             analyse::run()?;
         }
         AemoCodegen::Json => {
-            json::run().await?;
+            let dm = json::run().await?;
+
+            let ser = serde_json::to_string_pretty(&dm)?;
+            let mut f = tokio::fs::OpenOptions::new()
+                .create(true)
+                .truncate(true)
+                .write(true)
+                .open(&file_name)
+                .await
+                .with_context(|| format!("Opening file: `{file_name}`"))?;
+
+            f.write_all(ser.as_bytes()).await?;
+
+            f.flush().await?;
         }
         AemoCodegen::Download => {
             download::run().await?;

@@ -2,13 +2,19 @@ use anyhow::Context;
 use codegen::Scope;
 use heck::{ToSnakeCase, ToTitleCase, ToUpperCamelCase};
 use itertools::Itertools;
+use log::info;
 use std::{
     collections::{self, HashMap},
     fmt::Debug,
     fs, str,
 };
 
-use crate::VERSION;
+use anyhow::anyhow;
+
+use crate::{
+    VERSION,
+    json::{DataModel, Table},
+};
 
 use crate::KW;
 use crate::{mms, pdr};
@@ -211,22 +217,6 @@ impl mms::TableColumn {
     }
 }
 
-impl mms::TableColumns {
-    fn as_arrow_schema(&self) -> String {
-        format!(
-            "arrow::datatypes::Schema::new(alloc::vec::Vec::from([
-    {fields}
-]))",
-            fields = self
-                .columns
-                .iter()
-                .map(|col| col.as_arrow_field())
-                .collect::<Vec<_>>()
-                .join(",\n    "),
-        )
-    }
-}
-
 impl mms::TableNote {
     fn get_rust_doc(&self) -> String {
         format!("* ({}) {} {}", self.name, self.comment, self.value)
@@ -246,12 +236,6 @@ impl mms::TableNotes {
     }
 }
 
-impl mms::Description {
-    fn get_rust_doc(&self) -> String {
-        format!("# Description\n {}", self.inner)
-    }
-}
-
 impl mms::PkColumns {
     fn get_rust_doc(&self) -> String {
         self.cols
@@ -262,43 +246,45 @@ impl mms::PkColumns {
     }
 }
 
-impl mms::TableSummary {
-    fn get_rust_doc(&self) -> String {
-        format!("## {}\n _{}_", self.name, self.comment)
-    }
-}
-
-impl mms::TablePage {
-    pub fn get_rust_doc(&self, report: &pdr::Report) -> String {
+impl Table {
+    pub fn get_rust_doc(&self, name: &str, report: &pdr::Report) -> String {
         //use heck::TitleCase;
         format!(
             r#"# Summary
+
+## {name}
 
 {summary}
 
 {pdr_report}
 
+# Description
 {description_opt}
 
+# Notes
 {notes_opt}
 
 # Primary Key Columns
 
 {primary_key}
 "#,
-            summary = self.summary.get_rust_doc().replace('\t', ""),
+            summary = self.comment.replace('\t', ""),
             pdr_report = report.get_rust_doc().replace('\t', ""),
-            description_opt = self
-                .description
-                .as_ref()
-                .map(|d| d.get_rust_doc().replace('\t', ""))
-                .unwrap_or_else(|| "".into()),
+            description_opt = self.description.replace('\t', ""),
             notes_opt = self
                 .notes
-                .as_ref()
-                .map(|n| n.get_rust_doc().replace('\t', ""))
-                .unwrap_or_else(|| "".into()),
-            primary_key = self.primary_key_columns().get_rust_doc().replace('\t', ""),
+                .iter()
+                .map(|(name, note)| {
+                    format!("* ({name}) {} {}", note.comment, note.value).replace('\t', "")
+                })
+                .collect::<Vec<_>>()
+                .join("\n"),
+            primary_key = self
+                .primary_key_columns
+                .iter()
+                .map(|c| format!("* {}", c).replace('\t', ""))
+                .collect::<Vec<_>>()
+                .join("\n"),
         )
     }
 }
@@ -367,8 +353,9 @@ impl pdr::Report {
 }
 
 fn codegen_struct(
+    name: &str,
     pdr_report: &pdr::Report,
-    table: &mms::TablePage,
+    table: &Table,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
     let mut manager_struct = codegen::Struct::new(&pdr_report.get_rust_manager_struct_name());
@@ -396,19 +383,19 @@ fn codegen_struct(
 
     let mut mapping = codegen::Struct::new(&pdr_report.get_rust_struct_mapping_name());
     mapping.vis("pub");
-    mapping.tuple_field(format!("[usize; {}]", table.columns().columns.len()));
+    mapping.tuple_field(format!("[usize; {}]", table.columns().count()));
     mapping.fmt(fmtr)?;
 
     let mut current_struct = codegen::Struct::new(&pdr_report.get_rust_struct_name());
     current_struct
         .vis("pub")
-        .doc(&table.get_rust_doc(pdr_report))
+        .doc(&table.get_rust_doc(name, pdr_report))
         .derive("Debug")
         .derive("PartialEq")
         .derive("Eq")
         .generic("'data");
 
-    for col in table.columns().columns.iter() {
+    for col in table.columns() {
         dbg!(
             col.is_dispatch_period(),
             col.is_trading_period(),
@@ -476,7 +463,7 @@ fn codegen_struct(
             codegen::Impl::new(format!("{}<'data>", pdr_report.get_rust_struct_name()));
         struct_impl.generic("'data");
 
-        for col in table.columns().columns.iter() {
+        for col in table.columns() {
             if col.data_stored_in_string() {
                 // need to add a getter function
                 let field_name = col.escaped_field_name();
@@ -507,7 +494,7 @@ fn codegen_struct(
 
 fn codegen_impl_get_table(
     pdr_report: &pdr::Report,
-    table: &mms::TablePage,
+    table: &Table,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
     let mut current_impl = codegen::Impl::new(&pdr_report.get_rust_manager_struct_name());
@@ -526,7 +513,7 @@ fn codegen_impl_get_table(
         from_row.ret("mmsdm_core::Result<Self::Row<'data>>");
         from_row.line(&format!("Ok({} {{", pdr_report.get_rust_struct_name()));
 
-        for (idx, col) in table.columns().columns.iter().enumerate() {
+        for (idx, col) in table.columns().enumerate() {
             let field_name = col.field_name();
             let field_name_escaped = col.escaped_field_name();
             let mandatory_part = match col.mandatory {
@@ -670,8 +657,6 @@ fn codegen_impl_get_table(
     // the +4 here is to offset for the skipped columns!
     let array_contents = table
         .columns()
-        .columns
-        .iter()
         .enumerate()
         .map(|(idx, _)| format!("{}", idx + 4))
         .collect::<Vec<_>>()
@@ -689,8 +674,6 @@ fn codegen_impl_get_table(
 
     let array_contents = table
         .columns()
-        .columns
-        .iter()
         .map(|c| format!("\"{}\"", c.name))
         .collect::<Vec<_>>()
         .join(",");
@@ -711,15 +694,12 @@ fn codegen_impl_get_table(
         pk_name = pdr_report.get_rust_pk_name(),
         pk_fields = table
             .primary_key_columns()
-            .cols
             .iter()
             .map(|name| format!(
                 "    {0}: row.{0}{1}",
                 lowercase_and_escape(name),
                 table
                     .columns()
-                    .columns
-                    .iter()
                     .find(|col| &col.name == name)
                     .unwrap()
                     .to_string_or_nothing()
@@ -763,7 +743,7 @@ fn codegen_impl_get_table(
 
         to_owned.line(&format!("{} {{", pdr_report.get_rust_struct_name()));
 
-        for (_, col) in table.columns().columns.iter().enumerate() {
+        for (_, col) in table.columns().enumerate() {
             let field_name = col.field_name();
 
             let field_name_escaped = if KW.contains(&field_name.as_str()) {
@@ -795,7 +775,7 @@ fn codegen_impl_get_table(
 
 fn codegen_pk(
     pdr_report: &pdr::Report,
-    table: &mms::TablePage,
+    table: &Table,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
     let mut pk_struct = codegen::Struct::new(&pdr_report.get_rust_pk_name());
@@ -808,11 +788,9 @@ fn codegen_pk(
         .derive("PartialOrd")
         .derive("Ord");
 
-    for pk_col_name in table.primary_key_columns().cols.iter() {
-        let table_cols = table.columns();
-        let col = table_cols
-            .columns
-            .iter()
+    for pk_col_name in table.primary_key_columns().iter() {
+        let col = table
+            .columns()
             .find(|col| &col.name == pk_col_name)
             .expect("PK column must exist");
 
@@ -864,7 +842,7 @@ fn codegen_impl_pk(pdr_report: &pdr::Report, fmtr: &mut codegen::Formatter) -> a
 
 fn codegen_impl_compare_with_row_on_struct(
     pdr_report: &pdr::Report,
-    table: &mms::TablePage,
+    table: &Table,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
     let mut compare_with_row_impl =
@@ -883,13 +861,10 @@ fn codegen_impl_compare_with_row_on_struct(
     compare_with_other.line(
         &table
             .primary_key_columns()
-            .cols
             .iter()
             .map(|name| {
                 if table
                     .columns()
-                    .columns
-                    .iter()
                     .find(|c| c.name == *name)
                     .unwrap()
                     .data_stored_in_string()
@@ -910,7 +885,7 @@ fn codegen_impl_compare_with_row_on_struct(
 
 fn codegen_impl_compare_with_pk_on_struct(
     pdr_report: &pdr::Report,
-    table: &mms::TablePage,
+    table: &Table,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
     let mut compare_with_pk_impl =
@@ -923,13 +898,10 @@ fn codegen_impl_compare_with_pk_on_struct(
     compare_with_key.line(
         &table
             .primary_key_columns()
-            .cols
             .iter()
             .map(|name| {
                 if table
                     .columns()
-                    .columns
-                    .iter()
                     .find(|c| c.name == *name)
                     .unwrap()
                     .data_stored_in_string()
@@ -951,7 +923,7 @@ fn codegen_impl_compare_with_pk_on_struct(
 
 fn codegen_impl_compare_with_row_on_pk(
     pdr_report: &pdr::Report,
-    table: &mms::TablePage,
+    table: &Table,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
     let mut pk_compare_row_impl = codegen::Impl::new(pdr_report.get_rust_pk_name());
@@ -969,13 +941,10 @@ fn codegen_impl_compare_with_row_on_pk(
     compare_with_row.line(
         &table
             .primary_key_columns()
-            .cols
             .iter()
             .map(|name| {
                 if table
                     .columns()
-                    .columns
-                    .iter()
                     .find(|c| c.name == *name)
                     .unwrap()
                     .data_stored_in_string()
@@ -995,7 +964,7 @@ fn codegen_impl_compare_with_row_on_pk(
 
 fn codegen_impl_compare_with_pk_on_pk(
     pdr_report: &pdr::Report,
-    table: &mms::TablePage,
+    table: &Table,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
     let mut pk_compare_pk_impl = codegen::Impl::new(pdr_report.get_rust_pk_name());
@@ -1008,7 +977,6 @@ fn codegen_impl_compare_with_pk_on_pk(
     compare_with_other_pk.line(
         &table
             .primary_key_columns()
-            .cols
             .iter()
             .map(|name| format!("self.{0} == key.{0}", lowercase_and_escape(name)))
             .collect::<Vec<String>>()
@@ -1022,7 +990,7 @@ fn codegen_impl_compare_with_pk_on_pk(
 
 fn codegen_impl_arrow_schema(
     pdr_report: &pdr::Report,
-    table: &mms::TablePage,
+    table: &Table,
     fmtr: &mut codegen::Formatter,
 ) -> anyhow::Result<()> {
     {
@@ -1032,7 +1000,19 @@ fn codegen_impl_arrow_schema(
 
         let mut arrow_schema = codegen::Function::new("schema");
         arrow_schema.ret("arrow::datatypes::Schema");
-        arrow_schema.line(&table.columns().as_arrow_schema());
+
+        let arrow_schema_line = format!(
+            "arrow::datatypes::Schema::new(alloc::vec::Vec::from([
+        {fields}
+    ]))",
+            fields = table
+                .columns()
+                .map(|col| col.as_arrow_field())
+                .collect::<Vec<_>>()
+                .join(",\n    "),
+        );
+
+        arrow_schema.line(arrow_schema_line);
         arrow_trait.push_fn(arrow_schema);
 
         arrow_trait.associate_type("Builder", pdr_report.get_rust_arrow_builder_name());
@@ -1040,7 +1020,7 @@ fn codegen_impl_arrow_schema(
         let new_builder = arrow_trait.new_fn("new_builder");
         new_builder.ret("Self::Builder");
         new_builder.line(format!("{} {{", pdr_report.get_rust_arrow_builder_name()));
-        for col in &table.columns().columns {
+        for col in table.columns() {
             new_builder.line(format!(
                 "{}: {},",
                 col.as_arrow_array_name(),
@@ -1052,7 +1032,7 @@ fn codegen_impl_arrow_schema(
         let append_row = arrow_trait.new_fn("append_builder");
         append_row.arg("builder", "&mut Self::Builder");
         append_row.arg("row", "Self::Row<'_>");
-        for col in &table.columns().columns {
+        for col in table.columns() {
             append_row.line(&format!("    {}", col.as_arrow_array_extractor()));
         }
 
@@ -1065,7 +1045,7 @@ fn codegen_impl_arrow_schema(
     alloc::vec::Vec::from([",
         );
 
-        for col in &table.columns().columns {
+        for col in table.columns() {
             finalize.line(&format!(
                 "        alloc::sync::Arc::new(builder.{}.finish()) as alloc::sync::Arc<dyn arrow::array::Array>,",
                 col.as_arrow_array_name()
@@ -1087,7 +1067,7 @@ fn codegen_impl_arrow_schema(
         scope.fmt(fmtr)?;
         let mut batch_builder = codegen::Struct::new(&pdr_report.get_rust_arrow_builder_name());
         batch_builder.vis("pub");
-        for col in &table.columns().columns {
+        for col in table.columns() {
             batch_builder.push_field(codegen::Field::new(
                 &col.as_arrow_array_name(),
                 col.as_arrow_builder_ty(),
@@ -1202,15 +1182,11 @@ impl TableMapping {
     }
 }
 
-pub fn run() -> anyhow::Result<()> {
-    let rdr = fs::File::open(format!("mmsdm_v{VERSION}.json"))?;
+pub fn run(local_info: DataModel) -> anyhow::Result<()> {
     let map = TableMapping::read()?;
 
-    // abv
-    let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
-
-    for (data_set, tables) in local_info.into_iter() {
-        println!("Processing data set {data_set}");
+    for (data_set, package) in local_info.packages.iter() {
+        info!("Processing data set {data_set}");
 
         if data_set == "HISTORICAL" {
             // skip
@@ -1227,8 +1203,14 @@ pub fn run() -> anyhow::Result<()> {
         fmt_str.push_str("#![no_std]\n#![allow(unused_imports)]\nextern crate alloc;\nuse alloc::string::ToString;\nuse chrono::Datelike as _;\n#[cfg(feature = \"arrow\")]\nextern crate std;");
         let mut fmtr = codegen::Formatter::new(&mut fmt_str);
 
-        for (table_key, table) in tables.clone().into_iter() {
+        for (table_key, _table_header) in package.tables.iter() {
             println!("Processing table {table_key}");
+
+            let table = local_info
+                .tables
+                .get(table_key)
+                .ok_or_else(|| anyhow!("missing table {table_key}"))?;
+
             // panic!();
             let mms_report = mms::Report {
                 sub_type: table_key.clone(),
@@ -1242,7 +1224,8 @@ pub fn run() -> anyhow::Result<()> {
 
             match map.get(&mms_report) {
                 Some(pdr_report) => {
-                    codegen_struct(pdr_report, &table, &mut fmtr).context("codegen_struct")?;
+                    codegen_struct(table_key, pdr_report, &table, &mut fmtr)
+                        .context("codegen_struct")?;
                     // codegen_impl_from_row(pdr_report, &table, &mut fmtr).context("codegen_impl_from_row")?;
                     codegen_impl_get_table(pdr_report, &table, &mut fmtr)
                         .context("codegen_impl_get_table")?;
