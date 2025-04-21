@@ -30,15 +30,18 @@ pub struct OperationalDemandActual3Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## DEMANDOPERATIONALACTUAL
-///  _Shows Actual Operational Demand for a particular date time interval._
+///
+/// Shows Actual Operational Demand for a particular date time interval.
 ///
 /// * Data Set Name: Operational Demand
 /// * File Name: Actual
 /// * Data Version: 3
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -359,15 +362,18 @@ pub struct OperationalDemandForecast1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## DEMANDOPERATIONALFORECAST
-///  _Shows Forecast Operational Demand for a particular date time interval._
+///
+/// Shows Forecast Operational Demand for a particular date time interval.
 ///
 /// * Data Set Name: Operational Demand
 /// * File Name: Forecast
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -730,15 +736,18 @@ pub struct DemandIntermittentClusterAvail2Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## INTERMITTENT_CLUSTER_AVAIL
-///  _A submission of expected plant availability for an intermittent generating unit cluster, by Trading Day and Trading Interval._
+///
+/// A submission of expected plant availability for an intermittent generating unit cluster, by Trading Day and Trading Interval.
 ///
 /// * Data Set Name: Demand
 /// * File Name: Intermittent Cluster Avail
 /// * Data Version: 2
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
@@ -1106,15 +1115,18 @@ pub struct DemandIntermittentClusterAvailDay1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## INTERMITTENT_CLUSTER_AVAIL_DAY
-///  _Summary record for an availability submission for an intermittent generating unit cluster for a Trading Day._
+///
+/// Summary record for an availability submission for an intermittent generating unit cluster for a Trading Day.
 ///
 /// * Data Set Name: Demand
 /// * File Name: Intermittent Cluster Avail Day
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
@@ -1391,15 +1403,18 @@ pub struct DemandIntermittentDsPred1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## INTERMITTENT_DS_PRED
-///  _Unconstrained Intermittent Generation Forecasts (UIGF) for Dispatch_
+///
+/// Unconstrained Intermittent Generation Forecasts (UIGF) for Dispatch
 ///
 /// * Data Set Name: Demand
 /// * File Name: Intermittent Ds Pred
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
@@ -1857,15 +1872,18 @@ pub struct DemandIntermittentDsRun1Mapping([usize; 13]);
 /// # Summary
 ///
 /// ## INTERMITTENT_DS_RUN
-///  _Unconstrained Intermittent Generation Forecasts (UIGF) for Dispatch._
+///
+/// Unconstrained Intermittent Generation Forecasts (UIGF) for Dispatch.
 ///
 /// * Data Set Name: Demand
 /// * File Name: Intermittent Ds Run
 /// * Data Version: 1
 ///
+/// # Description
+/// SourceINTERMITTENT_GEN_FCST_DATA updates every 30 minutes when AEMO issues a new 30-minute forecast of intermittent generation out to 8 days ahead.Volume~18,000 rows per generator per year
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
@@ -2393,16 +2411,18 @@ pub struct ForecastIntermittentGen1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## INTERMITTENT_GEN_FCST
-///  _Identifying record for a given forecast of an intermittent generation. This table is the version table for the INTERMITTENT_GEN_FCST_DATA table which stores the individual forecast values_
+///
+/// Identifying record for a given forecast of an intermittent generation. This table is the version table for the INTERMITTENT_GEN_FCST_DATA table which stores the individual forecast values
 ///
 /// * Data Set Name: Forecast
 /// * File Name: Intermittent Gen
 /// * Data Version: 1
 ///
 /// # Description
-///  Source &nbsp; INTERMITTENT_GEN_FCST_DATA updates every 30 minutes when AEMO issues a new 30-minute forecast of intermittent generation out to 8 days ahead. Volume ~18,000 rows per generator per year
+/// SourceINTERMITTENT_GEN_FCST_DATA updates every 30 minutes when AEMO issues a new 30-minute forecast of intermittent generation out to 8 days ahead.Volume~18,000 rows per generator per year
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -2725,16 +2745,18 @@ pub struct ForecastIntermittentGenData1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## INTERMITTENT_GEN_FCST_DATA
-///  _Stores the forecast generation (MW) for each interval within a given forecast of an intermittent generator._
+///
+/// Stores the forecast generation (MW) for each interval within a given forecast of an intermittent generator.
 ///
 /// * Data Set Name: Forecast
 /// * File Name: Intermittent Gen Data
 /// * Data Version: 1
 ///
 /// # Description
-///  Source INTERMITTENT_GEN_FCST_DATA updates every 30 minutes when AEMO issues a new 30-minute forecast of wind generation out to 8 days ahead. Volume ~1,500,000 rows per generator per year
+/// SourceINTERMITTENT_GEN_FCST_DATA updates every 30 minutes when AEMO issues a new 30-minute forecast of wind generation out to 8 days ahead.Volume~1,500,000 rows per generator per year
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -3129,15 +3151,18 @@ pub struct DemandIntermittentGenLimit1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## INTERMITTENT_GEN_LIMIT
-///  _A submission of Upper MW Limit for an intermittent generating unit, by Trading Day and Trading Interval_
+///
+/// A submission of Upper MW Limit for an intermittent generating unit, by Trading Day and Trading Interval
 ///
 /// * Data Set Name: Demand
 /// * File Name: Intermittent Gen Limit
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
@@ -3432,15 +3457,18 @@ pub struct DemandIntermittentGenLimitDay1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## INTERMITTENT_GEN_LIMIT_DAY
-///  _Summary record for an Upper MW Limit submission for an intermittent generating unit for a Trading Day_
+///
+/// Summary record for an Upper MW Limit submission for an intermittent generating unit for a Trading Day
 ///
 /// * Data Set Name: Demand
 /// * File Name: Intermittent Gen Limit Day
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
@@ -3801,19 +3829,22 @@ impl DemandIntermittentGenScada1 {
         }
     }
 }
-pub struct DemandIntermittentGenScada1Mapping([usize; 5]);
+pub struct DemandIntermittentGenScada1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## INTERMITTENT_GEN_SCADA
-///  _INTERMITTENT_GEN_SCADA provides the SCADA Availability for every intermittent generating unit, including Elements Available (wind turbines/solar inverters) and Local Limit_
+///
+/// INTERMITTENT_GEN_SCADA provides the SCADA Availability for every intermittent generating unit, including Elements Available (wind turbines/solar inverters) and Local Limit
 ///
 /// * Data Set Name: Demand
 /// * File Name: Intermittent Gen Scada
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
@@ -3832,6 +3863,8 @@ pub struct DemandIntermittentGenScada1Row<'data> {
     pub scada_value: Option<rust_decimal::Decimal>,
     /// SCADA quality snapshot for intermittent generating unit at start of interval for a specified SCADA signal type.
     pub scada_quality: core::ops::Range<usize>,
+    /// Last date and time record changed
+    pub lastchanged: Option<chrono::NaiveDateTime>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
 impl<'data> DemandIntermittentGenScada1Row<'data> {
@@ -3864,6 +3897,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
         6,
         7,
         8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -3871,6 +3905,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
         "SCADA_TYPE",
         "SCADA_VALUE",
         "SCADA_QUALITY",
+        "LASTCHANGED",
     ];
     type Row<'row> = DemandIntermittentGenScada1Row<'row>;
     type FieldMapping = DemandIntermittentGenScada1Mapping;
@@ -3895,6 +3930,12 @@ impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
                     mmsdm_core::mms_decimal::parse,
                 )?,
             scada_quality: row.get_opt_range("scada_quality", field_mapping.0[4])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -3955,6 +3996,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
             scada_type: row.scada_type.clone(),
             scada_value: row.scada_value.clone(),
             scada_quality: row.scada_quality.clone(),
+            lastchanged: row.lastchanged.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
@@ -4028,6 +4070,14 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
                     arrow::datatypes::DataType::Utf8,
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
             ]),
         )
     }
@@ -4039,6 +4089,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
             scada_value_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             scada_quality_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -4057,6 +4108,9 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
                     })
             });
         builder.scada_quality_array.append_option(row.scada_quality());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -4074,6 +4128,8 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.scada_quality_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
@@ -4086,6 +4142,7 @@ pub struct DemandIntermittentGenScada1Builder {
     scada_type_array: arrow::array::builder::StringBuilder,
     scada_value_array: arrow::array::builder::Decimal128Builder,
     scada_quality_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct DemandMtpasaIntermittentAvail2 {
     extract_row_partition: alloc::boxed::Box<
@@ -4112,15 +4169,18 @@ pub struct DemandMtpasaIntermittentAvail2Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## MTPASA_INTERMITTENT_AVAIL
-///  _A submission of expected plant availability for intermittent generators for use in MTPASA intermittent generation forecasts_
+///
+/// A submission of expected plant availability for intermittent generators for use in MTPASA intermittent generation forecasts
 ///
 /// * Data Set Name: Demand
 /// * File Name: Mtpasa Intermittent Avail
 /// * Data Version: 2
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -4483,15 +4543,18 @@ pub struct DemandMtpasaIntermittentLimit1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## MTPASA_INTERMITTENT_LIMIT
-///  _A submission of expected maximum availability for intermittent generators for use in MTPASA intermittent generation<br>forecasts_
+///
+/// A submission of expected maximum availability for intermittent generators for use in MTPASA intermittent generationforecasts
 ///
 /// * Data Set Name: Demand
 /// * File Name: Mtpasa Intermittent Limit
 /// * Data Version: 1
 ///
+/// # Description
+/// The RESDEMANDTRK and PERDEMAND tables have a parent/child relationship, and define forecast regional demands since market start. RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date. PERDEMAND defines the numerical forecast values for each trading interval of a the trading day for that region. A complete trading day forecast for one region consists of one RESDEMANDTRK record and 48 PERDEMAND records.SourcePERDEMAND updates whenever AEMO issues a new or revised forecast. ST PASA forecasts update seven days at a time. Predispatch updates one date.Volume1296000 rows per yearNoteIn the context of a mandatory restrictions event the forecast schedule (MW) of restrictions are reported through the RESDEMANDTRK and PERDEMAND tables using the new field PerDemand.MR_Schedule. The relationship between fields and mandatory restriction terms for the 50% probability of exceedence forecast are:·UnRestricted Profile  = ResDemand + MR_Schedule·Restricted Profile  = ResDemand
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -4844,16 +4907,18 @@ pub struct DemandPeriod1Mapping([usize; 11]);
 /// # Summary
 ///
 /// ## PERDEMAND
-///  _PERDEMAND sets out the regional demands and MR schedule data for each half-hour period. PERDEMAND is a child table to RESDEMANDTRK._
+///
+/// PERDEMAND sets out the regional demands and MR schedule data for each half-hour period. PERDEMAND is a child table to RESDEMANDTRK.
 ///
 /// * Data Set Name: Demand
 /// * File Name: Period
 /// * Data Version: 1
 ///
 /// # Description
-///  The RESDEMANDTRK and PERDEMAND tables have a parent/child relationship, and define forecast regional demands since market start. RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date. PERDEMAND defines the numerical forecast values for each trading interval of a the trading day for that region. A complete trading day forecast for one region consists of one RESDEMANDTRK record and 48 PERDEMAND records. Source PERDEMAND updates whenever AEMO issues a new or revised forecast. ST PASA forecasts update seven days at a time. Predispatch updates one date. Volume 1296000 rows per year Note In the context of a mandatory restrictions event the forecast schedule (MW) of restrictions are reported through the RESDEMANDTRK and PERDEMAND tables using the new field PerDemand.MR_Schedule. The relationship between fields and mandatory restriction terms for the 50% probability of exceedence forecast are: · UnRestricted Profile  = ResDemand + MR_Schedule · Restricted Profile  = ResDemand
+/// The RESDEMANDTRK and PERDEMAND tables have a parent/child relationship, and define forecast regional demands since market start. RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date. PERDEMAND defines the numerical forecast values for each trading interval of a the trading day for that region. A complete trading day forecast for one region consists of one RESDEMANDTRK record and 48 PERDEMAND records.SourcePERDEMAND updates whenever AEMO issues a new or revised forecast. ST PASA forecasts update seven days at a time. Predispatch updates one date.Volume1296000 rows per yearNoteIn the context of a mandatory restrictions event the forecast schedule (MW) of restrictions are reported through the RESDEMANDTRK and PERDEMAND tables using the new field PerDemand.MR_Schedule. The relationship between fields and mandatory restriction terms for the 50% probability of exceedence forecast are:·UnRestricted Profile  = ResDemand + MR_Schedule·Restricted Profile  = ResDemand
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -5340,16 +5405,18 @@ pub struct DemandTrk1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## RESDEMANDTRK
-///  _RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date.<br>RESDEMANDTRK and PERDEMAND have a parent/child relationship, and are for defined forecast regional demands since market start. RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date. PERDEMAND defines the numerical forecast values for each trading interval of a the trading day for that region. A complete trading day forecast for one region consists of one RESDEMANDTRK record and 48 PERDEMAND records._
+///
+/// RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date.RESDEMANDTRK and PERDEMAND have a parent/child relationship, and are for defined forecast regional demands since market start. RESDEMANDTRK defines the existence and versioning information of a forecast for a specific region and trading date. PERDEMAND defines the numerical forecast values for each trading interval of a the trading day for that region. A complete trading day forecast for one region consists of one RESDEMANDTRK record and 48 PERDEMAND records.
 ///
 /// * Data Set Name: Demand
 /// * File Name: Trk
 /// * Data Version: 1
 ///
 /// # Description
-///  RESDEMANDTRK data is public, so is available to all participants. Source RESDEMANDTRK updates are ad hoc. Volume 27000 rows per year.
+/// RESDEMANDTRK data is public, so is available to all participants.SourceRESDEMANDTRK updates are ad hoc.Volume27000 rows per year.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -5736,15 +5803,18 @@ pub struct RooftopActual2Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## ROOFTOP_PV_ACTUAL
-///  _Estimate of regional Rooftop Solar actual generation for each half-hour interval in a day_
+///
+/// Estimate of regional Rooftop Solar actual generation for each half-hour interval in a day
 ///
 /// * Data Set Name: Rooftop
 /// * File Name: Actual
 /// * Data Version: 2
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -6071,15 +6141,18 @@ pub struct RooftopForecast1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## ROOFTOP_PV_FORECAST
-///  _Regional forecasts of Rooftop Solar generation across the half-hour intervals over 8 days_
+///
+/// Regional forecasts of Rooftop Solar generation across the half-hour intervals over 8 days
 ///
 /// * Data Set Name: Rooftop
 /// * File Name: Forecast
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///

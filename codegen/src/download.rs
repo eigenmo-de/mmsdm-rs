@@ -10,14 +10,7 @@ use crate::json::FileNameParts;
 
 use std::collections::BTreeMap;
 
-use std::path::PathBuf;
 use std::time::Duration;
-
-fn add_path(url: &Url, path: &str) -> Url {
-    let mut x = url.clone();
-    x.path_segments_mut().unwrap().push(path);
-    x
-}
 
 pub async fn run() -> anyhow::Result<()> {
     let mut files = Vec::<FileNameParts>::new();
@@ -164,4 +157,3 @@ pub async fn run() -> anyhow::Result<()> {
 
     Ok(())
 }
-gsgsgsgsgsgsgsg

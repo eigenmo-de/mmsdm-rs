@@ -1,28 +1,26 @@
-use std::{any, collections::BTreeMap, f32::consts::E, path::PathBuf, str::FromStr};
+use std::{collections::BTreeMap, path::PathBuf, str::FromStr};
 
 use crate::{
     html_tree::{Element, ElementParser},
-    mms::{DataType, TableColumn, TableNotes},
+    mms::{DataType, TableColumn},
 };
 use anyhow::{Context, anyhow, bail, ensure};
-use html5ever::tokenizer::Token::EOFToken;
 use indexmap::IndexMap;
-use log::{error, info, warn};
+use log::{info, warn};
 use serde::{Deserialize, Serialize};
-use tokio::{fs, io::AsyncWriteExt};
 
-use crate::VERSION;
-
-const PACKAGES_TO_SKIP: &[&str] = &["CONFIGURATION", "HISTORICAL_TABLES", "VOLTAGE_INSTRUCTIONS"];
-
-// fn parse_tables(el: &Element) -> PackageTables {
-
-// }
+const PACKAGES_TO_SKIP: &[&str] = &[
+    "CONFIGURATION",
+    "HISTORICAL_TABLES",
+    "VOLTAGE_INSTRUCTIONS",
+    "FPP",
+    "PD7DAY",
+];
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Package {
     pub comment: String,
-    pub tables: BTreeMap<String, PackageTable>,
+    pub tables: IndexMap<String, PackageTable>,
 }
 
 impl Package {
@@ -44,8 +42,8 @@ pub struct PackageTable {
     pub comment: String,
 }
 
-fn parse_package_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, PackageTable>> {
-    let mut tables = BTreeMap::new();
+fn parse_package_tables(parsed: &Element) -> anyhow::Result<IndexMap<String, PackageTable>> {
+    let mut tables = IndexMap::new();
 
     for tr in parsed.iter_dfs_elements_of_tag("tr") {
         let Ok([name, comment, visibility]) = <[String; 3]>::try_from(
@@ -120,7 +118,7 @@ fn parse_package(parsed: &Element) -> anyhow::Result<(String, Package)> {
 pub struct Table {
     pub comment: String,
     pub description: String,
-    pub notes: BTreeMap<String, TableNote>,
+    pub notes: IndexMap<String, TableNote>,
     // preserve ordering
     pub primary_key_columns: Vec<String>,
     // preserve ordering
@@ -275,7 +273,7 @@ fn parse_description(table: &Element) -> String {
     table.concat_dfs_content()
 }
 
-fn parse_notes(table: &Element) -> anyhow::Result<BTreeMap<String, TableNote>> {
+fn parse_notes(table: &Element) -> anyhow::Result<IndexMap<String, TableNote>> {
     table
         .iter_dfs_elements_of_tag("tr")
         .skip(1)
@@ -303,7 +301,7 @@ fn parse_notes(table: &Element) -> anyhow::Result<BTreeMap<String, TableNote>> {
 
             Ok((name, TableNote { comment, value }))
         })
-        .collect::<anyhow::Result<BTreeMap<String, TableNote>>>()
+        .collect()
 }
 
 fn parse_column_names(table: &Element) -> Vec<String> {
@@ -339,7 +337,7 @@ fn parse_content(table: &Element) -> anyhow::Result<Vec<TableColumn>> {
     Ok(items)
 }
 
-fn parse_package_continued(parsed: &Element) -> anyhow::Result<BTreeMap<String, PackageTable>> {
+fn parse_package_continued(parsed: &Element) -> anyhow::Result<IndexMap<String, PackageTable>> {
     ensure!(
         parsed
             .iter_dfs_elements_of_tag("h3")
@@ -378,8 +376,8 @@ fn parse_content_continued(parsed: &Element) -> anyhow::Result<Vec<TableColumn>>
     parse_content(table_el)
 }
 
-fn parse_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, Table>> {
-    let mut parsed_tables = BTreeMap::new();
+fn parse_tables(parsed: &Element) -> anyhow::Result<IndexMap<String, Table>> {
+    let mut parsed_tables = IndexMap::new();
 
     let body_el = parsed
         .iter_dfs_elements_of_tag("body")
@@ -467,6 +465,13 @@ fn parse_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, Table>> {
             None => Vec::new(),
         };
         let content = parse_content(tables[content_index])?;
+
+        // if name == "PREDISPATCH_MNSPBIDTRK" {
+        //     println!("{}", tables[content_index]);
+
+        //     println!("{:#?}", content);
+        //     panic!("{}", content.len());
+        // }
 
         parsed_tables.insert(
             name,
@@ -638,7 +643,11 @@ pub async fn run() -> anyhow::Result<DataModel> {
                     new_tables.len()
                 );
 
-                tables.extend(new_tables);
+                for (key, new) in new_tables {
+                    if let Some(_) = tables.insert(key.clone(), new) {
+                        bail!("Duplicate table {key}");
+                    }
+                }
 
                 continue;
             }
@@ -658,9 +667,11 @@ pub async fn run() -> anyhow::Result<DataModel> {
                     continued.len()
                 );
 
-                let Some((_, last_table)) = tables.last_mut() else {
+                let Some((name, last_table)) = tables.last_mut() else {
                     bail!("No last package available");
                 };
+
+                warn!("Extending table {name}");
 
                 last_table.content.extend(continued);
 

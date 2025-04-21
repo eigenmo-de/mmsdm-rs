@@ -10,7 +10,7 @@ use std::{
     io::{BufRead, BufReader, Read, Seek},
     marker::PhantomData,
 };
-use zip::{read::ZipFile, ZipArchive};
+use zip::{ZipArchive, read::ZipFile};
 
 pub struct FileReader<'a, R: Read + Seek> {
     reader: &'a mut ZipArchive<R>,

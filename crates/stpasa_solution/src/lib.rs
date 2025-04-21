@@ -30,16 +30,18 @@ pub struct StpasaCasesolution3Mapping([usize; 19]);
 /// # Summary
 ///
 /// ## STPASA_CASESOLUTION
-///  _STPASA_CASESOLUTION holds one record containing results pertaining to each entire solution_
+///
+/// STPASA_CASESOLUTION holds one record containing results pertaining to each entire solution
 ///
 /// * Data Set Name: Stpasa
 /// * File Name: Casesolution
 /// * Data Version: 3
 ///
 /// # Description
-///  STPASA_CASESOLUTION is public data. Source STPASA_CASESOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 12 Mb per month: &lt;1
+/// STPASA_CASESOLUTION is public data.SourceSTPASA_CASESOLUTION is updated each STPASA run (i.e. every 2 hours).VolumeRows per day: 12Mb per month: <1
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -771,16 +773,18 @@ pub struct StpasaConstraintsolution3Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## STPASA_CONSTRAINTSOLUTION
-///  _STPASA_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value._
+///
+/// STPASA_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value.
 ///
 /// * Data Set Name: Stpasa
 /// * File Name: Constraintsolution
 /// * Data Version: 3
 ///
 /// # Description
-///  STPASA_CONSTRAINTSOLUTION is public data. Source STPASA_CONSTRAINTSOLUTION is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 19000 (est.) Mb per month: 90
+/// STPASA_CONSTRAINTSOLUTION is public data.SourceSTPASA_CONSTRAINTSOLUTION is updated each STPASA run (i.e. every 2 hours).VolumeRows per day: 19000 (est.)Mb per month: 90
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1196,16 +1200,18 @@ pub struct StpasaInterconnectorsoln3Mapping([usize; 13]);
 /// # Summary
 ///
 /// ## STPASA_INTERCONNECTORSOLN
-///  _STPASA_INTERCONNECTORSOLN shows the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval._
+///
+/// STPASA_INTERCONNECTORSOLN shows the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval.
 ///
 /// * Data Set Name: Stpasa
 /// * File Name: Interconnectorsoln
 /// * Data Version: 3
 ///
 /// # Description
-///  STPASA_INTERCONNECTORSOLN is public so is available to all participants. Source STPASA_INTERCONNECTORSOLN is updated each STPASA run (i.e. every 2 hours). Volume Rows per day: 576 Mb per month: 4
+/// STPASA_INTERCONNECTORSOLN is public so is available to all participants.SourceSTPASA_INTERCONNECTORSOLN is updated each STPASA run (i.e. every 2 hours).VolumeRows per day: 576Mb per month: 4
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1746,16 +1752,18 @@ pub struct StpasaRegionsolution7Mapping([usize; 45]);
 /// # Summary
 ///
 /// ## STPASA_REGIONSOLUTION
-///  _STPASA_REGIONSOLUTION shows the results of the regional capacity, maximum surplus reserve and maximum spare capacity evaluations for each period of the study._
+///
+/// STPASA_REGIONSOLUTION shows the results of the regional capacity, maximum surplus reserve and maximum spare capacity evaluations for each period of the study.
 ///
 /// * Data Set Name: Stpasa
 /// * File Name: Regionsolution
 /// * Data Version: 7
 ///
 /// # Description
-///  STPASA_REGIONSOLUTION is public so is available to all participants. Source STPASA_REGIONSOLUTION is updated each STPASA run (i.e every 2 hours). Volume Rows per day: 480 Mb per month: 8
+/// STPASA_REGIONSOLUTION is public so is available to all participants.SourceSTPASA_REGIONSOLUTION is updated each STPASA run (i.e every 2 hours).VolumeRows per day: 480Mb per month: 8
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1787,7 +1795,7 @@ pub struct StpasaRegionsolution7Row<'data> {
     pub unconstrainedcapacity: Option<rust_decimal::Decimal>,
     /// In a Region, capacity from generation/Load with non-zero Daily Energy Constraint, subject to network security constraints
     pub constrainedcapacity: Option<rust_decimal::Decimal>,
-    /// Net export in MW out of this region in the capacity adequacy evaluation. Export if &gt; 0, Import if &lt; 0.
+    /// Net export in MW out of this region in the capacity adequacy evaluation. Export if >0, Import if <0.
     pub netinterchangeunderscarcity: Option<rust_decimal::Decimal>,
     /// Regional surplus capacity MW, +/- values indicate surplus/deficit capacity respectively
     pub surpluscapacity: Option<rust_decimal::Decimal>,
@@ -1807,7 +1815,7 @@ pub struct StpasaRegionsolution7Row<'data> {
     pub aggregatescheduledload: Option<rust_decimal::Decimal>,
     /// Last changed date of this record
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Sum of PASAAVAILABILITY for all scheduled generating units and the Unconstrained Intermittent Generation Forecasts (UIGF) for all semi-scheduled generating units in a given Region for a given PERIODID.<br>For the RELIABILITY_LRC and OUTAGE_LRC runs, UIGF is the POE90 forecast. For the LOR run, UIGF is the POE50 forecast.
+    /// Sum of PASAAVAILABILITY for all scheduled generating units and the Unconstrained Intermittent Generation Forecasts (UIGF) for all semi-scheduled generating units in a given Region for a given PERIODID.For the RELIABILITY_LRC and OUTAGE_LRC runs, UIGF is the POE90 forecast. For the LOR run, UIGF is the POE50 forecast.
     pub aggregatepasaavailability: Option<rust_decimal::Decimal>,
     /// Type of run. Values are RELIABILITY_LRC, OUTAGE_LRC and LOR.
     pub runtype: core::ops::Range<usize>,

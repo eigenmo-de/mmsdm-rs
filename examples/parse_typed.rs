@@ -1,19 +1,14 @@
-use chrono::Month;
-use mmsdm_bids::{BidBidperofferD2, BidsBidofferperiod1};
-use mmsdm_core::{ArrowSchema, FileReader, IterTyped, YearMonth};
+use chrono::Datelike;
+use mmsdm::{PartitionKey, PartitionValue};
+use mmsdm_core::FileReader;
 use mmsdm_dispatch::{
-    DispatchConstraint5, DispatchConstraint5Builder, DispatchLocalPrice1,
-    DispatchLocalPrice1Builder, DispatchMnspbidtrk1, DispatchMnspbidtrk1Builder, DispatchOffertrk1,
-    DispatchOffertrk1Builder, DispatchUnitSolution4, DispatchUnitSolution4Builder,
+    DispatchConstraint5, DispatchLocalPrice1, DispatchMnspbidtrk1, DispatchOffertrk1,
+    DispatchUnitSolution5,
 };
-use mmsdm_p5min::P5minUnitsolution5;
-use mmsdm_pre_dispatch::PredispatchRegionfcasrequirement2;
-use mmsdm_settlement_data::{SettlementsFcasRecovery7, SettlementsFcasregionrecovery5};
 use std::boxed::Box;
 use std::error::Error;
 use std::fs::File;
-use std::io::{BufRead, BufReader};
-use std::mem;
+use std::sync::Arc;
 use zip::ZipArchive;
 
 // PUBLIC_NEXT_DAY_DISPATCH_20230105_0000000378281515.zip 5.4mb zipped, 81mb unzipped, 1s raw, 3s parsed
@@ -49,42 +44,47 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let batch = mmsdm_core::partition_to_batch::<_, DispatchOffertrk1>(
         &mut fr,
-        YearMonth {
-            year: 2023,
-            month: Month::January,
-        },
+        PartitionValue("2023-01-01".to_string()),
+        Arc::new(DispatchOffertrk1::new(
+            PartitionKey("settlementdate"),
+            |row| PartitionValue(row.settlementdate.date().with_day(1).unwrap().to_string()),
+        )),
     )?;
     dbg!(batch.num_rows(), batch.num_columns());
-    let batch = mmsdm_core::partition_to_batch::<_, DispatchUnitSolution4>(
+    let batch = mmsdm_core::partition_to_batch::<_, DispatchUnitSolution5>(
         &mut fr,
-        YearMonth {
-            year: 2023,
-            month: Month::January,
-        },
+        PartitionValue("2023-01-01".to_string()),
+        Arc::new(DispatchUnitSolution5::new(
+            PartitionKey("settlementdate"),
+            |row| PartitionValue(row.settlementdate.date().with_day(1).unwrap().to_string()),
+        )),
     )?;
     dbg!(batch.num_rows(), batch.num_columns());
     let batch = mmsdm_core::partition_to_batch::<_, DispatchConstraint5>(
         &mut fr,
-        YearMonth {
-            year: 2023,
-            month: Month::January,
-        },
+        PartitionValue("2023-01-01".to_string()),
+        Arc::new(DispatchConstraint5::new(
+            PartitionKey("settlementdate"),
+            |row| PartitionValue(row.settlementdate.date().with_day(1).unwrap().to_string()),
+        )),
     )?;
     dbg!(batch.num_rows(), batch.num_columns());
     let batch = mmsdm_core::partition_to_batch::<_, DispatchMnspbidtrk1>(
         &mut fr,
-        YearMonth {
-            year: 2023,
-            month: Month::January,
-        },
+        PartitionValue("2023-01-01".to_string()),
+        Arc::new(DispatchMnspbidtrk1::new(
+            PartitionKey("settlementdate"),
+            |row| PartitionValue(row.settlementdate.date().with_day(1).unwrap().to_string()),
+        )),
     )?;
     dbg!(batch.num_rows(), batch.num_columns());
     let batch = mmsdm_core::partition_to_batch::<_, DispatchLocalPrice1>(
         &mut fr,
-        YearMonth {
-            year: 2023,
-            month: Month::January,
-        },
+        PartitionValue("2023-01-01".to_string()),
+        Arc::new(DispatchLocalPrice1::new(
+            PartitionKey("settlementdate"),
+            |row| PartitionValue(row.settlementdate.date().with_day(1).unwrap().to_string()),
+        )),
     )?;
     dbg!(batch.num_rows(), batch.num_columns());
 

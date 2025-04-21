@@ -30,16 +30,18 @@ pub struct BillingConfigBillingcalendar2Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## BILLINGCALENDAR
-///  _BILLINGCALENDAR sets out the billing calendar for the year, with week number 1 starting on 1 January. BILLINGCALENDAR advises preliminary and final statement posting date and corresponding  settlement for each billing week._
+///
+/// BILLINGCALENDAR sets out the billing calendar for the year, with week number 1 starting on 1 January. BILLINGCALENDAR advises preliminary and final statement posting date and corresponding  settlement for each billing week.
 ///
 /// * Data Set Name: Billing Config
 /// * File Name: Billingcalendar
 /// * Data Version: 2
 ///
 /// # Description
-///  BILLINGCALENDAR is public data, and is available to all participants. Source Infrequently, only when inserting billing weeks for a future contractyear. Volume 52-53 records inserted per contractyear
+/// BILLINGCALENDAR is public data, and is available to all participants.SourceInfrequently, only when inserting billing weeks for a future contractyear.Volume52-53 records inserted per contractyear
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -482,16 +484,18 @@ pub struct BillingConfigGstBasClass1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## GST_BAS_CLASS
-///  _GST_BAS_CLASS contains a static list of BAS (Business Activity Statement) classifications supported by the MMS._
+///
+/// GST_BAS_CLASS contains a static list of BAS (Business Activity Statement) classifications supported by the MMS.
 ///
 /// * Data Set Name: Billing Config
 /// * File Name: Gst Bas Class
 /// * Data Version: 1
 ///
 /// # Description
-///  GST_BAS_CLASS data is public to all participants.
+/// GST_BAS_CLASS data is public to all participants.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -731,16 +735,18 @@ pub struct BillingConfigGstRate1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## GST_RATE
-///  _GST_RATE maintains the GST rates on a BAS (Business Activity Statement) class basis._
+///
+/// GST_RATE maintains the GST rates on a BAS (Business Activity Statement) class basis.
 ///
 /// * Data Set Name: Billing Config
 /// * File Name: Gst Rate
 /// * Data Version: 1
 ///
 /// # Description
-///  GST_RATE data is public to all participants.
+/// GST_RATE data is public to all participants.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1046,16 +1052,18 @@ pub struct BillingConfigGstTransactionClass1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## GST_TRANSACTION_CLASS
-///  _GST_TRANSACTION_CLASS maps NEM settlement transaction types with BAS (Business Activity Statement) classifications._
+///
+/// GST_TRANSACTION_CLASS maps NEM settlement transaction types with BAS (Business Activity Statement) classifications.
 ///
 /// * Data Set Name: Billing Config
 /// * File Name: Gst Transaction Class
 /// * Data Version: 1
 ///
 /// # Description
-///  GST_TRANSACTION_CLASS data is public to all participants. Source GST_TRANSACTION_CLASS updates infrequently, when new transactions are introduced to the NEM. Volume Generally volume is fewer than one hundred records.
+/// GST_TRANSACTION_CLASS data is public to all participants.SourceGST_TRANSACTION_CLASS updates infrequently, when new transactions are introduced to the NEM.VolumeGenerally volume is fewer than one hundred records.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1363,16 +1371,18 @@ pub struct BillingConfigGstTransactionType1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## GST_TRANSACTION_TYPE
-///  _GST_TRANSACTION_TYPE shows a static list of transaction types supported by the MMS._
+///
+/// GST_TRANSACTION_TYPE shows a static list of transaction types supported by the MMS.
 ///
 /// * Data Set Name: Billing Config
 /// * File Name: Gst Transaction Type
 /// * Data Version: 1
 ///
 /// # Description
-///  GST_TRANSACTION_TYPE data is public to all participants.
+/// GST_TRANSACTION_TYPE data is public to all participants.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1383,9 +1393,7 @@ pub struct BillingConfigGstTransactionType1Row<'data> {
     pub transaction_type: core::ops::Range<usize>,
     /// Description of the transaction type
     pub description: core::ops::Range<usize>,
-    /// &nbsp;
     pub gl_financialcode: core::ops::Range<usize>,
-    /// &nbsp;
     pub gl_tcode: core::ops::Range<usize>,
     /// Last date and time the record changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -1674,16 +1682,18 @@ pub struct BillingConfigSecdepositInterestRate1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## SECDEPOSIT_INTEREST_RATE
-///  _The security deposit interest rate on a daily basis. This is the public table published when the business enter and authorise a new daily interest rate_
+///
+/// The security deposit interest rate on a daily basis. This is the public table published when the business enter and authorise a new daily interest rate
 ///
 /// * Data Set Name: Billing Config
 /// * File Name: Secdeposit Interest Rate
 /// * Data Version: 1
 ///
 /// # Description
-///  SECDEPOSIT_INTEREST_RATE data is public to all participants.
+/// SECDEPOSIT_INTEREST_RATE data is public to all participants.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1976,15 +1986,18 @@ pub struct BillingConfigSecdepositProvision1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## SECDEPOSIT_PROVISION
-///  _The security deposit provision entry details_
+///
+/// The security deposit provision entry details
 ///
 /// * Data Set Name: Billing Config
 /// * File Name: Secdeposit Provision
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -2004,7 +2017,7 @@ pub struct BillingConfigSecdepositProvision1Row<'data> {
     pub maturity_weekno: Option<rust_decimal::Decimal>,
     /// The security deposit amount
     pub amount: Option<rust_decimal::Decimal>,
-    /// The interest rate assigned to the security deposit ID. Null if INTEREST_CALC_TYPE &lt;&gt; FIXED
+    /// The interest rate assigned to the security deposit ID. Null if INTEREST_CALC_TYPE <>FIXED
     pub interest_rate: Option<rust_decimal::Decimal>,
     /// FIXED OR DAILY
     pub interest_calc_type: core::ops::Range<usize>,

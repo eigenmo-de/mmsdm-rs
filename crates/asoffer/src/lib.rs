@@ -30,16 +30,18 @@ pub struct AsofferOfferagcdata1Mapping([usize; 13]);
 /// # Summary
 ///
 /// ## OFFERAGCDATA
-///  _OFFERAGCDATA shows availability reoffers of Automatic Generation Control._
+///
+/// OFFERAGCDATA shows availability reoffers of Automatic Generation Control.
 ///
 /// * Data Set Name: Asoffer
 /// * File Name: Offeragcdata
 /// * Data Version: 1
 ///
 /// # Description
-///  OFFERAGCDATA data is confidential to the relevant participant. Source OFFERAGCDATA updates as reoffers submitted.
+/// OFFERAGCDATA data is confidential to the relevant participant.SourceOFFERAGCDATA updates as reoffers submitted.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -580,16 +582,18 @@ pub struct AsofferOfferastrk1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## OFFERASTRK
-///  _OFFERASTRK tracks successfully acknowledged ancillary service reoffers._
+///
+/// OFFERASTRK tracks successfully acknowledged ancillary service reoffers.
 ///
 /// * Data Set Name: Asoffer
 /// * File Name: Offerastrk
 /// * Data Version: 1
 ///
 /// # Description
-///  OFFERASTRK data is confidential to the relevant participant. Source OFFERASTRK is updated as offers are successfully acknowledged.
+/// OFFERASTRK data is confidential to the relevant participant.SourceOFFERASTRK is updated as offers are successfully acknowledged.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -896,16 +900,18 @@ pub struct AsofferOfferlsheddata1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## OFFERLSHEDDATA
-///  _OFFERLSHEDDATA shows reoffers of load shed including available load shed quantity._
+///
+/// OFFERLSHEDDATA shows reoffers of load shed including available load shed quantity.
 ///
 /// * Data Set Name: Asoffer
 /// * File Name: Offerlsheddata
 /// * Data Version: 1
 ///
 /// # Description
-///  OFFERLSHEDDATA data is confidential to the relevant participant. Source OFFERLSHEDDATA updates as reoffers process.
+/// OFFERLSHEDDATA data is confidential to the relevant participant.SourceOFFERLSHEDDATA updates as reoffers process.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -1326,16 +1332,18 @@ pub struct AsofferOfferrestartdata1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## OFFERRESTARTDATA
-///  _OFFERRESTARTDATA sets out reoffers of system restart availability._
+///
+/// OFFERRESTARTDATA sets out reoffers of system restart availability.
 ///
 /// * Data Set Name: Asoffer
 /// * File Name: Offerrestartdata
 /// * Data Version: 1
 ///
 /// # Description
-///  OFFERRESTARTDATA data is confidential to the relevant participant. Source OFFERRESTARTDATA updates as reoffers process.
+/// OFFERRESTARTDATA data is confidential to the relevant participant.SourceOFFERRESTARTDATA updates as reoffers process.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -1752,16 +1760,18 @@ pub struct AsofferOfferrpowerdata1Mapping([usize; 11]);
 /// # Summary
 ///
 /// ## OFFERRPOWERDATA
-///  _OFFERRPOWERDATA shows reoffers of reactive power capability and settlement measurements._
+///
+/// OFFERRPOWERDATA shows reoffers of reactive power capability and settlement measurements.
 ///
 /// * Data Set Name: Asoffer
 /// * File Name: Offerrpowerdata
 /// * Data Version: 1
 ///
 /// # Description
-///  OFFERRPOWERDATA data is confidential to the relevant participant. Source OFFERRPOWERDATA updates as reoffers process.
+/// OFFERRPOWERDATA data is confidential to the relevant participant.SourceOFFERRPOWERDATA updates as reoffers process.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///

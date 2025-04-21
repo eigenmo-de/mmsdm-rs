@@ -30,15 +30,18 @@ pub struct MccCasesolution1Mapping([usize; 1]);
 /// # Summary
 ///
 /// ## MCC_CASESOLUTION
-///  _Top level table for each MCC dispatch rerun process. Note there will be one record for each dispatch interval_
+///
+/// Top level table for each MCC dispatch rerun process. Note there will be one record for each dispatch interval
 ///
 /// * Data Set Name: Mcc
 /// * File Name: Casesolution
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
@@ -226,15 +229,18 @@ pub struct MccConstraintsolution1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## MCC_CONSTRAINTSOLUTION
-///  _Constraint solution data from the MCC dispatch rerun process. Note only constraints with a non-zero marginal value are published._
+///
+/// Constraint solution data from the MCC dispatch rerun process. Note only constraints with a non-zero marginal value are published.
 ///
 /// * Data Set Name: Mcc
 /// * File Name: Constraintsolution
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///

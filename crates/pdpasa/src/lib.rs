@@ -30,16 +30,18 @@ pub struct PdpasaCasesolution3Mapping([usize; 19]);
 /// # Summary
 ///
 /// ## PDPASA_CASESOLUTION
-///  _The top-level table identifying a PDPASA case, reporting options applied in the case and summary results_
+///
+/// The top-level table identifying a PDPASA case, reporting options applied in the case and summary results
 ///
 /// * Data Set Name: Pdpasa
 /// * File Name: Casesolution
 /// * Data Version: 3
 ///
 /// # Description
-///  PDPASA_CASESOLUTION is public data. Source PDPASA_CASESOLUTION is updated each PDPASA run (i.e. half-hourly). Volume Rows per day: 48 Mb per month: &lt;1
+/// PDPASA_CASESOLUTION is public data.SourcePDPASA_CASESOLUTION is updated each PDPASA run (i.e. half-hourly).VolumeRows per day: 48Mb per month: <1
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -771,15 +773,18 @@ pub struct PdpasaConstraintsolution1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## PDPASA_CONSTRAINTSOLUTION
-///  _PDPASA_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value._
+///
+/// PDPASA_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value.
 ///
 /// * Data Set Name: Pdpasa
 /// * File Name: Constraintsolution
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1195,15 +1200,18 @@ pub struct PdpasaInterconnectorsoln1Mapping([usize; 13]);
 /// # Summary
 ///
 /// ## PDPASA_INTERCONNECTORSOLN
-///  _PDPASA_INTERCONNECTORSOLN shows the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval._
+///
+/// PDPASA_INTERCONNECTORSOLN shows the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval.
 ///
 /// * Data Set Name: Pdpasa
 /// * File Name: Interconnectorsoln
 /// * Data Version: 1
 ///
+/// # Description
+/// PDPASA_REGIONSOLUTION is public so is available to all participants.SourcePDPASA_REGIONSOLUTION is updated each PDPASA run (i.e. half-hourly).VolumeRows per day: 32000NotesLRC DeterminationSURPLUSRESERVE is the surplus reserve in a region based on meeting the demand plus the reserve requirement in all regions simultaneously. Note that any surplus above the network restrictions and system reserve requirements is reported in the region it is generated, thus a surplus of zero can mean that a region is importing to meet a requirement or that it has exported all surplus to meet an adjacent region’s requirement.The PASA processes also calculate a regionally optimised surplus called the Maximum LRC Surplus (MAXSURPLUSRESERVE) being a figure on how much generation could be brought to this region subject to meeting requirements in other regions.LOR DeterminationMAXSPARECAPACITY is a regionally optimised figure representing the surplus generation able to be brought to a region subject to meeting the demand in all other regions.Participants are directed to the first half hour of the Predispatch PASA (PDPASA) reports as NEMMCO's latest reserve determination for a given half hour.
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1744,16 +1752,18 @@ pub struct PdpasaRegionsolution7Mapping([usize; 45]);
 /// # Summary
 ///
 /// ## PDPASA_REGIONSOLUTION
-///  _The PDPASA region solution data_
+///
+/// The PDPASA region solution data
 ///
 /// * Data Set Name: Pdpasa
 /// * File Name: Regionsolution
 /// * Data Version: 7
 ///
 /// # Description
-///  PDPASA_REGIONSOLUTION is public so is available to all participants. Source PDPASA_REGIONSOLUTION is updated each PDPASA run (i.e. half-hourly). Volume Rows per day: 32000 Notes LRC Determination SURPLUSRESERVE is the surplus reserve in a region based on meeting the demand plus the reserve requirement in all regions simultaneously. Note that any surplus above the network restrictions and system reserve requirements is reported in the region it is generated, thus a surplus of zero can mean that a region is importing to meet a requirement or that it has exported all surplus to meet an adjacent region’s requirement. &nbsp; The PASA processes also calculate a regionally optimised surplus called the Maximum LRC Surplus (MAXSURPLUSRESERVE) being a figure on how much generation could be brought to this region subject to meeting requirements in other regions. &nbsp; LOR Determination MAXSPARECAPACITY is a regionally optimised figure representing the surplus generation able to be brought to a region subject to meeting the demand in all other regions. &nbsp; Participants are directed to the first half hour of the Predispatch PASA (PDPASA) reports as NEMMCO's latest reserve determination for a given half hour.
+/// PDPASA_REGIONSOLUTION is public so is available to all participants.SourcePDPASA_REGIONSOLUTION is updated each PDPASA run (i.e. half-hourly).VolumeRows per day: 32000NotesLRC DeterminationSURPLUSRESERVE is the surplus reserve in a region based on meeting the demand plus the reserve requirement in all regions simultaneously. Note that any surplus above the network restrictions and system reserve requirements is reported in the region it is generated, thus a surplus of zero can mean that a region is importing to meet a requirement or that it has exported all surplus to meet an adjacent region’s requirement.The PASA processes also calculate a regionally optimised surplus called the Maximum LRC Surplus (MAXSURPLUSRESERVE) being a figure on how much generation could be brought to this region subject to meeting requirements in other regions.LOR DeterminationMAXSPARECAPACITY is a regionally optimised figure representing the surplus generation able to be brought to a region subject to meeting the demand in all other regions.Participants are directed to the first half hour of the Predispatch PASA (PDPASA) reports as NEMMCO's latest reserve determination for a given half hour.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1805,7 +1815,7 @@ pub struct PdpasaRegionsolution7Row<'data> {
     pub aggregatescheduledload: Option<rust_decimal::Decimal>,
     /// Date time the record was created or modified changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Sum of PASAAVAILABILITY for all scheduled generating units and the Unconstrained Intermittent Generation Forecasts (UIGF) for all semi-scheduled generating units in a given Region for a given PERIODID.<br>For the RELIABILITY_LRC and OUTAGE_LRC runs, UIGF is the POE90 forecast. For the LOR run, UIGF is the POE50 forecast.
+    /// Sum of PASAAVAILABILITY for all scheduled generating units and the Unconstrained Intermittent Generation Forecasts (UIGF) for all semi-scheduled generating units in a given Region for a given PERIODID.For the RELIABILITY_LRC and OUTAGE_LRC runs, UIGF is the POE90 forecast. For the LOR run, UIGF is the POE50 forecast.
     pub aggregatepasaavailability: Option<rust_decimal::Decimal>,
     /// Type of run. Values are RELIABILITY_LRC, OUTAGE_LRC and LOR.
     pub runtype: core::ops::Range<usize>,

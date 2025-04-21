@@ -30,16 +30,18 @@ pub struct OfferBiddayoffer3Mapping([usize; 33]);
 /// # Summary
 ///
 /// ## BIDDAYOFFER
-///  _BIDDAYOFFER shows the Energy and Ancillary Service bid data for each Market Day. BIDDAYOFFER is the parent table to BIDOFFERPERIOD. BIDDAYOFFER is a child table to BIDOFFERFILETRK_
+///
+/// BIDDAYOFFER shows the Energy and Ancillary Service bid data for each Market Day. BIDDAYOFFER is the parent table to BIDOFFERPERIOD. BIDDAYOFFER is a child table to BIDOFFERFILETRK
 ///
 /// * Data Set Name: Offer
 /// * File Name: Biddayoffer
 /// * Data Version: 3
 ///
 /// # Description
-///  The ancillary service arrangements require availability and prices for each Frequency Control Ancillary Service to be bid on a similar basis to energy. Three tables (BIDOFFERFILETRK, BIDDAYOFFER and BIDOFFERPERIOD) facilitate ancillary service bidding and include energy bidding.  BIDDAYOFFER data is confidential to the submitting participant until made public after 4am the next day. Source BIDDAYOFFER updates as ancillary service bids are processed. BIDDAYOFFER includes all accepted energy and ancillary service bids. Volume Approximately 1,500,000 records per year
+/// The ancillary service arrangements require availability and prices for each Frequency Control Ancillary Service to be bid on a similar basis to energy. Three tables (BIDOFFERFILETRK, BIDDAYOFFER and BIDOFFERPERIOD) facilitate ancillary service bidding and include energy bidding. BIDDAYOFFER data is confidential to the submitting participant until made public after 4am the next day.SourceBIDDAYOFFER updates as ancillary service bids are processed. BIDDAYOFFER includes all accepted energy and ancillary service bids.VolumeApproximately 1,500,000 records per year
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
@@ -1154,16 +1156,18 @@ pub struct BidBiddayofferD3Mapping([usize; 29]);
 /// # Summary
 ///
 /// ## BIDDAYOFFER_D
-///  _BIDDAYOFFER_D shows the public summary of the energy and FCAS offers applicable in the Dispatch for the<br>intervals identified. BIDDAYOFFER_D is the parent table to BIDPEROFFER_D._
+///
+/// BIDDAYOFFER_D shows the public summary of the energy and FCAS offers applicable in the Dispatch for theintervals identified. BIDDAYOFFER_D is the parent table to BIDPEROFFER_D.
 ///
 /// * Data Set Name: Bid
 /// * File Name: Biddayoffer D
 /// * Data Version: 3
 ///
 /// # Description
-///  BIDDAYOFFER_D data is made public after 4am the next day. Source BIDDAYOFFER_D updates as ancillary service bids are processed. BIDDAYOFFER_D shows latest accepted energy and ancillary service bids. Volume Summary - approximately 1,000 rows per day
+/// BIDDAYOFFER_D data is made public after 4am the next day.SourceBIDDAYOFFER_D updates as ancillary service bids are processed. BIDDAYOFFER_D shows latest accepted energy and ancillary service bids.VolumeSummary - approximately 1,000 rows per day
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -2158,21 +2162,22 @@ pub struct BidsBidofferfiletrk1Mapping([usize; 12]);
 /// # Summary
 ///
 /// ## BIDOFFERFILETRK
-///  _BIDOFFERFILETRK shows an audit trail of all files submitted containing ENERGY/FCAS/MNSP bid, including corrupt bids and rebids._
+///
+/// BIDOFFERFILETRK shows an audit trail of all files submitted containing ENERGY/FCAS/MNSP bid, including corrupt bids and rebids.
 ///
 /// * Data Set Name: Bids
 /// * File Name: Bidofferfiletrk
 /// * Data Version: 1
 ///
 /// # Description
-///  BIDOFFERFILETRK data is confidential to the submitting participant. The new ancillary service arrangements require availability and prices for each Frequency Control Ancillary Service to be bid on a similar basis to energy. Three new tables facilitate ancillary service bidding. The new tables (BIDOFFERFILETRK, BIDDAYOFFER and BIDOFFERPERIOD) are similar in structure to energy bidding tables (OFFERFILETRK, DAYOFFER and PEROFFER). The significant differences with the new tables are. ·  The OFFERDATE field reflects the time the bid was loaded and this field alone provides the key for versioning of bids. The VERSIONNO field is retained for participant use as information only. ·  The new tables support bids for multiple services. The BIDTYPE field defines the service to which the bid applies. ·  There are no default bids. In the absence of a bid for a specific settlement date, the latest bid submitted for a previous settlement date applies. Source This data is updated as bids are processed. It includes all bids submitted including corrupt bids. Volume Approximately 100,000 records per year Note Confirmation is via CSV bid acknowledgement file
+/// BIDOFFERFILETRK data is confidential to the submitting participant.The new ancillary service arrangements require availability and prices for each Frequency Control Ancillary Service to be bid on a similar basis to energy. Three new tables facilitate ancillary service bidding. The new tables (BIDOFFERFILETRK, BIDDAYOFFER and BIDOFFERPERIOD) are similar in structure to energy bidding tables (OFFERFILETRK, DAYOFFER and PEROFFER). The significant differences with the new tables are.·The OFFERDATE field reflects the time the bid was loaded and this field alone provides the key for versioning of bids. The VERSIONNO field is retained for participant use as information only.·The new tables support bids for multiple services. The BIDTYPE field defines the service to which the bid applies.·There are no default bids. In the absence of a bid for a specific settlement date, the latest bid submitted for a previous settlement date applies.SourceThis data is updated as bids are processed. It includes all bids submitted including corrupt bids.VolumeApproximately 100,000 records per yearNoteConfirmation is via CSV bid acknowledgement file
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
-/// * OFFERDATE
-/// * PARTICIPANTID
+/// * FILENAME
 #[derive(Debug, PartialEq, Eq)]
 pub struct BidsBidofferfiletrk1Row<'data> {
     /// Unique participant identifier
@@ -2393,8 +2398,7 @@ impl mmsdm_core::GetTable for BidsBidofferfiletrk1 {
     }
     fn primary_key(row: &Self::Row<'_>) -> BidsBidofferfiletrk1PrimaryKey {
         BidsBidofferfiletrk1PrimaryKey {
-            offerdate: row.offerdate,
-            participantid: row.participantid().to_string(),
+            filename: row.filename().to_string(),
         }
     }
     fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
@@ -2426,32 +2430,31 @@ impl mmsdm_core::GetTable for BidsBidofferfiletrk1 {
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct BidsBidofferfiletrk1PrimaryKey {
-    pub offerdate: chrono::NaiveDateTime,
-    pub participantid: alloc::string::String,
+    pub filename: alloc::string::String,
 }
 impl mmsdm_core::PrimaryKey for BidsBidofferfiletrk1PrimaryKey {}
 impl<'data> mmsdm_core::CompareWithRow for BidsBidofferfiletrk1Row<'data> {
     type Row<'other> = BidsBidofferfiletrk1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.offerdate == row.offerdate && self.participantid() == row.participantid()
+        self.filename() == row.filename()
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey for BidsBidofferfiletrk1Row<'data> {
     type PrimaryKey = BidsBidofferfiletrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.offerdate == key.offerdate && self.participantid() == key.participantid
+        self.filename() == key.filename
     }
 }
 impl<'data> mmsdm_core::CompareWithRow for BidsBidofferfiletrk1PrimaryKey {
     type Row<'other> = BidsBidofferfiletrk1Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.offerdate == row.offerdate && self.participantid == row.participantid()
+        self.filename == row.filename()
     }
 }
 impl mmsdm_core::CompareWithPrimaryKey for BidsBidofferfiletrk1PrimaryKey {
     type PrimaryKey = BidsBidofferfiletrk1PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.offerdate == key.offerdate && self.participantid == key.participantid
+        self.filename == key.filename
     }
 }
 #[cfg(feature = "arrow")]
@@ -2650,15 +2653,18 @@ pub struct BidsBidofferperiod2Mapping([usize; 27]);
 /// # Summary
 ///
 /// ## BIDOFFERPERIOD
-///  _BIDOFFERPERIOD shows 5-minute period-based Energy and Ancillary Service bid data.BIDOFFERPERIOD is a child table of BIDDAYOFFER_
+///
+/// BIDOFFERPERIOD shows 5-minute period-based Energy and Ancillary Service bid data.BIDOFFERPERIOD is a child table of BIDDAYOFFER
 ///
 /// * Data Set Name: Bids
 /// * File Name: Bidofferperiod
 /// * Data Version: 2
 ///
+/// # Description
+/// BIDPEROFFER_D is public data, so is available to all participants.SourceBIDPEROFFER_D updates daily shortly after 4am. See also BIDPEROFFER.
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
@@ -3587,16 +3593,18 @@ pub struct BidBidperofferD3Mapping([usize; 31]);
 /// # Summary
 ///
 /// ## BIDPEROFFER_D
-///  _BIDPEROFFER_D shows the public summary of the energy and FCAS offers applicable in the Dispatch for the<br>intervals identified. BIDPEROFFER_D is the child to BIDDAYOFFER_D._
+///
+/// BIDPEROFFER_D shows the public summary of the energy and FCAS offers applicable in the Dispatch for theintervals identified. BIDPEROFFER_D is the child to BIDDAYOFFER_D.
 ///
 /// * Data Set Name: Bid
 /// * File Name: Bidperoffer D
 /// * Data Version: 3
 ///
 /// # Description
-///  BIDPEROFFER_D is public data, so is available to all participants. Source BIDPEROFFER_D updates daily shortly after 4am.  See also BIDPEROFFER.
+/// BIDPEROFFER_D is public data, so is available to all participants.SourceBIDPEROFFER_D updates daily shortly after 4am. See also BIDPEROFFER.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -4663,15 +4671,18 @@ pub struct BidsMnspBidofferperiod1Mapping([usize; 18]);
 /// # Summary
 ///
 /// ## MNSP_BIDOFFERPERIOD
-///  _MNSP_BIDOFFERPERIOD shows availability for 5-minute periods for a specific Bid and LinkID for the given Trading Date and period. MNSP_BIDOFFERPERIOD is a child to MNSP_DAYOFFER and links to BIDOFFERFILETRK for 5MS Bids._
+///
+/// MNSP_BIDOFFERPERIOD shows availability for 5-minute periods for a specific Bid and LinkID for the given Trading Date and period. MNSP_BIDOFFERPERIOD is a child to MNSP_DAYOFFER and links to BIDOFFERFILETRK for 5MS Bids.
 ///
 /// * Data Set Name: Bids
 /// * File Name: Mnsp Bidofferperiod
 /// * Data Version: 1
 ///
+/// # Description
+/// MNSP_DAYOFFER shows own (confidential) data updates as bids are processed. All bids are available as part of next day market data.Volume4, 000 per year
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
@@ -5356,16 +5367,18 @@ pub struct BidMnspDayoffer2Mapping([usize; 24]);
 /// # Summary
 ///
 /// ## MNSP_DAYOFFER
-///  _MNSP_DAYOFFER updates as bids are processed. All bids are available as part of next day market data. MNSP_DAYOFFER is the parent table to MNSP_BIDOFFERPERIOD, and joins to BIDOFFERFILETRK for 5MS Bids._
+///
+/// MNSP_DAYOFFER updates as bids are processed. All bids are available as part of next day market data. MNSP_DAYOFFER is the parent table to MNSP_BIDOFFERPERIOD, and joins to BIDOFFERFILETRK for 5MS Bids.
 ///
 /// * Data Set Name: Bid
 /// * File Name: Mnsp Dayoffer
 /// * Data Version: 2
 ///
 /// # Description
-///  MNSP_DAYOFFER shows own (confidential) data updates as bids are processed. All bids are available as part of next day market data. Volume 4, 000 per year
+/// MNSP_DAYOFFER shows own (confidential) data updates as bids are processed. All bids are available as part of next day market data.Volume4, 000 per year
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
@@ -6227,15 +6240,18 @@ pub struct OfferMtpasaOfferdata2Mapping([usize; 27]);
 /// # Summary
 ///
 /// ## MTPASA_OFFERDATA
-///  _Participant submitted Offers for MTPASA process_
+///
+/// Participant submitted Offers for MTPASA process
 ///
 /// * Data Set Name: Offer
 /// * File Name: Mtpasa Offerdata
 /// * Data Version: 2
 ///
+/// # Description
+/// MTPASA_OFFERFILETRK is confidential to the relevant participant.SourceMTPASA_OFFERFILETRK updates for every submitted MTPASA bid.Volume4000 per year, being one per bid containing an MTPASA bid
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -6972,16 +6988,18 @@ pub struct OfferMtpasaOfferfiletrk1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## MTPASA_OFFERFILETRK
-///  _Participant submitted Offers for MTPASA process_
+///
+/// Participant submitted Offers for MTPASA process
 ///
 /// * Data Set Name: Offer
 /// * File Name: Mtpasa Offerfiletrk
 /// * Data Version: 1
 ///
 /// # Description
-///  MTPASA_OFFERFILETRK is confidential to the relevant participant. Source MTPASA_OFFERFILETRK updates for every submitted MTPASA bid. Volume 4000 per year, being one per bid containing an MTPASA bid
+/// MTPASA_OFFERFILETRK is confidential to the relevant participant.SourceMTPASA_OFFERFILETRK updates for every submitted MTPASA bid.Volume4000 per year, being one per bid containing an MTPASA bid
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///

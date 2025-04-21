@@ -30,15 +30,18 @@ pub struct GenericConstraintEmsmaster1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## EMSMASTER
-///  _EMSMASTER provides a description of the SCADA measurements that are associated with the SPD_ID points utilised in generic equation RHS terms_
+///
+/// EMSMASTER provides a description of the SCADA measurements that are associated with the SPD_ID points utilised in generic equation RHS terms
 ///
 /// * Data Set Name: Generic Constraint
 /// * File Name: Emsmaster
 /// * Data Version: 1
 ///
+/// # Description
+/// GENCONDATA is a public data, and is available to all participants.SourceGENCONDATA updates as constraint details are updated by AEMO.NoteThe following fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes:·DISPATCH·PREDISPATCH·STPASA·MTPASAThe flag P5MIN_SCOPE_OVERRIDE indicates for each constraint whether 5MPD makes use of the default Dispatch (P5MIN_SCOPE_OVERRIDE = NULL) or Pre-dispatch (P5MIN_SCOPE_OVERRIDE = ‘PD’) style RHS definition. GENERICCONSTRAINTRHS stores generic constraint RHS definitions. Constraints without records in GENERICCONSTRAINTRHS only make use of the static RHS defined in the CONSTRAINTVALUE column in GENCONDATA .The default value for the P5MIN_SCOPE_OVERRIDE column is NULL, so constraints existing before implementing the column use the DISPATCH RHS definition by default, as was the case before the implementation of the change.
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -328,16 +331,18 @@ pub struct GencondataNull6Mapping([usize; 26]);
 /// # Summary
 ///
 /// ## GENCONDATA
-///  _GENCONDATA sets out the generic constraints contained within a generic constraint set invoked in PASA, predispatch and dispatch.<br>Fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes._
+///
+/// GENCONDATA sets out the generic constraints contained within a generic constraint set invoked in PASA, predispatch and dispatch.Fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes.
 ///
 /// * Data Set Name: Gencondata
 /// * File Name: Null
 /// * Data Version: 6
 ///
 /// # Description
-///  GENCONDATA is a public data, and is available to all participants. Source GENCONDATA updates as constraint details are updated by AEMO. Note The following fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes: · DISPATCH · PREDISPATCH · STPASA · MTPASA The flag P5MIN_SCOPE_OVERRIDE indicates for each constraint whether 5MPD makes use of the default Dispatch (P5MIN_SCOPE_OVERRIDE = NULL) or Pre-dispatch (P5MIN_SCOPE_OVERRIDE = ‘PD’) style RHS definition. GENERICCONSTRAINTRHS stores generic constraint RHS definitions. Constraints without records in GENERICCONSTRAINTRHS only make use of the static RHS defined in the CONSTRAINTVALUE column in GENCONDATA . The default value for the P5MIN_SCOPE_OVERRIDE column is NULL, so constraints existing before implementing the column use the DISPATCH RHS definition by default, as was the case before the implementation of the change.
+/// GENCONDATA is a public data, and is available to all participants.SourceGENCONDATA updates as constraint details are updated by AEMO.NoteThe following fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes:·DISPATCH·PREDISPATCH·STPASA·MTPASAThe flag P5MIN_SCOPE_OVERRIDE indicates for each constraint whether 5MPD makes use of the default Dispatch (P5MIN_SCOPE_OVERRIDE = NULL) or Pre-dispatch (P5MIN_SCOPE_OVERRIDE = ‘PD’) style RHS definition. GENERICCONSTRAINTRHS stores generic constraint RHS definitions. Constraints without records in GENERICCONSTRAINTRHS only make use of the static RHS defined in the CONSTRAINTVALUE column in GENCONDATA .The default value for the P5MIN_SCOPE_OVERRIDE column is NULL, so constraints existing before implementing the column use the DISPATCH RHS definition by default, as was the case before the implementation of the change.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -352,7 +357,7 @@ pub struct GencondataNull6Row<'data> {
     pub versionno: rust_decimal::Decimal,
     /// Unique ID for the constraint
     pub genconid: core::ops::Range<usize>,
-    /// The logical operator (=, &gt;=, &lt;=)
+    /// The logical operator (=, >=, <=)
     pub constrainttype: core::ops::Range<usize>,
     /// the RHS value used if there is no dynamic RHS defined in GenericConstraintRHS
     pub constraintvalue: Option<rust_decimal::Decimal>,
@@ -396,7 +401,7 @@ pub struct GencondataNull6Row<'data> {
     pub lrc: core::ops::Range<usize>,
     /// Flag to indicate if PASA LOR run uses the constraint; 1-used, 0-not used
     pub lor: core::ops::Range<usize>,
-    /// Flags Constraints for which NEMDE must use "InitialMW" values instead of "WhatOfInitialMW" for Intervention Pricing runs
+    /// Flags Constraints for which NEMDE must use "InitialMW"values instead of "WhatOfInitialMW"for Intervention Pricing runs
     pub force_scada: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
@@ -1228,16 +1233,18 @@ pub struct GenconsetNull1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## GENCONSET
-///  _GENCONSET sets out generic constraint sets that are invoked and revoked, and may contain many generic constraints (GENCONDATA)._
+///
+/// GENCONSET sets out generic constraint sets that are invoked and revoked, and may contain many generic constraints (GENCONDATA).
 ///
 /// * Data Set Name: Genconset
 /// * File Name: Null
 /// * Data Version: 1
 ///
 /// # Description
-///  GENCONSET is public data, and is available to all participants. Source GENCONSET updates as sets are updated by AEMO.
+/// GENCONSET is public data, and is available to all participants.SourceGENCONSET updates as sets are updated by AEMO.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1593,21 +1600,22 @@ pub struct GenconsetinvokeNull2Mapping([usize; 14]);
 /// # Summary
 ///
 /// ## GENCONSETINVOKE
-///  _GENCONSETINVOKE provides details of invoked and revoked generic constraints. GENCONSETINVOKE is the key table for determining what constraints are active in dispatch, predispatch and PASA.<br>GENCONSETINVOKE also indicates whether constraints are for interconnector limits, ancillary services, etc._
+///
+/// GENCONSETINVOKE provides details of invoked and revoked generic constraints. GENCONSETINVOKE is the key table for determining what constraints are active in dispatch, predispatch and PASA.GENCONSETINVOKE also indicates whether constraints are for interconnector limits, ancillary services, etc.
 ///
 /// * Data Set Name: Genconsetinvoke
 /// * File Name: Null
 /// * Data Version: 2
 ///
 /// # Description
-///  GENCONSETINVOKE is public data. All participants have access to this data. Source GENCONSETINVOKE updates each time a generic constraint is invoked or revoke time is altered. Once past the time, these times cannot be altered. Note The Replica software does not handle the deletion of GENCONSETINVOKE records. To workaround this problem, the field STARTAUTHORISEDBY indicates whether a constraint set invocation is applicable. A non-null value for the STARTAUTHORISEDBY field indicates that the constraint invocation is active. Essentially inactive invocations have a null value for the STARTAUTHORISEDBY field. To remove inactive invocations from queries on the GENCONSETINVOKE table, add the following text to the where clause "and STARTAUTHORISEDBY is not null".
+/// GENCONSETINVOKE is public data. All participants have access to this data.SourceGENCONSETINVOKE updates each time a generic constraint is invoked or revoke time is altered. Once past the time, these times cannot be altered.NoteThe Replica software does not handle the deletion of GENCONSETINVOKE records. To workaround this problem, the field STARTAUTHORISEDBY indicates whether a constraint set invocation is applicable. A non-null value for the STARTAUTHORISEDBY field indicates that the constraint invocation is active. Essentially inactive invocations have a null value for the STARTAUTHORISEDBY field. To remove inactive invocations from queries on the GENCONSETINVOKE table, add the following text to the where clause "and STARTAUTHORISEDBY is not null".
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
 /// * INVOCATION_ID
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct GenconsetinvokeNull2Row<'data> {
     /// Abstract unique identifier for the record. Allows Invocations to be modified without affecting PK values
@@ -2132,16 +2140,18 @@ pub struct GenconsettrkNull2Mapping([usize; 11]);
 /// # Summary
 ///
 /// ## GENCONSETTRK
-///  _GENCONSETTRK assists in determining the correct version of a generic constraint set that has been invoked in GENCONSETINVOKE._
+///
+/// GENCONSETTRK assists in determining the correct version of a generic constraint set that has been invoked in GENCONSETINVOKE.
 ///
 /// * Data Set Name: Genconsettrk
 /// * File Name: Null
 /// * Data Version: 2
 ///
 /// # Description
-///  GENCONSETTRK data is public to all participants. Source Ad hoc updates occur to GENCONSETTRK.
+/// GENCONSETTRK data is public to all participants.SourceAd hoc updates occur to GENCONSETTRK.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -2611,16 +2621,18 @@ pub struct GcrhsNull1Mapping([usize; 15]);
 /// # Summary
 ///
 /// ## GENERICCONSTRAINTRHS
-///  _GENERICCONSTRAINTRHS sets out details of generic constraint Right Hand Side (RHS) formulations for dispatch (DS), predispatch (PD) and Short Term PASA (ST). GENERICCONSTRAINTRHS also includes general expressions (EQ) used in the dispatch, predispatch and PASA time frames.<br>GENERICCONSTRAINTRHS replaces data previously available via the "Constraint Library” Excel spreadsheet._
+///
+/// GENERICCONSTRAINTRHS sets out details of generic constraint Right Hand Side (RHS) formulations for dispatch (DS), predispatch (PD) and Short Term PASA (ST). GENERICCONSTRAINTRHS also includes general expressions (EQ) used in the dispatch, predispatch and PASA time frames.GENERICCONSTRAINTRHS replaces data previously available via the "Constraint Library” Excel spreadsheet.
 ///
 /// * Data Set Name: Gcrhs
 /// * File Name: Null
 /// * Data Version: 1
 ///
 /// # Description
-///  GENERICCONSTRAINTRHS is public data, and is available to all participants. Source GENERICCONSTRAINTRHS updates whenever a new generic constraint RHS or expression is created or modified Volume Approximately 70,000 records per year Note GENERICEQUATIONRHS and GENERICEQUATIONDESC allow commonly used constraint right hand side formulations to be defined as a generic equation. Once defined, the generic equation can be referenced from any Generic constraint RHS formulation defined in GENERICCONSTRAINTRHS.
+/// GENERICCONSTRAINTRHS is public data, and is available to all participants.SourceGENERICCONSTRAINTRHS updates whenever a new generic constraint RHS or expression is created or modifiedVolumeApproximately 70,000 records per yearNoteGENERICEQUATIONRHS and GENERICEQUATIONDESC allow commonly used constraint right hand side formulations to be defined as a generic equation. Once defined, the generic equation can be referenced from any Generic constraint RHS formulation defined in GENERICCONSTRAINTRHS.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -2655,9 +2667,9 @@ pub struct GcrhsNull1Row<'data> {
     pub defaultvalue: Option<rust_decimal::Decimal>,
     /// The unique identifier for the first term (logic expression) to use in a Branch term
     pub parameterterm1: core::ops::Range<usize>,
-    /// The unique identifier for the second term (logic&lt;=0 result) to use in a Branch term
+    /// The unique identifier for the second term (logic<=0 result) to use in a Branch term
     pub parameterterm2: core::ops::Range<usize>,
-    /// The unique identifier for the third term (logic&gt;0 result) to use in a Branch term
+    /// The unique identifier for the third term (logic>0 result) to use in a Branch term
     pub parameterterm3: core::ops::Range<usize>,
     /// Last date and time record changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -3211,16 +3223,18 @@ pub struct GeqdescNull2Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## GENERICEQUATIONDESC
-///  _GENERICEQUATIONDESC defines a generic equation identifier with a description. The formulation of the generic equation is detailed in GENERICEQUATIONRHS._
+///
+/// GENERICEQUATIONDESC defines a generic equation identifier with a description. The formulation of the generic equation is detailed in GENERICEQUATIONRHS.
 ///
 /// * Data Set Name: Geqdesc
 /// * File Name: Null
 /// * Data Version: 2
 ///
 /// # Description
-///  GENERICEQUATIONDESC data is public to all participants. Source GENERICEQUATIONDESC updates when new a generic equation is created for the first time. Volume Approximately 100 records per year Note GENERICEQUATIONRHS and GENERICEQUATIONDESC allow commonly used constraint right hand side formulations to be defined as a generic equation. Once defined, the generic equation can be referenced from any Generic constraint RHS formulation defined in GENERICCONSTRAINTRHS.
+/// GENERICEQUATIONDESC data is public to all participants.SourceGENERICEQUATIONDESC updates when new a generic equation is created for the first time.VolumeApproximately 100 records per yearNoteGENERICEQUATIONRHS and GENERICEQUATIONDESC allow commonly used constraint right hand side formulations to be defined as a generic equation. Once defined, the generic equation can be referenced from any Generic constraint RHS formulation defined in GENERICCONSTRAINTRHS.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -3626,16 +3640,18 @@ pub struct GeqrhsNull1Mapping([usize; 14]);
 /// # Summary
 ///
 /// ## GENERICEQUATIONRHS
-///  _GENERICEQUATIONRHS stores the formulation of commonly used Generic Constraint Right Hand Side Equations referenced from Generic Constraint Right Hand Side definitions stored in GENERICCONSTRAINTRHS. The Generic Equation definitions are versioned and the latest effective version is applied to the dispatch process._
+///
+/// GENERICEQUATIONRHS stores the formulation of commonly used Generic Constraint Right Hand Side Equations referenced from Generic Constraint Right Hand Side definitions stored in GENERICCONSTRAINTRHS. The Generic Equation definitions are versioned and the latest effective version is applied to the dispatch process.
 ///
 /// * Data Set Name: Geqrhs
 /// * File Name: Null
 /// * Data Version: 1
 ///
 /// # Description
-///  GENERICEQUATIONRHS data is public to all participants. Source GENERICEQUATIONRHS updates whenever a generic equation is created or modified. Volume Approximately 1,000 records per year Note GENERICEQUATIONRHS and GENERICEQUATIONDESC allow commonly used constraint right hand side formulations to be defined as a generic equation. Once defined, the generic equation can be referenced from any Generic constraint RHS formulation defined in GENERICCONSTRAINTRHS. To reference a generic equation from a generic constraint RHS definition, specify a SPD_TYPE of ‘X’ and the SPD_ID equivalent to the EQUATIONID field in GENERICEQUATIONRHS.
+/// GENERICEQUATIONRHS data is public to all participants.SourceGENERICEQUATIONRHS updates whenever a generic equation is created or modified.VolumeApproximately 1,000 records per yearNoteGENERICEQUATIONRHS and GENERICEQUATIONDESC allow commonly used constraint right hand side formulations to be defined as a generic equation. Once defined, the generic equation can be referenced from any Generic constraint RHS formulation defined in GENERICCONSTRAINTRHS.To reference a generic equation from a generic constraint RHS definition, specify a SPD_TYPE of ‘X’ and the SPD_ID equivalent to the EQUATIONID field in GENERICEQUATIONRHS.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -3667,9 +3683,9 @@ pub struct GeqrhsNull1Row<'data> {
     pub defaultvalue: Option<rust_decimal::Decimal>,
     /// The unique identifier for the first term (logic expression) to use in a Branch term
     pub parameterterm1: core::ops::Range<usize>,
-    /// The unique identifier for the second term (logic&lt;=0 result) to use in a Branch term
+    /// The unique identifier for the second term (logic<=0 result) to use in a Branch term
     pub parameterterm2: core::ops::Range<usize>,
-    /// The unique identifier for the third term (logic&gt;0 result) to use in a Branch term
+    /// The unique identifier for the third term (logic>0 result) to use in a Branch term
     pub parameterterm3: core::ops::Range<usize>,
     /// Last date and time record changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -4198,16 +4214,18 @@ pub struct SpdcpcNull2Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## SPDCONNECTIONPOINTCONSTRAINT
-///  _SPDCONNECTIONPOINTCONSTRAINT sets out details of connections point constraints issued in dispatch, predispatch and STPASA._
+///
+/// SPDCONNECTIONPOINTCONSTRAINT sets out details of connections point constraints issued in dispatch, predispatch and STPASA.
 ///
 /// * Data Set Name: Spdcpc
 /// * File Name: Null
 /// * Data Version: 2
 ///
 /// # Description
-///  The addition of the BIDTYPE field to SPDCONNECTIONPOINTCONSTRAINT allows constraints to be applied to a dispatchable unit energy and/or Frequency Controlled Ancillary Services dispatch. SPDCONNECTIONPOINTCONSTRAINTdata is public, so is available to all participants. Source SPDCONNECTIONPOINTCONSTRAINT updates whenever new connection point constraints are created.
+/// The addition of the BIDTYPE field to SPDCONNECTIONPOINTCONSTRAINT allows constraints to be applied to a dispatchable unit energy and/or Frequency Controlled Ancillary Services dispatch.SPDCONNECTIONPOINTCONSTRAINTdata is public, so is available to all participants.SourceSPDCONNECTIONPOINTCONSTRAINT updates whenever new connection point constraints are created.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -4565,16 +4583,18 @@ pub struct SpdiccNull1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## SPDINTERCONNECTORCONSTRAINT
-///  _SPDINTERCONNECTORCONSTRAINT contains details on the interconnector constraint factors used in dispatch, predispatch and STPASA. The details set a LHS value._
+///
+/// SPDINTERCONNECTORCONSTRAINT contains details on the interconnector constraint factors used in dispatch, predispatch and STPASA. The details set a LHS value.
 ///
 /// * Data Set Name: Spdicc
 /// * File Name: Null
 /// * Data Version: 1
 ///
 /// # Description
-///  SPDINTERCONNECTORCONSTRAINT is public data, and is available to all participants. Source SPDINTERCONNECTORCONSTRAINT updates whenever new connection point constraints are created.
+/// SPDINTERCONNECTORCONSTRAINT is public data, and is available to all participants.SourceSPDINTERCONNECTORCONSTRAINT updates whenever new connection point constraints are created.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -4907,16 +4927,18 @@ pub struct SpdrcNull2Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## SPDREGIONCONSTRAINT
-///  _SPDREGIONCONSTRAINT contains details on region demand constraint factors used in dispatch. SPDREGIONCONSTRAINTsets a LHS value._
+///
+/// SPDREGIONCONSTRAINT contains details on region demand constraint factors used in dispatch. SPDREGIONCONSTRAINTsets a LHS value.
 ///
 /// * Data Set Name: Spdrc
 /// * File Name: Null
 /// * Data Version: 2
 ///
 /// # Description
-///  SPDREGIONCONSTRAINT is public data, and is available to all participants. Source SPDREGIONCONSTRAINT is updated whenever AEMO creates new regional constraints.
+/// SPDREGIONCONSTRAINT is public data, and is available to all participants.SourceSPDREGIONCONSTRAINT is updated whenever AEMO creates new regional constraints.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///

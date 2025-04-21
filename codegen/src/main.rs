@@ -1,7 +1,7 @@
 use anyhow::Context;
 use log::info;
 use structopt::StructOpt;
-use tokio::io::{AsyncReadExt, AsyncSeekExt, AsyncWriteExt};
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 mod analyse;
 mod download;
@@ -9,7 +9,6 @@ mod html_tree;
 mod json;
 mod mms;
 mod pdr;
-mod python;
 mod rust;
 mod sql_server_tables;
 
@@ -21,7 +20,6 @@ enum AemoCodegen {
     Json,
     Rust,
     SqlServerTables,
-    Python,
     Analyse,
     Download,
 }
@@ -40,7 +38,17 @@ async fn run() -> Result<(), anyhow::Error> {
     let file_name = format!("mmsdm_v{VERSION}.json");
     match AemoCodegen::from_args() {
         AemoCodegen::SqlServerTables => {
-            sql_server_tables::run()?;
+            let mut data = String::new();
+            let mut f = tokio::fs::OpenOptions::new()
+                .read(true)
+                .open(&file_name)
+                .await
+                .with_context(|| format!("Opening file: `{file_name}`"))?;
+
+            f.read_to_string(&mut data).await?;
+            let de = serde_json::from_str(&data)?;
+
+            sql_server_tables::run(de)?;
         }
         AemoCodegen::Rust => {
             let mut data = String::new();
@@ -57,7 +65,17 @@ async fn run() -> Result<(), anyhow::Error> {
             rust::run(de)?;
         }
         AemoCodegen::Analyse => {
-            analyse::run()?;
+            let mut data = String::new();
+            let mut f = tokio::fs::OpenOptions::new()
+                .read(true)
+                .open(&file_name)
+                .await
+                .with_context(|| format!("Opening file: `{file_name}`"))?;
+
+            f.read_to_string(&mut data).await?;
+            let de = serde_json::from_str(&data)?;
+
+            analyse::run(de)?;
         }
         AemoCodegen::Json => {
             let dm = json::run().await?;
@@ -78,19 +96,8 @@ async fn run() -> Result<(), anyhow::Error> {
         AemoCodegen::Download => {
             download::run().await?;
         }
-        AemoCodegen::Python => {
-            python::run()?;
-        }
     }
     Ok(())
-}
-
-fn swap_nonreq<T>(or: Option<anyhow::Result<T>>) -> anyhow::Result<Option<T>> {
-    match or {
-        Some(Ok(o)) => Ok(Some(o)),
-        Some(Err(e)) => Err(e),
-        None => Ok(None),
-    }
 }
 
 const KW: [&str; 51] = [

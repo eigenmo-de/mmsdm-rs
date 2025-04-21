@@ -30,16 +30,18 @@ pub struct MtpasaReservelimit1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## MTPASA_RESERVELIMIT
-///  _MT PASA input table defining a MT PASA Reserve Requirement within a single set. An MT PASA Reserve Requirement can span more than one region._
+///
+/// MT PASA input table defining a MT PASA Reserve Requirement within a single set. An MT PASA Reserve Requirement can span more than one region.
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Reservelimit
 /// * Data Version: 1
 ///
 /// # Description
-///  Source MTPASA_RESERVELIMIT is updated on an ad hoc basis when a new Reserve Requirement is published. Volume ~20 rows per year
+/// SourceMTPASA_RESERVELIMIT is updated on an ad hoc basis when a new Reserve Requirement is published.Volume~20 rows per year
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -378,16 +380,18 @@ pub struct MtpasaReservelimitRegion1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## MTPASA_RESERVELIMIT_REGION
-///  _MT PASA input table to define the regions that are part of a single MT PASA Reserve Requirement_
+///
+/// MT PASA input table to define the regions that are part of a single MT PASA Reserve Requirement
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Reservelimit Region
 /// * Data Version: 1
 ///
 /// # Description
-///  Source MTPASA_RESERVELIMIT_REGION is updated on an ad hoc basis when a new Reserve Requirement is published. Volume ~50 rows per year
+/// SourceMTPASA_RESERVELIMIT_REGION is updated on an ad hoc basis when a new Reserve Requirement is published.Volume~50 rows per year
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -720,16 +724,18 @@ pub struct MtpasaReservelimitSet1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## MTPASA_RESERVELIMIT_SET
-///  _MT PASA input table defining a set of MT PASA Reserve Requirements. Note only one set can be active on a given date._
+///
+/// MT PASA input table defining a set of MT PASA Reserve Requirements. Note only one set can be active on a given date.
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Reservelimit Set
 /// * Data Version: 1
 ///
 /// # Description
-///  Source MTPASA_RESERVELIMIT_SET is updated on an ad hoc basis when a new Reserve Requirement is published. Volume ~2 rows per year
+/// SourceMTPASA_RESERVELIMIT_SET is updated on an ad hoc basis when a new Reserve Requirement is published.Volume~2 rows per year
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1094,16 +1100,18 @@ pub struct ReserveDataReserve1Mapping([usize; 17]);
 /// # Summary
 ///
 /// ## RESERVE
-///  _RESERVE sets out specific reserve requirements for dispatch, predispatch and STPASA, for each half-hour interval by region. Updates show as new versions for a date._
+///
+/// RESERVE sets out specific reserve requirements for dispatch, predispatch and STPASA, for each half-hour interval by region. Updates show as new versions for a date.
 ///
 /// * Data Set Name: Reserve Data
 /// * File Name: Reserve
 /// * Data Version: 1
 ///
 /// # Description
-///  Two fields specify Frequency Controlled Ancillary Services requirements for the regulation ancillary services. Another two fields specify the Lack of Reserve levels to be applied in the ST PASA solver.  Change Notice 324 (for the FCAS Constraint enhancements project) means that Dispatch no longer utilises the static FCAS requirements defined in the DELTAMW and RESERVE tables. These tables are replaced with constraint data as a source of FCAS requirements. RESERVE data is public, so is available to all participants. Source RESERVE updates as AEMO updates forecasts, daily.
+/// Two fields specify Frequency Controlled Ancillary Services requirements for the regulation ancillary services. Another two fields specify the Lack of Reserve levels to be applied in the ST PASA solver. Change Notice 324 (for the FCAS Constraint enhancements project) means that Dispatch no longer utilises the static FCAS requirements defined in the DELTAMW and RESERVE tables. These tables are replaced with constraint data as a source of FCAS requirements.RESERVE data is public, so is available to all participants.SourceRESERVE updates as AEMO updates forecasts, daily.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///

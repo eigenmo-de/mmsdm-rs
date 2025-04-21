@@ -1,8 +1,7 @@
 use anyhow::Context;
 use codegen::Scope;
 use heck::{ToSnakeCase, ToTitleCase, ToUpperCamelCase};
-use itertools::Itertools;
-use log::info;
+use log::{info, warn};
 use std::{
     collections::{self, HashMap},
     fmt::Debug,
@@ -90,12 +89,12 @@ impl mms::TableColumn {
         .to_string()
     }
     fn to_rust_type(&self) -> String {
-        dbg!(
-            self,
-            self.is_dispatch_period(),
-            self.is_trading_period(),
-            &self.comment
-        );
+        // dbg!(
+        //     self,
+        //     self.is_dispatch_period(),
+        //     self.is_trading_period(),
+        //     &self.comment
+        // );
         if self.is_dispatch_period() {
             "mmsdm_core::DispatchPeriod".to_string()
         } else if self.is_trading_period() {
@@ -214,35 +213,6 @@ impl mms::TableColumn {
                 extractor = extractor,
             )
         }
-    }
-}
-
-impl mms::TableNote {
-    fn get_rust_doc(&self) -> String {
-        format!("* ({}) {} {}", self.name, self.comment, self.value)
-    }
-}
-
-impl mms::TableNotes {
-    fn get_rust_doc(&self) -> String {
-        format!(
-            "# Notes\n {}",
-            self.notes
-                .iter()
-                .map(|n| n.get_rust_doc())
-                .collect::<Vec<_>>()
-                .join("\n")
-        )
-    }
-}
-
-impl mms::PkColumns {
-    fn get_rust_doc(&self) -> String {
-        self.cols
-            .iter()
-            .map(|c| format!("* {}", c))
-            .collect::<Vec<_>>()
-            .join("\n")
     }
 }
 
@@ -396,11 +366,11 @@ fn codegen_struct(
         .generic("'data");
 
     for col in table.columns() {
-        dbg!(
-            col.is_dispatch_period(),
-            col.is_trading_period(),
-            &col.comment
-        );
+        // dbg!(
+        //     col.is_dispatch_period(),
+        //     col.is_trading_period(),
+        //     &col.comment
+        // );
         if col.is_dispatch_period() {
             // parse as DispatchPeriod
             let mut field = codegen::Field::new(
@@ -1089,7 +1059,7 @@ fn prepare_data_set_crate(data_set: &str) -> anyhow::Result<()> {
             r#"[package]
 name = "mmsdm_{data_set}"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 license = "MIT"
 repository = "https://github.com/eigenmo-de/mmsdm-rs"
 description = "Parse and Transform MMSDM data"
@@ -1204,7 +1174,7 @@ pub fn run(local_info: DataModel) -> anyhow::Result<()> {
         let mut fmtr = codegen::Formatter::new(&mut fmt_str);
 
         for (table_key, _table_header) in package.tables.iter() {
-            println!("Processing table {table_key}");
+            info!("Processing table {table_key}");
 
             let table = local_info
                 .tables
@@ -1246,7 +1216,7 @@ pub fn run(local_info: DataModel) -> anyhow::Result<()> {
                     // TODO, fix this!
                     codegen_impl_arrow_schema(pdr_report, &table, &mut fmtr)?;
                 }
-                None => eprintln!("Cannot find PDR mapping for MMS Report: {mms_report:?}"),
+                None => warn!("Cannot find PDR mapping for MMS Report: {mms_report:?}"),
             }
         }
 
@@ -1257,7 +1227,7 @@ pub fn run(local_info: DataModel) -> anyhow::Result<()> {
         {
             Ok(formatted) => formatted,
             _ => {
-                eprintln!("Failed to format file {path}, saving anyway");
+                warn!("Failed to format file {path}, saving anyway");
                 fmt_str
             }
         };

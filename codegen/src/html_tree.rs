@@ -68,7 +68,7 @@ impl Element {
         for idx in iter {
             match x {
                 // content can't be indexed, force a pop
-                ElementOrContent::Content(c) => {
+                ElementOrContent::Content(_) => {
                     return None;
                 }
                 ElementOrContent::Element(element) => {
@@ -245,7 +245,7 @@ impl From<String> for ElementOrContent {
 
 #[cfg(test)]
 mod tests {
-    use std::{collections::HashMap, hash::Hash};
+    use std::collections::HashMap;
 
     use super::{Element, ElementOrContent};
 
@@ -346,7 +346,7 @@ impl Element {
             cursor: Vec::from([0]),
         }
     }
-    pub fn iter_dfs_elements<'a>(&'a self) -> ElementDecendantsFilteredElementOnlyIterDfs<'a> {
+    pub fn _iter_dfs_elements<'a>(&'a self) -> ElementDecendantsFilteredElementOnlyIterDfs<'a> {
         ElementDecendantsFilteredElementOnlyIterDfs {
             iter: self.iter_dfs(),
             filter: Box::new(|_| true),
@@ -374,7 +374,7 @@ impl Element {
             filter: Box::new(move |x| x.name == tag),
         }
     }
-    pub fn iter_dfs_elements_filtered<'a>(
+    pub fn _iter_dfs_elements_filtered<'a>(
         &'a self,
         filter: impl Fn(&Element) -> bool + 'static,
     ) -> ElementDecendantsFilteredElementOnlyIterDfs<'a> {
@@ -384,7 +384,7 @@ impl Element {
         }
     }
 
-    pub fn iter_dfs_filtered<'a>(
+    pub fn _iter_dfs_filtered<'a>(
         &'a self,
         filter: impl Fn(&ElementOrContent) -> bool + 'static,
     ) -> ElementDecendantsFilteredIterDfs<'a> {

@@ -1446,8 +1446,7 @@ using (
     ) d
 ) as src 
 on (
-    tgt.[offerdate] = src.[offerdate]
-    and tgt.[participantid] = src.[participantid]
+    tgt.[filename] = src.[filename]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
@@ -2529,6 +2528,1923 @@ from openjson(@data) with (
 ) d
 end
 go
+create or alter procedure mmsdm_proc.InsertBillingApcCompensation2
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingApcCompensation2 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[apeventid],
+        d.[claimid],
+        d.[participantid],
+        d.[compensation_amount],
+        d.[event_type],
+        d.[compensation_type],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [apeventid] decimal(6,0),
+        [claimid] decimal(6,0),
+        [participantid] varchar(20),
+        [compensation_amount] decimal(18,8),
+        [event_type] varchar(20),
+        [compensation_type] varchar(20),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[apeventid] = src.[apeventid]
+    and tgt.[billrunno] = src.[billrunno]
+    and tgt.[claimid] = src.[claimid]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[apeventid] = src.[apeventid],
+        tgt.[claimid] = src.[claimid],
+        tgt.[participantid] = src.[participantid],
+        tgt.[compensation_amount] = src.[compensation_amount],
+        tgt.[event_type] = src.[event_type],
+        tgt.[compensation_type] = src.[compensation_type],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [apeventid],
+        [claimid],
+        [participantid],
+        [compensation_amount],
+        [event_type],
+        [compensation_type],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[apeventid],
+        src.[claimid],
+        src.[participantid],
+        src.[compensation_amount],
+        src.[event_type],
+        src.[compensation_type],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingApcRecovery3
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingApcRecovery3 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[apeventid],
+        d.[claimid],
+        d.[participantid],
+        d.[regionid],
+        d.[recovery_amount],
+        d.[eligibility_start_interval],
+        d.[eligibility_end_interval],
+        d.[participant_demand],
+        d.[region_demand],
+        d.[lastchanged],
+        d.[participant_ace_mwh],
+        d.[region_ace_mwh]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [apeventid] decimal(6,0),
+        [claimid] decimal(6,0),
+        [participantid] varchar(20),
+        [regionid] varchar(20),
+        [recovery_amount] decimal(18,8),
+        [eligibility_start_interval] datetime2,
+        [eligibility_end_interval] datetime2,
+        [participant_demand] decimal(18,8),
+        [region_demand] decimal(18,8),
+        [lastchanged] datetime2,
+        [participant_ace_mwh] decimal(18,8),
+        [region_ace_mwh] decimal(18,8)
+    ) d
+) as src 
+on (
+    tgt.[apeventid] = src.[apeventid]
+    and tgt.[billrunno] = src.[billrunno]
+    and tgt.[claimid] = src.[claimid]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[apeventid] = src.[apeventid],
+        tgt.[claimid] = src.[claimid],
+        tgt.[participantid] = src.[participantid],
+        tgt.[regionid] = src.[regionid],
+        tgt.[recovery_amount] = src.[recovery_amount],
+        tgt.[eligibility_start_interval] = src.[eligibility_start_interval],
+        tgt.[eligibility_end_interval] = src.[eligibility_end_interval],
+        tgt.[participant_demand] = src.[participant_demand],
+        tgt.[region_demand] = src.[region_demand],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[participant_ace_mwh] = src.[participant_ace_mwh],
+        tgt.[region_ace_mwh] = src.[region_ace_mwh]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [apeventid],
+        [claimid],
+        [participantid],
+        [regionid],
+        [recovery_amount],
+        [eligibility_start_interval],
+        [eligibility_end_interval],
+        [participant_demand],
+        [region_demand],
+        [lastchanged],
+        [participant_ace_mwh],
+        [region_ace_mwh]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[apeventid],
+        src.[claimid],
+        src.[participantid],
+        src.[regionid],
+        src.[recovery_amount],
+        src.[eligibility_start_interval],
+        src.[eligibility_end_interval],
+        src.[participant_demand],
+        src.[region_demand],
+        src.[lastchanged],
+        src.[participant_ace_mwh],
+        src.[region_ace_mwh]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingBillingCo2ePublication1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingBillingCo2ePublication1(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [settlementdate],
+        [regionid],
+        [sentoutenergy],
+        [generatoremissions],
+        [intensityindex]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[settlementdate],
+        d.[regionid],
+        d.[sentoutenergy],
+        d.[generatoremissions],
+        d.[intensityindex]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [settlementdate] datetime2,
+        [regionid] varchar(20),
+        [sentoutenergy] decimal(18,8),
+        [generatoremissions] decimal(18,8),
+        [intensityindex] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingBillingCo2ePublicationTrk1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingBillingCo2ePublicationTrk1 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[contractyear] = src.[contractyear]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingDailyEnergySummary2
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingDailyEnergySummary2(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [settlementdate],
+        [participantid],
+        [regionid],
+        [customer_energy_purchased],
+        [generator_energy_sold],
+        [generator_energy_purchased],
+        [ace_mwh],
+        [asoe_mwh],
+        [ace_amount],
+        [asoe_amount],
+        [ce_mwh],
+        [ufea_mwh],
+        [total_mwh],
+        [total_amount]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[settlementdate],
+        d.[participantid],
+        d.[regionid],
+        d.[customer_energy_purchased],
+        d.[generator_energy_sold],
+        d.[generator_energy_purchased],
+        d.[ace_mwh],
+        d.[asoe_mwh],
+        d.[ace_amount],
+        d.[asoe_amount],
+        d.[ce_mwh],
+        d.[ufea_mwh],
+        d.[total_mwh],
+        d.[total_amount]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [settlementdate] datetime2,
+        [participantid] varchar(20),
+        [regionid] varchar(20),
+        [customer_energy_purchased] decimal(18,8),
+        [generator_energy_sold] decimal(18,8),
+        [generator_energy_purchased] decimal(18,8),
+        [ace_mwh] decimal(18,8),
+        [asoe_mwh] decimal(18,8),
+        [ace_amount] decimal(18,8),
+        [asoe_amount] decimal(18,8),
+        [ce_mwh] decimal(18,8),
+        [ufea_mwh] decimal(18,8),
+        [total_mwh] decimal(18,8),
+        [total_amount] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingDirFinalAmount1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingDirFinalAmount1 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[direction_id],
+        d.[participantid],
+        d.[compensation_type],
+        d.[provisional_amount],
+        d.[final_amount],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [direction_id] varchar(20),
+        [participantid] varchar(20),
+        [compensation_type] varchar(40),
+        [provisional_amount] decimal(18,8),
+        [final_amount] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[billrunno] = src.[billrunno]
+    and tgt.[compensation_type] = src.[compensation_type]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[direction_id] = src.[direction_id]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[direction_id] = src.[direction_id],
+        tgt.[participantid] = src.[participantid],
+        tgt.[compensation_type] = src.[compensation_type],
+        tgt.[provisional_amount] = src.[provisional_amount],
+        tgt.[final_amount] = src.[final_amount],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [direction_id],
+        [participantid],
+        [compensation_type],
+        [provisional_amount],
+        [final_amount],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[direction_id],
+        src.[participantid],
+        src.[compensation_type],
+        src.[provisional_amount],
+        src.[final_amount],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingDirFinalRecovery1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingDirFinalRecovery1 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[direction_id],
+        d.[participantid],
+        d.[cra_amount],
+        d.[provisional_amount],
+        d.[final_amount],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [direction_id] varchar(20),
+        [participantid] varchar(20),
+        [cra_amount] decimal(18,8),
+        [provisional_amount] decimal(18,8),
+        [final_amount] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[billrunno] = src.[billrunno]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[direction_id] = src.[direction_id]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[direction_id] = src.[direction_id],
+        tgt.[participantid] = src.[participantid],
+        tgt.[cra_amount] = src.[cra_amount],
+        tgt.[provisional_amount] = src.[provisional_amount],
+        tgt.[final_amount] = src.[final_amount],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [direction_id],
+        [participantid],
+        [cra_amount],
+        [provisional_amount],
+        [final_amount],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[direction_id],
+        src.[participantid],
+        src.[cra_amount],
+        src.[provisional_amount],
+        src.[final_amount],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingDirProvAmount1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingDirProvAmount1 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[direction_id],
+        d.[participantid],
+        d.[compensation_type],
+        d.[compensation_amount],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [direction_id] varchar(20),
+        [participantid] varchar(20),
+        [compensation_type] varchar(40),
+        [compensation_amount] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[billrunno] = src.[billrunno]
+    and tgt.[compensation_type] = src.[compensation_type]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[direction_id] = src.[direction_id]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[direction_id] = src.[direction_id],
+        tgt.[participantid] = src.[participantid],
+        tgt.[compensation_type] = src.[compensation_type],
+        tgt.[compensation_amount] = src.[compensation_amount],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [direction_id],
+        [participantid],
+        [compensation_type],
+        [compensation_amount],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[direction_id],
+        src.[participantid],
+        src.[compensation_type],
+        src.[compensation_amount],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingDirProvRecovery1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingDirProvRecovery1 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[direction_id],
+        d.[participantid],
+        d.[cra_amount],
+        d.[recovery_amount],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [direction_id] varchar(20),
+        [participantid] varchar(20),
+        [cra_amount] decimal(18,8),
+        [recovery_amount] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[billrunno] = src.[billrunno]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[direction_id] = src.[direction_id]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[direction_id] = src.[direction_id],
+        tgt.[participantid] = src.[participantid],
+        tgt.[cra_amount] = src.[cra_amount],
+        tgt.[recovery_amount] = src.[recovery_amount],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [direction_id],
+        [participantid],
+        [cra_amount],
+        [recovery_amount],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[direction_id],
+        src.[participantid],
+        src.[cra_amount],
+        src.[recovery_amount],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingDirRecoveryDetail1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingDirRecoveryDetail1 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[direction_id],
+        d.[participantid],
+        d.[participantcategoryid],
+        d.[regionid],
+        d.[recovery_amount],
+        d.[recovery_energy],
+        d.[region_energy],
+        d.[excluded_energy],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [direction_id] varchar(20),
+        [participantid] varchar(20),
+        [participantcategoryid] varchar(20),
+        [regionid] varchar(20),
+        [recovery_amount] decimal(18,8),
+        [recovery_energy] decimal(18,8),
+        [region_energy] decimal(18,8),
+        [excluded_energy] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[billrunno] = src.[billrunno]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[direction_id] = src.[direction_id]
+    and tgt.[participantcategoryid] = src.[participantcategoryid]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[direction_id] = src.[direction_id],
+        tgt.[participantid] = src.[participantid],
+        tgt.[participantcategoryid] = src.[participantcategoryid],
+        tgt.[regionid] = src.[regionid],
+        tgt.[recovery_amount] = src.[recovery_amount],
+        tgt.[recovery_energy] = src.[recovery_energy],
+        tgt.[region_energy] = src.[region_energy],
+        tgt.[excluded_energy] = src.[excluded_energy],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [direction_id],
+        [participantid],
+        [participantcategoryid],
+        [regionid],
+        [recovery_amount],
+        [recovery_energy],
+        [region_energy],
+        [excluded_energy],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[direction_id],
+        src.[participantid],
+        src.[participantcategoryid],
+        src.[regionid],
+        src.[recovery_amount],
+        src.[recovery_energy],
+        src.[region_energy],
+        src.[excluded_energy],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingBillingDirectionReconOther2
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingBillingDirectionReconOther2(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [direction_id],
+        [regionid],
+        [direction_desc],
+        [direction_type_id],
+        [direction_start_date],
+        [direction_end_date],
+        [direction_start_interval],
+        [direction_end_interval],
+        [compensation_amount],
+        [interest_amount],
+        [independent_expert_fee],
+        [cra],
+        [regional_customer_energy],
+        [regional_generator_energy],
+        [regional_benefit_factor],
+        [region_ace_mwh],
+        [region_asoe_mwh],
+        [direction_service_id]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[direction_id],
+        d.[regionid],
+        d.[direction_desc],
+        d.[direction_type_id],
+        d.[direction_start_date],
+        d.[direction_end_date],
+        d.[direction_start_interval],
+        d.[direction_end_interval],
+        d.[compensation_amount],
+        d.[interest_amount],
+        d.[independent_expert_fee],
+        d.[cra],
+        d.[regional_customer_energy],
+        d.[regional_generator_energy],
+        d.[regional_benefit_factor],
+        d.[region_ace_mwh],
+        d.[region_asoe_mwh],
+        d.[direction_service_id]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [direction_id] varchar(20),
+        [regionid] varchar(20),
+        [direction_desc] varchar(200),
+        [direction_type_id] varchar(20),
+        [direction_start_date] datetime2,
+        [direction_end_date] datetime2,
+        [direction_start_interval] datetime2,
+        [direction_end_interval] datetime2,
+        [compensation_amount] decimal(18,8),
+        [interest_amount] decimal(18,8),
+        [independent_expert_fee] decimal(18,8),
+        [cra] decimal(18,8),
+        [regional_customer_energy] decimal(18,8),
+        [regional_generator_energy] decimal(18,8),
+        [regional_benefit_factor] decimal(18,8),
+        [region_ace_mwh] decimal(18,8),
+        [region_asoe_mwh] decimal(18,8),
+        [direction_service_id] varchar(20)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingEftshortfallAmount1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingEftshortfallAmount1(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [participantid],
+        [shortfall_amount],
+        [shortfall],
+        [shortfall_company_id],
+        [company_shortfall_amount],
+        [participant_net_energy],
+        [company_net_energy]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[participantid],
+        d.[shortfall_amount],
+        d.[shortfall],
+        d.[shortfall_company_id],
+        d.[company_shortfall_amount],
+        d.[participant_net_energy],
+        d.[company_net_energy]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [participantid] varchar(20),
+        [shortfall_amount] decimal(18,8),
+        [shortfall] decimal(18,8),
+        [shortfall_company_id] varchar(20),
+        [company_shortfall_amount] decimal(18,8),
+        [participant_net_energy] decimal(18,8),
+        [company_net_energy] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingEftshortfallDetail1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingEftshortfallDetail1(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [participantid],
+        [transaction_type],
+        [amount]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[participantid],
+        d.[transaction_type],
+        d.[amount]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [participantid] varchar(20),
+        [transaction_type] varchar(40),
+        [amount] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingEnergyGensetDetail1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingEnergyGensetDetail1 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[participantid],
+        d.[stationid],
+        d.[duid],
+        d.[gensetid],
+        d.[regionid],
+        d.[connectionpointid],
+        d.[meterid],
+        d.[ce_mwh],
+        d.[ufea_mwh],
+        d.[ace_mwh],
+        d.[asoe_mwh],
+        d.[total_mwh],
+        d.[dme_mwh],
+        d.[ace_amount],
+        d.[asoe_amount],
+        d.[total_amount],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(4,0),
+        [participantid] varchar(20),
+        [stationid] varchar(20),
+        [duid] varchar(20),
+        [gensetid] varchar(20),
+        [regionid] varchar(20),
+        [connectionpointid] varchar(20),
+        [meterid] varchar(20),
+        [ce_mwh] decimal(18,8),
+        [ufea_mwh] decimal(18,8),
+        [ace_mwh] decimal(18,8),
+        [asoe_mwh] decimal(18,8),
+        [total_mwh] decimal(18,8),
+        [dme_mwh] decimal(18,8),
+        [ace_amount] decimal(18,8),
+        [asoe_amount] decimal(18,8),
+        [total_amount] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[billrunno] = src.[billrunno]
+    and tgt.[connectionpointid] = src.[connectionpointid]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[duid] = src.[duid]
+    and tgt.[gensetid] = src.[gensetid]
+    and tgt.[meterid] = src.[meterid]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[stationid] = src.[stationid]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[participantid] = src.[participantid],
+        tgt.[stationid] = src.[stationid],
+        tgt.[duid] = src.[duid],
+        tgt.[gensetid] = src.[gensetid],
+        tgt.[regionid] = src.[regionid],
+        tgt.[connectionpointid] = src.[connectionpointid],
+        tgt.[meterid] = src.[meterid],
+        tgt.[ce_mwh] = src.[ce_mwh],
+        tgt.[ufea_mwh] = src.[ufea_mwh],
+        tgt.[ace_mwh] = src.[ace_mwh],
+        tgt.[asoe_mwh] = src.[asoe_mwh],
+        tgt.[total_mwh] = src.[total_mwh],
+        tgt.[dme_mwh] = src.[dme_mwh],
+        tgt.[ace_amount] = src.[ace_amount],
+        tgt.[asoe_amount] = src.[asoe_amount],
+        tgt.[total_amount] = src.[total_amount],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [participantid],
+        [stationid],
+        [duid],
+        [gensetid],
+        [regionid],
+        [connectionpointid],
+        [meterid],
+        [ce_mwh],
+        [ufea_mwh],
+        [ace_mwh],
+        [asoe_mwh],
+        [total_mwh],
+        [dme_mwh],
+        [ace_amount],
+        [asoe_amount],
+        [total_amount],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[participantid],
+        src.[stationid],
+        src.[duid],
+        src.[gensetid],
+        src.[regionid],
+        src.[connectionpointid],
+        src.[meterid],
+        src.[ce_mwh],
+        src.[ufea_mwh],
+        src.[ace_mwh],
+        src.[asoe_mwh],
+        src.[total_mwh],
+        src.[dme_mwh],
+        src.[ace_amount],
+        src.[asoe_amount],
+        src.[total_amount],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingEnergyTranSaps1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingEnergyTranSaps1 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[participantid],
+        d.[tni],
+        d.[regionid],
+        d.[consumed_energy_mwh],
+        d.[sentout_energy_mwh],
+        d.[consumed_energy_cost],
+        d.[sentout_energy_cost],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [participantid] varchar(20),
+        [tni] varchar(20),
+        [regionid] varchar(20),
+        [consumed_energy_mwh] decimal(18,8),
+        [sentout_energy_mwh] decimal(18,8),
+        [consumed_energy_cost] decimal(18,8),
+        [sentout_energy_cost] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[billrunno] = src.[billrunno]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[tni] = src.[tni]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[participantid] = src.[participantid],
+        tgt.[tni] = src.[tni],
+        tgt.[regionid] = src.[regionid],
+        tgt.[consumed_energy_mwh] = src.[consumed_energy_mwh],
+        tgt.[sentout_energy_mwh] = src.[sentout_energy_mwh],
+        tgt.[consumed_energy_cost] = src.[consumed_energy_cost],
+        tgt.[sentout_energy_cost] = src.[sentout_energy_cost],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [participantid],
+        [tni],
+        [regionid],
+        [consumed_energy_mwh],
+        [sentout_energy_mwh],
+        [consumed_energy_cost],
+        [sentout_energy_cost],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[participantid],
+        src.[tni],
+        src.[regionid],
+        src.[consumed_energy_mwh],
+        src.[sentout_energy_mwh],
+        src.[consumed_energy_cost],
+        src.[sentout_energy_cost],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingEnergyTransaction1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingEnergyTransaction1 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[participantid],
+        d.[connectionpointid],
+        d.[regionid],
+        d.[ce_mwh],
+        d.[ufea_mwh],
+        d.[ace_mwh],
+        d.[asoe_mwh],
+        d.[ace_amount],
+        d.[asoe_amount],
+        d.[total_mwh],
+        d.[total_amount],
+        d.[dme_mwh],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(4,0),
+        [participantid] varchar(20),
+        [connectionpointid] varchar(20),
+        [regionid] varchar(20),
+        [ce_mwh] decimal(18,8),
+        [ufea_mwh] decimal(18,8),
+        [ace_mwh] decimal(18,8),
+        [asoe_mwh] decimal(18,8),
+        [ace_amount] decimal(18,8),
+        [asoe_amount] decimal(18,8),
+        [total_mwh] decimal(18,8),
+        [total_amount] decimal(18,8),
+        [dme_mwh] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[billrunno] = src.[billrunno]
+    and tgt.[connectionpointid] = src.[connectionpointid]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[participantid] = src.[participantid],
+        tgt.[connectionpointid] = src.[connectionpointid],
+        tgt.[regionid] = src.[regionid],
+        tgt.[ce_mwh] = src.[ce_mwh],
+        tgt.[ufea_mwh] = src.[ufea_mwh],
+        tgt.[ace_mwh] = src.[ace_mwh],
+        tgt.[asoe_mwh] = src.[asoe_mwh],
+        tgt.[ace_amount] = src.[ace_amount],
+        tgt.[asoe_amount] = src.[asoe_amount],
+        tgt.[total_mwh] = src.[total_mwh],
+        tgt.[total_amount] = src.[total_amount],
+        tgt.[dme_mwh] = src.[dme_mwh],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [participantid],
+        [connectionpointid],
+        [regionid],
+        [ce_mwh],
+        [ufea_mwh],
+        [ace_mwh],
+        [asoe_mwh],
+        [ace_amount],
+        [asoe_amount],
+        [total_mwh],
+        [total_amount],
+        [dme_mwh],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[participantid],
+        src.[connectionpointid],
+        src.[regionid],
+        src.[ce_mwh],
+        src.[ufea_mwh],
+        src.[ace_mwh],
+        src.[asoe_mwh],
+        src.[ace_amount],
+        src.[asoe_amount],
+        src.[total_mwh],
+        src.[total_amount],
+        src.[dme_mwh],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingGstDetail5
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingGstDetail5 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[participantid],
+        d.[bas_class],
+        d.[transaction_type],
+        d.[gst_exclusive_amount],
+        d.[gst_amount],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [participantid] varchar(10),
+        [bas_class] varchar(30),
+        [transaction_type] varchar(30),
+        [gst_exclusive_amount] decimal(15,5),
+        [gst_amount] decimal(15,5),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[bas_class] = src.[bas_class]
+    and tgt.[billrunno] = src.[billrunno]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[transaction_type] = src.[transaction_type]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[participantid] = src.[participantid],
+        tgt.[bas_class] = src.[bas_class],
+        tgt.[transaction_type] = src.[transaction_type],
+        tgt.[gst_exclusive_amount] = src.[gst_exclusive_amount],
+        tgt.[gst_amount] = src.[gst_amount],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [participantid],
+        [bas_class],
+        [transaction_type],
+        [gst_exclusive_amount],
+        [gst_amount],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[participantid],
+        src.[bas_class],
+        src.[transaction_type],
+        src.[gst_exclusive_amount],
+        src.[gst_amount],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingGstSummary5
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingGstSummary5 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[participantid],
+        d.[bas_class],
+        d.[gst_exclusive_amount],
+        d.[gst_amount],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [participantid] varchar(10),
+        [bas_class] varchar(30),
+        [gst_exclusive_amount] decimal(15,5),
+        [gst_amount] decimal(15,5),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[bas_class] = src.[bas_class]
+    and tgt.[billrunno] = src.[billrunno]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[participantid] = src.[participantid],
+        tgt.[bas_class] = src.[bas_class],
+        tgt.[gst_exclusive_amount] = src.[gst_exclusive_amount],
+        tgt.[gst_amount] = src.[gst_amount],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [participantid],
+        [bas_class],
+        [gst_exclusive_amount],
+        [gst_amount],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[participantid],
+        src.[bas_class],
+        src.[gst_exclusive_amount],
+        src.[gst_amount],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingNmasTstPayments1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingNmasTstPayments1(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [participantid],
+        [service],
+        [contractid],
+        [payment_amount]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[participantid],
+        d.[service],
+        d.[contractid],
+        d.[payment_amount]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [participantid] varchar(20),
+        [service] varchar(10),
+        [contractid] varchar(10),
+        [payment_amount] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingNmasTstRecovery2
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingNmasTstRecovery2 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[participantid],
+        d.[service],
+        d.[contractid],
+        d.[regionid],
+        d.[rbf],
+        d.[test_payment],
+        d.[recovery_start_date],
+        d.[recovery_end_date],
+        d.[participant_energy],
+        d.[region_energy],
+        d.[nem_energy],
+        d.[customer_proportion],
+        d.[generator_proportion],
+        d.[participant_generation],
+        d.[nem_generation],
+        d.[recovery_amount],
+        d.[lastchanged],
+        d.[participant_ace_mwh],
+        d.[region_ace_mwh],
+        d.[ace_portion],
+        d.[asoe_portion],
+        d.[participant_asoe_mwh],
+        d.[region_asoe_mwh],
+        d.[recoveryamount_ace],
+        d.[recoveryamount_asoe]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [participantid] varchar(20),
+        [service] varchar(10),
+        [contractid] varchar(10),
+        [regionid] varchar(10),
+        [rbf] decimal(18,8),
+        [test_payment] decimal(18,8),
+        [recovery_start_date] datetime2,
+        [recovery_end_date] datetime2,
+        [participant_energy] decimal(18,8),
+        [region_energy] decimal(18,8),
+        [nem_energy] decimal(18,8),
+        [customer_proportion] decimal(18,8),
+        [generator_proportion] decimal(18,8),
+        [participant_generation] decimal(18,8),
+        [nem_generation] decimal(18,8),
+        [recovery_amount] decimal(18,8),
+        [lastchanged] datetime2,
+        [participant_ace_mwh] decimal(18,8),
+        [region_ace_mwh] decimal(18,8),
+        [ace_portion] decimal(18,8),
+        [asoe_portion] decimal(18,8),
+        [participant_asoe_mwh] decimal(18,8),
+        [region_asoe_mwh] decimal(18,8),
+        [recoveryamount_ace] decimal(18,8),
+        [recoveryamount_asoe] decimal(18,8)
+    ) d
+) as src 
+on (
+    tgt.[billrunno] = src.[billrunno]
+    and tgt.[contractid] = src.[contractid]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[service] = src.[service]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[participantid] = src.[participantid],
+        tgt.[service] = src.[service],
+        tgt.[contractid] = src.[contractid],
+        tgt.[regionid] = src.[regionid],
+        tgt.[rbf] = src.[rbf],
+        tgt.[test_payment] = src.[test_payment],
+        tgt.[recovery_start_date] = src.[recovery_start_date],
+        tgt.[recovery_end_date] = src.[recovery_end_date],
+        tgt.[participant_energy] = src.[participant_energy],
+        tgt.[region_energy] = src.[region_energy],
+        tgt.[nem_energy] = src.[nem_energy],
+        tgt.[customer_proportion] = src.[customer_proportion],
+        tgt.[generator_proportion] = src.[generator_proportion],
+        tgt.[participant_generation] = src.[participant_generation],
+        tgt.[nem_generation] = src.[nem_generation],
+        tgt.[recovery_amount] = src.[recovery_amount],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[participant_ace_mwh] = src.[participant_ace_mwh],
+        tgt.[region_ace_mwh] = src.[region_ace_mwh],
+        tgt.[ace_portion] = src.[ace_portion],
+        tgt.[asoe_portion] = src.[asoe_portion],
+        tgt.[participant_asoe_mwh] = src.[participant_asoe_mwh],
+        tgt.[region_asoe_mwh] = src.[region_asoe_mwh],
+        tgt.[recoveryamount_ace] = src.[recoveryamount_ace],
+        tgt.[recoveryamount_asoe] = src.[recoveryamount_asoe]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [participantid],
+        [service],
+        [contractid],
+        [regionid],
+        [rbf],
+        [test_payment],
+        [recovery_start_date],
+        [recovery_end_date],
+        [participant_energy],
+        [region_energy],
+        [nem_energy],
+        [customer_proportion],
+        [generator_proportion],
+        [participant_generation],
+        [nem_generation],
+        [recovery_amount],
+        [lastchanged],
+        [participant_ace_mwh],
+        [region_ace_mwh],
+        [ace_portion],
+        [asoe_portion],
+        [participant_asoe_mwh],
+        [region_asoe_mwh],
+        [recoveryamount_ace],
+        [recoveryamount_asoe]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[participantid],
+        src.[service],
+        src.[contractid],
+        src.[regionid],
+        src.[rbf],
+        src.[test_payment],
+        src.[recovery_start_date],
+        src.[recovery_end_date],
+        src.[participant_energy],
+        src.[region_energy],
+        src.[nem_energy],
+        src.[customer_proportion],
+        src.[generator_proportion],
+        src.[participant_generation],
+        src.[nem_generation],
+        src.[recovery_amount],
+        src.[lastchanged],
+        src.[participant_ace_mwh],
+        src.[region_ace_mwh],
+        src.[ace_portion],
+        src.[asoe_portion],
+        src.[participant_asoe_mwh],
+        src.[region_asoe_mwh],
+        src.[recoveryamount_ace],
+        src.[recoveryamount_asoe]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingNmasTstRecvryRbf1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BillingNmasTstRecvryRbf1 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[service],
+        d.[contractid],
+        d.[regionid],
+        d.[rbf],
+        d.[payment_amount],
+        d.[recovery_amount],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [service] varchar(10),
+        [contractid] varchar(10),
+        [regionid] varchar(10),
+        [rbf] decimal(18,8),
+        [payment_amount] decimal(18,8),
+        [recovery_amount] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[billrunno] = src.[billrunno]
+    and tgt.[contractid] = src.[contractid]
+    and tgt.[contractyear] = src.[contractyear]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[service] = src.[service]
+    and tgt.[weekno] = src.[weekno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[weekno] = src.[weekno],
+        tgt.[billrunno] = src.[billrunno],
+        tgt.[service] = src.[service],
+        tgt.[contractid] = src.[contractid],
+        tgt.[regionid] = src.[regionid],
+        tgt.[rbf] = src.[rbf],
+        tgt.[payment_amount] = src.[payment_amount],
+        tgt.[recovery_amount] = src.[recovery_amount],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [weekno],
+        [billrunno],
+        [service],
+        [contractid],
+        [regionid],
+        [rbf],
+        [payment_amount],
+        [recovery_amount],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[weekno],
+        src.[billrunno],
+        src.[service],
+        src.[contractid],
+        src.[regionid],
+        src.[rbf],
+        src.[payment_amount],
+        src.[recovery_amount],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingNmasTstRecvryTrk1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingNmasTstRecvryTrk1(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [recovery_contractyear],
+        [recovery_weekno],
+        [recovery_billrunno]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[recovery_contractyear],
+        d.[recovery_weekno],
+        d.[recovery_billrunno]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [recovery_contractyear] decimal(4,0),
+        [recovery_weekno] decimal(3,0),
+        [recovery_billrunno] decimal(3,0)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingSecdepInterestPay1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingSecdepInterestPay1(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [security_deposit_id],
+        [participantid],
+        [interest_amount],
+        [interest_calc_type],
+        [interest_acct_id],
+        [interest_rate]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[security_deposit_id],
+        d.[participantid],
+        d.[interest_amount],
+        d.[interest_calc_type],
+        d.[interest_acct_id],
+        d.[interest_rate]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [security_deposit_id] varchar(20),
+        [participantid] varchar(20),
+        [interest_amount] decimal(18,8),
+        [interest_calc_type] varchar(20),
+        [interest_acct_id] varchar(20),
+        [interest_rate] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingSecdepInterestRate1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingSecdepInterestRate1(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [interest_acct_id],
+        [effectivedate],
+        [interest_rate]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[interest_acct_id],
+        d.[effectivedate],
+        d.[interest_rate]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [interest_acct_id] varchar(20),
+        [effectivedate] datetime2,
+        [interest_rate] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingSecdepositApplication1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingSecdepositApplication1(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [participantid],
+        [application_amount]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[participantid],
+        d.[application_amount]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [participantid] varchar(20),
+        [application_amount] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingSubstDemand1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingSubstDemand1(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [settlementdate],
+        [tni],
+        [participantid],
+        [regionid],
+        [substitutedemand]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[settlementdate],
+        d.[tni],
+        d.[participantid],
+        d.[regionid],
+        d.[substitutedemand]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [settlementdate] datetime2,
+        [tni] varchar(20),
+        [participantid] varchar(20),
+        [regionid] varchar(20),
+        [substitutedemand] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingSubstRunVersion1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingSubstRunVersion1(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [referencesettlementdate],
+        [referencesettlementrunno]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[referencesettlementdate],
+        d.[referencesettlementrunno]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [referencesettlementdate] datetime2,
+        [referencesettlementrunno] decimal(3,0)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingWdr1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingWdr1(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [participantid],
+        [wdr_credit_amount],
+        [wdr_debit_amount]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[participantid],
+        d.[wdr_credit_amount],
+        d.[wdr_debit_amount]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [participantid] varchar(20),
+        [wdr_credit_amount] decimal(18,8),
+        [wdr_debit_amount] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertBillingWdrDetail1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.BillingWdrDetail1(
+file_log_id,
+[contractyear],
+        [weekno],
+        [billrunno],
+        [wdrrrperiod],
+        [regionid],
+        [frmp],
+        [drsp],
+        [wdrsq],
+        [wdrrr],
+        [wdrta]
+)
+select 
+@file_log_id,
+d.[contractyear],
+        d.[weekno],
+        d.[billrunno],
+        d.[wdrrrperiod],
+        d.[regionid],
+        d.[frmp],
+        d.[drsp],
+        d.[wdrsq],
+        d.[wdrrr],
+        d.[wdrta]
+from openjson(@data) with (
+[contractyear] decimal(4,0),
+        [weekno] decimal(3,0),
+        [billrunno] decimal(3,0),
+        [wdrrrperiod] varchar(20),
+        [regionid] varchar(20),
+        [frmp] varchar(20),
+        [drsp] varchar(20),
+        [wdrsq] decimal(18,8),
+        [wdrrr] decimal(18,8),
+        [wdrta] decimal(18,8)
+) d
+end
+go
 create or alter procedure mmsdm_proc.InsertBillingAspayments7
     @file_log_id bigint,
     @data nvarchar(max)
@@ -2747,7 +4663,29 @@ using (
         d.[raise1sec_ace],
         d.[raise1sec_asoe],
         d.[lower1sec_ace],
-        d.[lower1sec_asoe]
+        d.[lower1sec_asoe],
+        d.[raise6sec_ace],
+        d.[raise6sec_asoe],
+        d.[lower6sec_ace],
+        d.[lower6sec_asoe],
+        d.[raise60sec_ace],
+        d.[raise60sec_asoe],
+        d.[lower60sec_ace],
+        d.[lower60sec_asoe],
+        d.[raise5min_ace],
+        d.[raise5min_asoe],
+        d.[lower5min_ace],
+        d.[lower5min_asoe],
+        d.[reactivepower_ace],
+        d.[reactivepower_asoe],
+        d.[loadshed_ace],
+        d.[loadshed_asoe],
+        d.[systemrestart_ace],
+        d.[systemrestart_asoe],
+        d.[availability_reactive_ace],
+        d.[availability_reactive_asoe],
+        d.[availability_reactive_rbt_ace],
+        d.[availability_reactive_rbt_asoe]
     from openjson(@data) with (
         [regionid] varchar(10),
         [contractyear] decimal(4,0),
@@ -2798,7 +4736,29 @@ using (
         [raise1sec_ace] decimal(18,8),
         [raise1sec_asoe] decimal(18,8),
         [lower1sec_ace] decimal(18,8),
-        [lower1sec_asoe] decimal(18,8)
+        [lower1sec_asoe] decimal(18,8),
+        [raise6sec_ace] decimal(18,8),
+        [raise6sec_asoe] decimal(18,8),
+        [lower6sec_ace] decimal(18,8),
+        [lower6sec_asoe] decimal(18,8),
+        [raise60sec_ace] decimal(18,8),
+        [raise60sec_asoe] decimal(18,8),
+        [lower60sec_ace] decimal(18,8),
+        [lower60sec_asoe] decimal(18,8),
+        [raise5min_ace] decimal(18,8),
+        [raise5min_asoe] decimal(18,8),
+        [lower5min_ace] decimal(18,8),
+        [lower5min_asoe] decimal(18,8),
+        [reactivepower_ace] decimal(18,8),
+        [reactivepower_asoe] decimal(18,8),
+        [loadshed_ace] decimal(18,8),
+        [loadshed_asoe] decimal(18,8),
+        [systemrestart_ace] decimal(18,8),
+        [systemrestart_asoe] decimal(18,8),
+        [availability_reactive_ace] decimal(18,8),
+        [availability_reactive_asoe] decimal(18,8),
+        [availability_reactive_rbt_ace] decimal(18,8),
+        [availability_reactive_rbt_asoe] decimal(18,8)
     ) d
 ) as src 
 on (
@@ -2861,7 +4821,29 @@ when matched and src.[lastchanged] > tgt.[lastchanged]
         tgt.[raise1sec_ace] = src.[raise1sec_ace],
         tgt.[raise1sec_asoe] = src.[raise1sec_asoe],
         tgt.[lower1sec_ace] = src.[lower1sec_ace],
-        tgt.[lower1sec_asoe] = src.[lower1sec_asoe]
+        tgt.[lower1sec_asoe] = src.[lower1sec_asoe],
+        tgt.[raise6sec_ace] = src.[raise6sec_ace],
+        tgt.[raise6sec_asoe] = src.[raise6sec_asoe],
+        tgt.[lower6sec_ace] = src.[lower6sec_ace],
+        tgt.[lower6sec_asoe] = src.[lower6sec_asoe],
+        tgt.[raise60sec_ace] = src.[raise60sec_ace],
+        tgt.[raise60sec_asoe] = src.[raise60sec_asoe],
+        tgt.[lower60sec_ace] = src.[lower60sec_ace],
+        tgt.[lower60sec_asoe] = src.[lower60sec_asoe],
+        tgt.[raise5min_ace] = src.[raise5min_ace],
+        tgt.[raise5min_asoe] = src.[raise5min_asoe],
+        tgt.[lower5min_ace] = src.[lower5min_ace],
+        tgt.[lower5min_asoe] = src.[lower5min_asoe],
+        tgt.[reactivepower_ace] = src.[reactivepower_ace],
+        tgt.[reactivepower_asoe] = src.[reactivepower_asoe],
+        tgt.[loadshed_ace] = src.[loadshed_ace],
+        tgt.[loadshed_asoe] = src.[loadshed_asoe],
+        tgt.[systemrestart_ace] = src.[systemrestart_ace],
+        tgt.[systemrestart_asoe] = src.[systemrestart_asoe],
+        tgt.[availability_reactive_ace] = src.[availability_reactive_ace],
+        tgt.[availability_reactive_asoe] = src.[availability_reactive_asoe],
+        tgt.[availability_reactive_rbt_ace] = src.[availability_reactive_rbt_ace],
+        tgt.[availability_reactive_rbt_asoe] = src.[availability_reactive_rbt_asoe]
 when not matched
     then insert (
         file_log_id,
@@ -2914,7 +4896,29 @@ when not matched
         [raise1sec_ace],
         [raise1sec_asoe],
         [lower1sec_ace],
-        [lower1sec_asoe]
+        [lower1sec_asoe],
+        [raise6sec_ace],
+        [raise6sec_asoe],
+        [lower6sec_ace],
+        [lower6sec_asoe],
+        [raise60sec_ace],
+        [raise60sec_asoe],
+        [lower60sec_ace],
+        [lower60sec_asoe],
+        [raise5min_ace],
+        [raise5min_asoe],
+        [lower5min_ace],
+        [lower5min_asoe],
+        [reactivepower_ace],
+        [reactivepower_asoe],
+        [loadshed_ace],
+        [loadshed_asoe],
+        [systemrestart_ace],
+        [systemrestart_asoe],
+        [availability_reactive_ace],
+        [availability_reactive_asoe],
+        [availability_reactive_rbt_ace],
+        [availability_reactive_rbt_asoe]
     ) values (
         @file_log_id,
         src.[regionid],
@@ -2966,7 +4970,29 @@ when not matched
         src.[raise1sec_ace],
         src.[raise1sec_asoe],
         src.[lower1sec_ace],
-        src.[lower1sec_asoe]
+        src.[lower1sec_asoe],
+        src.[raise6sec_ace],
+        src.[raise6sec_asoe],
+        src.[lower6sec_ace],
+        src.[lower6sec_asoe],
+        src.[raise60sec_ace],
+        src.[raise60sec_asoe],
+        src.[lower60sec_ace],
+        src.[lower60sec_asoe],
+        src.[raise5min_ace],
+        src.[raise5min_asoe],
+        src.[lower5min_ace],
+        src.[lower5min_asoe],
+        src.[reactivepower_ace],
+        src.[reactivepower_asoe],
+        src.[loadshed_ace],
+        src.[loadshed_asoe],
+        src.[systemrestart_ace],
+        src.[systemrestart_asoe],
+        src.[availability_reactive_ace],
+        src.[availability_reactive_asoe],
+        src.[availability_reactive_rbt_ace],
+        src.[availability_reactive_rbt_asoe]
     );
     
 end
@@ -4823,1923 +6849,6 @@ when not matched
     
 end
 go
-create or alter procedure mmsdm_proc.InsertBillingApcCompensation2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingApcCompensation2 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[apeventid],
-        d.[claimid],
-        d.[participantid],
-        d.[compensation_amount],
-        d.[event_type],
-        d.[compensation_type],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [apeventid] decimal(6,0),
-        [claimid] decimal(6,0),
-        [participantid] varchar(20),
-        [compensation_amount] decimal(18,8),
-        [event_type] varchar(20),
-        [compensation_type] varchar(20),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[apeventid] = src.[apeventid]
-    and tgt.[billrunno] = src.[billrunno]
-    and tgt.[claimid] = src.[claimid]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[apeventid] = src.[apeventid],
-        tgt.[claimid] = src.[claimid],
-        tgt.[participantid] = src.[participantid],
-        tgt.[compensation_amount] = src.[compensation_amount],
-        tgt.[event_type] = src.[event_type],
-        tgt.[compensation_type] = src.[compensation_type],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [apeventid],
-        [claimid],
-        [participantid],
-        [compensation_amount],
-        [event_type],
-        [compensation_type],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[apeventid],
-        src.[claimid],
-        src.[participantid],
-        src.[compensation_amount],
-        src.[event_type],
-        src.[compensation_type],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingApcRecovery3
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingApcRecovery3 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[apeventid],
-        d.[claimid],
-        d.[participantid],
-        d.[regionid],
-        d.[recovery_amount],
-        d.[eligibility_start_interval],
-        d.[eligibility_end_interval],
-        d.[participant_demand],
-        d.[region_demand],
-        d.[lastchanged],
-        d.[participant_ace_mwh],
-        d.[region_ace_mwh]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [apeventid] decimal(6,0),
-        [claimid] decimal(6,0),
-        [participantid] varchar(20),
-        [regionid] varchar(20),
-        [recovery_amount] decimal(18,8),
-        [eligibility_start_interval] datetime2,
-        [eligibility_end_interval] datetime2,
-        [participant_demand] decimal(18,8),
-        [region_demand] decimal(18,8),
-        [lastchanged] datetime2,
-        [participant_ace_mwh] decimal(18,8),
-        [region_ace_mwh] decimal(18,8)
-    ) d
-) as src 
-on (
-    tgt.[apeventid] = src.[apeventid]
-    and tgt.[billrunno] = src.[billrunno]
-    and tgt.[claimid] = src.[claimid]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[apeventid] = src.[apeventid],
-        tgt.[claimid] = src.[claimid],
-        tgt.[participantid] = src.[participantid],
-        tgt.[regionid] = src.[regionid],
-        tgt.[recovery_amount] = src.[recovery_amount],
-        tgt.[eligibility_start_interval] = src.[eligibility_start_interval],
-        tgt.[eligibility_end_interval] = src.[eligibility_end_interval],
-        tgt.[participant_demand] = src.[participant_demand],
-        tgt.[region_demand] = src.[region_demand],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[participant_ace_mwh] = src.[participant_ace_mwh],
-        tgt.[region_ace_mwh] = src.[region_ace_mwh]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [apeventid],
-        [claimid],
-        [participantid],
-        [regionid],
-        [recovery_amount],
-        [eligibility_start_interval],
-        [eligibility_end_interval],
-        [participant_demand],
-        [region_demand],
-        [lastchanged],
-        [participant_ace_mwh],
-        [region_ace_mwh]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[apeventid],
-        src.[claimid],
-        src.[participantid],
-        src.[regionid],
-        src.[recovery_amount],
-        src.[eligibility_start_interval],
-        src.[eligibility_end_interval],
-        src.[participant_demand],
-        src.[region_demand],
-        src.[lastchanged],
-        src.[participant_ace_mwh],
-        src.[region_ace_mwh]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingBillingCo2ePublication1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingBillingCo2ePublication1(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [settlementdate],
-        [regionid],
-        [sentoutenergy],
-        [generatoremissions],
-        [intensityindex]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[settlementdate],
-        d.[regionid],
-        d.[sentoutenergy],
-        d.[generatoremissions],
-        d.[intensityindex]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [settlementdate] datetime2,
-        [regionid] varchar(20),
-        [sentoutenergy] decimal(18,8),
-        [generatoremissions] decimal(18,8),
-        [intensityindex] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingBillingCo2ePublicationTrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingBillingCo2ePublicationTrk1 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[contractyear] = src.[contractyear]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingDailyEnergySummary2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingDailyEnergySummary2(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [settlementdate],
-        [participantid],
-        [regionid],
-        [customer_energy_purchased],
-        [generator_energy_sold],
-        [generator_energy_purchased],
-        [ace_mwh],
-        [asoe_mwh],
-        [ace_amount],
-        [asoe_amount],
-        [ce_mwh],
-        [ufea_mwh],
-        [total_mwh],
-        [total_amount]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[settlementdate],
-        d.[participantid],
-        d.[regionid],
-        d.[customer_energy_purchased],
-        d.[generator_energy_sold],
-        d.[generator_energy_purchased],
-        d.[ace_mwh],
-        d.[asoe_mwh],
-        d.[ace_amount],
-        d.[asoe_amount],
-        d.[ce_mwh],
-        d.[ufea_mwh],
-        d.[total_mwh],
-        d.[total_amount]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [settlementdate] datetime2,
-        [participantid] varchar(20),
-        [regionid] varchar(20),
-        [customer_energy_purchased] decimal(18,8),
-        [generator_energy_sold] decimal(18,8),
-        [generator_energy_purchased] decimal(18,8),
-        [ace_mwh] decimal(18,8),
-        [asoe_mwh] decimal(18,8),
-        [ace_amount] decimal(18,8),
-        [asoe_amount] decimal(18,8),
-        [ce_mwh] decimal(18,8),
-        [ufea_mwh] decimal(18,8),
-        [total_mwh] decimal(18,8),
-        [total_amount] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingBillingDirectionReconOther2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingBillingDirectionReconOther2(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [direction_id],
-        [regionid],
-        [direction_desc],
-        [direction_type_id],
-        [direction_start_date],
-        [direction_end_date],
-        [direction_start_interval],
-        [direction_end_interval],
-        [compensation_amount],
-        [interest_amount],
-        [independent_expert_fee],
-        [cra],
-        [regional_customer_energy],
-        [regional_generator_energy],
-        [regional_benefit_factor],
-        [region_ace_mwh],
-        [region_asoe_mwh],
-        [direction_service_id]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[direction_id],
-        d.[regionid],
-        d.[direction_desc],
-        d.[direction_type_id],
-        d.[direction_start_date],
-        d.[direction_end_date],
-        d.[direction_start_interval],
-        d.[direction_end_interval],
-        d.[compensation_amount],
-        d.[interest_amount],
-        d.[independent_expert_fee],
-        d.[cra],
-        d.[regional_customer_energy],
-        d.[regional_generator_energy],
-        d.[regional_benefit_factor],
-        d.[region_ace_mwh],
-        d.[region_asoe_mwh],
-        d.[direction_service_id]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [direction_id] varchar(20),
-        [regionid] varchar(20),
-        [direction_desc] varchar(200),
-        [direction_type_id] varchar(20),
-        [direction_start_date] datetime2,
-        [direction_end_date] datetime2,
-        [direction_start_interval] datetime2,
-        [direction_end_interval] datetime2,
-        [compensation_amount] decimal(18,8),
-        [interest_amount] decimal(18,8),
-        [independent_expert_fee] decimal(18,8),
-        [cra] decimal(18,8),
-        [regional_customer_energy] decimal(18,8),
-        [regional_generator_energy] decimal(18,8),
-        [regional_benefit_factor] decimal(18,8),
-        [region_ace_mwh] decimal(18,8),
-        [region_asoe_mwh] decimal(18,8),
-        [direction_service_id] varchar(20)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingDirFinalAmount1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingDirFinalAmount1 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[direction_id],
-        d.[participantid],
-        d.[compensation_type],
-        d.[provisional_amount],
-        d.[final_amount],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [direction_id] varchar(20),
-        [participantid] varchar(20),
-        [compensation_type] varchar(40),
-        [provisional_amount] decimal(18,8),
-        [final_amount] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[billrunno] = src.[billrunno]
-    and tgt.[compensation_type] = src.[compensation_type]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[direction_id] = src.[direction_id]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[direction_id] = src.[direction_id],
-        tgt.[participantid] = src.[participantid],
-        tgt.[compensation_type] = src.[compensation_type],
-        tgt.[provisional_amount] = src.[provisional_amount],
-        tgt.[final_amount] = src.[final_amount],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [direction_id],
-        [participantid],
-        [compensation_type],
-        [provisional_amount],
-        [final_amount],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[direction_id],
-        src.[participantid],
-        src.[compensation_type],
-        src.[provisional_amount],
-        src.[final_amount],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingDirFinalRecovery1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingDirFinalRecovery1 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[direction_id],
-        d.[participantid],
-        d.[cra_amount],
-        d.[provisional_amount],
-        d.[final_amount],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [direction_id] varchar(20),
-        [participantid] varchar(20),
-        [cra_amount] decimal(18,8),
-        [provisional_amount] decimal(18,8),
-        [final_amount] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[billrunno] = src.[billrunno]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[direction_id] = src.[direction_id]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[direction_id] = src.[direction_id],
-        tgt.[participantid] = src.[participantid],
-        tgt.[cra_amount] = src.[cra_amount],
-        tgt.[provisional_amount] = src.[provisional_amount],
-        tgt.[final_amount] = src.[final_amount],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [direction_id],
-        [participantid],
-        [cra_amount],
-        [provisional_amount],
-        [final_amount],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[direction_id],
-        src.[participantid],
-        src.[cra_amount],
-        src.[provisional_amount],
-        src.[final_amount],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingDirProvAmount1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingDirProvAmount1 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[direction_id],
-        d.[participantid],
-        d.[compensation_type],
-        d.[compensation_amount],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [direction_id] varchar(20),
-        [participantid] varchar(20),
-        [compensation_type] varchar(40),
-        [compensation_amount] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[billrunno] = src.[billrunno]
-    and tgt.[compensation_type] = src.[compensation_type]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[direction_id] = src.[direction_id]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[direction_id] = src.[direction_id],
-        tgt.[participantid] = src.[participantid],
-        tgt.[compensation_type] = src.[compensation_type],
-        tgt.[compensation_amount] = src.[compensation_amount],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [direction_id],
-        [participantid],
-        [compensation_type],
-        [compensation_amount],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[direction_id],
-        src.[participantid],
-        src.[compensation_type],
-        src.[compensation_amount],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingDirProvRecovery1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingDirProvRecovery1 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[direction_id],
-        d.[participantid],
-        d.[cra_amount],
-        d.[recovery_amount],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [direction_id] varchar(20),
-        [participantid] varchar(20),
-        [cra_amount] decimal(18,8),
-        [recovery_amount] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[billrunno] = src.[billrunno]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[direction_id] = src.[direction_id]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[direction_id] = src.[direction_id],
-        tgt.[participantid] = src.[participantid],
-        tgt.[cra_amount] = src.[cra_amount],
-        tgt.[recovery_amount] = src.[recovery_amount],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [direction_id],
-        [participantid],
-        [cra_amount],
-        [recovery_amount],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[direction_id],
-        src.[participantid],
-        src.[cra_amount],
-        src.[recovery_amount],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingDirRecoveryDetail1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingDirRecoveryDetail1 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[direction_id],
-        d.[participantid],
-        d.[participantcategoryid],
-        d.[regionid],
-        d.[recovery_amount],
-        d.[recovery_energy],
-        d.[region_energy],
-        d.[excluded_energy],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [direction_id] varchar(20),
-        [participantid] varchar(20),
-        [participantcategoryid] varchar(20),
-        [regionid] varchar(20),
-        [recovery_amount] decimal(18,8),
-        [recovery_energy] decimal(18,8),
-        [region_energy] decimal(18,8),
-        [excluded_energy] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[billrunno] = src.[billrunno]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[direction_id] = src.[direction_id]
-    and tgt.[participantcategoryid] = src.[participantcategoryid]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[direction_id] = src.[direction_id],
-        tgt.[participantid] = src.[participantid],
-        tgt.[participantcategoryid] = src.[participantcategoryid],
-        tgt.[regionid] = src.[regionid],
-        tgt.[recovery_amount] = src.[recovery_amount],
-        tgt.[recovery_energy] = src.[recovery_energy],
-        tgt.[region_energy] = src.[region_energy],
-        tgt.[excluded_energy] = src.[excluded_energy],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [direction_id],
-        [participantid],
-        [participantcategoryid],
-        [regionid],
-        [recovery_amount],
-        [recovery_energy],
-        [region_energy],
-        [excluded_energy],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[direction_id],
-        src.[participantid],
-        src.[participantcategoryid],
-        src.[regionid],
-        src.[recovery_amount],
-        src.[recovery_energy],
-        src.[region_energy],
-        src.[excluded_energy],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingEftshortfallAmount1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingEftshortfallAmount1(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [participantid],
-        [shortfall_amount],
-        [shortfall],
-        [shortfall_company_id],
-        [company_shortfall_amount],
-        [participant_net_energy],
-        [company_net_energy]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[participantid],
-        d.[shortfall_amount],
-        d.[shortfall],
-        d.[shortfall_company_id],
-        d.[company_shortfall_amount],
-        d.[participant_net_energy],
-        d.[company_net_energy]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [participantid] varchar(20),
-        [shortfall_amount] decimal(18,8),
-        [shortfall] decimal(18,8),
-        [shortfall_company_id] varchar(20),
-        [company_shortfall_amount] decimal(18,8),
-        [participant_net_energy] decimal(18,8),
-        [company_net_energy] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingEftshortfallDetail1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingEftshortfallDetail1(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [participantid],
-        [transaction_type],
-        [amount]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[participantid],
-        d.[transaction_type],
-        d.[amount]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [participantid] varchar(20),
-        [transaction_type] varchar(40),
-        [amount] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingEnergyGensetDetail1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingEnergyGensetDetail1 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[participantid],
-        d.[stationid],
-        d.[duid],
-        d.[gensetid],
-        d.[regionid],
-        d.[connectionpointid],
-        d.[meterid],
-        d.[ce_mwh],
-        d.[ufea_mwh],
-        d.[ace_mwh],
-        d.[asoe_mwh],
-        d.[total_mwh],
-        d.[dme_mwh],
-        d.[ace_amount],
-        d.[asoe_amount],
-        d.[total_amount],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(4,0),
-        [participantid] varchar(20),
-        [stationid] varchar(20),
-        [duid] varchar(20),
-        [gensetid] varchar(20),
-        [regionid] varchar(20),
-        [connectionpointid] varchar(20),
-        [meterid] varchar(20),
-        [ce_mwh] decimal(18,8),
-        [ufea_mwh] decimal(18,8),
-        [ace_mwh] decimal(18,8),
-        [asoe_mwh] decimal(18,8),
-        [total_mwh] decimal(18,8),
-        [dme_mwh] decimal(18,8),
-        [ace_amount] decimal(18,8),
-        [asoe_amount] decimal(18,8),
-        [total_amount] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[billrunno] = src.[billrunno]
-    and tgt.[connectionpointid] = src.[connectionpointid]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[duid] = src.[duid]
-    and tgt.[gensetid] = src.[gensetid]
-    and tgt.[meterid] = src.[meterid]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[stationid] = src.[stationid]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[participantid] = src.[participantid],
-        tgt.[stationid] = src.[stationid],
-        tgt.[duid] = src.[duid],
-        tgt.[gensetid] = src.[gensetid],
-        tgt.[regionid] = src.[regionid],
-        tgt.[connectionpointid] = src.[connectionpointid],
-        tgt.[meterid] = src.[meterid],
-        tgt.[ce_mwh] = src.[ce_mwh],
-        tgt.[ufea_mwh] = src.[ufea_mwh],
-        tgt.[ace_mwh] = src.[ace_mwh],
-        tgt.[asoe_mwh] = src.[asoe_mwh],
-        tgt.[total_mwh] = src.[total_mwh],
-        tgt.[dme_mwh] = src.[dme_mwh],
-        tgt.[ace_amount] = src.[ace_amount],
-        tgt.[asoe_amount] = src.[asoe_amount],
-        tgt.[total_amount] = src.[total_amount],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [participantid],
-        [stationid],
-        [duid],
-        [gensetid],
-        [regionid],
-        [connectionpointid],
-        [meterid],
-        [ce_mwh],
-        [ufea_mwh],
-        [ace_mwh],
-        [asoe_mwh],
-        [total_mwh],
-        [dme_mwh],
-        [ace_amount],
-        [asoe_amount],
-        [total_amount],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[participantid],
-        src.[stationid],
-        src.[duid],
-        src.[gensetid],
-        src.[regionid],
-        src.[connectionpointid],
-        src.[meterid],
-        src.[ce_mwh],
-        src.[ufea_mwh],
-        src.[ace_mwh],
-        src.[asoe_mwh],
-        src.[total_mwh],
-        src.[dme_mwh],
-        src.[ace_amount],
-        src.[asoe_amount],
-        src.[total_amount],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingEnergyTransaction1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingEnergyTransaction1 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[participantid],
-        d.[connectionpointid],
-        d.[regionid],
-        d.[ce_mwh],
-        d.[ufea_mwh],
-        d.[ace_mwh],
-        d.[asoe_mwh],
-        d.[ace_amount],
-        d.[asoe_amount],
-        d.[total_mwh],
-        d.[total_amount],
-        d.[dme_mwh],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(4,0),
-        [participantid] varchar(20),
-        [connectionpointid] varchar(20),
-        [regionid] varchar(20),
-        [ce_mwh] decimal(18,8),
-        [ufea_mwh] decimal(18,8),
-        [ace_mwh] decimal(18,8),
-        [asoe_mwh] decimal(18,8),
-        [ace_amount] decimal(18,8),
-        [asoe_amount] decimal(18,8),
-        [total_mwh] decimal(18,8),
-        [total_amount] decimal(18,8),
-        [dme_mwh] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[billrunno] = src.[billrunno]
-    and tgt.[connectionpointid] = src.[connectionpointid]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[participantid] = src.[participantid],
-        tgt.[connectionpointid] = src.[connectionpointid],
-        tgt.[regionid] = src.[regionid],
-        tgt.[ce_mwh] = src.[ce_mwh],
-        tgt.[ufea_mwh] = src.[ufea_mwh],
-        tgt.[ace_mwh] = src.[ace_mwh],
-        tgt.[asoe_mwh] = src.[asoe_mwh],
-        tgt.[ace_amount] = src.[ace_amount],
-        tgt.[asoe_amount] = src.[asoe_amount],
-        tgt.[total_mwh] = src.[total_mwh],
-        tgt.[total_amount] = src.[total_amount],
-        tgt.[dme_mwh] = src.[dme_mwh],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [participantid],
-        [connectionpointid],
-        [regionid],
-        [ce_mwh],
-        [ufea_mwh],
-        [ace_mwh],
-        [asoe_mwh],
-        [ace_amount],
-        [asoe_amount],
-        [total_mwh],
-        [total_amount],
-        [dme_mwh],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[participantid],
-        src.[connectionpointid],
-        src.[regionid],
-        src.[ce_mwh],
-        src.[ufea_mwh],
-        src.[ace_mwh],
-        src.[asoe_mwh],
-        src.[ace_amount],
-        src.[asoe_amount],
-        src.[total_mwh],
-        src.[total_amount],
-        src.[dme_mwh],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingEnergyTranSaps1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingEnergyTranSaps1 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[participantid],
-        d.[tni],
-        d.[regionid],
-        d.[consumed_energy_mwh],
-        d.[sentout_energy_mwh],
-        d.[consumed_energy_cost],
-        d.[sentout_energy_cost],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [participantid] varchar(20),
-        [tni] varchar(20),
-        [regionid] varchar(20),
-        [consumed_energy_mwh] decimal(18,8),
-        [sentout_energy_mwh] decimal(18,8),
-        [consumed_energy_cost] decimal(18,8),
-        [sentout_energy_cost] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[billrunno] = src.[billrunno]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[tni] = src.[tni]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[participantid] = src.[participantid],
-        tgt.[tni] = src.[tni],
-        tgt.[regionid] = src.[regionid],
-        tgt.[consumed_energy_mwh] = src.[consumed_energy_mwh],
-        tgt.[sentout_energy_mwh] = src.[sentout_energy_mwh],
-        tgt.[consumed_energy_cost] = src.[consumed_energy_cost],
-        tgt.[sentout_energy_cost] = src.[sentout_energy_cost],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [participantid],
-        [tni],
-        [regionid],
-        [consumed_energy_mwh],
-        [sentout_energy_mwh],
-        [consumed_energy_cost],
-        [sentout_energy_cost],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[participantid],
-        src.[tni],
-        src.[regionid],
-        src.[consumed_energy_mwh],
-        src.[sentout_energy_mwh],
-        src.[consumed_energy_cost],
-        src.[sentout_energy_cost],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingGstDetail5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingGstDetail5 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[participantid],
-        d.[bas_class],
-        d.[transaction_type],
-        d.[gst_exclusive_amount],
-        d.[gst_amount],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [participantid] varchar(10),
-        [bas_class] varchar(30),
-        [transaction_type] varchar(30),
-        [gst_exclusive_amount] decimal(15,5),
-        [gst_amount] decimal(15,5),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[bas_class] = src.[bas_class]
-    and tgt.[billrunno] = src.[billrunno]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[transaction_type] = src.[transaction_type]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[participantid] = src.[participantid],
-        tgt.[bas_class] = src.[bas_class],
-        tgt.[transaction_type] = src.[transaction_type],
-        tgt.[gst_exclusive_amount] = src.[gst_exclusive_amount],
-        tgt.[gst_amount] = src.[gst_amount],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [participantid],
-        [bas_class],
-        [transaction_type],
-        [gst_exclusive_amount],
-        [gst_amount],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[participantid],
-        src.[bas_class],
-        src.[transaction_type],
-        src.[gst_exclusive_amount],
-        src.[gst_amount],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingGstSummary5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingGstSummary5 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[participantid],
-        d.[bas_class],
-        d.[gst_exclusive_amount],
-        d.[gst_amount],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [participantid] varchar(10),
-        [bas_class] varchar(30),
-        [gst_exclusive_amount] decimal(15,5),
-        [gst_amount] decimal(15,5),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[bas_class] = src.[bas_class]
-    and tgt.[billrunno] = src.[billrunno]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[participantid] = src.[participantid],
-        tgt.[bas_class] = src.[bas_class],
-        tgt.[gst_exclusive_amount] = src.[gst_exclusive_amount],
-        tgt.[gst_amount] = src.[gst_amount],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [participantid],
-        [bas_class],
-        [gst_exclusive_amount],
-        [gst_amount],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[participantid],
-        src.[bas_class],
-        src.[gst_exclusive_amount],
-        src.[gst_amount],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingNmasTstPayments1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingNmasTstPayments1(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [participantid],
-        [service],
-        [contractid],
-        [payment_amount]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[participantid],
-        d.[service],
-        d.[contractid],
-        d.[payment_amount]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [participantid] varchar(20),
-        [service] varchar(10),
-        [contractid] varchar(10),
-        [payment_amount] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingNmasTstRecovery2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingNmasTstRecovery2 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[participantid],
-        d.[service],
-        d.[contractid],
-        d.[regionid],
-        d.[rbf],
-        d.[test_payment],
-        d.[recovery_start_date],
-        d.[recovery_end_date],
-        d.[participant_energy],
-        d.[region_energy],
-        d.[nem_energy],
-        d.[customer_proportion],
-        d.[generator_proportion],
-        d.[participant_generation],
-        d.[nem_generation],
-        d.[recovery_amount],
-        d.[lastchanged],
-        d.[participant_ace_mwh],
-        d.[region_ace_mwh],
-        d.[ace_portion],
-        d.[asoe_portion],
-        d.[participant_asoe_mwh],
-        d.[region_asoe_mwh],
-        d.[recoveryamount_ace],
-        d.[recoveryamount_asoe]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [participantid] varchar(20),
-        [service] varchar(10),
-        [contractid] varchar(10),
-        [regionid] varchar(10),
-        [rbf] decimal(18,8),
-        [test_payment] decimal(18,8),
-        [recovery_start_date] datetime2,
-        [recovery_end_date] datetime2,
-        [participant_energy] decimal(18,8),
-        [region_energy] decimal(18,8),
-        [nem_energy] decimal(18,8),
-        [customer_proportion] decimal(18,8),
-        [generator_proportion] decimal(18,8),
-        [participant_generation] decimal(18,8),
-        [nem_generation] decimal(18,8),
-        [recovery_amount] decimal(18,8),
-        [lastchanged] datetime2,
-        [participant_ace_mwh] decimal(18,8),
-        [region_ace_mwh] decimal(18,8),
-        [ace_portion] decimal(18,8),
-        [asoe_portion] decimal(18,8),
-        [participant_asoe_mwh] decimal(18,8),
-        [region_asoe_mwh] decimal(18,8),
-        [recoveryamount_ace] decimal(18,8),
-        [recoveryamount_asoe] decimal(18,8)
-    ) d
-) as src 
-on (
-    tgt.[billrunno] = src.[billrunno]
-    and tgt.[contractid] = src.[contractid]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[service] = src.[service]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[participantid] = src.[participantid],
-        tgt.[service] = src.[service],
-        tgt.[contractid] = src.[contractid],
-        tgt.[regionid] = src.[regionid],
-        tgt.[rbf] = src.[rbf],
-        tgt.[test_payment] = src.[test_payment],
-        tgt.[recovery_start_date] = src.[recovery_start_date],
-        tgt.[recovery_end_date] = src.[recovery_end_date],
-        tgt.[participant_energy] = src.[participant_energy],
-        tgt.[region_energy] = src.[region_energy],
-        tgt.[nem_energy] = src.[nem_energy],
-        tgt.[customer_proportion] = src.[customer_proportion],
-        tgt.[generator_proportion] = src.[generator_proportion],
-        tgt.[participant_generation] = src.[participant_generation],
-        tgt.[nem_generation] = src.[nem_generation],
-        tgt.[recovery_amount] = src.[recovery_amount],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[participant_ace_mwh] = src.[participant_ace_mwh],
-        tgt.[region_ace_mwh] = src.[region_ace_mwh],
-        tgt.[ace_portion] = src.[ace_portion],
-        tgt.[asoe_portion] = src.[asoe_portion],
-        tgt.[participant_asoe_mwh] = src.[participant_asoe_mwh],
-        tgt.[region_asoe_mwh] = src.[region_asoe_mwh],
-        tgt.[recoveryamount_ace] = src.[recoveryamount_ace],
-        tgt.[recoveryamount_asoe] = src.[recoveryamount_asoe]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [participantid],
-        [service],
-        [contractid],
-        [regionid],
-        [rbf],
-        [test_payment],
-        [recovery_start_date],
-        [recovery_end_date],
-        [participant_energy],
-        [region_energy],
-        [nem_energy],
-        [customer_proportion],
-        [generator_proportion],
-        [participant_generation],
-        [nem_generation],
-        [recovery_amount],
-        [lastchanged],
-        [participant_ace_mwh],
-        [region_ace_mwh],
-        [ace_portion],
-        [asoe_portion],
-        [participant_asoe_mwh],
-        [region_asoe_mwh],
-        [recoveryamount_ace],
-        [recoveryamount_asoe]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[participantid],
-        src.[service],
-        src.[contractid],
-        src.[regionid],
-        src.[rbf],
-        src.[test_payment],
-        src.[recovery_start_date],
-        src.[recovery_end_date],
-        src.[participant_energy],
-        src.[region_energy],
-        src.[nem_energy],
-        src.[customer_proportion],
-        src.[generator_proportion],
-        src.[participant_generation],
-        src.[nem_generation],
-        src.[recovery_amount],
-        src.[lastchanged],
-        src.[participant_ace_mwh],
-        src.[region_ace_mwh],
-        src.[ace_portion],
-        src.[asoe_portion],
-        src.[participant_asoe_mwh],
-        src.[region_asoe_mwh],
-        src.[recoveryamount_ace],
-        src.[recoveryamount_asoe]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingNmasTstRecvryRbf1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BillingNmasTstRecvryRbf1 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[service],
-        d.[contractid],
-        d.[regionid],
-        d.[rbf],
-        d.[payment_amount],
-        d.[recovery_amount],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [service] varchar(10),
-        [contractid] varchar(10),
-        [regionid] varchar(10),
-        [rbf] decimal(18,8),
-        [payment_amount] decimal(18,8),
-        [recovery_amount] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[billrunno] = src.[billrunno]
-    and tgt.[contractid] = src.[contractid]
-    and tgt.[contractyear] = src.[contractyear]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[service] = src.[service]
-    and tgt.[weekno] = src.[weekno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[weekno] = src.[weekno],
-        tgt.[billrunno] = src.[billrunno],
-        tgt.[service] = src.[service],
-        tgt.[contractid] = src.[contractid],
-        tgt.[regionid] = src.[regionid],
-        tgt.[rbf] = src.[rbf],
-        tgt.[payment_amount] = src.[payment_amount],
-        tgt.[recovery_amount] = src.[recovery_amount],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [weekno],
-        [billrunno],
-        [service],
-        [contractid],
-        [regionid],
-        [rbf],
-        [payment_amount],
-        [recovery_amount],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[weekno],
-        src.[billrunno],
-        src.[service],
-        src.[contractid],
-        src.[regionid],
-        src.[rbf],
-        src.[payment_amount],
-        src.[recovery_amount],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingNmasTstRecvryTrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingNmasTstRecvryTrk1(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [recovery_contractyear],
-        [recovery_weekno],
-        [recovery_billrunno]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[recovery_contractyear],
-        d.[recovery_weekno],
-        d.[recovery_billrunno]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [recovery_contractyear] decimal(4,0),
-        [recovery_weekno] decimal(3,0),
-        [recovery_billrunno] decimal(3,0)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingSecdepositApplication1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingSecdepositApplication1(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [participantid],
-        [application_amount]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[participantid],
-        d.[application_amount]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [participantid] varchar(20),
-        [application_amount] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingSecdepInterestPay1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingSecdepInterestPay1(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [security_deposit_id],
-        [participantid],
-        [interest_amount],
-        [interest_calc_type],
-        [interest_acct_id],
-        [interest_rate]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[security_deposit_id],
-        d.[participantid],
-        d.[interest_amount],
-        d.[interest_calc_type],
-        d.[interest_acct_id],
-        d.[interest_rate]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [security_deposit_id] varchar(20),
-        [participantid] varchar(20),
-        [interest_amount] decimal(18,8),
-        [interest_calc_type] varchar(20),
-        [interest_acct_id] varchar(20),
-        [interest_rate] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingSecdepInterestRate1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingSecdepInterestRate1(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [interest_acct_id],
-        [effectivedate],
-        [interest_rate]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[interest_acct_id],
-        d.[effectivedate],
-        d.[interest_rate]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [interest_acct_id] varchar(20),
-        [effectivedate] datetime2,
-        [interest_rate] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingSubstDemand1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingSubstDemand1(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [settlementdate],
-        [tni],
-        [participantid],
-        [regionid],
-        [substitutedemand]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[settlementdate],
-        d.[tni],
-        d.[participantid],
-        d.[regionid],
-        d.[substitutedemand]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [settlementdate] datetime2,
-        [tni] varchar(20),
-        [participantid] varchar(20),
-        [regionid] varchar(20),
-        [substitutedemand] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingSubstRunVersion1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingSubstRunVersion1(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [referencesettlementdate],
-        [referencesettlementrunno]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[referencesettlementdate],
-        d.[referencesettlementrunno]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [referencesettlementdate] datetime2,
-        [referencesettlementrunno] decimal(3,0)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingWdr1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingWdr1(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [participantid],
-        [wdr_credit_amount],
-        [wdr_debit_amount]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[participantid],
-        d.[wdr_credit_amount],
-        d.[wdr_debit_amount]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [participantid] varchar(20),
-        [wdr_credit_amount] decimal(18,8),
-        [wdr_debit_amount] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertBillingWdrDetail1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.BillingWdrDetail1(
-file_log_id,
-[contractyear],
-        [weekno],
-        [billrunno],
-        [wdrrrperiod],
-        [regionid],
-        [frmp],
-        [drsp],
-        [wdrsq],
-        [wdrrr],
-        [wdrta]
-)
-select 
-@file_log_id,
-d.[contractyear],
-        d.[weekno],
-        d.[billrunno],
-        d.[wdrrrperiod],
-        d.[regionid],
-        d.[frmp],
-        d.[drsp],
-        d.[wdrsq],
-        d.[wdrrr],
-        d.[wdrta]
-from openjson(@data) with (
-[contractyear] decimal(4,0),
-        [weekno] decimal(3,0),
-        [billrunno] decimal(3,0),
-        [wdrrrperiod] varchar(20),
-        [regionid] varchar(20),
-        [frmp] varchar(20),
-        [drsp] varchar(20),
-        [wdrsq] decimal(18,8),
-        [wdrrr] decimal(18,8),
-        [wdrta] decimal(18,8)
-) d
-end
-go
 create or alter procedure mmsdm_proc.InsertBillingReservetraderpayment1
     @file_log_id bigint,
     @data nvarchar(max)
@@ -7380,28 +7489,59 @@ create or alter procedure mmsdm_proc.InsertDemandIntermittentGenScada1
     @file_log_id bigint,
     @data nvarchar(max)
 as begin
-insert into mmsdm.DemandIntermittentGenScada1(
-file_log_id,
-[run_datetime],
-        [duid],
-        [scada_type],
-        [scada_value],
-        [scada_quality]
-)
-select 
-@file_log_id,
-d.[run_datetime],
+
+merge mmsdm.DemandIntermittentGenScada1 as tgt 
+using (
+    select 
+        d.[run_datetime],
         d.[duid],
         d.[scada_type],
         d.[scada_value],
-        d.[scada_quality]
-from openjson(@data) with (
-[run_datetime] datetime2,
+        d.[scada_quality],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [run_datetime] datetime2,
         [duid] varchar(20),
         [scada_type] varchar(20),
         [scada_value] decimal(15,5),
-        [scada_quality] varchar(20)
-) d
+        [scada_quality] varchar(20),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[duid] = src.[duid]
+    and tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[scada_type] = src.[scada_type]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[run_datetime] = src.[run_datetime],
+        tgt.[duid] = src.[duid],
+        tgt.[scada_type] = src.[scada_type],
+        tgt.[scada_value] = src.[scada_value],
+        tgt.[scada_quality] = src.[scada_quality],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [run_datetime],
+        [duid],
+        [scada_type],
+        [scada_value],
+        [scada_quality],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[run_datetime],
+        src.[duid],
+        src.[scada_type],
+        src.[scada_value],
+        src.[scada_quality],
+        src.[lastchanged]
+    );
+    
 end
 go
 create or alter procedure mmsdm_proc.InsertDemandMtpasaIntermittentAvail2
@@ -7873,6 +8013,795 @@ when not matched
         src.[rhs],
         src.[lastchanged],
         src.[versionno]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertDispatchocdConstraintFcasOcd1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.DispatchocdConstraintFcasOcd1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[runno],
+        d.[intervention],
+        d.[constraintid],
+        d.[versionno],
+        d.[lastchanged],
+        d.[rhs],
+        d.[marginalvalue],
+        d.[violationdegree]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [runno] decimal(3,0),
+        [intervention] decimal(2,0),
+        [constraintid] varchar(20),
+        [versionno] decimal(3,0),
+        [lastchanged] datetime2,
+        [rhs] decimal(15,5),
+        [marginalvalue] decimal(15,5),
+        [violationdegree] decimal(15,5)
+    ) d
+) as src 
+on (
+    tgt.[constraintid] = src.[constraintid]
+    and tgt.[intervention] = src.[intervention]
+    and tgt.[runno] = src.[runno]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[runno] = src.[runno],
+        tgt.[intervention] = src.[intervention],
+        tgt.[constraintid] = src.[constraintid],
+        tgt.[versionno] = src.[versionno],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[rhs] = src.[rhs],
+        tgt.[marginalvalue] = src.[marginalvalue],
+        tgt.[violationdegree] = src.[violationdegree]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [runno],
+        [intervention],
+        [constraintid],
+        [versionno],
+        [lastchanged],
+        [rhs],
+        [marginalvalue],
+        [violationdegree]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[runno],
+        src.[intervention],
+        src.[constraintid],
+        src.[versionno],
+        src.[lastchanged],
+        src.[rhs],
+        src.[marginalvalue],
+        src.[violationdegree]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertDispatchFcasReq2
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.DispatchFcasReq2 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[runno],
+        d.[intervention],
+        d.[genconid],
+        d.[regionid],
+        d.[bidtype],
+        d.[genconeffectivedate],
+        d.[genconversionno],
+        d.[marginalvalue],
+        d.[lastchanged],
+        d.[base_cost],
+        d.[adjusted_cost],
+        d.[estimated_cmpf],
+        d.[estimated_crmpf],
+        d.[recovery_factor_cmpf],
+        d.[recovery_factor_crmpf]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [runno] decimal(3,0),
+        [intervention] decimal(2,0),
+        [genconid] varchar(20),
+        [regionid] varchar(10),
+        [bidtype] varchar(10),
+        [genconeffectivedate] datetime2,
+        [genconversionno] decimal(3,0),
+        [marginalvalue] decimal(16,6),
+        [lastchanged] datetime2,
+        [base_cost] decimal(18,8),
+        [adjusted_cost] decimal(18,8),
+        [estimated_cmpf] decimal(18,8),
+        [estimated_crmpf] decimal(18,8),
+        [recovery_factor_cmpf] decimal(18,8),
+        [recovery_factor_crmpf] decimal(18,8)
+    ) d
+) as src 
+on (
+    tgt.[bidtype] = src.[bidtype]
+    and tgt.[genconid] = src.[genconid]
+    and tgt.[intervention] = src.[intervention]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[runno] = src.[runno]
+    and tgt.[settlementdate] = src.[settlementdate]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[runno] = src.[runno],
+        tgt.[intervention] = src.[intervention],
+        tgt.[genconid] = src.[genconid],
+        tgt.[regionid] = src.[regionid],
+        tgt.[bidtype] = src.[bidtype],
+        tgt.[genconeffectivedate] = src.[genconeffectivedate],
+        tgt.[genconversionno] = src.[genconversionno],
+        tgt.[marginalvalue] = src.[marginalvalue],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[base_cost] = src.[base_cost],
+        tgt.[adjusted_cost] = src.[adjusted_cost],
+        tgt.[estimated_cmpf] = src.[estimated_cmpf],
+        tgt.[estimated_crmpf] = src.[estimated_crmpf],
+        tgt.[recovery_factor_cmpf] = src.[recovery_factor_cmpf],
+        tgt.[recovery_factor_crmpf] = src.[recovery_factor_crmpf]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [runno],
+        [intervention],
+        [genconid],
+        [regionid],
+        [bidtype],
+        [genconeffectivedate],
+        [genconversionno],
+        [marginalvalue],
+        [lastchanged],
+        [base_cost],
+        [adjusted_cost],
+        [estimated_cmpf],
+        [estimated_crmpf],
+        [recovery_factor_cmpf],
+        [recovery_factor_crmpf]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[runno],
+        src.[intervention],
+        src.[genconid],
+        src.[regionid],
+        src.[bidtype],
+        src.[genconeffectivedate],
+        src.[genconversionno],
+        src.[marginalvalue],
+        src.[lastchanged],
+        src.[base_cost],
+        src.[adjusted_cost],
+        src.[estimated_cmpf],
+        src.[estimated_crmpf],
+        src.[recovery_factor_cmpf],
+        src.[recovery_factor_crmpf]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertDispatchFcasReqConstraint1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.DispatchFcasReqConstraint1(
+file_log_id,
+[run_datetime],
+        [runno],
+        [interval_datetime],
+        [constraintid],
+        [regionid],
+        [bidtype],
+        [lhs],
+        [rhs],
+        [marginalvalue],
+        [rrp],
+        [regional_enablement],
+        [constraint_enablement],
+        [region_base_cost],
+        [base_cost],
+        [adjusted_cost],
+        [p_regulation]
+)
+select 
+@file_log_id,
+d.[run_datetime],
+        d.[runno],
+        d.[interval_datetime],
+        d.[constraintid],
+        d.[regionid],
+        d.[bidtype],
+        d.[lhs],
+        d.[rhs],
+        d.[marginalvalue],
+        d.[rrp],
+        d.[regional_enablement],
+        d.[constraint_enablement],
+        d.[region_base_cost],
+        d.[base_cost],
+        d.[adjusted_cost],
+        d.[p_regulation]
+from openjson(@data) with (
+[run_datetime] datetime2,
+        [runno] decimal(5,0),
+        [interval_datetime] datetime2,
+        [constraintid] varchar(20),
+        [regionid] varchar(20),
+        [bidtype] varchar(10),
+        [lhs] decimal(15,5),
+        [rhs] decimal(15,5),
+        [marginalvalue] decimal(15,5),
+        [rrp] decimal(15,5),
+        [regional_enablement] decimal(15,5),
+        [constraint_enablement] decimal(15,5),
+        [region_base_cost] decimal(18,8),
+        [base_cost] decimal(18,8),
+        [adjusted_cost] decimal(18,8),
+        [p_regulation] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertDispatchFcasReqRun1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.DispatchFcasReqRun1 as tgt 
+using (
+    select 
+        d.[run_datetime],
+        d.[runno],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [run_datetime] datetime2,
+        [runno] decimal(5,0),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[runno] = src.[runno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[run_datetime] = src.[run_datetime],
+        tgt.[runno] = src.[runno],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [run_datetime],
+        [runno],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[run_datetime],
+        src.[runno],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertDispatchInterconnection1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.DispatchInterconnection1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[runno],
+        d.[intervention],
+        d.[from_regionid],
+        d.[to_regionid],
+        d.[dispatchinterval],
+        d.[irlf],
+        d.[mwflow],
+        d.[meteredmwflow],
+        d.[from_region_mw_losses],
+        d.[to_region_mw_losses],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [runno] decimal(3,0),
+        [intervention] decimal(2,0),
+        [from_regionid] varchar(20),
+        [to_regionid] varchar(20),
+        [dispatchinterval] decimal(22,0),
+        [irlf] decimal(15,5),
+        [mwflow] decimal(16,6),
+        [meteredmwflow] decimal(16,6),
+        [from_region_mw_losses] decimal(16,6),
+        [to_region_mw_losses] decimal(16,6),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[from_regionid] = src.[from_regionid]
+    and tgt.[intervention] = src.[intervention]
+    and tgt.[runno] = src.[runno]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[to_regionid] = src.[to_regionid]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[runno] = src.[runno],
+        tgt.[intervention] = src.[intervention],
+        tgt.[from_regionid] = src.[from_regionid],
+        tgt.[to_regionid] = src.[to_regionid],
+        tgt.[dispatchinterval] = src.[dispatchinterval],
+        tgt.[irlf] = src.[irlf],
+        tgt.[mwflow] = src.[mwflow],
+        tgt.[meteredmwflow] = src.[meteredmwflow],
+        tgt.[from_region_mw_losses] = src.[from_region_mw_losses],
+        tgt.[to_region_mw_losses] = src.[to_region_mw_losses],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [runno],
+        [intervention],
+        [from_regionid],
+        [to_regionid],
+        [dispatchinterval],
+        [irlf],
+        [mwflow],
+        [meteredmwflow],
+        [from_region_mw_losses],
+        [to_region_mw_losses],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[runno],
+        src.[intervention],
+        src.[from_regionid],
+        src.[to_regionid],
+        src.[dispatchinterval],
+        src.[irlf],
+        src.[mwflow],
+        src.[meteredmwflow],
+        src.[from_region_mw_losses],
+        src.[to_region_mw_losses],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertDispatchLocalPrice1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.DispatchLocalPrice1(
+file_log_id,
+[settlementdate],
+        [duid],
+        [local_price_adjustment],
+        [locally_constrained]
+)
+select 
+@file_log_id,
+d.[settlementdate],
+        d.[duid],
+        d.[local_price_adjustment],
+        d.[locally_constrained]
+from openjson(@data) with (
+[settlementdate] datetime2,
+        [duid] varchar(20),
+        [local_price_adjustment] decimal(10,2),
+        [locally_constrained] decimal(1,0)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertDispatchMnspbidtrk1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.DispatchMnspbidtrk1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[runno],
+        d.[participantid],
+        d.[linkid],
+        d.[offersettlementdate],
+        d.[offereffectivedate],
+        d.[offerversionno],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [runno] decimal(3,0),
+        [participantid] varchar(10),
+        [linkid] varchar(10),
+        [offersettlementdate] datetime2,
+        [offereffectivedate] datetime2,
+        [offerversionno] decimal(3,0),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[linkid] = src.[linkid]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[runno] = src.[runno]
+    and tgt.[settlementdate] = src.[settlementdate]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[runno] = src.[runno],
+        tgt.[participantid] = src.[participantid],
+        tgt.[linkid] = src.[linkid],
+        tgt.[offersettlementdate] = src.[offersettlementdate],
+        tgt.[offereffectivedate] = src.[offereffectivedate],
+        tgt.[offerversionno] = src.[offerversionno],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [runno],
+        [participantid],
+        [linkid],
+        [offersettlementdate],
+        [offereffectivedate],
+        [offerversionno],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[runno],
+        src.[participantid],
+        src.[linkid],
+        src.[offersettlementdate],
+        src.[offereffectivedate],
+        src.[offerversionno],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertDispatchMrScheduleTrk1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.DispatchMrScheduleTrk1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[regionid],
+        d.[mr_date],
+        d.[version_datetime],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [regionid] varchar(10),
+        [mr_date] datetime2,
+        [version_datetime] datetime2,
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[regionid] = src.[regionid]
+    and tgt.[settlementdate] = src.[settlementdate]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[regionid] = src.[regionid],
+        tgt.[mr_date] = src.[mr_date],
+        tgt.[version_datetime] = src.[version_datetime],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [regionid],
+        [mr_date],
+        [version_datetime],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[regionid],
+        src.[mr_date],
+        src.[version_datetime],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertPriceloadPriceRevision1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.PriceloadPriceRevision1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[runno],
+        d.[intervention],
+        d.[regionid],
+        d.[bidtype],
+        d.[versionno],
+        d.[rrp_new],
+        d.[rrp_old],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [runno] decimal(3,0),
+        [intervention] decimal(2,0),
+        [regionid] varchar(10),
+        [bidtype] varchar(10),
+        [versionno] decimal(3,0),
+        [rrp_new] decimal(15,5),
+        [rrp_old] decimal(15,5),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[bidtype] = src.[bidtype]
+    and tgt.[intervention] = src.[intervention]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[runno] = src.[runno]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[runno] = src.[runno],
+        tgt.[intervention] = src.[intervention],
+        tgt.[regionid] = src.[regionid],
+        tgt.[bidtype] = src.[bidtype],
+        tgt.[versionno] = src.[versionno],
+        tgt.[rrp_new] = src.[rrp_new],
+        tgt.[rrp_old] = src.[rrp_old],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [runno],
+        [intervention],
+        [regionid],
+        [bidtype],
+        [versionno],
+        [rrp_new],
+        [rrp_old],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[runno],
+        src.[intervention],
+        src.[regionid],
+        src.[bidtype],
+        src.[versionno],
+        src.[rrp_new],
+        src.[rrp_old],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertDispatchUnitConformance2
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.DispatchUnitConformance2 as tgt 
+using (
+    select 
+        d.[interval_datetime],
+        d.[duid],
+        d.[totalcleared],
+        d.[actualmw],
+        d.[roc],
+        d.[availability],
+        d.[lowerreg],
+        d.[raisereg],
+        d.[striglm],
+        d.[ltriglm],
+        d.[mwerror],
+        d.[max_mwerror],
+        d.[lecount],
+        d.[secount],
+        d.[status],
+        d.[participant_status_action],
+        d.[operating_mode],
+        d.[lastchanged],
+        d.[adg_id],
+        d.[semidispatchcap],
+        d.[conformance_mode]
+    from openjson(@data) with (
+        [interval_datetime] datetime2,
+        [duid] varchar(20),
+        [totalcleared] decimal(16,6),
+        [actualmw] decimal(16,6),
+        [roc] decimal(16,6),
+        [availability] decimal(16,6),
+        [lowerreg] decimal(16,6),
+        [raisereg] decimal(16,6),
+        [striglm] decimal(16,6),
+        [ltriglm] decimal(16,6),
+        [mwerror] decimal(16,6),
+        [max_mwerror] decimal(16,6),
+        [lecount] decimal(6,0),
+        [secount] decimal(6,0),
+        [status] varchar(20),
+        [participant_status_action] varchar(100),
+        [operating_mode] varchar(20),
+        [lastchanged] datetime2,
+        [adg_id] varchar(20),
+        [semidispatchcap] decimal(3,0),
+        [conformance_mode] decimal(6,0)
+    ) d
+) as src 
+on (
+    tgt.[duid] = src.[duid]
+    and tgt.[interval_datetime] = src.[interval_datetime]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[interval_datetime] = src.[interval_datetime],
+        tgt.[duid] = src.[duid],
+        tgt.[totalcleared] = src.[totalcleared],
+        tgt.[actualmw] = src.[actualmw],
+        tgt.[roc] = src.[roc],
+        tgt.[availability] = src.[availability],
+        tgt.[lowerreg] = src.[lowerreg],
+        tgt.[raisereg] = src.[raisereg],
+        tgt.[striglm] = src.[striglm],
+        tgt.[ltriglm] = src.[ltriglm],
+        tgt.[mwerror] = src.[mwerror],
+        tgt.[max_mwerror] = src.[max_mwerror],
+        tgt.[lecount] = src.[lecount],
+        tgt.[secount] = src.[secount],
+        tgt.[status] = src.[status],
+        tgt.[participant_status_action] = src.[participant_status_action],
+        tgt.[operating_mode] = src.[operating_mode],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[adg_id] = src.[adg_id],
+        tgt.[semidispatchcap] = src.[semidispatchcap],
+        tgt.[conformance_mode] = src.[conformance_mode]
+when not matched
+    then insert (
+        file_log_id,
+        [interval_datetime],
+        [duid],
+        [totalcleared],
+        [actualmw],
+        [roc],
+        [availability],
+        [lowerreg],
+        [raisereg],
+        [striglm],
+        [ltriglm],
+        [mwerror],
+        [max_mwerror],
+        [lecount],
+        [secount],
+        [status],
+        [participant_status_action],
+        [operating_mode],
+        [lastchanged],
+        [adg_id],
+        [semidispatchcap],
+        [conformance_mode]
+    ) values (
+        @file_log_id,
+        src.[interval_datetime],
+        src.[duid],
+        src.[totalcleared],
+        src.[actualmw],
+        src.[roc],
+        src.[availability],
+        src.[lowerreg],
+        src.[raisereg],
+        src.[striglm],
+        src.[ltriglm],
+        src.[mwerror],
+        src.[max_mwerror],
+        src.[lecount],
+        src.[secount],
+        src.[status],
+        src.[participant_status_action],
+        src.[operating_mode],
+        src.[lastchanged],
+        src.[adg_id],
+        src.[semidispatchcap],
+        src.[conformance_mode]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertDispatchUnitScada1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.DispatchUnitScada1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[duid],
+        d.[scadavalue],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [duid] varchar(20),
+        [scadavalue] decimal(16,6),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[duid] = src.[duid]
+    and tgt.[settlementdate] = src.[settlementdate]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[duid] = src.[duid],
+        tgt.[scadavalue] = src.[scadavalue],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [duid],
+        [scadavalue],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[duid],
+        src.[scadavalue],
+        src.[lastchanged]
     );
     
 end
@@ -9729,665 +10658,6 @@ when not matched
         src.[bdu_clearedmw_load]
     );
     
-end
-go
-create or alter procedure mmsdm_proc.InsertDispatchocdConstraintFcasOcd1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.DispatchocdConstraintFcasOcd1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[runno],
-        d.[intervention],
-        d.[constraintid],
-        d.[versionno],
-        d.[lastchanged],
-        d.[rhs],
-        d.[marginalvalue],
-        d.[violationdegree]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [runno] decimal(3,0),
-        [intervention] decimal(2,0),
-        [constraintid] varchar(20),
-        [versionno] decimal(3,0),
-        [lastchanged] datetime2,
-        [rhs] decimal(15,5),
-        [marginalvalue] decimal(15,5),
-        [violationdegree] decimal(15,5)
-    ) d
-) as src 
-on (
-    tgt.[constraintid] = src.[constraintid]
-    and tgt.[intervention] = src.[intervention]
-    and tgt.[runno] = src.[runno]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[runno] = src.[runno],
-        tgt.[intervention] = src.[intervention],
-        tgt.[constraintid] = src.[constraintid],
-        tgt.[versionno] = src.[versionno],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[rhs] = src.[rhs],
-        tgt.[marginalvalue] = src.[marginalvalue],
-        tgt.[violationdegree] = src.[violationdegree]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [runno],
-        [intervention],
-        [constraintid],
-        [versionno],
-        [lastchanged],
-        [rhs],
-        [marginalvalue],
-        [violationdegree]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[runno],
-        src.[intervention],
-        src.[constraintid],
-        src.[versionno],
-        src.[lastchanged],
-        src.[rhs],
-        src.[marginalvalue],
-        src.[violationdegree]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertDispatchFcasReq2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.DispatchFcasReq2 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[runno],
-        d.[intervention],
-        d.[genconid],
-        d.[regionid],
-        d.[bidtype],
-        d.[genconeffectivedate],
-        d.[genconversionno],
-        d.[marginalvalue],
-        d.[lastchanged],
-        d.[base_cost],
-        d.[adjusted_cost],
-        d.[estimated_cmpf],
-        d.[estimated_crmpf],
-        d.[recovery_factor_cmpf],
-        d.[recovery_factor_crmpf]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [runno] decimal(3,0),
-        [intervention] decimal(2,0),
-        [genconid] varchar(20),
-        [regionid] varchar(10),
-        [bidtype] varchar(10),
-        [genconeffectivedate] datetime2,
-        [genconversionno] decimal(3,0),
-        [marginalvalue] decimal(16,6),
-        [lastchanged] datetime2,
-        [base_cost] decimal(18,8),
-        [adjusted_cost] decimal(18,8),
-        [estimated_cmpf] decimal(18,8),
-        [estimated_crmpf] decimal(18,8),
-        [recovery_factor_cmpf] decimal(18,8),
-        [recovery_factor_crmpf] decimal(18,8)
-    ) d
-) as src 
-on (
-    tgt.[bidtype] = src.[bidtype]
-    and tgt.[genconid] = src.[genconid]
-    and tgt.[intervention] = src.[intervention]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[runno] = src.[runno]
-    and tgt.[settlementdate] = src.[settlementdate]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[runno] = src.[runno],
-        tgt.[intervention] = src.[intervention],
-        tgt.[genconid] = src.[genconid],
-        tgt.[regionid] = src.[regionid],
-        tgt.[bidtype] = src.[bidtype],
-        tgt.[genconeffectivedate] = src.[genconeffectivedate],
-        tgt.[genconversionno] = src.[genconversionno],
-        tgt.[marginalvalue] = src.[marginalvalue],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[base_cost] = src.[base_cost],
-        tgt.[adjusted_cost] = src.[adjusted_cost],
-        tgt.[estimated_cmpf] = src.[estimated_cmpf],
-        tgt.[estimated_crmpf] = src.[estimated_crmpf],
-        tgt.[recovery_factor_cmpf] = src.[recovery_factor_cmpf],
-        tgt.[recovery_factor_crmpf] = src.[recovery_factor_crmpf]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [runno],
-        [intervention],
-        [genconid],
-        [regionid],
-        [bidtype],
-        [genconeffectivedate],
-        [genconversionno],
-        [marginalvalue],
-        [lastchanged],
-        [base_cost],
-        [adjusted_cost],
-        [estimated_cmpf],
-        [estimated_crmpf],
-        [recovery_factor_cmpf],
-        [recovery_factor_crmpf]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[runno],
-        src.[intervention],
-        src.[genconid],
-        src.[regionid],
-        src.[bidtype],
-        src.[genconeffectivedate],
-        src.[genconversionno],
-        src.[marginalvalue],
-        src.[lastchanged],
-        src.[base_cost],
-        src.[adjusted_cost],
-        src.[estimated_cmpf],
-        src.[estimated_crmpf],
-        src.[recovery_factor_cmpf],
-        src.[recovery_factor_crmpf]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertDispatchInterconnection1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.DispatchInterconnection1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[runno],
-        d.[intervention],
-        d.[from_regionid],
-        d.[to_regionid],
-        d.[dispatchinterval],
-        d.[irlf],
-        d.[mwflow],
-        d.[meteredmwflow],
-        d.[from_region_mw_losses],
-        d.[to_region_mw_losses],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [runno] decimal(3,0),
-        [intervention] decimal(2,0),
-        [from_regionid] varchar(20),
-        [to_regionid] varchar(20),
-        [dispatchinterval] decimal(22,0),
-        [irlf] decimal(15,5),
-        [mwflow] decimal(16,6),
-        [meteredmwflow] decimal(16,6),
-        [from_region_mw_losses] decimal(16,6),
-        [to_region_mw_losses] decimal(16,6),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[from_regionid] = src.[from_regionid]
-    and tgt.[intervention] = src.[intervention]
-    and tgt.[runno] = src.[runno]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[to_regionid] = src.[to_regionid]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[runno] = src.[runno],
-        tgt.[intervention] = src.[intervention],
-        tgt.[from_regionid] = src.[from_regionid],
-        tgt.[to_regionid] = src.[to_regionid],
-        tgt.[dispatchinterval] = src.[dispatchinterval],
-        tgt.[irlf] = src.[irlf],
-        tgt.[mwflow] = src.[mwflow],
-        tgt.[meteredmwflow] = src.[meteredmwflow],
-        tgt.[from_region_mw_losses] = src.[from_region_mw_losses],
-        tgt.[to_region_mw_losses] = src.[to_region_mw_losses],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [runno],
-        [intervention],
-        [from_regionid],
-        [to_regionid],
-        [dispatchinterval],
-        [irlf],
-        [mwflow],
-        [meteredmwflow],
-        [from_region_mw_losses],
-        [to_region_mw_losses],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[runno],
-        src.[intervention],
-        src.[from_regionid],
-        src.[to_regionid],
-        src.[dispatchinterval],
-        src.[irlf],
-        src.[mwflow],
-        src.[meteredmwflow],
-        src.[from_region_mw_losses],
-        src.[to_region_mw_losses],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertDispatchLocalPrice1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.DispatchLocalPrice1(
-file_log_id,
-[settlementdate],
-        [duid],
-        [local_price_adjustment],
-        [locally_constrained]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-        d.[duid],
-        d.[local_price_adjustment],
-        d.[locally_constrained]
-from openjson(@data) with (
-[settlementdate] datetime2,
-        [duid] varchar(20),
-        [local_price_adjustment] decimal(10,2),
-        [locally_constrained] decimal(1,0)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertDispatchMnspbidtrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.DispatchMnspbidtrk1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[runno],
-        d.[participantid],
-        d.[linkid],
-        d.[offersettlementdate],
-        d.[offereffectivedate],
-        d.[offerversionno],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [runno] decimal(3,0),
-        [participantid] varchar(10),
-        [linkid] varchar(10),
-        [offersettlementdate] datetime2,
-        [offereffectivedate] datetime2,
-        [offerversionno] decimal(3,0),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[linkid] = src.[linkid]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[runno] = src.[runno]
-    and tgt.[settlementdate] = src.[settlementdate]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[runno] = src.[runno],
-        tgt.[participantid] = src.[participantid],
-        tgt.[linkid] = src.[linkid],
-        tgt.[offersettlementdate] = src.[offersettlementdate],
-        tgt.[offereffectivedate] = src.[offereffectivedate],
-        tgt.[offerversionno] = src.[offerversionno],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [runno],
-        [participantid],
-        [linkid],
-        [offersettlementdate],
-        [offereffectivedate],
-        [offerversionno],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[runno],
-        src.[participantid],
-        src.[linkid],
-        src.[offersettlementdate],
-        src.[offereffectivedate],
-        src.[offerversionno],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertDispatchMrScheduleTrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.DispatchMrScheduleTrk1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[regionid],
-        d.[mr_date],
-        d.[version_datetime],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [regionid] varchar(10),
-        [mr_date] datetime2,
-        [version_datetime] datetime2,
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[regionid] = src.[regionid]
-    and tgt.[settlementdate] = src.[settlementdate]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[regionid] = src.[regionid],
-        tgt.[mr_date] = src.[mr_date],
-        tgt.[version_datetime] = src.[version_datetime],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [regionid],
-        [mr_date],
-        [version_datetime],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[regionid],
-        src.[mr_date],
-        src.[version_datetime],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertPriceloadPriceRevision1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.PriceloadPriceRevision1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[runno],
-        d.[intervention],
-        d.[regionid],
-        d.[bidtype],
-        d.[versionno],
-        d.[rrp_new],
-        d.[rrp_old],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [runno] decimal(3,0),
-        [intervention] decimal(2,0),
-        [regionid] varchar(10),
-        [bidtype] varchar(10),
-        [versionno] decimal(3,0),
-        [rrp_new] decimal(15,5),
-        [rrp_old] decimal(15,5),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[bidtype] = src.[bidtype]
-    and tgt.[intervention] = src.[intervention]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[runno] = src.[runno]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[runno] = src.[runno],
-        tgt.[intervention] = src.[intervention],
-        tgt.[regionid] = src.[regionid],
-        tgt.[bidtype] = src.[bidtype],
-        tgt.[versionno] = src.[versionno],
-        tgt.[rrp_new] = src.[rrp_new],
-        tgt.[rrp_old] = src.[rrp_old],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [runno],
-        [intervention],
-        [regionid],
-        [bidtype],
-        [versionno],
-        [rrp_new],
-        [rrp_old],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[runno],
-        src.[intervention],
-        src.[regionid],
-        src.[bidtype],
-        src.[versionno],
-        src.[rrp_new],
-        src.[rrp_old],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertDispatchUnitConformance2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.DispatchUnitConformance2 as tgt 
-using (
-    select 
-        d.[interval_datetime],
-        d.[duid],
-        d.[totalcleared],
-        d.[actualmw],
-        d.[roc],
-        d.[availability],
-        d.[lowerreg],
-        d.[raisereg],
-        d.[striglm],
-        d.[ltriglm],
-        d.[mwerror],
-        d.[max_mwerror],
-        d.[lecount],
-        d.[secount],
-        d.[status],
-        d.[participant_status_action],
-        d.[operating_mode],
-        d.[lastchanged],
-        d.[adg_id],
-        d.[semidispatchcap],
-        d.[conformance_mode]
-    from openjson(@data) with (
-        [interval_datetime] datetime2,
-        [duid] varchar(20),
-        [totalcleared] decimal(16,6),
-        [actualmw] decimal(16,6),
-        [roc] decimal(16,6),
-        [availability] decimal(16,6),
-        [lowerreg] decimal(16,6),
-        [raisereg] decimal(16,6),
-        [striglm] decimal(16,6),
-        [ltriglm] decimal(16,6),
-        [mwerror] decimal(16,6),
-        [max_mwerror] decimal(16,6),
-        [lecount] decimal(6,0),
-        [secount] decimal(6,0),
-        [status] varchar(20),
-        [participant_status_action] varchar(100),
-        [operating_mode] varchar(20),
-        [lastchanged] datetime2,
-        [adg_id] varchar(20),
-        [semidispatchcap] decimal(3,0),
-        [conformance_mode] decimal(6,0)
-    ) d
-) as src 
-on (
-    tgt.[duid] = src.[duid]
-    and tgt.[interval_datetime] = src.[interval_datetime]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[interval_datetime] = src.[interval_datetime],
-        tgt.[duid] = src.[duid],
-        tgt.[totalcleared] = src.[totalcleared],
-        tgt.[actualmw] = src.[actualmw],
-        tgt.[roc] = src.[roc],
-        tgt.[availability] = src.[availability],
-        tgt.[lowerreg] = src.[lowerreg],
-        tgt.[raisereg] = src.[raisereg],
-        tgt.[striglm] = src.[striglm],
-        tgt.[ltriglm] = src.[ltriglm],
-        tgt.[mwerror] = src.[mwerror],
-        tgt.[max_mwerror] = src.[max_mwerror],
-        tgt.[lecount] = src.[lecount],
-        tgt.[secount] = src.[secount],
-        tgt.[status] = src.[status],
-        tgt.[participant_status_action] = src.[participant_status_action],
-        tgt.[operating_mode] = src.[operating_mode],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[adg_id] = src.[adg_id],
-        tgt.[semidispatchcap] = src.[semidispatchcap],
-        tgt.[conformance_mode] = src.[conformance_mode]
-when not matched
-    then insert (
-        file_log_id,
-        [interval_datetime],
-        [duid],
-        [totalcleared],
-        [actualmw],
-        [roc],
-        [availability],
-        [lowerreg],
-        [raisereg],
-        [striglm],
-        [ltriglm],
-        [mwerror],
-        [max_mwerror],
-        [lecount],
-        [secount],
-        [status],
-        [participant_status_action],
-        [operating_mode],
-        [lastchanged],
-        [adg_id],
-        [semidispatchcap],
-        [conformance_mode]
-    ) values (
-        @file_log_id,
-        src.[interval_datetime],
-        src.[duid],
-        src.[totalcleared],
-        src.[actualmw],
-        src.[roc],
-        src.[availability],
-        src.[lowerreg],
-        src.[raisereg],
-        src.[striglm],
-        src.[ltriglm],
-        src.[mwerror],
-        src.[max_mwerror],
-        src.[lecount],
-        src.[secount],
-        src.[status],
-        src.[participant_status_action],
-        src.[operating_mode],
-        src.[lastchanged],
-        src.[adg_id],
-        src.[semidispatchcap],
-        src.[conformance_mode]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertDispatchUnitScada1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.DispatchUnitScada1(
-file_log_id,
-[settlementdate],
-        [duid],
-        [scadavalue]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-        d.[duid],
-        d.[scadavalue]
-from openjson(@data) with (
-[settlementdate] datetime2,
-        [duid] varchar(20),
-        [scadavalue] decimal(16,6)
-) d
 end
 go
 create or alter procedure mmsdm_proc.InsertDispatchIntermittentForecastTrk1
@@ -12395,1991 +12665,6 @@ when not matched
     
 end
 go
-create or alter procedure mmsdm_proc.InsertOfferBidperoffer1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.OfferBidperoffer1 as tgt 
-using (
-    select 
-        d.[duid],
-        d.[bidtype],
-        d.[settlementdate],
-        d.[offerdate],
-        d.[periodid],
-        d.[versionno],
-        d.[maxavail],
-        d.[fixedload],
-        d.[rocup],
-        d.[rocdown],
-        d.[enablementmin],
-        d.[enablementmax],
-        d.[lowbreakpoint],
-        d.[highbreakpoint],
-        d.[bandavail1],
-        d.[bandavail2],
-        d.[bandavail3],
-        d.[bandavail4],
-        d.[bandavail5],
-        d.[bandavail6],
-        d.[bandavail7],
-        d.[bandavail8],
-        d.[bandavail9],
-        d.[bandavail10],
-        d.[lastchanged],
-        d.[pasaavailability],
-        d.[mr_capacity]
-    from openjson(@data) with (
-        [duid] varchar(10),
-        [bidtype] varchar(10),
-        [settlementdate] datetime2,
-        [offerdate] datetime2,
-        [periodid] decimal(22,0),
-        [versionno] decimal(22,0),
-        [maxavail] decimal(12,6),
-        [fixedload] decimal(12,6),
-        [rocup] decimal(6,0),
-        [rocdown] decimal(6,0),
-        [enablementmin] decimal(6,0),
-        [enablementmax] decimal(6,0),
-        [lowbreakpoint] decimal(6,0),
-        [highbreakpoint] decimal(6,0),
-        [bandavail1] decimal(22,0),
-        [bandavail2] decimal(22,0),
-        [bandavail3] decimal(22,0),
-        [bandavail4] decimal(22,0),
-        [bandavail5] decimal(22,0),
-        [bandavail6] decimal(22,0),
-        [bandavail7] decimal(22,0),
-        [bandavail8] decimal(22,0),
-        [bandavail9] decimal(22,0),
-        [bandavail10] decimal(22,0),
-        [lastchanged] datetime2,
-        [pasaavailability] decimal(12,0),
-        [mr_capacity] decimal(6,0)
-    ) d
-) as src 
-on (
-    tgt.[bidtype] = src.[bidtype]
-    and tgt.[duid] = src.[duid]
-    and tgt.[offerdate] = src.[offerdate]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[settlementdate] = src.[settlementdate]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[duid] = src.[duid],
-        tgt.[bidtype] = src.[bidtype],
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[offerdate] = src.[offerdate],
-        tgt.[periodid] = src.[periodid],
-        tgt.[versionno] = src.[versionno],
-        tgt.[maxavail] = src.[maxavail],
-        tgt.[fixedload] = src.[fixedload],
-        tgt.[rocup] = src.[rocup],
-        tgt.[rocdown] = src.[rocdown],
-        tgt.[enablementmin] = src.[enablementmin],
-        tgt.[enablementmax] = src.[enablementmax],
-        tgt.[lowbreakpoint] = src.[lowbreakpoint],
-        tgt.[highbreakpoint] = src.[highbreakpoint],
-        tgt.[bandavail1] = src.[bandavail1],
-        tgt.[bandavail2] = src.[bandavail2],
-        tgt.[bandavail3] = src.[bandavail3],
-        tgt.[bandavail4] = src.[bandavail4],
-        tgt.[bandavail5] = src.[bandavail5],
-        tgt.[bandavail6] = src.[bandavail6],
-        tgt.[bandavail7] = src.[bandavail7],
-        tgt.[bandavail8] = src.[bandavail8],
-        tgt.[bandavail9] = src.[bandavail9],
-        tgt.[bandavail10] = src.[bandavail10],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[pasaavailability] = src.[pasaavailability],
-        tgt.[mr_capacity] = src.[mr_capacity]
-when not matched
-    then insert (
-        file_log_id,
-        [duid],
-        [bidtype],
-        [settlementdate],
-        [offerdate],
-        [periodid],
-        [versionno],
-        [maxavail],
-        [fixedload],
-        [rocup],
-        [rocdown],
-        [enablementmin],
-        [enablementmax],
-        [lowbreakpoint],
-        [highbreakpoint],
-        [bandavail1],
-        [bandavail2],
-        [bandavail3],
-        [bandavail4],
-        [bandavail5],
-        [bandavail6],
-        [bandavail7],
-        [bandavail8],
-        [bandavail9],
-        [bandavail10],
-        [lastchanged],
-        [pasaavailability],
-        [mr_capacity]
-    ) values (
-        @file_log_id,
-        src.[duid],
-        src.[bidtype],
-        src.[settlementdate],
-        src.[offerdate],
-        src.[periodid],
-        src.[versionno],
-        src.[maxavail],
-        src.[fixedload],
-        src.[rocup],
-        src.[rocdown],
-        src.[enablementmin],
-        src.[enablementmax],
-        src.[lowbreakpoint],
-        src.[highbreakpoint],
-        src.[bandavail1],
-        src.[bandavail2],
-        src.[bandavail3],
-        src.[bandavail4],
-        src.[bandavail5],
-        src.[bandavail6],
-        src.[bandavail7],
-        src.[bandavail8],
-        src.[bandavail9],
-        src.[bandavail10],
-        src.[lastchanged],
-        src.[pasaavailability],
-        src.[mr_capacity]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertDispatchbncCasesolution1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.DispatchbncCasesolution1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[runno],
-        d.[intervention],
-        d.[casesubtype],
-        d.[solutionstatus],
-        d.[spdversion],
-        d.[startperiod],
-        d.[nonphysicallosses],
-        d.[totalobjective],
-        d.[totalareagenviolation],
-        d.[totalinterconnectorviolation],
-        d.[totalgenericviolation],
-        d.[totalramprateviolation],
-        d.[totalunitmwcapacityviolation],
-        d.[total5minviolation],
-        d.[totalregviolation],
-        d.[total6secviolation],
-        d.[total60secviolation],
-        d.[totalenergyconstrviolation],
-        d.[totalenergyofferviolation],
-        d.[totalasprofileviolation],
-        d.[totalfaststartviolation],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [runno] decimal(3,0),
-        [intervention] decimal(2,0),
-        [casesubtype] varchar(3),
-        [solutionstatus] decimal(2,0),
-        [spdversion] decimal(10,3),
-        [startperiod] varchar(20),
-        [nonphysicallosses] decimal(1,0),
-        [totalobjective] decimal(27,10),
-        [totalareagenviolation] decimal(15,5),
-        [totalinterconnectorviolation] decimal(15,5),
-        [totalgenericviolation] decimal(15,5),
-        [totalramprateviolation] decimal(15,5),
-        [totalunitmwcapacityviolation] decimal(15,5),
-        [total5minviolation] decimal(15,5),
-        [totalregviolation] decimal(15,5),
-        [total6secviolation] decimal(15,5),
-        [total60secviolation] decimal(15,5),
-        [totalenergyconstrviolation] decimal(15,5),
-        [totalenergyofferviolation] decimal(15,5),
-        [totalasprofileviolation] decimal(15,5),
-        [totalfaststartviolation] decimal(15,5),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[intervention] = src.[intervention]
-    and tgt.[runno] = src.[runno]
-    and tgt.[settlementdate] = src.[settlementdate]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[runno] = src.[runno],
-        tgt.[intervention] = src.[intervention],
-        tgt.[casesubtype] = src.[casesubtype],
-        tgt.[solutionstatus] = src.[solutionstatus],
-        tgt.[spdversion] = src.[spdversion],
-        tgt.[startperiod] = src.[startperiod],
-        tgt.[nonphysicallosses] = src.[nonphysicallosses],
-        tgt.[totalobjective] = src.[totalobjective],
-        tgt.[totalareagenviolation] = src.[totalareagenviolation],
-        tgt.[totalinterconnectorviolation] = src.[totalinterconnectorviolation],
-        tgt.[totalgenericviolation] = src.[totalgenericviolation],
-        tgt.[totalramprateviolation] = src.[totalramprateviolation],
-        tgt.[totalunitmwcapacityviolation] = src.[totalunitmwcapacityviolation],
-        tgt.[total5minviolation] = src.[total5minviolation],
-        tgt.[totalregviolation] = src.[totalregviolation],
-        tgt.[total6secviolation] = src.[total6secviolation],
-        tgt.[total60secviolation] = src.[total60secviolation],
-        tgt.[totalenergyconstrviolation] = src.[totalenergyconstrviolation],
-        tgt.[totalenergyofferviolation] = src.[totalenergyofferviolation],
-        tgt.[totalasprofileviolation] = src.[totalasprofileviolation],
-        tgt.[totalfaststartviolation] = src.[totalfaststartviolation],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [runno],
-        [intervention],
-        [casesubtype],
-        [solutionstatus],
-        [spdversion],
-        [startperiod],
-        [nonphysicallosses],
-        [totalobjective],
-        [totalareagenviolation],
-        [totalinterconnectorviolation],
-        [totalgenericviolation],
-        [totalramprateviolation],
-        [totalunitmwcapacityviolation],
-        [total5minviolation],
-        [totalregviolation],
-        [total6secviolation],
-        [total60secviolation],
-        [totalenergyconstrviolation],
-        [totalenergyofferviolation],
-        [totalasprofileviolation],
-        [totalfaststartviolation],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[runno],
-        src.[intervention],
-        src.[casesubtype],
-        src.[solutionstatus],
-        src.[spdversion],
-        src.[startperiod],
-        src.[nonphysicallosses],
-        src.[totalobjective],
-        src.[totalareagenviolation],
-        src.[totalinterconnectorviolation],
-        src.[totalgenericviolation],
-        src.[totalramprateviolation],
-        src.[totalunitmwcapacityviolation],
-        src.[total5minviolation],
-        src.[totalregviolation],
-        src.[total6secviolation],
-        src.[total60secviolation],
-        src.[totalenergyconstrviolation],
-        src.[totalenergyofferviolation],
-        src.[totalasprofileviolation],
-        src.[totalfaststartviolation],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertDispatchocdCase1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.DispatchocdCase1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[runno],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [runno] decimal(3,0),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[runno] = src.[runno]
-    and tgt.[settlementdate] = src.[settlementdate]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[runno] = src.[runno],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [runno],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[runno],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertDispatchbncUnitsolution1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.DispatchbncUnitsolution1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[runno],
-        d.[duid],
-        d.[intervention],
-        d.[connectionpointid],
-        d.[dispatchmode],
-        d.[totalcleared],
-        d.[raisereg],
-        d.[raise5min],
-        d.[raise60sec],
-        d.[raise6sec],
-        d.[lowerreg],
-        d.[lower5min],
-        d.[lower60sec],
-        d.[lower6sec],
-        d.[raiseregflags],
-        d.[raise5minflags],
-        d.[raise60secflags],
-        d.[raise6secflags],
-        d.[lowerregflags],
-        d.[lower5minflags],
-        d.[lower60secflags],
-        d.[lower6secflags],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [runno] decimal(3,0),
-        [duid] varchar(10),
-        [intervention] decimal(2,0),
-        [connectionpointid] varchar(12),
-        [dispatchmode] decimal(2,0),
-        [totalcleared] decimal(15,5),
-        [raisereg] decimal(15,5),
-        [raise5min] decimal(15,5),
-        [raise60sec] decimal(15,5),
-        [raise6sec] decimal(15,5),
-        [lowerreg] decimal(15,5),
-        [lower5min] decimal(15,5),
-        [lower60sec] decimal(15,5),
-        [lower6sec] decimal(15,5),
-        [raiseregflags] decimal(3,0),
-        [raise5minflags] decimal(3,0),
-        [raise60secflags] decimal(3,0),
-        [raise6secflags] decimal(3,0),
-        [lowerregflags] decimal(3,0),
-        [lower5minflags] decimal(3,0),
-        [lower60secflags] decimal(3,0),
-        [lower6secflags] decimal(3,0),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[duid] = src.[duid]
-    and tgt.[intervention] = src.[intervention]
-    and tgt.[runno] = src.[runno]
-    and tgt.[settlementdate] = src.[settlementdate]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[runno] = src.[runno],
-        tgt.[duid] = src.[duid],
-        tgt.[intervention] = src.[intervention],
-        tgt.[connectionpointid] = src.[connectionpointid],
-        tgt.[dispatchmode] = src.[dispatchmode],
-        tgt.[totalcleared] = src.[totalcleared],
-        tgt.[raisereg] = src.[raisereg],
-        tgt.[raise5min] = src.[raise5min],
-        tgt.[raise60sec] = src.[raise60sec],
-        tgt.[raise6sec] = src.[raise6sec],
-        tgt.[lowerreg] = src.[lowerreg],
-        tgt.[lower5min] = src.[lower5min],
-        tgt.[lower60sec] = src.[lower60sec],
-        tgt.[lower6sec] = src.[lower6sec],
-        tgt.[raiseregflags] = src.[raiseregflags],
-        tgt.[raise5minflags] = src.[raise5minflags],
-        tgt.[raise60secflags] = src.[raise60secflags],
-        tgt.[raise6secflags] = src.[raise6secflags],
-        tgt.[lowerregflags] = src.[lowerregflags],
-        tgt.[lower5minflags] = src.[lower5minflags],
-        tgt.[lower60secflags] = src.[lower60secflags],
-        tgt.[lower6secflags] = src.[lower6secflags],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [runno],
-        [duid],
-        [intervention],
-        [connectionpointid],
-        [dispatchmode],
-        [totalcleared],
-        [raisereg],
-        [raise5min],
-        [raise60sec],
-        [raise6sec],
-        [lowerreg],
-        [lower5min],
-        [lower60sec],
-        [lower6sec],
-        [raiseregflags],
-        [raise5minflags],
-        [raise60secflags],
-        [raise6secflags],
-        [lowerregflags],
-        [lower5minflags],
-        [lower60secflags],
-        [lower6secflags],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[runno],
-        src.[duid],
-        src.[intervention],
-        src.[connectionpointid],
-        src.[dispatchmode],
-        src.[totalcleared],
-        src.[raisereg],
-        src.[raise5min],
-        src.[raise60sec],
-        src.[raise6sec],
-        src.[lowerreg],
-        src.[lower5min],
-        src.[lower60sec],
-        src.[lower6sec],
-        src.[raiseregflags],
-        src.[raise5minflags],
-        src.[raise60secflags],
-        src.[raise6secflags],
-        src.[lowerregflags],
-        src.[lower5minflags],
-        src.[lower60secflags],
-        src.[lower6secflags],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertMeterDataCustomer1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.MeterDataCustomer1 as tgt 
-using (
-    select 
-        d.[participantid],
-        d.[periodid],
-        d.[settlementdate],
-        d.[meterrunno],
-        d.[connectionpointid],
-        d.[importenergyvalue],
-        d.[exportenergyvalue],
-        d.[importreactivevalue],
-        d.[exportreactivevalue],
-        d.[hostdistributor],
-        d.[lastchanged],
-        d.[mda]
-    from openjson(@data) with (
-        [participantid] varchar(10),
-        [periodid] decimal(3,0),
-        [settlementdate] datetime2,
-        [meterrunno] decimal(6,0),
-        [connectionpointid] varchar(10),
-        [importenergyvalue] decimal(9,6),
-        [exportenergyvalue] decimal(9,6),
-        [importreactivevalue] decimal(9,6),
-        [exportreactivevalue] decimal(9,6),
-        [hostdistributor] varchar(10),
-        [lastchanged] datetime2,
-        [mda] varchar(10)
-    ) d
-) as src 
-on (
-    tgt.[connectionpointid] = src.[connectionpointid]
-    and tgt.[hostdistributor] = src.[hostdistributor]
-    and tgt.[mda] = src.[mda]
-    and tgt.[meterrunno] = src.[meterrunno]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[settlementdate] = src.[settlementdate]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[participantid] = src.[participantid],
-        tgt.[periodid] = src.[periodid],
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[meterrunno] = src.[meterrunno],
-        tgt.[connectionpointid] = src.[connectionpointid],
-        tgt.[importenergyvalue] = src.[importenergyvalue],
-        tgt.[exportenergyvalue] = src.[exportenergyvalue],
-        tgt.[importreactivevalue] = src.[importreactivevalue],
-        tgt.[exportreactivevalue] = src.[exportreactivevalue],
-        tgt.[hostdistributor] = src.[hostdistributor],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[mda] = src.[mda]
-when not matched
-    then insert (
-        file_log_id,
-        [participantid],
-        [periodid],
-        [settlementdate],
-        [meterrunno],
-        [connectionpointid],
-        [importenergyvalue],
-        [exportenergyvalue],
-        [importreactivevalue],
-        [exportreactivevalue],
-        [hostdistributor],
-        [lastchanged],
-        [mda]
-    ) values (
-        @file_log_id,
-        src.[participantid],
-        src.[periodid],
-        src.[settlementdate],
-        src.[meterrunno],
-        src.[connectionpointid],
-        src.[importenergyvalue],
-        src.[exportenergyvalue],
-        src.[importreactivevalue],
-        src.[exportreactivevalue],
-        src.[hostdistributor],
-        src.[lastchanged],
-        src.[mda]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertMeterDataCustomerTrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.MeterDataCustomerTrk1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[meterrunno],
-        d.[participantid],
-        d.[filename],
-        d.[ackfilename],
-        d.[connectionpointid],
-        d.[authoriseddate],
-        d.[authorisedby],
-        d.[meteringdataagent],
-        d.[hostdistributor],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [meterrunno] decimal(6,0),
-        [participantid] varchar(10),
-        [filename] varchar(40),
-        [ackfilename] varchar(40),
-        [connectionpointid] varchar(10),
-        [authoriseddate] datetime2,
-        [authorisedby] varchar(15),
-        [meteringdataagent] varchar(10),
-        [hostdistributor] varchar(10),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[connectionpointid] = src.[connectionpointid]
-    and tgt.[hostdistributor] = src.[hostdistributor]
-    and tgt.[meteringdataagent] = src.[meteringdataagent]
-    and tgt.[meterrunno] = src.[meterrunno]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[settlementdate] = src.[settlementdate]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[meterrunno] = src.[meterrunno],
-        tgt.[participantid] = src.[participantid],
-        tgt.[filename] = src.[filename],
-        tgt.[ackfilename] = src.[ackfilename],
-        tgt.[connectionpointid] = src.[connectionpointid],
-        tgt.[authoriseddate] = src.[authoriseddate],
-        tgt.[authorisedby] = src.[authorisedby],
-        tgt.[meteringdataagent] = src.[meteringdataagent],
-        tgt.[hostdistributor] = src.[hostdistributor],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [meterrunno],
-        [participantid],
-        [filename],
-        [ackfilename],
-        [connectionpointid],
-        [authoriseddate],
-        [authorisedby],
-        [meteringdataagent],
-        [hostdistributor],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[meterrunno],
-        src.[participantid],
-        src.[filename],
-        src.[ackfilename],
-        src.[connectionpointid],
-        src.[authoriseddate],
-        src.[authorisedby],
-        src.[meteringdataagent],
-        src.[hostdistributor],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertMeterDataGenDuid1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.MeterDataGenDuid1 as tgt 
-using (
-    select 
-        d.[interval_datetime],
-        d.[duid],
-        d.[mwh_reading],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [interval_datetime] datetime2,
-        [duid] varchar(10),
-        [mwh_reading] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[duid] = src.[duid]
-    and tgt.[interval_datetime] = src.[interval_datetime]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[interval_datetime] = src.[interval_datetime],
-        tgt.[duid] = src.[duid],
-        tgt.[mwh_reading] = src.[mwh_reading],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [interval_datetime],
-        [duid],
-        [mwh_reading],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[interval_datetime],
-        src.[duid],
-        src.[mwh_reading],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertMeterdataTrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.MeterdataTrk1 as tgt 
-using (
-    select 
-        d.[case_id],
-        d.[aggregate_reads_load_datetime],
-        d.[individual_reads_load_datetime],
-        d.[startdate],
-        d.[enddate],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [case_id] decimal(15,0),
-        [aggregate_reads_load_datetime] datetime2,
-        [individual_reads_load_datetime] datetime2,
-        [startdate] datetime2,
-        [enddate] datetime2,
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[case_id] = src.[case_id]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[case_id] = src.[case_id],
-        tgt.[aggregate_reads_load_datetime] = src.[aggregate_reads_load_datetime],
-        tgt.[individual_reads_load_datetime] = src.[individual_reads_load_datetime],
-        tgt.[startdate] = src.[startdate],
-        tgt.[enddate] = src.[enddate],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [case_id],
-        [aggregate_reads_load_datetime],
-        [individual_reads_load_datetime],
-        [startdate],
-        [enddate],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[case_id],
-        src.[aggregate_reads_load_datetime],
-        src.[individual_reads_load_datetime],
-        src.[startdate],
-        src.[enddate],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBidMnspFiletrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BidMnspFiletrk1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[offerdate],
-        d.[participantid],
-        d.[filename],
-        d.[status],
-        d.[ackfilename],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [offerdate] datetime2,
-        [participantid] varchar(10),
-        [filename] varchar(40),
-        [status] varchar(10),
-        [ackfilename] varchar(40),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[filename] = src.[filename]
-    and tgt.[offerdate] = src.[offerdate]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[settlementdate] = src.[settlementdate]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[offerdate] = src.[offerdate],
-        tgt.[participantid] = src.[participantid],
-        tgt.[filename] = src.[filename],
-        tgt.[status] = src.[status],
-        tgt.[ackfilename] = src.[ackfilename],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [offerdate],
-        [participantid],
-        [filename],
-        [status],
-        [ackfilename],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[offerdate],
-        src.[participantid],
-        src.[filename],
-        src.[status],
-        src.[ackfilename],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBidMnspOffertrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BidMnspOffertrk1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[offerdate],
-        d.[versionno],
-        d.[participantid],
-        d.[filename],
-        d.[authoriseddate],
-        d.[authorisedby],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [offerdate] datetime2,
-        [versionno] decimal(3,0),
-        [participantid] varchar(10),
-        [filename] varchar(40),
-        [authoriseddate] datetime2,
-        [authorisedby] varchar(15),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[filename] = src.[filename]
-    and tgt.[offerdate] = src.[offerdate]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[offerdate] = src.[offerdate],
-        tgt.[versionno] = src.[versionno],
-        tgt.[participantid] = src.[participantid],
-        tgt.[filename] = src.[filename],
-        tgt.[authoriseddate] = src.[authoriseddate],
-        tgt.[authorisedby] = src.[authorisedby],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [offerdate],
-        [versionno],
-        [participantid],
-        [filename],
-        [authoriseddate],
-        [authorisedby],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[offerdate],
-        src.[versionno],
-        src.[participantid],
-        src.[filename],
-        src.[authoriseddate],
-        src.[authorisedby],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertBidMnspPeroffer1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.BidMnspPeroffer1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[offerdate],
-        d.[versionno],
-        d.[participantid],
-        d.[linkid],
-        d.[periodid],
-        d.[maxavail],
-        d.[bandavail1],
-        d.[bandavail2],
-        d.[bandavail3],
-        d.[bandavail4],
-        d.[bandavail5],
-        d.[bandavail6],
-        d.[bandavail7],
-        d.[bandavail8],
-        d.[bandavail9],
-        d.[bandavail10],
-        d.[lastchanged],
-        d.[fixedload],
-        d.[rampuprate],
-        d.[pasaavailability],
-        d.[mr_capacity]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [offerdate] datetime2,
-        [versionno] decimal(3,0),
-        [participantid] varchar(10),
-        [linkid] varchar(10),
-        [periodid] decimal(22,0),
-        [maxavail] decimal(6,0),
-        [bandavail1] decimal(6,0),
-        [bandavail2] decimal(6,0),
-        [bandavail3] decimal(6,0),
-        [bandavail4] decimal(6,0),
-        [bandavail5] decimal(6,0),
-        [bandavail6] decimal(6,0),
-        [bandavail7] decimal(6,0),
-        [bandavail8] decimal(6,0),
-        [bandavail9] decimal(6,0),
-        [bandavail10] decimal(6,0),
-        [lastchanged] datetime2,
-        [fixedload] decimal(12,6),
-        [rampuprate] decimal(6,0),
-        [pasaavailability] decimal(12,0),
-        [mr_capacity] decimal(6,0)
-    ) d
-) as src 
-on (
-    tgt.[linkid] = src.[linkid]
-    and tgt.[offerdate] = src.[offerdate]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[offerdate] = src.[offerdate],
-        tgt.[versionno] = src.[versionno],
-        tgt.[participantid] = src.[participantid],
-        tgt.[linkid] = src.[linkid],
-        tgt.[periodid] = src.[periodid],
-        tgt.[maxavail] = src.[maxavail],
-        tgt.[bandavail1] = src.[bandavail1],
-        tgt.[bandavail2] = src.[bandavail2],
-        tgt.[bandavail3] = src.[bandavail3],
-        tgt.[bandavail4] = src.[bandavail4],
-        tgt.[bandavail5] = src.[bandavail5],
-        tgt.[bandavail6] = src.[bandavail6],
-        tgt.[bandavail7] = src.[bandavail7],
-        tgt.[bandavail8] = src.[bandavail8],
-        tgt.[bandavail9] = src.[bandavail9],
-        tgt.[bandavail10] = src.[bandavail10],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[fixedload] = src.[fixedload],
-        tgt.[rampuprate] = src.[rampuprate],
-        tgt.[pasaavailability] = src.[pasaavailability],
-        tgt.[mr_capacity] = src.[mr_capacity]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [offerdate],
-        [versionno],
-        [participantid],
-        [linkid],
-        [periodid],
-        [maxavail],
-        [bandavail1],
-        [bandavail2],
-        [bandavail3],
-        [bandavail4],
-        [bandavail5],
-        [bandavail6],
-        [bandavail7],
-        [bandavail8],
-        [bandavail9],
-        [bandavail10],
-        [lastchanged],
-        [fixedload],
-        [rampuprate],
-        [pasaavailability],
-        [mr_capacity]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[offerdate],
-        src.[versionno],
-        src.[participantid],
-        src.[linkid],
-        src.[periodid],
-        src.[maxavail],
-        src.[bandavail1],
-        src.[bandavail2],
-        src.[bandavail3],
-        src.[bandavail4],
-        src.[bandavail5],
-        src.[bandavail6],
-        src.[bandavail7],
-        src.[bandavail8],
-        src.[bandavail9],
-        src.[bandavail10],
-        src.[lastchanged],
-        src.[fixedload],
-        src.[rampuprate],
-        src.[pasaavailability],
-        src.[mr_capacity]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertMrDayofferStack1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.MrDayofferStack1 as tgt 
-using (
-    select 
-        d.[mr_date],
-        d.[regionid],
-        d.[version_datetime],
-        d.[stack_position],
-        d.[duid],
-        d.[authorised],
-        d.[offer_settlementdate],
-        d.[offer_offerdate],
-        d.[offer_versionno],
-        d.[offer_type],
-        d.[laof],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [mr_date] datetime2,
-        [regionid] varchar(10),
-        [version_datetime] datetime2,
-        [stack_position] decimal(3,0),
-        [duid] varchar(10),
-        [authorised] decimal(1,0),
-        [offer_settlementdate] datetime2,
-        [offer_offerdate] datetime2,
-        [offer_versionno] decimal(3,0),
-        [offer_type] varchar(20),
-        [laof] decimal(16,6),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[mr_date] = src.[mr_date]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[stack_position] = src.[stack_position]
-    and tgt.[version_datetime] = src.[version_datetime]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[mr_date] = src.[mr_date],
-        tgt.[regionid] = src.[regionid],
-        tgt.[version_datetime] = src.[version_datetime],
-        tgt.[stack_position] = src.[stack_position],
-        tgt.[duid] = src.[duid],
-        tgt.[authorised] = src.[authorised],
-        tgt.[offer_settlementdate] = src.[offer_settlementdate],
-        tgt.[offer_offerdate] = src.[offer_offerdate],
-        tgt.[offer_versionno] = src.[offer_versionno],
-        tgt.[offer_type] = src.[offer_type],
-        tgt.[laof] = src.[laof],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [mr_date],
-        [regionid],
-        [version_datetime],
-        [stack_position],
-        [duid],
-        [authorised],
-        [offer_settlementdate],
-        [offer_offerdate],
-        [offer_versionno],
-        [offer_type],
-        [laof],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[mr_date],
-        src.[regionid],
-        src.[version_datetime],
-        src.[stack_position],
-        src.[duid],
-        src.[authorised],
-        src.[offer_settlementdate],
-        src.[offer_offerdate],
-        src.[offer_versionno],
-        src.[offer_type],
-        src.[laof],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertMrEvent1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.MrEvent1 as tgt 
-using (
-    select 
-        d.[mr_date],
-        d.[regionid],
-        d.[description],
-        d.[authoriseddate],
-        d.[authorisedby],
-        d.[offer_cut_off_time],
-        d.[settlement_complete],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [mr_date] datetime2,
-        [regionid] varchar(10),
-        [description] varchar(200),
-        [authoriseddate] datetime2,
-        [authorisedby] varchar(20),
-        [offer_cut_off_time] datetime2,
-        [settlement_complete] decimal(1,0),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[mr_date] = src.[mr_date]
-    and tgt.[regionid] = src.[regionid]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[mr_date] = src.[mr_date],
-        tgt.[regionid] = src.[regionid],
-        tgt.[description] = src.[description],
-        tgt.[authoriseddate] = src.[authoriseddate],
-        tgt.[authorisedby] = src.[authorisedby],
-        tgt.[offer_cut_off_time] = src.[offer_cut_off_time],
-        tgt.[settlement_complete] = src.[settlement_complete],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [mr_date],
-        [regionid],
-        [description],
-        [authoriseddate],
-        [authorisedby],
-        [offer_cut_off_time],
-        [settlement_complete],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[mr_date],
-        src.[regionid],
-        src.[description],
-        src.[authoriseddate],
-        src.[authorisedby],
-        src.[offer_cut_off_time],
-        src.[settlement_complete],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertMrEventSchedule1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.MrEventSchedule1 as tgt 
-using (
-    select 
-        d.[mr_date],
-        d.[regionid],
-        d.[version_datetime],
-        d.[demand_effectivedate],
-        d.[demand_offerdate],
-        d.[demand_versionno],
-        d.[authorisedby],
-        d.[authoriseddate],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [mr_date] datetime2,
-        [regionid] varchar(10),
-        [version_datetime] datetime2,
-        [demand_effectivedate] datetime2,
-        [demand_offerdate] datetime2,
-        [demand_versionno] decimal(3,0),
-        [authorisedby] varchar(20),
-        [authoriseddate] datetime2,
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[mr_date] = src.[mr_date]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[version_datetime] = src.[version_datetime]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[mr_date] = src.[mr_date],
-        tgt.[regionid] = src.[regionid],
-        tgt.[version_datetime] = src.[version_datetime],
-        tgt.[demand_effectivedate] = src.[demand_effectivedate],
-        tgt.[demand_offerdate] = src.[demand_offerdate],
-        tgt.[demand_versionno] = src.[demand_versionno],
-        tgt.[authorisedby] = src.[authorisedby],
-        tgt.[authoriseddate] = src.[authoriseddate],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [mr_date],
-        [regionid],
-        [version_datetime],
-        [demand_effectivedate],
-        [demand_offerdate],
-        [demand_versionno],
-        [authorisedby],
-        [authoriseddate],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[mr_date],
-        src.[regionid],
-        src.[version_datetime],
-        src.[demand_effectivedate],
-        src.[demand_offerdate],
-        src.[demand_versionno],
-        src.[authorisedby],
-        src.[authoriseddate],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertMrPerofferStack1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.MrPerofferStack1 as tgt 
-using (
-    select 
-        d.[mr_date],
-        d.[regionid],
-        d.[version_datetime],
-        d.[stack_position],
-        d.[periodid],
-        d.[duid],
-        d.[accepted_capacity],
-        d.[deducted_capacity],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [mr_date] datetime2,
-        [regionid] varchar(10),
-        [version_datetime] datetime2,
-        [stack_position] decimal(3,0),
-        [periodid] decimal(3,0),
-        [duid] varchar(10),
-        [accepted_capacity] decimal(6,0),
-        [deducted_capacity] decimal(6,0),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[mr_date] = src.[mr_date]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[stack_position] = src.[stack_position]
-    and tgt.[version_datetime] = src.[version_datetime]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[mr_date] = src.[mr_date],
-        tgt.[regionid] = src.[regionid],
-        tgt.[version_datetime] = src.[version_datetime],
-        tgt.[stack_position] = src.[stack_position],
-        tgt.[periodid] = src.[periodid],
-        tgt.[duid] = src.[duid],
-        tgt.[accepted_capacity] = src.[accepted_capacity],
-        tgt.[deducted_capacity] = src.[deducted_capacity],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [mr_date],
-        [regionid],
-        [version_datetime],
-        [stack_position],
-        [periodid],
-        [duid],
-        [accepted_capacity],
-        [deducted_capacity],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[mr_date],
-        src.[regionid],
-        src.[version_datetime],
-        src.[stack_position],
-        src.[periodid],
-        src.[duid],
-        src.[accepted_capacity],
-        src.[deducted_capacity],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertTradingUnitSolution2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.TradingUnitSolution2 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[runno],
-        d.[duid],
-        d.[tradetype],
-        d.[periodid],
-        d.[initialmw],
-        d.[totalcleared],
-        d.[rampdownrate],
-        d.[rampuprate],
-        d.[lower5min],
-        d.[lower60sec],
-        d.[lower6sec],
-        d.[raise5min],
-        d.[raise60sec],
-        d.[raise6sec],
-        d.[lastchanged],
-        d.[lowerreg],
-        d.[raisereg],
-        d.[availability],
-        d.[semidispatchcap]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [runno] decimal(3,0),
-        [duid] varchar(10),
-        [tradetype] decimal(2,0),
-        [periodid] decimal(3,0),
-        [initialmw] decimal(15,5),
-        [totalcleared] decimal(15,5),
-        [rampdownrate] decimal(15,5),
-        [rampuprate] decimal(15,5),
-        [lower5min] decimal(15,5),
-        [lower60sec] decimal(15,5),
-        [lower6sec] decimal(15,5),
-        [raise5min] decimal(15,5),
-        [raise60sec] decimal(15,5),
-        [raise6sec] decimal(15,5),
-        [lastchanged] datetime2,
-        [lowerreg] decimal(15,5),
-        [raisereg] decimal(15,5),
-        [availability] decimal(15,5),
-        [semidispatchcap] decimal(3,0)
-    ) d
-) as src 
-on (
-    tgt.[duid] = src.[duid]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[runno] = src.[runno]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[tradetype] = src.[tradetype]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[runno] = src.[runno],
-        tgt.[duid] = src.[duid],
-        tgt.[tradetype] = src.[tradetype],
-        tgt.[periodid] = src.[periodid],
-        tgt.[initialmw] = src.[initialmw],
-        tgt.[totalcleared] = src.[totalcleared],
-        tgt.[rampdownrate] = src.[rampdownrate],
-        tgt.[rampuprate] = src.[rampuprate],
-        tgt.[lower5min] = src.[lower5min],
-        tgt.[lower60sec] = src.[lower60sec],
-        tgt.[lower6sec] = src.[lower6sec],
-        tgt.[raise5min] = src.[raise5min],
-        tgt.[raise60sec] = src.[raise60sec],
-        tgt.[raise6sec] = src.[raise6sec],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[lowerreg] = src.[lowerreg],
-        tgt.[raisereg] = src.[raisereg],
-        tgt.[availability] = src.[availability],
-        tgt.[semidispatchcap] = src.[semidispatchcap]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [runno],
-        [duid],
-        [tradetype],
-        [periodid],
-        [initialmw],
-        [totalcleared],
-        [rampdownrate],
-        [rampuprate],
-        [lower5min],
-        [lower60sec],
-        [lower6sec],
-        [raise5min],
-        [raise60sec],
-        [raise6sec],
-        [lastchanged],
-        [lowerreg],
-        [raisereg],
-        [availability],
-        [semidispatchcap]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[runno],
-        src.[duid],
-        src.[tradetype],
-        src.[periodid],
-        src.[initialmw],
-        src.[totalcleared],
-        src.[rampdownrate],
-        src.[rampuprate],
-        src.[lower5min],
-        src.[lower60sec],
-        src.[lower6sec],
-        src.[raise5min],
-        src.[raise60sec],
-        src.[raise6sec],
-        src.[lastchanged],
-        src.[lowerreg],
-        src.[raisereg],
-        src.[availability],
-        src.[semidispatchcap]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertTradingRegionsum4
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.TradingRegionsum4 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[runno],
-        d.[regionid],
-        d.[periodid],
-        d.[totaldemand],
-        d.[availablegeneration],
-        d.[availableload],
-        d.[demandforecast],
-        d.[dispatchablegeneration],
-        d.[dispatchableload],
-        d.[netinterchange],
-        d.[excessgeneration],
-        d.[lower5mindispatch],
-        d.[lower5minimport],
-        d.[lower5minlocaldispatch],
-        d.[lower5minlocalprice],
-        d.[lower5minlocalreq],
-        d.[lower5minprice],
-        d.[lower5minreq],
-        d.[lower5minsupplyprice],
-        d.[lower60secdispatch],
-        d.[lower60secimport],
-        d.[lower60seclocaldispatch],
-        d.[lower60seclocalprice],
-        d.[lower60seclocalreq],
-        d.[lower60secprice],
-        d.[lower60secreq],
-        d.[lower60secsupplyprice],
-        d.[lower6secdispatch],
-        d.[lower6secimport],
-        d.[lower6seclocaldispatch],
-        d.[lower6seclocalprice],
-        d.[lower6seclocalreq],
-        d.[lower6secprice],
-        d.[lower6secreq],
-        d.[lower6secsupplyprice],
-        d.[raise5mindispatch],
-        d.[raise5minimport],
-        d.[raise5minlocaldispatch],
-        d.[raise5minlocalprice],
-        d.[raise5minlocalreq],
-        d.[raise5minprice],
-        d.[raise5minreq],
-        d.[raise5minsupplyprice],
-        d.[raise60secdispatch],
-        d.[raise60secimport],
-        d.[raise60seclocaldispatch],
-        d.[raise60seclocalprice],
-        d.[raise60seclocalreq],
-        d.[raise60secprice],
-        d.[raise60secreq],
-        d.[raise60secsupplyprice],
-        d.[raise6secdispatch],
-        d.[raise6secimport],
-        d.[raise6seclocaldispatch],
-        d.[raise6seclocalprice],
-        d.[raise6seclocalreq],
-        d.[raise6secprice],
-        d.[raise6secreq],
-        d.[raise6secsupplyprice],
-        d.[lastchanged],
-        d.[initialsupply],
-        d.[clearedsupply],
-        d.[lowerregimport],
-        d.[lowerreglocaldispatch],
-        d.[lowerreglocalreq],
-        d.[lowerregreq],
-        d.[raiseregimport],
-        d.[raisereglocaldispatch],
-        d.[raisereglocalreq],
-        d.[raiseregreq],
-        d.[raise5minlocalviolation],
-        d.[raisereglocalviolation],
-        d.[raise60seclocalviolation],
-        d.[raise6seclocalviolation],
-        d.[lower5minlocalviolation],
-        d.[lowerreglocalviolation],
-        d.[lower60seclocalviolation],
-        d.[lower6seclocalviolation],
-        d.[raise5minviolation],
-        d.[raiseregviolation],
-        d.[raise60secviolation],
-        d.[raise6secviolation],
-        d.[lower5minviolation],
-        d.[lowerregviolation],
-        d.[lower60secviolation],
-        d.[lower6secviolation],
-        d.[totalintermittentgeneration],
-        d.[demand_and_nonschedgen],
-        d.[uigf]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [runno] decimal(3,0),
-        [regionid] varchar(10),
-        [periodid] decimal(3,0),
-        [totaldemand] decimal(15,5),
-        [availablegeneration] decimal(15,5),
-        [availableload] decimal(15,5),
-        [demandforecast] decimal(15,5),
-        [dispatchablegeneration] decimal(15,5),
-        [dispatchableload] decimal(15,5),
-        [netinterchange] decimal(15,5),
-        [excessgeneration] decimal(15,5),
-        [lower5mindispatch] decimal(15,5),
-        [lower5minimport] decimal(15,5),
-        [lower5minlocaldispatch] decimal(15,5),
-        [lower5minlocalprice] decimal(15,5),
-        [lower5minlocalreq] decimal(15,5),
-        [lower5minprice] decimal(15,5),
-        [lower5minreq] decimal(15,5),
-        [lower5minsupplyprice] decimal(15,5),
-        [lower60secdispatch] decimal(15,5),
-        [lower60secimport] decimal(15,5),
-        [lower60seclocaldispatch] decimal(15,5),
-        [lower60seclocalprice] decimal(15,5),
-        [lower60seclocalreq] decimal(15,5),
-        [lower60secprice] decimal(15,5),
-        [lower60secreq] decimal(15,5),
-        [lower60secsupplyprice] decimal(15,5),
-        [lower6secdispatch] decimal(15,5),
-        [lower6secimport] decimal(15,5),
-        [lower6seclocaldispatch] decimal(15,5),
-        [lower6seclocalprice] decimal(15,5),
-        [lower6seclocalreq] decimal(15,5),
-        [lower6secprice] decimal(15,5),
-        [lower6secreq] decimal(15,5),
-        [lower6secsupplyprice] decimal(15,5),
-        [raise5mindispatch] decimal(15,5),
-        [raise5minimport] decimal(15,5),
-        [raise5minlocaldispatch] decimal(15,5),
-        [raise5minlocalprice] decimal(15,5),
-        [raise5minlocalreq] decimal(15,5),
-        [raise5minprice] decimal(15,5),
-        [raise5minreq] decimal(15,5),
-        [raise5minsupplyprice] decimal(15,5),
-        [raise60secdispatch] decimal(15,5),
-        [raise60secimport] decimal(15,5),
-        [raise60seclocaldispatch] decimal(15,5),
-        [raise60seclocalprice] decimal(15,5),
-        [raise60seclocalreq] decimal(15,5),
-        [raise60secprice] decimal(15,5),
-        [raise60secreq] decimal(15,5),
-        [raise60secsupplyprice] decimal(15,5),
-        [raise6secdispatch] decimal(15,5),
-        [raise6secimport] decimal(15,5),
-        [raise6seclocaldispatch] decimal(15,5),
-        [raise6seclocalprice] decimal(15,5),
-        [raise6seclocalreq] decimal(15,5),
-        [raise6secprice] decimal(15,5),
-        [raise6secreq] decimal(15,5),
-        [raise6secsupplyprice] decimal(15,5),
-        [lastchanged] datetime2,
-        [initialsupply] decimal(15,5),
-        [clearedsupply] decimal(15,5),
-        [lowerregimport] decimal(15,5),
-        [lowerreglocaldispatch] decimal(15,5),
-        [lowerreglocalreq] decimal(15,5),
-        [lowerregreq] decimal(15,5),
-        [raiseregimport] decimal(15,5),
-        [raisereglocaldispatch] decimal(15,5),
-        [raisereglocalreq] decimal(15,5),
-        [raiseregreq] decimal(15,5),
-        [raise5minlocalviolation] decimal(15,5),
-        [raisereglocalviolation] decimal(15,5),
-        [raise60seclocalviolation] decimal(15,5),
-        [raise6seclocalviolation] decimal(15,5),
-        [lower5minlocalviolation] decimal(15,5),
-        [lowerreglocalviolation] decimal(15,5),
-        [lower60seclocalviolation] decimal(15,5),
-        [lower6seclocalviolation] decimal(15,5),
-        [raise5minviolation] decimal(15,5),
-        [raiseregviolation] decimal(15,5),
-        [raise60secviolation] decimal(15,5),
-        [raise6secviolation] decimal(15,5),
-        [lower5minviolation] decimal(15,5),
-        [lowerregviolation] decimal(15,5),
-        [lower60secviolation] decimal(15,5),
-        [lower6secviolation] decimal(15,5),
-        [totalintermittentgeneration] decimal(15,5),
-        [demand_and_nonschedgen] decimal(15,5),
-        [uigf] decimal(15,5)
-    ) d
-) as src 
-on (
-    tgt.[periodid] = src.[periodid]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[runno] = src.[runno]
-    and tgt.[settlementdate] = src.[settlementdate]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[runno] = src.[runno],
-        tgt.[regionid] = src.[regionid],
-        tgt.[periodid] = src.[periodid],
-        tgt.[totaldemand] = src.[totaldemand],
-        tgt.[availablegeneration] = src.[availablegeneration],
-        tgt.[availableload] = src.[availableload],
-        tgt.[demandforecast] = src.[demandforecast],
-        tgt.[dispatchablegeneration] = src.[dispatchablegeneration],
-        tgt.[dispatchableload] = src.[dispatchableload],
-        tgt.[netinterchange] = src.[netinterchange],
-        tgt.[excessgeneration] = src.[excessgeneration],
-        tgt.[lower5mindispatch] = src.[lower5mindispatch],
-        tgt.[lower5minimport] = src.[lower5minimport],
-        tgt.[lower5minlocaldispatch] = src.[lower5minlocaldispatch],
-        tgt.[lower5minlocalprice] = src.[lower5minlocalprice],
-        tgt.[lower5minlocalreq] = src.[lower5minlocalreq],
-        tgt.[lower5minprice] = src.[lower5minprice],
-        tgt.[lower5minreq] = src.[lower5minreq],
-        tgt.[lower5minsupplyprice] = src.[lower5minsupplyprice],
-        tgt.[lower60secdispatch] = src.[lower60secdispatch],
-        tgt.[lower60secimport] = src.[lower60secimport],
-        tgt.[lower60seclocaldispatch] = src.[lower60seclocaldispatch],
-        tgt.[lower60seclocalprice] = src.[lower60seclocalprice],
-        tgt.[lower60seclocalreq] = src.[lower60seclocalreq],
-        tgt.[lower60secprice] = src.[lower60secprice],
-        tgt.[lower60secreq] = src.[lower60secreq],
-        tgt.[lower60secsupplyprice] = src.[lower60secsupplyprice],
-        tgt.[lower6secdispatch] = src.[lower6secdispatch],
-        tgt.[lower6secimport] = src.[lower6secimport],
-        tgt.[lower6seclocaldispatch] = src.[lower6seclocaldispatch],
-        tgt.[lower6seclocalprice] = src.[lower6seclocalprice],
-        tgt.[lower6seclocalreq] = src.[lower6seclocalreq],
-        tgt.[lower6secprice] = src.[lower6secprice],
-        tgt.[lower6secreq] = src.[lower6secreq],
-        tgt.[lower6secsupplyprice] = src.[lower6secsupplyprice],
-        tgt.[raise5mindispatch] = src.[raise5mindispatch],
-        tgt.[raise5minimport] = src.[raise5minimport],
-        tgt.[raise5minlocaldispatch] = src.[raise5minlocaldispatch],
-        tgt.[raise5minlocalprice] = src.[raise5minlocalprice],
-        tgt.[raise5minlocalreq] = src.[raise5minlocalreq],
-        tgt.[raise5minprice] = src.[raise5minprice],
-        tgt.[raise5minreq] = src.[raise5minreq],
-        tgt.[raise5minsupplyprice] = src.[raise5minsupplyprice],
-        tgt.[raise60secdispatch] = src.[raise60secdispatch],
-        tgt.[raise60secimport] = src.[raise60secimport],
-        tgt.[raise60seclocaldispatch] = src.[raise60seclocaldispatch],
-        tgt.[raise60seclocalprice] = src.[raise60seclocalprice],
-        tgt.[raise60seclocalreq] = src.[raise60seclocalreq],
-        tgt.[raise60secprice] = src.[raise60secprice],
-        tgt.[raise60secreq] = src.[raise60secreq],
-        tgt.[raise60secsupplyprice] = src.[raise60secsupplyprice],
-        tgt.[raise6secdispatch] = src.[raise6secdispatch],
-        tgt.[raise6secimport] = src.[raise6secimport],
-        tgt.[raise6seclocaldispatch] = src.[raise6seclocaldispatch],
-        tgt.[raise6seclocalprice] = src.[raise6seclocalprice],
-        tgt.[raise6seclocalreq] = src.[raise6seclocalreq],
-        tgt.[raise6secprice] = src.[raise6secprice],
-        tgt.[raise6secreq] = src.[raise6secreq],
-        tgt.[raise6secsupplyprice] = src.[raise6secsupplyprice],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[initialsupply] = src.[initialsupply],
-        tgt.[clearedsupply] = src.[clearedsupply],
-        tgt.[lowerregimport] = src.[lowerregimport],
-        tgt.[lowerreglocaldispatch] = src.[lowerreglocaldispatch],
-        tgt.[lowerreglocalreq] = src.[lowerreglocalreq],
-        tgt.[lowerregreq] = src.[lowerregreq],
-        tgt.[raiseregimport] = src.[raiseregimport],
-        tgt.[raisereglocaldispatch] = src.[raisereglocaldispatch],
-        tgt.[raisereglocalreq] = src.[raisereglocalreq],
-        tgt.[raiseregreq] = src.[raiseregreq],
-        tgt.[raise5minlocalviolation] = src.[raise5minlocalviolation],
-        tgt.[raisereglocalviolation] = src.[raisereglocalviolation],
-        tgt.[raise60seclocalviolation] = src.[raise60seclocalviolation],
-        tgt.[raise6seclocalviolation] = src.[raise6seclocalviolation],
-        tgt.[lower5minlocalviolation] = src.[lower5minlocalviolation],
-        tgt.[lowerreglocalviolation] = src.[lowerreglocalviolation],
-        tgt.[lower60seclocalviolation] = src.[lower60seclocalviolation],
-        tgt.[lower6seclocalviolation] = src.[lower6seclocalviolation],
-        tgt.[raise5minviolation] = src.[raise5minviolation],
-        tgt.[raiseregviolation] = src.[raiseregviolation],
-        tgt.[raise60secviolation] = src.[raise60secviolation],
-        tgt.[raise6secviolation] = src.[raise6secviolation],
-        tgt.[lower5minviolation] = src.[lower5minviolation],
-        tgt.[lowerregviolation] = src.[lowerregviolation],
-        tgt.[lower60secviolation] = src.[lower60secviolation],
-        tgt.[lower6secviolation] = src.[lower6secviolation],
-        tgt.[totalintermittentgeneration] = src.[totalintermittentgeneration],
-        tgt.[demand_and_nonschedgen] = src.[demand_and_nonschedgen],
-        tgt.[uigf] = src.[uigf]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [runno],
-        [regionid],
-        [periodid],
-        [totaldemand],
-        [availablegeneration],
-        [availableload],
-        [demandforecast],
-        [dispatchablegeneration],
-        [dispatchableload],
-        [netinterchange],
-        [excessgeneration],
-        [lower5mindispatch],
-        [lower5minimport],
-        [lower5minlocaldispatch],
-        [lower5minlocalprice],
-        [lower5minlocalreq],
-        [lower5minprice],
-        [lower5minreq],
-        [lower5minsupplyprice],
-        [lower60secdispatch],
-        [lower60secimport],
-        [lower60seclocaldispatch],
-        [lower60seclocalprice],
-        [lower60seclocalreq],
-        [lower60secprice],
-        [lower60secreq],
-        [lower60secsupplyprice],
-        [lower6secdispatch],
-        [lower6secimport],
-        [lower6seclocaldispatch],
-        [lower6seclocalprice],
-        [lower6seclocalreq],
-        [lower6secprice],
-        [lower6secreq],
-        [lower6secsupplyprice],
-        [raise5mindispatch],
-        [raise5minimport],
-        [raise5minlocaldispatch],
-        [raise5minlocalprice],
-        [raise5minlocalreq],
-        [raise5minprice],
-        [raise5minreq],
-        [raise5minsupplyprice],
-        [raise60secdispatch],
-        [raise60secimport],
-        [raise60seclocaldispatch],
-        [raise60seclocalprice],
-        [raise60seclocalreq],
-        [raise60secprice],
-        [raise60secreq],
-        [raise60secsupplyprice],
-        [raise6secdispatch],
-        [raise6secimport],
-        [raise6seclocaldispatch],
-        [raise6seclocalprice],
-        [raise6seclocalreq],
-        [raise6secprice],
-        [raise6secreq],
-        [raise6secsupplyprice],
-        [lastchanged],
-        [initialsupply],
-        [clearedsupply],
-        [lowerregimport],
-        [lowerreglocaldispatch],
-        [lowerreglocalreq],
-        [lowerregreq],
-        [raiseregimport],
-        [raisereglocaldispatch],
-        [raisereglocalreq],
-        [raiseregreq],
-        [raise5minlocalviolation],
-        [raisereglocalviolation],
-        [raise60seclocalviolation],
-        [raise6seclocalviolation],
-        [lower5minlocalviolation],
-        [lowerreglocalviolation],
-        [lower60seclocalviolation],
-        [lower6seclocalviolation],
-        [raise5minviolation],
-        [raiseregviolation],
-        [raise60secviolation],
-        [raise6secviolation],
-        [lower5minviolation],
-        [lowerregviolation],
-        [lower60secviolation],
-        [lower6secviolation],
-        [totalintermittentgeneration],
-        [demand_and_nonschedgen],
-        [uigf]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[runno],
-        src.[regionid],
-        src.[periodid],
-        src.[totaldemand],
-        src.[availablegeneration],
-        src.[availableload],
-        src.[demandforecast],
-        src.[dispatchablegeneration],
-        src.[dispatchableload],
-        src.[netinterchange],
-        src.[excessgeneration],
-        src.[lower5mindispatch],
-        src.[lower5minimport],
-        src.[lower5minlocaldispatch],
-        src.[lower5minlocalprice],
-        src.[lower5minlocalreq],
-        src.[lower5minprice],
-        src.[lower5minreq],
-        src.[lower5minsupplyprice],
-        src.[lower60secdispatch],
-        src.[lower60secimport],
-        src.[lower60seclocaldispatch],
-        src.[lower60seclocalprice],
-        src.[lower60seclocalreq],
-        src.[lower60secprice],
-        src.[lower60secreq],
-        src.[lower60secsupplyprice],
-        src.[lower6secdispatch],
-        src.[lower6secimport],
-        src.[lower6seclocaldispatch],
-        src.[lower6seclocalprice],
-        src.[lower6seclocalreq],
-        src.[lower6secprice],
-        src.[lower6secreq],
-        src.[lower6secsupplyprice],
-        src.[raise5mindispatch],
-        src.[raise5minimport],
-        src.[raise5minlocaldispatch],
-        src.[raise5minlocalprice],
-        src.[raise5minlocalreq],
-        src.[raise5minprice],
-        src.[raise5minreq],
-        src.[raise5minsupplyprice],
-        src.[raise60secdispatch],
-        src.[raise60secimport],
-        src.[raise60seclocaldispatch],
-        src.[raise60seclocalprice],
-        src.[raise60seclocalreq],
-        src.[raise60secprice],
-        src.[raise60secreq],
-        src.[raise60secsupplyprice],
-        src.[raise6secdispatch],
-        src.[raise6secimport],
-        src.[raise6seclocaldispatch],
-        src.[raise6seclocalprice],
-        src.[raise6seclocalreq],
-        src.[raise6secprice],
-        src.[raise6secreq],
-        src.[raise6secsupplyprice],
-        src.[lastchanged],
-        src.[initialsupply],
-        src.[clearedsupply],
-        src.[lowerregimport],
-        src.[lowerreglocaldispatch],
-        src.[lowerreglocalreq],
-        src.[lowerregreq],
-        src.[raiseregimport],
-        src.[raisereglocaldispatch],
-        src.[raisereglocalreq],
-        src.[raiseregreq],
-        src.[raise5minlocalviolation],
-        src.[raisereglocalviolation],
-        src.[raise60seclocalviolation],
-        src.[raise6seclocalviolation],
-        src.[lower5minlocalviolation],
-        src.[lowerreglocalviolation],
-        src.[lower60seclocalviolation],
-        src.[lower6seclocalviolation],
-        src.[raise5minviolation],
-        src.[raiseregviolation],
-        src.[raise60secviolation],
-        src.[raise6secviolation],
-        src.[lower5minviolation],
-        src.[lowerregviolation],
-        src.[lower60secviolation],
-        src.[lower6secviolation],
-        src.[totalintermittentgeneration],
-        src.[demand_and_nonschedgen],
-        src.[uigf]
-    );
-    
-end
-go
 create or alter procedure mmsdm_proc.InsertIrauctionConfigAuction1
     @file_log_id bigint,
     @data nvarchar(max)
@@ -14951,118 +13236,6 @@ when not matched
     
 end
 go
-create or alter procedure mmsdm_proc.InsertSettlementConfigResiduecontractpayments1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementConfigResiduecontractpayments1 as tgt 
-using (
-    select 
-        d.[contractid],
-        d.[participantid],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [contractid] varchar(30),
-        [participantid] varchar(10),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[contractid] = src.[contractid]
-    and tgt.[participantid] = src.[participantid]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractid] = src.[contractid],
-        tgt.[participantid] = src.[participantid],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [contractid],
-        [participantid],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[contractid],
-        src.[participantid],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertIrauctionBidsFileTrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.IrauctionBidsFileTrk1 as tgt 
-using (
-    select 
-        d.[contractid],
-        d.[participantid],
-        d.[loaddate],
-        d.[filename],
-        d.[ackfilename],
-        d.[status],
-        d.[lastchanged],
-        d.[auctionid]
-    from openjson(@data) with (
-        [contractid] varchar(30),
-        [participantid] varchar(10),
-        [loaddate] datetime2,
-        [filename] varchar(40),
-        [ackfilename] varchar(40),
-        [status] varchar(10),
-        [lastchanged] datetime2,
-        [auctionid] varchar(30)
-    ) d
-) as src 
-on (
-    tgt.[auctionid] = src.[auctionid]
-    and tgt.[loaddate] = src.[loaddate]
-    and tgt.[participantid] = src.[participantid]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractid] = src.[contractid],
-        tgt.[participantid] = src.[participantid],
-        tgt.[loaddate] = src.[loaddate],
-        tgt.[filename] = src.[filename],
-        tgt.[ackfilename] = src.[ackfilename],
-        tgt.[status] = src.[status],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[auctionid] = src.[auctionid]
-when not matched
-    then insert (
-        file_log_id,
-        [contractid],
-        [participantid],
-        [loaddate],
-        [filename],
-        [ackfilename],
-        [status],
-        [lastchanged],
-        [auctionid]
-    ) values (
-        @file_log_id,
-        src.[contractid],
-        src.[participantid],
-        src.[loaddate],
-        src.[filename],
-        src.[ackfilename],
-        src.[status],
-        src.[lastchanged],
-        src.[auctionid]
-    );
-    
-end
-go
 create or alter procedure mmsdm_proc.InsertIrauctionResidueBidTrk1
     @file_log_id bigint,
     @data nvarchar(max)
@@ -15117,125 +13290,6 @@ when not matched
         src.[participantid],
         src.[bidloaddate],
         src.[lastchanged],
-        src.[auctionid]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertIrauctionResidueContracts1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.IrauctionResidueContracts1 as tgt 
-using (
-    select 
-        d.[contractyear],
-        d.[quarter],
-        d.[tranche],
-        d.[contractid],
-        d.[startdate],
-        d.[enddate],
-        d.[notifydate],
-        d.[auctiondate],
-        d.[calcmethod],
-        d.[authoriseddate],
-        d.[authorisedby],
-        d.[notifypostdate],
-        d.[notifyby],
-        d.[postdate],
-        d.[postedby],
-        d.[lastchanged],
-        d.[description],
-        d.[auctionid]
-    from openjson(@data) with (
-        [contractyear] decimal(4,0),
-        [quarter] decimal(1,0),
-        [tranche] decimal(2,0),
-        [contractid] varchar(30),
-        [startdate] datetime2,
-        [enddate] datetime2,
-        [notifydate] datetime2,
-        [auctiondate] datetime2,
-        [calcmethod] varchar(20),
-        [authoriseddate] datetime2,
-        [authorisedby] varchar(15),
-        [notifypostdate] datetime2,
-        [notifyby] varchar(15),
-        [postdate] datetime2,
-        [postedby] varchar(15),
-        [lastchanged] datetime2,
-        [description] varchar(80),
-        [auctionid] varchar(30)
-    ) d
-) as src 
-on (
-    tgt.[contractyear] = src.[contractyear]
-    and tgt.[quarter] = src.[quarter]
-    and tgt.[tranche] = src.[tranche]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[contractyear] = src.[contractyear],
-        tgt.[quarter] = src.[quarter],
-        tgt.[tranche] = src.[tranche],
-        tgt.[contractid] = src.[contractid],
-        tgt.[startdate] = src.[startdate],
-        tgt.[enddate] = src.[enddate],
-        tgt.[notifydate] = src.[notifydate],
-        tgt.[auctiondate] = src.[auctiondate],
-        tgt.[calcmethod] = src.[calcmethod],
-        tgt.[authoriseddate] = src.[authoriseddate],
-        tgt.[authorisedby] = src.[authorisedby],
-        tgt.[notifypostdate] = src.[notifypostdate],
-        tgt.[notifyby] = src.[notifyby],
-        tgt.[postdate] = src.[postdate],
-        tgt.[postedby] = src.[postedby],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[description] = src.[description],
-        tgt.[auctionid] = src.[auctionid]
-when not matched
-    then insert (
-        file_log_id,
-        [contractyear],
-        [quarter],
-        [tranche],
-        [contractid],
-        [startdate],
-        [enddate],
-        [notifydate],
-        [auctiondate],
-        [calcmethod],
-        [authoriseddate],
-        [authorisedby],
-        [notifypostdate],
-        [notifyby],
-        [postdate],
-        [postedby],
-        [lastchanged],
-        [description],
-        [auctionid]
-    ) values (
-        @file_log_id,
-        src.[contractyear],
-        src.[quarter],
-        src.[tranche],
-        src.[contractid],
-        src.[startdate],
-        src.[enddate],
-        src.[notifydate],
-        src.[auctiondate],
-        src.[calcmethod],
-        src.[authoriseddate],
-        src.[authorisedby],
-        src.[notifypostdate],
-        src.[notifyby],
-        src.[postdate],
-        src.[postedby],
-        src.[lastchanged],
-        src.[description],
         src.[auctionid]
     );
     
@@ -15457,6 +13511,125 @@ when not matched
         src.[scalefactor],
         src.[actualreserveprice],
         src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertIrauctionResidueContracts1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.IrauctionResidueContracts1 as tgt 
+using (
+    select 
+        d.[contractyear],
+        d.[quarter],
+        d.[tranche],
+        d.[contractid],
+        d.[startdate],
+        d.[enddate],
+        d.[notifydate],
+        d.[auctiondate],
+        d.[calcmethod],
+        d.[authoriseddate],
+        d.[authorisedby],
+        d.[notifypostdate],
+        d.[notifyby],
+        d.[postdate],
+        d.[postedby],
+        d.[lastchanged],
+        d.[description],
+        d.[auctionid]
+    from openjson(@data) with (
+        [contractyear] decimal(4,0),
+        [quarter] decimal(1,0),
+        [tranche] decimal(2,0),
+        [contractid] varchar(30),
+        [startdate] datetime2,
+        [enddate] datetime2,
+        [notifydate] datetime2,
+        [auctiondate] datetime2,
+        [calcmethod] varchar(20),
+        [authoriseddate] datetime2,
+        [authorisedby] varchar(15),
+        [notifypostdate] datetime2,
+        [notifyby] varchar(15),
+        [postdate] datetime2,
+        [postedby] varchar(15),
+        [lastchanged] datetime2,
+        [description] varchar(80),
+        [auctionid] varchar(30)
+    ) d
+) as src 
+on (
+    tgt.[contractyear] = src.[contractyear]
+    and tgt.[quarter] = src.[quarter]
+    and tgt.[tranche] = src.[tranche]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractyear] = src.[contractyear],
+        tgt.[quarter] = src.[quarter],
+        tgt.[tranche] = src.[tranche],
+        tgt.[contractid] = src.[contractid],
+        tgt.[startdate] = src.[startdate],
+        tgt.[enddate] = src.[enddate],
+        tgt.[notifydate] = src.[notifydate],
+        tgt.[auctiondate] = src.[auctiondate],
+        tgt.[calcmethod] = src.[calcmethod],
+        tgt.[authoriseddate] = src.[authoriseddate],
+        tgt.[authorisedby] = src.[authorisedby],
+        tgt.[notifypostdate] = src.[notifypostdate],
+        tgt.[notifyby] = src.[notifyby],
+        tgt.[postdate] = src.[postdate],
+        tgt.[postedby] = src.[postedby],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[description] = src.[description],
+        tgt.[auctionid] = src.[auctionid]
+when not matched
+    then insert (
+        file_log_id,
+        [contractyear],
+        [quarter],
+        [tranche],
+        [contractid],
+        [startdate],
+        [enddate],
+        [notifydate],
+        [auctiondate],
+        [calcmethod],
+        [authoriseddate],
+        [authorisedby],
+        [notifypostdate],
+        [notifyby],
+        [postdate],
+        [postedby],
+        [lastchanged],
+        [description],
+        [auctionid]
+    ) values (
+        @file_log_id,
+        src.[contractyear],
+        src.[quarter],
+        src.[tranche],
+        src.[contractid],
+        src.[startdate],
+        src.[enddate],
+        src.[notifydate],
+        src.[auctiondate],
+        src.[calcmethod],
+        src.[authoriseddate],
+        src.[authorisedby],
+        src.[notifypostdate],
+        src.[notifyby],
+        src.[postdate],
+        src.[postedby],
+        src.[lastchanged],
+        src.[description],
+        src.[auctionid]
     );
     
 end
@@ -15822,6 +13995,118 @@ when not matched
     
 end
 go
+create or alter procedure mmsdm_proc.InsertSettlementConfigResiduecontractpayments1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementConfigResiduecontractpayments1 as tgt 
+using (
+    select 
+        d.[contractid],
+        d.[participantid],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [contractid] varchar(30),
+        [participantid] varchar(10),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[contractid] = src.[contractid]
+    and tgt.[participantid] = src.[participantid]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractid] = src.[contractid],
+        tgt.[participantid] = src.[participantid],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [contractid],
+        [participantid],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[contractid],
+        src.[participantid],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertIrauctionBidsFileTrk1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.IrauctionBidsFileTrk1 as tgt 
+using (
+    select 
+        d.[contractid],
+        d.[participantid],
+        d.[loaddate],
+        d.[filename],
+        d.[ackfilename],
+        d.[status],
+        d.[lastchanged],
+        d.[auctionid]
+    from openjson(@data) with (
+        [contractid] varchar(30),
+        [participantid] varchar(10),
+        [loaddate] datetime2,
+        [filename] varchar(40),
+        [ackfilename] varchar(40),
+        [status] varchar(10),
+        [lastchanged] datetime2,
+        [auctionid] varchar(30)
+    ) d
+) as src 
+on (
+    tgt.[auctionid] = src.[auctionid]
+    and tgt.[loaddate] = src.[loaddate]
+    and tgt.[participantid] = src.[participantid]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[contractid] = src.[contractid],
+        tgt.[participantid] = src.[participantid],
+        tgt.[loaddate] = src.[loaddate],
+        tgt.[filename] = src.[filename],
+        tgt.[ackfilename] = src.[ackfilename],
+        tgt.[status] = src.[status],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[auctionid] = src.[auctionid]
+when not matched
+    then insert (
+        file_log_id,
+        [contractid],
+        [participantid],
+        [loaddate],
+        [filename],
+        [ackfilename],
+        [status],
+        [lastchanged],
+        [auctionid]
+    ) values (
+        @file_log_id,
+        src.[contractid],
+        src.[participantid],
+        src.[loaddate],
+        src.[filename],
+        src.[ackfilename],
+        src.[status],
+        src.[lastchanged],
+        src.[auctionid]
+    );
+    
+end
+go
 create or alter procedure mmsdm_proc.InsertIrauctionSraCashSecurity1
     @file_log_id bigint,
     @data nvarchar(max)
@@ -15895,6 +14180,175 @@ when not matched
         src.[cash_security_returned],
         src.[deletiondate],
         src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertIrauctionSraFinancialAucMardetail1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.IrauctionSraFinancialAucMardetail1(
+file_log_id,
+[sra_year],
+        [sra_quarter],
+        [sra_runno],
+        [participantid],
+        [cash_security_id],
+        [returned_amount],
+        [returned_interest]
+)
+select 
+@file_log_id,
+d.[sra_year],
+        d.[sra_quarter],
+        d.[sra_runno],
+        d.[participantid],
+        d.[cash_security_id],
+        d.[returned_amount],
+        d.[returned_interest]
+from openjson(@data) with (
+[sra_year] decimal(4,0),
+        [sra_quarter] decimal(3,0),
+        [sra_runno] decimal(3,0),
+        [participantid] varchar(10),
+        [cash_security_id] varchar(36),
+        [returned_amount] decimal(18,8),
+        [returned_interest] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertIrauctionSraFinancialAucMargin1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.IrauctionSraFinancialAucMargin1(
+file_log_id,
+[sra_year],
+        [sra_quarter],
+        [sra_runno],
+        [participantid],
+        [total_cash_security],
+        [required_margin],
+        [returned_margin],
+        [returned_margin_interest]
+)
+select 
+@file_log_id,
+d.[sra_year],
+        d.[sra_quarter],
+        d.[sra_runno],
+        d.[participantid],
+        d.[total_cash_security],
+        d.[required_margin],
+        d.[returned_margin],
+        d.[returned_margin_interest]
+from openjson(@data) with (
+[sra_year] decimal(4,0),
+        [sra_quarter] decimal(3,0),
+        [sra_runno] decimal(3,0),
+        [participantid] varchar(10),
+        [total_cash_security] decimal(18,8),
+        [required_margin] decimal(18,8),
+        [returned_margin] decimal(18,8),
+        [returned_margin_interest] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertIrauctionSraFinancialAucReceipts1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.IrauctionSraFinancialAucReceipts1 as tgt 
+using (
+    select 
+        d.[sra_year],
+        d.[sra_quarter],
+        d.[sra_runno],
+        d.[participantid],
+        d.[interconnectorid],
+        d.[fromregionid],
+        d.[contractid],
+        d.[units_purchased],
+        d.[clearing_price],
+        d.[receipt_amount],
+        d.[lastchanged],
+        d.[proceeds_amount],
+        d.[units_sold]
+    from openjson(@data) with (
+        [sra_year] decimal(4,0),
+        [sra_quarter] decimal(3,0),
+        [sra_runno] decimal(3,0),
+        [participantid] varchar(10),
+        [interconnectorid] varchar(10),
+        [fromregionid] varchar(10),
+        [contractid] varchar(10),
+        [units_purchased] decimal(18,8),
+        [clearing_price] decimal(18,8),
+        [receipt_amount] decimal(18,8),
+        [lastchanged] datetime2,
+        [proceeds_amount] decimal(18,8),
+        [units_sold] decimal(18,8)
+    ) d
+) as src 
+on (
+    tgt.[contractid] = src.[contractid]
+    and tgt.[fromregionid] = src.[fromregionid]
+    and tgt.[interconnectorid] = src.[interconnectorid]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[sra_quarter] = src.[sra_quarter]
+    and tgt.[sra_runno] = src.[sra_runno]
+    and tgt.[sra_year] = src.[sra_year]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[sra_year] = src.[sra_year],
+        tgt.[sra_quarter] = src.[sra_quarter],
+        tgt.[sra_runno] = src.[sra_runno],
+        tgt.[participantid] = src.[participantid],
+        tgt.[interconnectorid] = src.[interconnectorid],
+        tgt.[fromregionid] = src.[fromregionid],
+        tgt.[contractid] = src.[contractid],
+        tgt.[units_purchased] = src.[units_purchased],
+        tgt.[clearing_price] = src.[clearing_price],
+        tgt.[receipt_amount] = src.[receipt_amount],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[proceeds_amount] = src.[proceeds_amount],
+        tgt.[units_sold] = src.[units_sold]
+when not matched
+    then insert (
+        file_log_id,
+        [sra_year],
+        [sra_quarter],
+        [sra_runno],
+        [participantid],
+        [interconnectorid],
+        [fromregionid],
+        [contractid],
+        [units_purchased],
+        [clearing_price],
+        [receipt_amount],
+        [lastchanged],
+        [proceeds_amount],
+        [units_sold]
+    ) values (
+        @file_log_id,
+        src.[sra_year],
+        src.[sra_quarter],
+        src.[sra_runno],
+        src.[participantid],
+        src.[interconnectorid],
+        src.[fromregionid],
+        src.[contractid],
+        src.[units_purchased],
+        src.[clearing_price],
+        src.[receipt_amount],
+        src.[lastchanged],
+        src.[proceeds_amount],
+        src.[units_sold]
     );
     
 end
@@ -16093,175 +14547,6 @@ when not matched
         src.[total_shortfall_amount],
         src.[net_payment_amount],
         src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertIrauctionSraFinancialAucMardetail1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.IrauctionSraFinancialAucMardetail1(
-file_log_id,
-[sra_year],
-        [sra_quarter],
-        [sra_runno],
-        [participantid],
-        [cash_security_id],
-        [returned_amount],
-        [returned_interest]
-)
-select 
-@file_log_id,
-d.[sra_year],
-        d.[sra_quarter],
-        d.[sra_runno],
-        d.[participantid],
-        d.[cash_security_id],
-        d.[returned_amount],
-        d.[returned_interest]
-from openjson(@data) with (
-[sra_year] decimal(4,0),
-        [sra_quarter] decimal(3,0),
-        [sra_runno] decimal(3,0),
-        [participantid] varchar(10),
-        [cash_security_id] varchar(36),
-        [returned_amount] decimal(18,8),
-        [returned_interest] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertIrauctionSraFinancialAucMargin1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.IrauctionSraFinancialAucMargin1(
-file_log_id,
-[sra_year],
-        [sra_quarter],
-        [sra_runno],
-        [participantid],
-        [total_cash_security],
-        [required_margin],
-        [returned_margin],
-        [returned_margin_interest]
-)
-select 
-@file_log_id,
-d.[sra_year],
-        d.[sra_quarter],
-        d.[sra_runno],
-        d.[participantid],
-        d.[total_cash_security],
-        d.[required_margin],
-        d.[returned_margin],
-        d.[returned_margin_interest]
-from openjson(@data) with (
-[sra_year] decimal(4,0),
-        [sra_quarter] decimal(3,0),
-        [sra_runno] decimal(3,0),
-        [participantid] varchar(10),
-        [total_cash_security] decimal(18,8),
-        [required_margin] decimal(18,8),
-        [returned_margin] decimal(18,8),
-        [returned_margin_interest] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertIrauctionSraFinancialAucReceipts1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.IrauctionSraFinancialAucReceipts1 as tgt 
-using (
-    select 
-        d.[sra_year],
-        d.[sra_quarter],
-        d.[sra_runno],
-        d.[participantid],
-        d.[interconnectorid],
-        d.[fromregionid],
-        d.[contractid],
-        d.[units_purchased],
-        d.[clearing_price],
-        d.[receipt_amount],
-        d.[lastchanged],
-        d.[proceeds_amount],
-        d.[units_sold]
-    from openjson(@data) with (
-        [sra_year] decimal(4,0),
-        [sra_quarter] decimal(3,0),
-        [sra_runno] decimal(3,0),
-        [participantid] varchar(10),
-        [interconnectorid] varchar(10),
-        [fromregionid] varchar(10),
-        [contractid] varchar(10),
-        [units_purchased] decimal(18,8),
-        [clearing_price] decimal(18,8),
-        [receipt_amount] decimal(18,8),
-        [lastchanged] datetime2,
-        [proceeds_amount] decimal(18,8),
-        [units_sold] decimal(18,8)
-    ) d
-) as src 
-on (
-    tgt.[contractid] = src.[contractid]
-    and tgt.[fromregionid] = src.[fromregionid]
-    and tgt.[interconnectorid] = src.[interconnectorid]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[sra_quarter] = src.[sra_quarter]
-    and tgt.[sra_runno] = src.[sra_runno]
-    and tgt.[sra_year] = src.[sra_year]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[sra_year] = src.[sra_year],
-        tgt.[sra_quarter] = src.[sra_quarter],
-        tgt.[sra_runno] = src.[sra_runno],
-        tgt.[participantid] = src.[participantid],
-        tgt.[interconnectorid] = src.[interconnectorid],
-        tgt.[fromregionid] = src.[fromregionid],
-        tgt.[contractid] = src.[contractid],
-        tgt.[units_purchased] = src.[units_purchased],
-        tgt.[clearing_price] = src.[clearing_price],
-        tgt.[receipt_amount] = src.[receipt_amount],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[proceeds_amount] = src.[proceeds_amount],
-        tgt.[units_sold] = src.[units_sold]
-when not matched
-    then insert (
-        file_log_id,
-        [sra_year],
-        [sra_quarter],
-        [sra_runno],
-        [participantid],
-        [interconnectorid],
-        [fromregionid],
-        [contractid],
-        [units_purchased],
-        [clearing_price],
-        [receipt_amount],
-        [lastchanged],
-        [proceeds_amount],
-        [units_sold]
-    ) values (
-        @file_log_id,
-        src.[sra_year],
-        src.[sra_quarter],
-        src.[sra_runno],
-        src.[participantid],
-        src.[interconnectorid],
-        src.[fromregionid],
-        src.[contractid],
-        src.[units_purchased],
-        src.[clearing_price],
-        src.[receipt_amount],
-        src.[lastchanged],
-        src.[proceeds_amount],
-        src.[units_sold]
     );
     
 end
@@ -17762,47 +16047,6 @@ when not matched
     
 end
 go
-create or alter procedure mmsdm_proc.InsertMccCasesolution1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.MccCasesolution1(
-file_log_id,
-[run_datetime]
-)
-select 
-@file_log_id,
-d.[run_datetime]
-from openjson(@data) with (
-[run_datetime] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertMccConstraintsolution1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.MccConstraintsolution1(
-file_log_id,
-[run_datetime],
-        [constraintid],
-        [rhs],
-        [marginalvalue]
-)
-select 
-@file_log_id,
-d.[run_datetime],
-        d.[constraintid],
-        d.[rhs],
-        d.[marginalvalue]
-from openjson(@data) with (
-[run_datetime] datetime2,
-        [constraintid] varchar(20),
-        [rhs] decimal(15,5),
-        [marginalvalue] decimal(15,5)
-) d
-end
-go
 create or alter procedure mmsdm_proc.InsertMeterdataAggregateReads1
     @file_log_id bigint,
     @data nvarchar(max)
@@ -18701,6 +16945,31 @@ when not matched
     
 end
 go
+create or alter procedure mmsdm_proc.InsertMtpasaRegionavailtrk1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.MtpasaRegionavailtrk1(
+file_log_id,
+[publish_datetime],
+        [startdate],
+        [enddate],
+        [latest_offer_datetime]
+)
+select 
+@file_log_id,
+d.[publish_datetime],
+        d.[startdate],
+        d.[enddate],
+        d.[latest_offer_datetime]
+from openjson(@data) with (
+[publish_datetime] datetime2,
+        [startdate] datetime2,
+        [enddate] datetime2,
+        [latest_offer_datetime] datetime2
+) d
+end
+go
 create or alter procedure mmsdm_proc.InsertMtpasaRegionavailability4
     @file_log_id bigint,
     @data nvarchar(max)
@@ -18818,31 +17087,6 @@ when not matched
         src.[carryovercapacity]
     );
     
-end
-go
-create or alter procedure mmsdm_proc.InsertMtpasaRegionavailtrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.MtpasaRegionavailtrk1(
-file_log_id,
-[publish_datetime],
-        [startdate],
-        [enddate],
-        [latest_offer_datetime]
-)
-select 
-@file_log_id,
-d.[publish_datetime],
-        d.[startdate],
-        d.[enddate],
-        d.[latest_offer_datetime]
-from openjson(@data) with (
-[publish_datetime] datetime2,
-        [startdate] datetime2,
-        [enddate] datetime2,
-        [latest_offer_datetime] datetime2
-) d
 end
 go
 create or alter procedure mmsdm_proc.InsertMtpasaRegioniteration1
@@ -19329,516 +17573,6 @@ when not matched
     
 end
 go
-create or alter procedure mmsdm_proc.InsertNetworkEquipmentdetail2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.NetworkEquipmentdetail2 as tgt 
-using (
-    select 
-        d.[substationid],
-        d.[equipmenttype],
-        d.[equipmentid],
-        d.[validfrom],
-        d.[validto],
-        d.[voltage],
-        d.[description],
-        d.[lastchanged],
-        d.[elementid]
-    from openjson(@data) with (
-        [substationid] varchar(30),
-        [equipmenttype] varchar(10),
-        [equipmentid] varchar(30),
-        [validfrom] datetime2,
-        [validto] datetime2,
-        [voltage] varchar(20),
-        [description] varchar(100),
-        [lastchanged] datetime2,
-        [elementid] decimal(15,0)
-    ) d
-) as src 
-on (
-    tgt.[elementid] = src.[elementid]
-    and tgt.[equipmentid] = src.[equipmentid]
-    and tgt.[equipmenttype] = src.[equipmenttype]
-    and tgt.[substationid] = src.[substationid]
-    and tgt.[validfrom] = src.[validfrom]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[substationid] = src.[substationid],
-        tgt.[equipmenttype] = src.[equipmenttype],
-        tgt.[equipmentid] = src.[equipmentid],
-        tgt.[validfrom] = src.[validfrom],
-        tgt.[validto] = src.[validto],
-        tgt.[voltage] = src.[voltage],
-        tgt.[description] = src.[description],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[elementid] = src.[elementid]
-when not matched
-    then insert (
-        file_log_id,
-        [substationid],
-        [equipmenttype],
-        [equipmentid],
-        [validfrom],
-        [validto],
-        [voltage],
-        [description],
-        [lastchanged],
-        [elementid]
-    ) values (
-        @file_log_id,
-        src.[substationid],
-        src.[equipmenttype],
-        src.[equipmentid],
-        src.[validfrom],
-        src.[validto],
-        src.[voltage],
-        src.[description],
-        src.[lastchanged],
-        src.[elementid]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertNetworkOutageconstraintset1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.NetworkOutageconstraintset1(
-file_log_id,
-[outageid],
-        [genconsetid],
-        [startinterval],
-        [endinterval]
-)
-select 
-@file_log_id,
-d.[outageid],
-        d.[genconsetid],
-        d.[startinterval],
-        d.[endinterval]
-from openjson(@data) with (
-[outageid] decimal(15,0),
-        [genconsetid] varchar(50),
-        [startinterval] datetime2,
-        [endinterval] datetime2
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertNetworkOutagedetail4
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.NetworkOutagedetail4 as tgt 
-using (
-    select 
-        d.[outageid],
-        d.[substationid],
-        d.[equipmenttype],
-        d.[equipmentid],
-        d.[starttime],
-        d.[endtime],
-        d.[submitteddate],
-        d.[outagestatuscode],
-        d.[resubmitreason],
-        d.[resubmitoutageid],
-        d.[recalltimeday],
-        d.[recalltimenight],
-        d.[lastchanged],
-        d.[reason],
-        d.[issecondary],
-        d.[actual_starttime],
-        d.[actual_endtime],
-        d.[companyrefcode],
-        d.[elementid]
-    from openjson(@data) with (
-        [outageid] decimal(15,0),
-        [substationid] varchar(30),
-        [equipmenttype] varchar(10),
-        [equipmentid] varchar(30),
-        [starttime] datetime2,
-        [endtime] datetime2,
-        [submitteddate] datetime2,
-        [outagestatuscode] varchar(10),
-        [resubmitreason] varchar(50),
-        [resubmitoutageid] decimal(15,0),
-        [recalltimeday] decimal(10,0),
-        [recalltimenight] decimal(10,0),
-        [lastchanged] datetime2,
-        [reason] varchar(100),
-        [issecondary] decimal(1,0),
-        [actual_starttime] datetime2,
-        [actual_endtime] datetime2,
-        [companyrefcode] varchar(20),
-        [elementid] decimal(15,0)
-    ) d
-) as src 
-on (
-    tgt.[elementid] = src.[elementid]
-    and tgt.[equipmentid] = src.[equipmentid]
-    and tgt.[equipmenttype] = src.[equipmenttype]
-    and tgt.[outageid] = src.[outageid]
-    and tgt.[starttime] = src.[starttime]
-    and tgt.[substationid] = src.[substationid]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[outageid] = src.[outageid],
-        tgt.[substationid] = src.[substationid],
-        tgt.[equipmenttype] = src.[equipmenttype],
-        tgt.[equipmentid] = src.[equipmentid],
-        tgt.[starttime] = src.[starttime],
-        tgt.[endtime] = src.[endtime],
-        tgt.[submitteddate] = src.[submitteddate],
-        tgt.[outagestatuscode] = src.[outagestatuscode],
-        tgt.[resubmitreason] = src.[resubmitreason],
-        tgt.[resubmitoutageid] = src.[resubmitoutageid],
-        tgt.[recalltimeday] = src.[recalltimeday],
-        tgt.[recalltimenight] = src.[recalltimenight],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[reason] = src.[reason],
-        tgt.[issecondary] = src.[issecondary],
-        tgt.[actual_starttime] = src.[actual_starttime],
-        tgt.[actual_endtime] = src.[actual_endtime],
-        tgt.[companyrefcode] = src.[companyrefcode],
-        tgt.[elementid] = src.[elementid]
-when not matched
-    then insert (
-        file_log_id,
-        [outageid],
-        [substationid],
-        [equipmenttype],
-        [equipmentid],
-        [starttime],
-        [endtime],
-        [submitteddate],
-        [outagestatuscode],
-        [resubmitreason],
-        [resubmitoutageid],
-        [recalltimeday],
-        [recalltimenight],
-        [lastchanged],
-        [reason],
-        [issecondary],
-        [actual_starttime],
-        [actual_endtime],
-        [companyrefcode],
-        [elementid]
-    ) values (
-        @file_log_id,
-        src.[outageid],
-        src.[substationid],
-        src.[equipmenttype],
-        src.[equipmentid],
-        src.[starttime],
-        src.[endtime],
-        src.[submitteddate],
-        src.[outagestatuscode],
-        src.[resubmitreason],
-        src.[resubmitoutageid],
-        src.[recalltimeday],
-        src.[recalltimenight],
-        src.[lastchanged],
-        src.[reason],
-        src.[issecondary],
-        src.[actual_starttime],
-        src.[actual_endtime],
-        src.[companyrefcode],
-        src.[elementid]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertNetworkOutagestatuscode1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.NetworkOutagestatuscode1 as tgt 
-using (
-    select 
-        d.[outagestatuscode],
-        d.[description],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [outagestatuscode] varchar(10),
-        [description] varchar(100),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[outagestatuscode] = src.[outagestatuscode]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[outagestatuscode] = src.[outagestatuscode],
-        tgt.[description] = src.[description],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [outagestatuscode],
-        [description],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[outagestatuscode],
-        src.[description],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertNetworkRating1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.NetworkRating1 as tgt 
-using (
-    select 
-        d.[spd_id],
-        d.[validfrom],
-        d.[validto],
-        d.[regionid],
-        d.[substationid],
-        d.[equipmenttype],
-        d.[equipmentid],
-        d.[ratinglevel],
-        d.[isdynamic],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [spd_id] varchar(21),
-        [validfrom] datetime2,
-        [validto] datetime2,
-        [regionid] varchar(10),
-        [substationid] varchar(30),
-        [equipmenttype] varchar(10),
-        [equipmentid] varchar(30),
-        [ratinglevel] varchar(10),
-        [isdynamic] decimal(1,0),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[spd_id] = src.[spd_id]
-    and tgt.[validfrom] = src.[validfrom]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[spd_id] = src.[spd_id],
-        tgt.[validfrom] = src.[validfrom],
-        tgt.[validto] = src.[validto],
-        tgt.[regionid] = src.[regionid],
-        tgt.[substationid] = src.[substationid],
-        tgt.[equipmenttype] = src.[equipmenttype],
-        tgt.[equipmentid] = src.[equipmentid],
-        tgt.[ratinglevel] = src.[ratinglevel],
-        tgt.[isdynamic] = src.[isdynamic],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [spd_id],
-        [validfrom],
-        [validto],
-        [regionid],
-        [substationid],
-        [equipmenttype],
-        [equipmentid],
-        [ratinglevel],
-        [isdynamic],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[spd_id],
-        src.[validfrom],
-        src.[validto],
-        src.[regionid],
-        src.[substationid],
-        src.[equipmenttype],
-        src.[equipmentid],
-        src.[ratinglevel],
-        src.[isdynamic],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertNetworkRealtimerating1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.NetworkRealtimerating1(
-file_log_id,
-[settlementdate],
-        [spd_id],
-        [ratingvalue]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-        d.[spd_id],
-        d.[ratingvalue]
-from openjson(@data) with (
-[settlementdate] datetime2,
-        [spd_id] varchar(21),
-        [ratingvalue] decimal(16,6)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertNetworkStaticrating1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.NetworkStaticrating1 as tgt 
-using (
-    select 
-        d.[substationid],
-        d.[equipmenttype],
-        d.[equipmentid],
-        d.[ratinglevel],
-        d.[applicationid],
-        d.[validfrom],
-        d.[validto],
-        d.[ratingvalue],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [substationid] varchar(30),
-        [equipmenttype] varchar(10),
-        [equipmentid] varchar(30),
-        [ratinglevel] varchar(10),
-        [applicationid] varchar(20),
-        [validfrom] datetime2,
-        [validto] datetime2,
-        [ratingvalue] decimal(16,6),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[applicationid] = src.[applicationid]
-    and tgt.[equipmentid] = src.[equipmentid]
-    and tgt.[equipmenttype] = src.[equipmenttype]
-    and tgt.[ratinglevel] = src.[ratinglevel]
-    and tgt.[substationid] = src.[substationid]
-    and tgt.[validfrom] = src.[validfrom]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[substationid] = src.[substationid],
-        tgt.[equipmenttype] = src.[equipmenttype],
-        tgt.[equipmentid] = src.[equipmentid],
-        tgt.[ratinglevel] = src.[ratinglevel],
-        tgt.[applicationid] = src.[applicationid],
-        tgt.[validfrom] = src.[validfrom],
-        tgt.[validto] = src.[validto],
-        tgt.[ratingvalue] = src.[ratingvalue],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [substationid],
-        [equipmenttype],
-        [equipmentid],
-        [ratinglevel],
-        [applicationid],
-        [validfrom],
-        [validto],
-        [ratingvalue],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[substationid],
-        src.[equipmenttype],
-        src.[equipmentid],
-        src.[ratinglevel],
-        src.[applicationid],
-        src.[validfrom],
-        src.[validto],
-        src.[ratingvalue],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertNetworkSubstationdetail2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.NetworkSubstationdetail2 as tgt 
-using (
-    select 
-        d.[substationid],
-        d.[validfrom],
-        d.[validto],
-        d.[description],
-        d.[regionid],
-        d.[ownerid],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [substationid] varchar(30),
-        [validfrom] datetime2,
-        [validto] datetime2,
-        [description] varchar(100),
-        [regionid] varchar(10),
-        [ownerid] varchar(30),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[substationid] = src.[substationid]
-    and tgt.[validfrom] = src.[validfrom]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[substationid] = src.[substationid],
-        tgt.[validfrom] = src.[validfrom],
-        tgt.[validto] = src.[validto],
-        tgt.[description] = src.[description],
-        tgt.[regionid] = src.[regionid],
-        tgt.[ownerid] = src.[ownerid],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [substationid],
-        [validfrom],
-        [validto],
-        [description],
-        [regionid],
-        [ownerid],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[substationid],
-        src.[validfrom],
-        src.[validto],
-        src.[description],
-        src.[regionid],
-        src.[ownerid],
-        src.[lastchanged]
-    );
-    
-end
-go
 create or alter procedure mmsdm_proc.InsertP5minBlockedConstraints1
     @file_log_id bigint,
     @data nvarchar(max)
@@ -20067,6 +17801,110 @@ when not matched
         src.[genconid_versionno],
         src.[lhs],
         src.[intervention]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertP5minFcasReqConstraint1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.P5minFcasReqConstraint1(
+file_log_id,
+[run_datetime],
+        [runno],
+        [interval_datetime],
+        [constraintid],
+        [regionid],
+        [bidtype],
+        [lhs],
+        [rhs],
+        [marginalvalue],
+        [rrp],
+        [regional_enablement],
+        [constraint_enablement],
+        [region_base_cost],
+        [base_cost],
+        [adjusted_cost],
+        [p_regulation]
+)
+select 
+@file_log_id,
+d.[run_datetime],
+        d.[runno],
+        d.[interval_datetime],
+        d.[constraintid],
+        d.[regionid],
+        d.[bidtype],
+        d.[lhs],
+        d.[rhs],
+        d.[marginalvalue],
+        d.[rrp],
+        d.[regional_enablement],
+        d.[constraint_enablement],
+        d.[region_base_cost],
+        d.[base_cost],
+        d.[adjusted_cost],
+        d.[p_regulation]
+from openjson(@data) with (
+[run_datetime] datetime2,
+        [runno] decimal(5,0),
+        [interval_datetime] datetime2,
+        [constraintid] varchar(20),
+        [regionid] varchar(20),
+        [bidtype] varchar(10),
+        [lhs] decimal(15,5),
+        [rhs] decimal(15,5),
+        [marginalvalue] decimal(15,5),
+        [rrp] decimal(15,5),
+        [regional_enablement] decimal(15,5),
+        [constraint_enablement] decimal(15,5),
+        [region_base_cost] decimal(18,8),
+        [base_cost] decimal(18,8),
+        [adjusted_cost] decimal(18,8),
+        [p_regulation] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertP5minFcasReqRun1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.P5minFcasReqRun1 as tgt 
+using (
+    select 
+        d.[run_datetime],
+        d.[runno],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [run_datetime] datetime2,
+        [runno] decimal(5,0),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[runno] = src.[runno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[run_datetime] = src.[run_datetime],
+        tgt.[runno] = src.[runno],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [run_datetime],
+        [runno],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[run_datetime],
+        src.[runno],
+        src.[lastchanged]
     );
     
 end
@@ -22179,12 +20017,12 @@ when not matched
     
 end
 go
-create or alter procedure mmsdm_proc.InsertParticipantRegistrationDudetail6
+create or alter procedure mmsdm_proc.InsertParticipantRegistrationDudetail7
     @file_log_id bigint,
     @data nvarchar(max)
 as begin
 
-merge mmsdm.ParticipantRegistrationDudetail6 as tgt 
+merge mmsdm.ParticipantRegistrationDudetail7 as tgt 
 using (
     select 
         d.[effectivedate],
@@ -22219,7 +20057,8 @@ using (
         d.[min_ramp_rate_up],
         d.[min_ramp_rate_down],
         d.[load_min_ramp_rate_up],
-        d.[load_min_ramp_rate_down]
+        d.[load_min_ramp_rate_down],
+        d.[aggregated]
     from openjson(@data) with (
         [effectivedate] datetime2,
         [duid] varchar(10),
@@ -22253,7 +20092,8 @@ using (
         [min_ramp_rate_up] decimal(6,0),
         [min_ramp_rate_down] decimal(6,0),
         [load_min_ramp_rate_up] decimal(6,0),
-        [load_min_ramp_rate_down] decimal(6,0)
+        [load_min_ramp_rate_down] decimal(6,0),
+        [aggregated] decimal(1,0)
     ) d
 ) as src 
 on (
@@ -22297,7 +20137,8 @@ when matched and src.[lastchanged] > tgt.[lastchanged]
         tgt.[min_ramp_rate_up] = src.[min_ramp_rate_up],
         tgt.[min_ramp_rate_down] = src.[min_ramp_rate_down],
         tgt.[load_min_ramp_rate_up] = src.[load_min_ramp_rate_up],
-        tgt.[load_min_ramp_rate_down] = src.[load_min_ramp_rate_down]
+        tgt.[load_min_ramp_rate_down] = src.[load_min_ramp_rate_down],
+        tgt.[aggregated] = src.[aggregated]
 when not matched
     then insert (
         file_log_id,
@@ -22333,7 +20174,8 @@ when not matched
         [min_ramp_rate_up],
         [min_ramp_rate_down],
         [load_min_ramp_rate_up],
-        [load_min_ramp_rate_down]
+        [load_min_ramp_rate_down],
+        [aggregated]
     ) values (
         @file_log_id,
         src.[effectivedate],
@@ -22368,7 +20210,8 @@ when not matched
         src.[min_ramp_rate_up],
         src.[min_ramp_rate_down],
         src.[load_min_ramp_rate_up],
-        src.[load_min_ramp_rate_down]
+        src.[load_min_ramp_rate_down],
+        src.[aggregated]
     );
     
 end
@@ -23971,936 +21814,373 @@ when not matched
     
 end
 go
-create or alter procedure mmsdm_proc.InsertPd7dayCasesolution1
+create or alter procedure mmsdm_proc.InsertPredispatchFcasReqConstraint1
     @file_log_id bigint,
     @data nvarchar(max)
 as begin
-
-merge mmsdm.Pd7dayCasesolution1 as tgt 
-using (
-    select 
-        d.[run_datetime],
-        d.[intervention],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [run_datetime] datetime2,
-        [intervention] decimal(2,0),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[run_datetime] = src.[run_datetime]
-    and tgt.[intervention] = src.[intervention]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[run_datetime] = src.[run_datetime],
-        tgt.[intervention] = src.[intervention],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
+insert into mmsdm.PredispatchFcasReqConstraint1(
+file_log_id,
+[predispatchseqno],
         [run_datetime],
-        [intervention],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[run_datetime],
-        src.[intervention],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertPd7dayConstraintsolution1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.Pd7dayConstraintsolution1 as tgt 
-using (
-    select 
-        d.[run_datetime],
-        d.[intervention],
-        d.[interval_datetime],
-        d.[constraintid],
-        d.[rhs],
-        d.[marginalvalue],
-        d.[violationdegree],
-        d.[lhs],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [run_datetime] datetime2,
-        [intervention] decimal(2,0),
-        [interval_datetime] datetime2,
-        [constraintid] varchar(20),
-        [rhs] decimal(15,5),
-        [marginalvalue] decimal(15,5),
-        [violationdegree] decimal(15,5),
-        [lhs] decimal(15,5),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[constraintid] = src.[constraintid]
-    and tgt.[interval_datetime] = src.[interval_datetime]
-    and tgt.[intervention] = src.[intervention]
-    and tgt.[run_datetime] = src.[run_datetime]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[run_datetime] = src.[run_datetime],
-        tgt.[intervention] = src.[intervention],
-        tgt.[interval_datetime] = src.[interval_datetime],
-        tgt.[constraintid] = src.[constraintid],
-        tgt.[rhs] = src.[rhs],
-        tgt.[marginalvalue] = src.[marginalvalue],
-        tgt.[violationdegree] = src.[violationdegree],
-        tgt.[lhs] = src.[lhs],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [run_datetime],
-        [intervention],
+        [runno],
         [interval_datetime],
         [constraintid],
+        [regionid],
+        [bidtype],
+        [lhs],
         [rhs],
         [marginalvalue],
-        [violationdegree],
-        [lhs],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[run_datetime],
-        src.[intervention],
-        src.[interval_datetime],
-        src.[constraintid],
-        src.[rhs],
-        src.[marginalvalue],
-        src.[violationdegree],
-        src.[lhs],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertPd7dayInterconnectorsolution1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.Pd7dayInterconnectorsolution1 as tgt 
-using (
-    select 
-        d.[run_datetime],
-        d.[intervention],
-        d.[interval_datetime],
-        d.[interconnectorid],
-        d.[meteredmwflow],
-        d.[mwflow],
-        d.[mwlosses],
-        d.[marginalvalue],
-        d.[violationdegree],
-        d.[exportlimit],
-        d.[importlimit],
-        d.[marginalloss],
-        d.[exportconstraintid],
-        d.[importconstraintid],
-        d.[fcasexportlimit],
-        d.[fcasimportlimit],
-        d.[local_price_adjustment_export],
-        d.[locally_constrained_export],
-        d.[local_price_adjustment_import],
-        d.[locally_constrained_import],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [run_datetime] datetime2,
-        [intervention] decimal(2,0),
-        [interval_datetime] datetime2,
-        [interconnectorid] varchar(20),
-        [meteredmwflow] decimal(15,5),
-        [mwflow] decimal(15,5),
-        [mwlosses] decimal(15,5),
-        [marginalvalue] decimal(15,5),
-        [violationdegree] decimal(15,5),
-        [exportlimit] decimal(15,5),
-        [importlimit] decimal(15,5),
-        [marginalloss] decimal(15,5),
-        [exportconstraintid] varchar(20),
-        [importconstraintid] varchar(20),
-        [fcasexportlimit] decimal(15,5),
-        [fcasimportlimit] decimal(15,5),
-        [local_price_adjustment_export] decimal(10,2),
-        [locally_constrained_export] decimal(1,0),
-        [local_price_adjustment_import] decimal(10,2),
-        [locally_constrained_import] decimal(1,0),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[interconnectorid] = src.[interconnectorid]
-    and tgt.[interval_datetime] = src.[interval_datetime]
-    and tgt.[intervention] = src.[intervention]
-    and tgt.[run_datetime] = src.[run_datetime]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[run_datetime] = src.[run_datetime],
-        tgt.[intervention] = src.[intervention],
-        tgt.[interval_datetime] = src.[interval_datetime],
-        tgt.[interconnectorid] = src.[interconnectorid],
-        tgt.[meteredmwflow] = src.[meteredmwflow],
-        tgt.[mwflow] = src.[mwflow],
-        tgt.[mwlosses] = src.[mwlosses],
-        tgt.[marginalvalue] = src.[marginalvalue],
-        tgt.[violationdegree] = src.[violationdegree],
-        tgt.[exportlimit] = src.[exportlimit],
-        tgt.[importlimit] = src.[importlimit],
-        tgt.[marginalloss] = src.[marginalloss],
-        tgt.[exportconstraintid] = src.[exportconstraintid],
-        tgt.[importconstraintid] = src.[importconstraintid],
-        tgt.[fcasexportlimit] = src.[fcasexportlimit],
-        tgt.[fcasimportlimit] = src.[fcasimportlimit],
-        tgt.[local_price_adjustment_export] = src.[local_price_adjustment_export],
-        tgt.[locally_constrained_export] = src.[locally_constrained_export],
-        tgt.[local_price_adjustment_import] = src.[local_price_adjustment_import],
-        tgt.[locally_constrained_import] = src.[locally_constrained_import],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [run_datetime],
-        [intervention],
-        [interval_datetime],
-        [interconnectorid],
-        [meteredmwflow],
-        [mwflow],
-        [mwlosses],
-        [marginalvalue],
-        [violationdegree],
-        [exportlimit],
-        [importlimit],
-        [marginalloss],
-        [exportconstraintid],
-        [importconstraintid],
-        [fcasexportlimit],
-        [fcasimportlimit],
-        [local_price_adjustment_export],
-        [locally_constrained_export],
-        [local_price_adjustment_import],
-        [locally_constrained_import],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[run_datetime],
-        src.[intervention],
-        src.[interval_datetime],
-        src.[interconnectorid],
-        src.[meteredmwflow],
-        src.[mwflow],
-        src.[mwlosses],
-        src.[marginalvalue],
-        src.[violationdegree],
-        src.[exportlimit],
-        src.[importlimit],
-        src.[marginalloss],
-        src.[exportconstraintid],
-        src.[importconstraintid],
-        src.[fcasexportlimit],
-        src.[fcasimportlimit],
-        src.[local_price_adjustment_export],
-        src.[locally_constrained_export],
-        src.[local_price_adjustment_import],
-        src.[locally_constrained_import],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertPd7dayMarketSummary2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.Pd7dayMarketSummary2(
-file_log_id,
-[run_datetime],
-        [interval_datetime],
-        [gpg_fuel_forecast_tj]
+        [rrp],
+        [regional_enablement],
+        [constraint_enablement],
+        [region_base_cost],
+        [base_cost],
+        [adjusted_cost],
+        [p_regulation]
 )
 select 
 @file_log_id,
-d.[run_datetime],
+d.[predispatchseqno],
+        d.[run_datetime],
+        d.[runno],
         d.[interval_datetime],
-        d.[gpg_fuel_forecast_tj]
+        d.[constraintid],
+        d.[regionid],
+        d.[bidtype],
+        d.[lhs],
+        d.[rhs],
+        d.[marginalvalue],
+        d.[rrp],
+        d.[regional_enablement],
+        d.[constraint_enablement],
+        d.[region_base_cost],
+        d.[base_cost],
+        d.[adjusted_cost],
+        d.[p_regulation]
 from openjson(@data) with (
-[run_datetime] datetime2,
+[predispatchseqno] varchar(20),
+        [run_datetime] datetime2,
+        [runno] decimal(5,0),
         [interval_datetime] datetime2,
-        [gpg_fuel_forecast_tj] decimal(15,5)
+        [constraintid] varchar(20),
+        [regionid] varchar(20),
+        [bidtype] varchar(10),
+        [lhs] decimal(15,5),
+        [rhs] decimal(15,5),
+        [marginalvalue] decimal(15,5),
+        [rrp] decimal(15,5),
+        [regional_enablement] decimal(15,5),
+        [constraint_enablement] decimal(15,5),
+        [region_base_cost] decimal(18,8),
+        [base_cost] decimal(18,8),
+        [adjusted_cost] decimal(18,8),
+        [p_regulation] decimal(18,8)
 ) d
 end
 go
-create or alter procedure mmsdm_proc.InsertPd7dayPricesolution1
+create or alter procedure mmsdm_proc.InsertPredispatchFcasReqRun1
     @file_log_id bigint,
     @data nvarchar(max)
 as begin
 
-merge mmsdm.Pd7dayPricesolution1 as tgt 
+merge mmsdm.PredispatchFcasReqRun1 as tgt 
 using (
     select 
+        d.[predispatchseqno],
         d.[run_datetime],
-        d.[intervention],
-        d.[interval_datetime],
-        d.[regionid],
-        d.[rrp],
-        d.[lower1secrrp],
-        d.[lower6secrrp],
-        d.[lower60secrrp],
-        d.[lower5minrrp],
-        d.[lowerregrrp],
-        d.[raise1secrrp],
-        d.[raise6secrrp],
-        d.[raise60secrrp],
-        d.[raise5minrrp],
-        d.[raiseregrrp],
+        d.[runno],
         d.[lastchanged]
     from openjson(@data) with (
+        [predispatchseqno] varchar(20),
         [run_datetime] datetime2,
-        [intervention] decimal(2,0),
-        [interval_datetime] datetime2,
-        [regionid] varchar(20),
-        [rrp] decimal(15,5),
-        [lower1secrrp] decimal(15,5),
-        [lower6secrrp] decimal(15,5),
-        [lower60secrrp] decimal(15,5),
-        [lower5minrrp] decimal(15,5),
-        [lowerregrrp] decimal(15,5),
-        [raise1secrrp] decimal(15,5),
-        [raise6secrrp] decimal(15,5),
-        [raise60secrrp] decimal(15,5),
-        [raise5minrrp] decimal(15,5),
-        [raiseregrrp] decimal(15,5),
+        [runno] decimal(5,0),
         [lastchanged] datetime2
     ) d
 ) as src 
 on (
-    tgt.[interval_datetime] = src.[interval_datetime]
-    and tgt.[intervention] = src.[intervention]
-    and tgt.[regionid] = src.[regionid]
+    tgt.[predispatchseqno] = src.[predispatchseqno]
     and tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[runno] = src.[runno]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
     then update set 
         tgt.file_log_id = @file_log_id,
+        tgt.[predispatchseqno] = src.[predispatchseqno],
         tgt.[run_datetime] = src.[run_datetime],
-        tgt.[intervention] = src.[intervention],
-        tgt.[interval_datetime] = src.[interval_datetime],
-        tgt.[regionid] = src.[regionid],
-        tgt.[rrp] = src.[rrp],
-        tgt.[lower1secrrp] = src.[lower1secrrp],
-        tgt.[lower6secrrp] = src.[lower6secrrp],
-        tgt.[lower60secrrp] = src.[lower60secrrp],
-        tgt.[lower5minrrp] = src.[lower5minrrp],
-        tgt.[lowerregrrp] = src.[lowerregrrp],
-        tgt.[raise1secrrp] = src.[raise1secrrp],
-        tgt.[raise6secrrp] = src.[raise6secrrp],
-        tgt.[raise60secrrp] = src.[raise60secrrp],
-        tgt.[raise5minrrp] = src.[raise5minrrp],
-        tgt.[raiseregrrp] = src.[raiseregrrp],
+        tgt.[runno] = src.[runno],
         tgt.[lastchanged] = src.[lastchanged]
 when not matched
     then insert (
         file_log_id,
+        [predispatchseqno],
         [run_datetime],
-        [intervention],
-        [interval_datetime],
-        [regionid],
-        [rrp],
-        [lower1secrrp],
-        [lower6secrrp],
-        [lower60secrrp],
-        [lower5minrrp],
-        [lowerregrrp],
-        [raise1secrrp],
-        [raise6secrrp],
-        [raise60secrrp],
-        [raise5minrrp],
-        [raiseregrrp],
+        [runno],
         [lastchanged]
     ) values (
         @file_log_id,
+        src.[predispatchseqno],
         src.[run_datetime],
-        src.[intervention],
-        src.[interval_datetime],
-        src.[regionid],
-        src.[rrp],
-        src.[lower1secrrp],
-        src.[lower6secrrp],
-        src.[lower60secrrp],
-        src.[lower5minrrp],
-        src.[lowerregrrp],
-        src.[raise1secrrp],
-        src.[raise6secrrp],
-        src.[raise60secrrp],
-        src.[raise5minrrp],
-        src.[raiseregrrp],
+        src.[runno],
         src.[lastchanged]
     );
     
 end
 go
-create or alter procedure mmsdm_proc.InsertPdpasaCasesolution3
+create or alter procedure mmsdm_proc.InsertPredispatchRegionfcasrequirement2
     @file_log_id bigint,
     @data nvarchar(max)
 as begin
 
-merge mmsdm.PdpasaCasesolution3 as tgt 
+merge mmsdm.PredispatchRegionfcasrequirement2 as tgt 
 using (
     select 
-        d.[run_datetime],
-        d.[pasaversion],
-        d.[reservecondition],
-        d.[lorcondition],
-        d.[capacityobjfunction],
-        d.[capacityoption],
-        d.[maxsurplusreserveoption],
-        d.[maxsparecapacityoption],
-        d.[interconnectorflowpenalty],
-        d.[lastchanged],
-        d.[reliabilitylrcdemandoption],
-        d.[outagelrcdemandoption],
-        d.[lordemandoption],
-        d.[reliabilitylrccapacityoption],
-        d.[outagelrccapacityoption],
-        d.[lorcapacityoption],
-        d.[loruigf_option],
-        d.[reliability_lrcuigf_option],
-        d.[outage_lrcuigf_option]
-    from openjson(@data) with (
-        [run_datetime] datetime2,
-        [pasaversion] varchar(10),
-        [reservecondition] decimal(1,0),
-        [lorcondition] decimal(1,0),
-        [capacityobjfunction] decimal(12,3),
-        [capacityoption] decimal(12,3),
-        [maxsurplusreserveoption] decimal(12,3),
-        [maxsparecapacityoption] decimal(12,3),
-        [interconnectorflowpenalty] decimal(12,3),
-        [lastchanged] datetime2,
-        [reliabilitylrcdemandoption] decimal(12,3),
-        [outagelrcdemandoption] decimal(12,3),
-        [lordemandoption] decimal(12,3),
-        [reliabilitylrccapacityoption] varchar(10),
-        [outagelrccapacityoption] varchar(10),
-        [lorcapacityoption] varchar(10),
-        [loruigf_option] decimal(3,0),
-        [reliability_lrcuigf_option] decimal(3,0),
-        [outage_lrcuigf_option] decimal(3,0)
-    ) d
-) as src 
-on (
-    tgt.[run_datetime] = src.[run_datetime]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[run_datetime] = src.[run_datetime],
-        tgt.[pasaversion] = src.[pasaversion],
-        tgt.[reservecondition] = src.[reservecondition],
-        tgt.[lorcondition] = src.[lorcondition],
-        tgt.[capacityobjfunction] = src.[capacityobjfunction],
-        tgt.[capacityoption] = src.[capacityoption],
-        tgt.[maxsurplusreserveoption] = src.[maxsurplusreserveoption],
-        tgt.[maxsparecapacityoption] = src.[maxsparecapacityoption],
-        tgt.[interconnectorflowpenalty] = src.[interconnectorflowpenalty],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[reliabilitylrcdemandoption] = src.[reliabilitylrcdemandoption],
-        tgt.[outagelrcdemandoption] = src.[outagelrcdemandoption],
-        tgt.[lordemandoption] = src.[lordemandoption],
-        tgt.[reliabilitylrccapacityoption] = src.[reliabilitylrccapacityoption],
-        tgt.[outagelrccapacityoption] = src.[outagelrccapacityoption],
-        tgt.[lorcapacityoption] = src.[lorcapacityoption],
-        tgt.[loruigf_option] = src.[loruigf_option],
-        tgt.[reliability_lrcuigf_option] = src.[reliability_lrcuigf_option],
-        tgt.[outage_lrcuigf_option] = src.[outage_lrcuigf_option]
-when not matched
-    then insert (
-        file_log_id,
-        [run_datetime],
-        [pasaversion],
-        [reservecondition],
-        [lorcondition],
-        [capacityobjfunction],
-        [capacityoption],
-        [maxsurplusreserveoption],
-        [maxsparecapacityoption],
-        [interconnectorflowpenalty],
-        [lastchanged],
-        [reliabilitylrcdemandoption],
-        [outagelrcdemandoption],
-        [lordemandoption],
-        [reliabilitylrccapacityoption],
-        [outagelrccapacityoption],
-        [lorcapacityoption],
-        [loruigf_option],
-        [reliability_lrcuigf_option],
-        [outage_lrcuigf_option]
-    ) values (
-        @file_log_id,
-        src.[run_datetime],
-        src.[pasaversion],
-        src.[reservecondition],
-        src.[lorcondition],
-        src.[capacityobjfunction],
-        src.[capacityoption],
-        src.[maxsurplusreserveoption],
-        src.[maxsparecapacityoption],
-        src.[interconnectorflowpenalty],
-        src.[lastchanged],
-        src.[reliabilitylrcdemandoption],
-        src.[outagelrcdemandoption],
-        src.[lordemandoption],
-        src.[reliabilitylrccapacityoption],
-        src.[outagelrccapacityoption],
-        src.[lorcapacityoption],
-        src.[loruigf_option],
-        src.[reliability_lrcuigf_option],
-        src.[outage_lrcuigf_option]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertPdpasaConstraintsolution1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.PdpasaConstraintsolution1 as tgt 
-using (
-    select 
-        d.[run_datetime],
-        d.[interval_datetime],
-        d.[constraintid],
-        d.[capacityrhs],
-        d.[capacitymarginalvalue],
-        d.[capacityviolationdegree],
-        d.[lastchanged],
-        d.[runtype],
-        d.[studyregionid]
-    from openjson(@data) with (
-        [run_datetime] datetime2,
-        [interval_datetime] datetime2,
-        [constraintid] varchar(20),
-        [capacityrhs] decimal(12,2),
-        [capacitymarginalvalue] decimal(12,2),
-        [capacityviolationdegree] decimal(12,2),
-        [lastchanged] datetime2,
-        [runtype] varchar(20),
-        [studyregionid] varchar(20)
-    ) d
-) as src 
-on (
-    tgt.[constraintid] = src.[constraintid]
-    and tgt.[interval_datetime] = src.[interval_datetime]
-    and tgt.[run_datetime] = src.[run_datetime]
-    and tgt.[runtype] = src.[runtype]
-    and tgt.[studyregionid] = src.[studyregionid]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[run_datetime] = src.[run_datetime],
-        tgt.[interval_datetime] = src.[interval_datetime],
-        tgt.[constraintid] = src.[constraintid],
-        tgt.[capacityrhs] = src.[capacityrhs],
-        tgt.[capacitymarginalvalue] = src.[capacitymarginalvalue],
-        tgt.[capacityviolationdegree] = src.[capacityviolationdegree],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[runtype] = src.[runtype],
-        tgt.[studyregionid] = src.[studyregionid]
-when not matched
-    then insert (
-        file_log_id,
-        [run_datetime],
-        [interval_datetime],
-        [constraintid],
-        [capacityrhs],
-        [capacitymarginalvalue],
-        [capacityviolationdegree],
-        [lastchanged],
-        [runtype],
-        [studyregionid]
-    ) values (
-        @file_log_id,
-        src.[run_datetime],
-        src.[interval_datetime],
-        src.[constraintid],
-        src.[capacityrhs],
-        src.[capacitymarginalvalue],
-        src.[capacityviolationdegree],
-        src.[lastchanged],
-        src.[runtype],
-        src.[studyregionid]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertPdpasaInterconnectorsoln1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.PdpasaInterconnectorsoln1 as tgt 
-using (
-    select 
-        d.[run_datetime],
-        d.[interval_datetime],
-        d.[interconnectorid],
-        d.[capacitymwflow],
-        d.[capacitymarginalvalue],
-        d.[capacityviolationdegree],
-        d.[calculatedexportlimit],
-        d.[calculatedimportlimit],
-        d.[lastchanged],
-        d.[runtype],
-        d.[exportlimitconstraintid],
-        d.[importlimitconstraintid],
-        d.[studyregionid]
-    from openjson(@data) with (
-        [run_datetime] datetime2,
-        [interval_datetime] datetime2,
-        [interconnectorid] varchar(10),
-        [capacitymwflow] decimal(12,2),
-        [capacitymarginalvalue] decimal(12,2),
-        [capacityviolationdegree] decimal(12,2),
-        [calculatedexportlimit] decimal(12,2),
-        [calculatedimportlimit] decimal(12,2),
-        [lastchanged] datetime2,
-        [runtype] varchar(20),
-        [exportlimitconstraintid] varchar(20),
-        [importlimitconstraintid] varchar(20),
-        [studyregionid] varchar(20)
-    ) d
-) as src 
-on (
-    tgt.[interconnectorid] = src.[interconnectorid]
-    and tgt.[interval_datetime] = src.[interval_datetime]
-    and tgt.[run_datetime] = src.[run_datetime]
-    and tgt.[runtype] = src.[runtype]
-    and tgt.[studyregionid] = src.[studyregionid]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[run_datetime] = src.[run_datetime],
-        tgt.[interval_datetime] = src.[interval_datetime],
-        tgt.[interconnectorid] = src.[interconnectorid],
-        tgt.[capacitymwflow] = src.[capacitymwflow],
-        tgt.[capacitymarginalvalue] = src.[capacitymarginalvalue],
-        tgt.[capacityviolationdegree] = src.[capacityviolationdegree],
-        tgt.[calculatedexportlimit] = src.[calculatedexportlimit],
-        tgt.[calculatedimportlimit] = src.[calculatedimportlimit],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[runtype] = src.[runtype],
-        tgt.[exportlimitconstraintid] = src.[exportlimitconstraintid],
-        tgt.[importlimitconstraintid] = src.[importlimitconstraintid],
-        tgt.[studyregionid] = src.[studyregionid]
-when not matched
-    then insert (
-        file_log_id,
-        [run_datetime],
-        [interval_datetime],
-        [interconnectorid],
-        [capacitymwflow],
-        [capacitymarginalvalue],
-        [capacityviolationdegree],
-        [calculatedexportlimit],
-        [calculatedimportlimit],
-        [lastchanged],
-        [runtype],
-        [exportlimitconstraintid],
-        [importlimitconstraintid],
-        [studyregionid]
-    ) values (
-        @file_log_id,
-        src.[run_datetime],
-        src.[interval_datetime],
-        src.[interconnectorid],
-        src.[capacitymwflow],
-        src.[capacitymarginalvalue],
-        src.[capacityviolationdegree],
-        src.[calculatedexportlimit],
-        src.[calculatedimportlimit],
-        src.[lastchanged],
-        src.[runtype],
-        src.[exportlimitconstraintid],
-        src.[importlimitconstraintid],
-        src.[studyregionid]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertPdpasaRegionsolution7
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.PdpasaRegionsolution7 as tgt 
-using (
-    select 
-        d.[run_datetime],
-        d.[interval_datetime],
+        d.[predispatchseqno],
+        d.[runno],
+        d.[intervention],
+        d.[periodid],
+        d.[genconid],
         d.[regionid],
-        d.[demand10],
-        d.[demand50],
-        d.[demand90],
-        d.[reservereq],
-        d.[capacityreq],
-        d.[energyreqdemand50],
-        d.[unconstrainedcapacity],
-        d.[constrainedcapacity],
-        d.[netinterchangeunderscarcity],
-        d.[surpluscapacity],
-        d.[surplusreserve],
-        d.[reservecondition],
-        d.[maxsurplusreserve],
-        d.[maxsparecapacity],
-        d.[lorcondition],
-        d.[aggregatecapacityavailable],
-        d.[aggregatescheduledload],
+        d.[bidtype],
+        d.[genconeffectivedate],
+        d.[genconversionno],
+        d.[marginalvalue],
+        d.[datetime],
         d.[lastchanged],
-        d.[aggregatepasaavailability],
-        d.[runtype],
-        d.[energyreqdemand10],
-        d.[calculatedlor1level],
-        d.[calculatedlor2level],
-        d.[msrnetinterchangeunderscarcity],
-        d.[lornetinterchangeunderscarcity],
-        d.[totalintermittentgeneration],
-        d.[demand_and_nonschedgen],
-        d.[uigf],
-        d.[semi_scheduled_capacity],
-        d.[lor_semi_scheduled_capacity],
-        d.[lcr],
-        d.[lcr2],
-        d.[fum],
-        d.[ss_solar_uigf],
-        d.[ss_wind_uigf],
-        d.[ss_solar_capacity],
-        d.[ss_wind_capacity],
-        d.[ss_solar_cleared],
-        d.[ss_wind_cleared],
-        d.[wdr_available],
-        d.[wdr_pasaavailable],
-        d.[wdr_capacity]
+        d.[base_cost],
+        d.[adjusted_cost],
+        d.[estimated_cmpf],
+        d.[estimated_crmpf],
+        d.[recovery_factor_cmpf],
+        d.[recovery_factor_crmpf]
     from openjson(@data) with (
-        [run_datetime] datetime2,
-        [interval_datetime] datetime2,
+        [predispatchseqno] varchar(20),
+        [runno] decimal(3,0),
+        [intervention] decimal(2,0),
+        [periodid] varchar(20),
+        [genconid] varchar(20),
         [regionid] varchar(10),
-        [demand10] decimal(12,2),
-        [demand50] decimal(12,2),
-        [demand90] decimal(12,2),
-        [reservereq] decimal(12,2),
-        [capacityreq] decimal(12,2),
-        [energyreqdemand50] decimal(12,2),
-        [unconstrainedcapacity] decimal(12,0),
-        [constrainedcapacity] decimal(12,0),
-        [netinterchangeunderscarcity] decimal(12,2),
-        [surpluscapacity] decimal(12,2),
-        [surplusreserve] decimal(12,2),
-        [reservecondition] decimal(1,0),
-        [maxsurplusreserve] decimal(12,2),
-        [maxsparecapacity] decimal(12,2),
-        [lorcondition] decimal(1,0),
-        [aggregatecapacityavailable] decimal(12,2),
-        [aggregatescheduledload] decimal(12,2),
+        [bidtype] varchar(10),
+        [genconeffectivedate] datetime2,
+        [genconversionno] decimal(3,0),
+        [marginalvalue] decimal(16,6),
+        [datetime] datetime2,
         [lastchanged] datetime2,
-        [aggregatepasaavailability] decimal(12,0),
-        [runtype] varchar(20),
-        [energyreqdemand10] decimal(12,2),
-        [calculatedlor1level] decimal(16,6),
-        [calculatedlor2level] decimal(16,6),
-        [msrnetinterchangeunderscarcity] decimal(12,2),
-        [lornetinterchangeunderscarcity] decimal(12,2),
-        [totalintermittentgeneration] decimal(15,5),
-        [demand_and_nonschedgen] decimal(15,5),
-        [uigf] decimal(12,2),
-        [semi_scheduled_capacity] decimal(12,2),
-        [lor_semi_scheduled_capacity] decimal(12,2),
-        [lcr] decimal(16,6),
-        [lcr2] decimal(16,6),
-        [fum] decimal(16,6),
-        [ss_solar_uigf] decimal(12,2),
-        [ss_wind_uigf] decimal(12,2),
-        [ss_solar_capacity] decimal(12,2),
-        [ss_wind_capacity] decimal(12,2),
-        [ss_solar_cleared] decimal(12,2),
-        [ss_wind_cleared] decimal(12,2),
-        [wdr_available] decimal(12,2),
-        [wdr_pasaavailable] decimal(12,2),
-        [wdr_capacity] decimal(12,2)
+        [base_cost] decimal(18,8),
+        [adjusted_cost] decimal(18,8),
+        [estimated_cmpf] decimal(18,8),
+        [estimated_crmpf] decimal(18,8),
+        [recovery_factor_cmpf] decimal(18,8),
+        [recovery_factor_crmpf] decimal(18,8)
     ) d
 ) as src 
 on (
-    tgt.[interval_datetime] = src.[interval_datetime]
+    tgt.[bidtype] = src.[bidtype]
+    and tgt.[datetime] = src.[datetime]
+    and tgt.[genconid] = src.[genconid]
     and tgt.[regionid] = src.[regionid]
-    and tgt.[run_datetime] = src.[run_datetime]
-    and tgt.[runtype] = src.[runtype]
+    and tgt.[intervention] = src.[intervention]
 
 )
 when matched and src.[lastchanged] > tgt.[lastchanged]
     then update set 
         tgt.file_log_id = @file_log_id,
-        tgt.[run_datetime] = src.[run_datetime],
-        tgt.[interval_datetime] = src.[interval_datetime],
+        tgt.[predispatchseqno] = src.[predispatchseqno],
+        tgt.[runno] = src.[runno],
+        tgt.[intervention] = src.[intervention],
+        tgt.[periodid] = src.[periodid],
+        tgt.[genconid] = src.[genconid],
         tgt.[regionid] = src.[regionid],
-        tgt.[demand10] = src.[demand10],
-        tgt.[demand50] = src.[demand50],
-        tgt.[demand90] = src.[demand90],
-        tgt.[reservereq] = src.[reservereq],
-        tgt.[capacityreq] = src.[capacityreq],
-        tgt.[energyreqdemand50] = src.[energyreqdemand50],
-        tgt.[unconstrainedcapacity] = src.[unconstrainedcapacity],
-        tgt.[constrainedcapacity] = src.[constrainedcapacity],
-        tgt.[netinterchangeunderscarcity] = src.[netinterchangeunderscarcity],
-        tgt.[surpluscapacity] = src.[surpluscapacity],
-        tgt.[surplusreserve] = src.[surplusreserve],
-        tgt.[reservecondition] = src.[reservecondition],
-        tgt.[maxsurplusreserve] = src.[maxsurplusreserve],
-        tgt.[maxsparecapacity] = src.[maxsparecapacity],
-        tgt.[lorcondition] = src.[lorcondition],
-        tgt.[aggregatecapacityavailable] = src.[aggregatecapacityavailable],
-        tgt.[aggregatescheduledload] = src.[aggregatescheduledload],
+        tgt.[bidtype] = src.[bidtype],
+        tgt.[genconeffectivedate] = src.[genconeffectivedate],
+        tgt.[genconversionno] = src.[genconversionno],
+        tgt.[marginalvalue] = src.[marginalvalue],
+        tgt.[datetime] = src.[datetime],
         tgt.[lastchanged] = src.[lastchanged],
-        tgt.[aggregatepasaavailability] = src.[aggregatepasaavailability],
-        tgt.[runtype] = src.[runtype],
-        tgt.[energyreqdemand10] = src.[energyreqdemand10],
-        tgt.[calculatedlor1level] = src.[calculatedlor1level],
-        tgt.[calculatedlor2level] = src.[calculatedlor2level],
-        tgt.[msrnetinterchangeunderscarcity] = src.[msrnetinterchangeunderscarcity],
-        tgt.[lornetinterchangeunderscarcity] = src.[lornetinterchangeunderscarcity],
-        tgt.[totalintermittentgeneration] = src.[totalintermittentgeneration],
-        tgt.[demand_and_nonschedgen] = src.[demand_and_nonschedgen],
-        tgt.[uigf] = src.[uigf],
-        tgt.[semi_scheduled_capacity] = src.[semi_scheduled_capacity],
-        tgt.[lor_semi_scheduled_capacity] = src.[lor_semi_scheduled_capacity],
-        tgt.[lcr] = src.[lcr],
-        tgt.[lcr2] = src.[lcr2],
-        tgt.[fum] = src.[fum],
-        tgt.[ss_solar_uigf] = src.[ss_solar_uigf],
-        tgt.[ss_wind_uigf] = src.[ss_wind_uigf],
-        tgt.[ss_solar_capacity] = src.[ss_solar_capacity],
-        tgt.[ss_wind_capacity] = src.[ss_wind_capacity],
-        tgt.[ss_solar_cleared] = src.[ss_solar_cleared],
-        tgt.[ss_wind_cleared] = src.[ss_wind_cleared],
-        tgt.[wdr_available] = src.[wdr_available],
-        tgt.[wdr_pasaavailable] = src.[wdr_pasaavailable],
-        tgt.[wdr_capacity] = src.[wdr_capacity]
+        tgt.[base_cost] = src.[base_cost],
+        tgt.[adjusted_cost] = src.[adjusted_cost],
+        tgt.[estimated_cmpf] = src.[estimated_cmpf],
+        tgt.[estimated_crmpf] = src.[estimated_crmpf],
+        tgt.[recovery_factor_cmpf] = src.[recovery_factor_cmpf],
+        tgt.[recovery_factor_crmpf] = src.[recovery_factor_crmpf]
 when not matched
     then insert (
         file_log_id,
-        [run_datetime],
-        [interval_datetime],
+        [predispatchseqno],
+        [runno],
+        [intervention],
+        [periodid],
+        [genconid],
         [regionid],
-        [demand10],
-        [demand50],
-        [demand90],
-        [reservereq],
-        [capacityreq],
-        [energyreqdemand50],
-        [unconstrainedcapacity],
-        [constrainedcapacity],
-        [netinterchangeunderscarcity],
-        [surpluscapacity],
-        [surplusreserve],
-        [reservecondition],
-        [maxsurplusreserve],
-        [maxsparecapacity],
-        [lorcondition],
-        [aggregatecapacityavailable],
-        [aggregatescheduledload],
+        [bidtype],
+        [genconeffectivedate],
+        [genconversionno],
+        [marginalvalue],
+        [datetime],
         [lastchanged],
-        [aggregatepasaavailability],
-        [runtype],
-        [energyreqdemand10],
-        [calculatedlor1level],
-        [calculatedlor2level],
-        [msrnetinterchangeunderscarcity],
-        [lornetinterchangeunderscarcity],
-        [totalintermittentgeneration],
-        [demand_and_nonschedgen],
-        [uigf],
-        [semi_scheduled_capacity],
-        [lor_semi_scheduled_capacity],
-        [lcr],
-        [lcr2],
-        [fum],
-        [ss_solar_uigf],
-        [ss_wind_uigf],
-        [ss_solar_capacity],
-        [ss_wind_capacity],
-        [ss_solar_cleared],
-        [ss_wind_cleared],
-        [wdr_available],
-        [wdr_pasaavailable],
-        [wdr_capacity]
+        [base_cost],
+        [adjusted_cost],
+        [estimated_cmpf],
+        [estimated_crmpf],
+        [recovery_factor_cmpf],
+        [recovery_factor_crmpf]
     ) values (
         @file_log_id,
-        src.[run_datetime],
-        src.[interval_datetime],
+        src.[predispatchseqno],
+        src.[runno],
+        src.[intervention],
+        src.[periodid],
+        src.[genconid],
         src.[regionid],
-        src.[demand10],
-        src.[demand50],
-        src.[demand90],
-        src.[reservereq],
-        src.[capacityreq],
-        src.[energyreqdemand50],
-        src.[unconstrainedcapacity],
-        src.[constrainedcapacity],
-        src.[netinterchangeunderscarcity],
-        src.[surpluscapacity],
-        src.[surplusreserve],
-        src.[reservecondition],
-        src.[maxsurplusreserve],
-        src.[maxsparecapacity],
-        src.[lorcondition],
-        src.[aggregatecapacityavailable],
-        src.[aggregatescheduledload],
+        src.[bidtype],
+        src.[genconeffectivedate],
+        src.[genconversionno],
+        src.[marginalvalue],
+        src.[datetime],
         src.[lastchanged],
-        src.[aggregatepasaavailability],
-        src.[runtype],
-        src.[energyreqdemand10],
-        src.[calculatedlor1level],
-        src.[calculatedlor2level],
-        src.[msrnetinterchangeunderscarcity],
-        src.[lornetinterchangeunderscarcity],
-        src.[totalintermittentgeneration],
-        src.[demand_and_nonschedgen],
-        src.[uigf],
-        src.[semi_scheduled_capacity],
-        src.[lor_semi_scheduled_capacity],
-        src.[lcr],
-        src.[lcr2],
-        src.[fum],
-        src.[ss_solar_uigf],
-        src.[ss_wind_uigf],
-        src.[ss_solar_capacity],
-        src.[ss_wind_capacity],
-        src.[ss_solar_cleared],
-        src.[ss_wind_cleared],
-        src.[wdr_available],
-        src.[wdr_pasaavailable],
-        src.[wdr_capacity]
+        src.[base_cost],
+        src.[adjusted_cost],
+        src.[estimated_cmpf],
+        src.[estimated_crmpf],
+        src.[recovery_factor_cmpf],
+        src.[recovery_factor_crmpf]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertPredispatchLocalPrice1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.PredispatchLocalPrice1 as tgt 
+using (
+    select 
+        d.[predispatchseqno],
+        d.[datetime],
+        d.[duid],
+        d.[periodid],
+        d.[local_price_adjustment],
+        d.[locally_constrained],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [predispatchseqno] varchar(20),
+        [datetime] datetime2,
+        [duid] varchar(20),
+        [periodid] varchar(20),
+        [local_price_adjustment] decimal(10,2),
+        [locally_constrained] decimal(1,0),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[datetime] = src.[datetime]
+    and tgt.[duid] = src.[duid]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[predispatchseqno] = src.[predispatchseqno],
+        tgt.[datetime] = src.[datetime],
+        tgt.[duid] = src.[duid],
+        tgt.[periodid] = src.[periodid],
+        tgt.[local_price_adjustment] = src.[local_price_adjustment],
+        tgt.[locally_constrained] = src.[locally_constrained],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [predispatchseqno],
+        [datetime],
+        [duid],
+        [periodid],
+        [local_price_adjustment],
+        [locally_constrained],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[predispatchseqno],
+        src.[datetime],
+        src.[duid],
+        src.[periodid],
+        src.[local_price_adjustment],
+        src.[locally_constrained],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertPredispatchMnspbidtrk1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.PredispatchMnspbidtrk1 as tgt 
+using (
+    select 
+        d.[predispatchseqno],
+        d.[linkid],
+        d.[periodid],
+        d.[participantid],
+        d.[settlementdate],
+        d.[offerdate],
+        d.[versionno],
+        d.[datetime],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [predispatchseqno] varchar(20),
+        [linkid] varchar(10),
+        [periodid] varchar(20),
+        [participantid] varchar(10),
+        [settlementdate] datetime2,
+        [offerdate] datetime2,
+        [versionno] decimal(3,0),
+        [datetime] datetime2,
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[linkid] = src.[linkid]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[predispatchseqno] = src.[predispatchseqno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[predispatchseqno] = src.[predispatchseqno],
+        tgt.[linkid] = src.[linkid],
+        tgt.[periodid] = src.[periodid],
+        tgt.[participantid] = src.[participantid],
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[offerdate] = src.[offerdate],
+        tgt.[versionno] = src.[versionno],
+        tgt.[datetime] = src.[datetime],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [predispatchseqno],
+        [linkid],
+        [periodid],
+        [participantid],
+        [settlementdate],
+        [offerdate],
+        [versionno],
+        [datetime],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[predispatchseqno],
+        src.[linkid],
+        src.[periodid],
+        src.[participantid],
+        src.[settlementdate],
+        src.[offerdate],
+        src.[versionno],
+        src.[datetime],
+        src.[lastchanged]
     );
     
 end
@@ -27222,441 +24502,6 @@ when not matched
     
 end
 go
-create or alter procedure mmsdm_proc.InsertPredispatchRegionfcasrequirement2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.PredispatchRegionfcasrequirement2 as tgt 
-using (
-    select 
-        d.[predispatchseqno],
-        d.[runno],
-        d.[intervention],
-        d.[periodid],
-        d.[genconid],
-        d.[regionid],
-        d.[bidtype],
-        d.[genconeffectivedate],
-        d.[genconversionno],
-        d.[marginalvalue],
-        d.[datetime],
-        d.[lastchanged],
-        d.[base_cost],
-        d.[adjusted_cost],
-        d.[estimated_cmpf],
-        d.[estimated_crmpf],
-        d.[recovery_factor_cmpf],
-        d.[recovery_factor_crmpf]
-    from openjson(@data) with (
-        [predispatchseqno] varchar(20),
-        [runno] decimal(3,0),
-        [intervention] decimal(2,0),
-        [periodid] varchar(20),
-        [genconid] varchar(20),
-        [regionid] varchar(10),
-        [bidtype] varchar(10),
-        [genconeffectivedate] datetime2,
-        [genconversionno] decimal(3,0),
-        [marginalvalue] decimal(16,6),
-        [datetime] datetime2,
-        [lastchanged] datetime2,
-        [base_cost] decimal(18,8),
-        [adjusted_cost] decimal(18,8),
-        [estimated_cmpf] decimal(18,8),
-        [estimated_crmpf] decimal(18,8),
-        [recovery_factor_cmpf] decimal(18,8),
-        [recovery_factor_crmpf] decimal(18,8)
-    ) d
-) as src 
-on (
-    tgt.[bidtype] = src.[bidtype]
-    and tgt.[datetime] = src.[datetime]
-    and tgt.[genconid] = src.[genconid]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[intervention] = src.[intervention]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[predispatchseqno] = src.[predispatchseqno],
-        tgt.[runno] = src.[runno],
-        tgt.[intervention] = src.[intervention],
-        tgt.[periodid] = src.[periodid],
-        tgt.[genconid] = src.[genconid],
-        tgt.[regionid] = src.[regionid],
-        tgt.[bidtype] = src.[bidtype],
-        tgt.[genconeffectivedate] = src.[genconeffectivedate],
-        tgt.[genconversionno] = src.[genconversionno],
-        tgt.[marginalvalue] = src.[marginalvalue],
-        tgt.[datetime] = src.[datetime],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[base_cost] = src.[base_cost],
-        tgt.[adjusted_cost] = src.[adjusted_cost],
-        tgt.[estimated_cmpf] = src.[estimated_cmpf],
-        tgt.[estimated_crmpf] = src.[estimated_crmpf],
-        tgt.[recovery_factor_cmpf] = src.[recovery_factor_cmpf],
-        tgt.[recovery_factor_crmpf] = src.[recovery_factor_crmpf]
-when not matched
-    then insert (
-        file_log_id,
-        [predispatchseqno],
-        [runno],
-        [intervention],
-        [periodid],
-        [genconid],
-        [regionid],
-        [bidtype],
-        [genconeffectivedate],
-        [genconversionno],
-        [marginalvalue],
-        [datetime],
-        [lastchanged],
-        [base_cost],
-        [adjusted_cost],
-        [estimated_cmpf],
-        [estimated_crmpf],
-        [recovery_factor_cmpf],
-        [recovery_factor_crmpf]
-    ) values (
-        @file_log_id,
-        src.[predispatchseqno],
-        src.[runno],
-        src.[intervention],
-        src.[periodid],
-        src.[genconid],
-        src.[regionid],
-        src.[bidtype],
-        src.[genconeffectivedate],
-        src.[genconversionno],
-        src.[marginalvalue],
-        src.[datetime],
-        src.[lastchanged],
-        src.[base_cost],
-        src.[adjusted_cost],
-        src.[estimated_cmpf],
-        src.[estimated_crmpf],
-        src.[recovery_factor_cmpf],
-        src.[recovery_factor_crmpf]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertPredispatchLocalPrice1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.PredispatchLocalPrice1 as tgt 
-using (
-    select 
-        d.[predispatchseqno],
-        d.[datetime],
-        d.[duid],
-        d.[periodid],
-        d.[local_price_adjustment],
-        d.[locally_constrained],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [predispatchseqno] varchar(20),
-        [datetime] datetime2,
-        [duid] varchar(20),
-        [periodid] varchar(20),
-        [local_price_adjustment] decimal(10,2),
-        [locally_constrained] decimal(1,0),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[datetime] = src.[datetime]
-    and tgt.[duid] = src.[duid]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[predispatchseqno] = src.[predispatchseqno],
-        tgt.[datetime] = src.[datetime],
-        tgt.[duid] = src.[duid],
-        tgt.[periodid] = src.[periodid],
-        tgt.[local_price_adjustment] = src.[local_price_adjustment],
-        tgt.[locally_constrained] = src.[locally_constrained],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [predispatchseqno],
-        [datetime],
-        [duid],
-        [periodid],
-        [local_price_adjustment],
-        [locally_constrained],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[predispatchseqno],
-        src.[datetime],
-        src.[duid],
-        src.[periodid],
-        src.[local_price_adjustment],
-        src.[locally_constrained],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertPredispatchMnspbidtrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.PredispatchMnspbidtrk1 as tgt 
-using (
-    select 
-        d.[predispatchseqno],
-        d.[linkid],
-        d.[periodid],
-        d.[participantid],
-        d.[settlementdate],
-        d.[offerdate],
-        d.[versionno],
-        d.[datetime],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [predispatchseqno] varchar(20),
-        [linkid] varchar(10),
-        [periodid] varchar(20),
-        [participantid] varchar(10),
-        [settlementdate] datetime2,
-        [offerdate] datetime2,
-        [versionno] decimal(3,0),
-        [datetime] datetime2,
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[linkid] = src.[linkid]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[predispatchseqno] = src.[predispatchseqno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[predispatchseqno] = src.[predispatchseqno],
-        tgt.[linkid] = src.[linkid],
-        tgt.[periodid] = src.[periodid],
-        tgt.[participantid] = src.[participantid],
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[offerdate] = src.[offerdate],
-        tgt.[versionno] = src.[versionno],
-        tgt.[datetime] = src.[datetime],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [predispatchseqno],
-        [linkid],
-        [periodid],
-        [participantid],
-        [settlementdate],
-        [offerdate],
-        [versionno],
-        [datetime],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[predispatchseqno],
-        src.[linkid],
-        src.[periodid],
-        src.[participantid],
-        src.[settlementdate],
-        src.[offerdate],
-        src.[versionno],
-        src.[datetime],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertPrudentialCompanyPosition1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.PrudentialCompanyPosition1 as tgt 
-using (
-    select 
-        d.[prudential_date],
-        d.[runno],
-        d.[company_id],
-        d.[mcl],
-        d.[credit_support],
-        d.[trading_limit],
-        d.[current_amount_balance],
-        d.[security_deposit_provision],
-        d.[security_deposit_offset],
-        d.[security_deposit_balance],
-        d.[expost_realloc_balance],
-        d.[default_balance],
-        d.[outstandings],
-        d.[trading_margin],
-        d.[typical_accrual],
-        d.[prudential_margin],
-        d.[early_payment_amount],
-        d.[percentage_outstandings],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [prudential_date] datetime2,
-        [runno] decimal(3,0),
-        [company_id] varchar(20),
-        [mcl] decimal(16,6),
-        [credit_support] decimal(16,6),
-        [trading_limit] decimal(16,6),
-        [current_amount_balance] decimal(16,6),
-        [security_deposit_provision] decimal(16,6),
-        [security_deposit_offset] decimal(16,6),
-        [security_deposit_balance] decimal(16,6),
-        [expost_realloc_balance] decimal(16,6),
-        [default_balance] decimal(16,6),
-        [outstandings] decimal(16,6),
-        [trading_margin] decimal(16,6),
-        [typical_accrual] decimal(16,6),
-        [prudential_margin] decimal(16,6),
-        [early_payment_amount] decimal(18,8),
-        [percentage_outstandings] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[company_id] = src.[company_id]
-    and tgt.[prudential_date] = src.[prudential_date]
-    and tgt.[runno] = src.[runno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[prudential_date] = src.[prudential_date],
-        tgt.[runno] = src.[runno],
-        tgt.[company_id] = src.[company_id],
-        tgt.[mcl] = src.[mcl],
-        tgt.[credit_support] = src.[credit_support],
-        tgt.[trading_limit] = src.[trading_limit],
-        tgt.[current_amount_balance] = src.[current_amount_balance],
-        tgt.[security_deposit_provision] = src.[security_deposit_provision],
-        tgt.[security_deposit_offset] = src.[security_deposit_offset],
-        tgt.[security_deposit_balance] = src.[security_deposit_balance],
-        tgt.[expost_realloc_balance] = src.[expost_realloc_balance],
-        tgt.[default_balance] = src.[default_balance],
-        tgt.[outstandings] = src.[outstandings],
-        tgt.[trading_margin] = src.[trading_margin],
-        tgt.[typical_accrual] = src.[typical_accrual],
-        tgt.[prudential_margin] = src.[prudential_margin],
-        tgt.[early_payment_amount] = src.[early_payment_amount],
-        tgt.[percentage_outstandings] = src.[percentage_outstandings],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [prudential_date],
-        [runno],
-        [company_id],
-        [mcl],
-        [credit_support],
-        [trading_limit],
-        [current_amount_balance],
-        [security_deposit_provision],
-        [security_deposit_offset],
-        [security_deposit_balance],
-        [expost_realloc_balance],
-        [default_balance],
-        [outstandings],
-        [trading_margin],
-        [typical_accrual],
-        [prudential_margin],
-        [early_payment_amount],
-        [percentage_outstandings],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[prudential_date],
-        src.[runno],
-        src.[company_id],
-        src.[mcl],
-        src.[credit_support],
-        src.[trading_limit],
-        src.[current_amount_balance],
-        src.[security_deposit_provision],
-        src.[security_deposit_offset],
-        src.[security_deposit_balance],
-        src.[expost_realloc_balance],
-        src.[default_balance],
-        src.[outstandings],
-        src.[trading_margin],
-        src.[typical_accrual],
-        src.[prudential_margin],
-        src.[early_payment_amount],
-        src.[percentage_outstandings],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertPrudentialRuntrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.PrudentialRuntrk1 as tgt 
-using (
-    select 
-        d.[prudential_date],
-        d.[runno],
-        d.[authorisedby],
-        d.[authoriseddate],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [prudential_date] datetime2,
-        [runno] decimal(3,0),
-        [authorisedby] varchar(15),
-        [authoriseddate] datetime2,
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[prudential_date] = src.[prudential_date]
-    and tgt.[runno] = src.[runno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[prudential_date] = src.[prudential_date],
-        tgt.[runno] = src.[runno],
-        tgt.[authorisedby] = src.[authorisedby],
-        tgt.[authoriseddate] = src.[authoriseddate],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [prudential_date],
-        [runno],
-        [authorisedby],
-        [authoriseddate],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[prudential_date],
-        src.[runno],
-        src.[authorisedby],
-        src.[authoriseddate],
-        src.[lastchanged]
-    );
-    
-end
-go
 create or alter procedure mmsdm_proc.InsertMtpasaReservelimit1
     @file_log_id bigint,
     @data nvarchar(max)
@@ -28019,190 +24864,6 @@ when not matched
     
 end
 go
-create or alter procedure mmsdm_proc.InsertSettlementConfigMarketfee2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementConfigMarketfee2 as tgt 
-using (
-    select 
-        d.[marketfeeid],
-        d.[marketfeeperiod],
-        d.[marketfeetype],
-        d.[description],
-        d.[lastchanged],
-        d.[gl_tcode],
-        d.[gl_financialcode],
-        d.[fee_class],
-        d.[meter_type],
-        d.[meter_subtype]
-    from openjson(@data) with (
-        [marketfeeid] varchar(10),
-        [marketfeeperiod] varchar(20),
-        [marketfeetype] varchar(12),
-        [description] varchar(64),
-        [lastchanged] datetime2,
-        [gl_tcode] varchar(15),
-        [gl_financialcode] varchar(10),
-        [fee_class] varchar(40),
-        [meter_type] varchar(20),
-        [meter_subtype] varchar(20)
-    ) d
-) as src 
-on (
-    tgt.[marketfeeid] = src.[marketfeeid]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[marketfeeid] = src.[marketfeeid],
-        tgt.[marketfeeperiod] = src.[marketfeeperiod],
-        tgt.[marketfeetype] = src.[marketfeetype],
-        tgt.[description] = src.[description],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[gl_tcode] = src.[gl_tcode],
-        tgt.[gl_financialcode] = src.[gl_financialcode],
-        tgt.[fee_class] = src.[fee_class],
-        tgt.[meter_type] = src.[meter_type],
-        tgt.[meter_subtype] = src.[meter_subtype]
-when not matched
-    then insert (
-        file_log_id,
-        [marketfeeid],
-        [marketfeeperiod],
-        [marketfeetype],
-        [description],
-        [lastchanged],
-        [gl_tcode],
-        [gl_financialcode],
-        [fee_class],
-        [meter_type],
-        [meter_subtype]
-    ) values (
-        @file_log_id,
-        src.[marketfeeid],
-        src.[marketfeeperiod],
-        src.[marketfeetype],
-        src.[description],
-        src.[lastchanged],
-        src.[gl_tcode],
-        src.[gl_financialcode],
-        src.[fee_class],
-        src.[meter_type],
-        src.[meter_subtype]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementConfigMarketfeedata1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementConfigMarketfeedata1 as tgt 
-using (
-    select 
-        d.[marketfeeid],
-        d.[marketfeeversionno],
-        d.[effectivedate],
-        d.[marketfeevalue],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [marketfeeid] varchar(10),
-        [marketfeeversionno] decimal(3,0),
-        [effectivedate] datetime2,
-        [marketfeevalue] decimal(22,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[effectivedate] = src.[effectivedate]
-    and tgt.[marketfeeid] = src.[marketfeeid]
-    and tgt.[marketfeeversionno] = src.[marketfeeversionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[marketfeeid] = src.[marketfeeid],
-        tgt.[marketfeeversionno] = src.[marketfeeversionno],
-        tgt.[effectivedate] = src.[effectivedate],
-        tgt.[marketfeevalue] = src.[marketfeevalue],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [marketfeeid],
-        [marketfeeversionno],
-        [effectivedate],
-        [marketfeevalue],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[marketfeeid],
-        src.[marketfeeversionno],
-        src.[effectivedate],
-        src.[marketfeevalue],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementConfigMarketfeetrk1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementConfigMarketfeetrk1 as tgt 
-using (
-    select 
-        d.[marketfeeversionno],
-        d.[effectivedate],
-        d.[authorisedby],
-        d.[authoriseddate],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [marketfeeversionno] decimal(3,0),
-        [effectivedate] datetime2,
-        [authorisedby] varchar(15),
-        [authoriseddate] datetime2,
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[effectivedate] = src.[effectivedate]
-    and tgt.[marketfeeversionno] = src.[marketfeeversionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[marketfeeversionno] = src.[marketfeeversionno],
-        tgt.[effectivedate] = src.[effectivedate],
-        tgt.[authorisedby] = src.[authorisedby],
-        tgt.[authoriseddate] = src.[authoriseddate],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [marketfeeversionno],
-        [effectivedate],
-        [authorisedby],
-        [authoriseddate],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[marketfeeversionno],
-        src.[effectivedate],
-        src.[authorisedby],
-        src.[authoriseddate],
-        src.[lastchanged]
-    );
-    
-end
-go
 create or alter procedure mmsdm_proc.InsertSettlementConfigMarketFeeCatExcl1
     @file_log_id bigint,
     @data nvarchar(max)
@@ -28384,6 +25045,190 @@ when not matched
         src.[participantid],
         src.[effectivedate],
         src.[versionno],
+        src.[authorisedby],
+        src.[authoriseddate],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementConfigMarketfee2
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementConfigMarketfee2 as tgt 
+using (
+    select 
+        d.[marketfeeid],
+        d.[marketfeeperiod],
+        d.[marketfeetype],
+        d.[description],
+        d.[lastchanged],
+        d.[gl_tcode],
+        d.[gl_financialcode],
+        d.[fee_class],
+        d.[meter_type],
+        d.[meter_subtype]
+    from openjson(@data) with (
+        [marketfeeid] varchar(10),
+        [marketfeeperiod] varchar(20),
+        [marketfeetype] varchar(12),
+        [description] varchar(64),
+        [lastchanged] datetime2,
+        [gl_tcode] varchar(15),
+        [gl_financialcode] varchar(10),
+        [fee_class] varchar(40),
+        [meter_type] varchar(20),
+        [meter_subtype] varchar(20)
+    ) d
+) as src 
+on (
+    tgt.[marketfeeid] = src.[marketfeeid]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[marketfeeid] = src.[marketfeeid],
+        tgt.[marketfeeperiod] = src.[marketfeeperiod],
+        tgt.[marketfeetype] = src.[marketfeetype],
+        tgt.[description] = src.[description],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[gl_tcode] = src.[gl_tcode],
+        tgt.[gl_financialcode] = src.[gl_financialcode],
+        tgt.[fee_class] = src.[fee_class],
+        tgt.[meter_type] = src.[meter_type],
+        tgt.[meter_subtype] = src.[meter_subtype]
+when not matched
+    then insert (
+        file_log_id,
+        [marketfeeid],
+        [marketfeeperiod],
+        [marketfeetype],
+        [description],
+        [lastchanged],
+        [gl_tcode],
+        [gl_financialcode],
+        [fee_class],
+        [meter_type],
+        [meter_subtype]
+    ) values (
+        @file_log_id,
+        src.[marketfeeid],
+        src.[marketfeeperiod],
+        src.[marketfeetype],
+        src.[description],
+        src.[lastchanged],
+        src.[gl_tcode],
+        src.[gl_financialcode],
+        src.[fee_class],
+        src.[meter_type],
+        src.[meter_subtype]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementConfigMarketfeedata1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementConfigMarketfeedata1 as tgt 
+using (
+    select 
+        d.[marketfeeid],
+        d.[marketfeeversionno],
+        d.[effectivedate],
+        d.[marketfeevalue],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [marketfeeid] varchar(10),
+        [marketfeeversionno] decimal(3,0),
+        [effectivedate] datetime2,
+        [marketfeevalue] decimal(22,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[effectivedate] = src.[effectivedate]
+    and tgt.[marketfeeid] = src.[marketfeeid]
+    and tgt.[marketfeeversionno] = src.[marketfeeversionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[marketfeeid] = src.[marketfeeid],
+        tgt.[marketfeeversionno] = src.[marketfeeversionno],
+        tgt.[effectivedate] = src.[effectivedate],
+        tgt.[marketfeevalue] = src.[marketfeevalue],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [marketfeeid],
+        [marketfeeversionno],
+        [effectivedate],
+        [marketfeevalue],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[marketfeeid],
+        src.[marketfeeversionno],
+        src.[effectivedate],
+        src.[marketfeevalue],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementConfigMarketfeetrk1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementConfigMarketfeetrk1 as tgt 
+using (
+    select 
+        d.[marketfeeversionno],
+        d.[effectivedate],
+        d.[authorisedby],
+        d.[authoriseddate],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [marketfeeversionno] decimal(3,0),
+        [effectivedate] datetime2,
+        [authorisedby] varchar(15),
+        [authoriseddate] datetime2,
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[effectivedate] = src.[effectivedate]
+    and tgt.[marketfeeversionno] = src.[marketfeeversionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[marketfeeversionno] = src.[marketfeeversionno],
+        tgt.[effectivedate] = src.[effectivedate],
+        tgt.[authorisedby] = src.[authorisedby],
+        tgt.[authoriseddate] = src.[authoriseddate],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [marketfeeversionno],
+        [effectivedate],
+        [authorisedby],
+        [authoriseddate],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[marketfeeversionno],
+        src.[effectivedate],
         src.[authorisedby],
         src.[authoriseddate],
         src.[lastchanged]
@@ -28802,65 +25647,6 @@ when not matched
     
 end
 go
-create or alter procedure mmsdm_proc.InsertSettlementsConfigWdrrrCalendar1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementsConfigWdrrrCalendar1 as tgt 
-using (
-    select 
-        d.[wdrrrperiod],
-        d.[regionid],
-        d.[version_datetime],
-        d.[startdate],
-        d.[enddate],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [wdrrrperiod] varchar(20),
-        [regionid] varchar(20),
-        [version_datetime] datetime2,
-        [startdate] datetime2,
-        [enddate] datetime2,
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[regionid] = src.[regionid]
-    and tgt.[version_datetime] = src.[version_datetime]
-    and tgt.[wdrrrperiod] = src.[wdrrrperiod]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[wdrrrperiod] = src.[wdrrrperiod],
-        tgt.[regionid] = src.[regionid],
-        tgt.[version_datetime] = src.[version_datetime],
-        tgt.[startdate] = src.[startdate],
-        tgt.[enddate] = src.[enddate],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [wdrrrperiod],
-        [regionid],
-        [version_datetime],
-        [startdate],
-        [enddate],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[wdrrrperiod],
-        src.[regionid],
-        src.[version_datetime],
-        src.[startdate],
-        src.[enddate],
-        src.[lastchanged]
-    );
-    
-end
-go
 create or alter procedure mmsdm_proc.InsertSettlementsConfigWdrReimburseRate1
     @file_log_id bigint,
     @data nvarchar(max)
@@ -28915,6 +25701,65 @@ when not matched
         src.[version_datetime],
         src.[wdrrr],
         src.[isfirm],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsConfigWdrrrCalendar1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementsConfigWdrrrCalendar1 as tgt 
+using (
+    select 
+        d.[wdrrrperiod],
+        d.[regionid],
+        d.[version_datetime],
+        d.[startdate],
+        d.[enddate],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [wdrrrperiod] varchar(20),
+        [regionid] varchar(20),
+        [version_datetime] datetime2,
+        [startdate] datetime2,
+        [enddate] datetime2,
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[regionid] = src.[regionid]
+    and tgt.[version_datetime] = src.[version_datetime]
+    and tgt.[wdrrrperiod] = src.[wdrrrperiod]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[wdrrrperiod] = src.[wdrrrperiod],
+        tgt.[regionid] = src.[regionid],
+        tgt.[version_datetime] = src.[version_datetime],
+        tgt.[startdate] = src.[startdate],
+        tgt.[enddate] = src.[enddate],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [wdrrrperiod],
+        [regionid],
+        [version_datetime],
+        [startdate],
+        [enddate],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[wdrrrperiod],
+        src.[regionid],
+        src.[version_datetime],
+        src.[startdate],
+        src.[enddate],
         src.[lastchanged]
     );
     
@@ -28986,6 +25831,1498 @@ when not matched
         src.[settlementintervallength]
     );
     
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsAncillarySummary5
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementsAncillarySummary5 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[versionno],
+        d.[service],
+        d.[paymenttype],
+        d.[regionid],
+        d.[periodid],
+        d.[paymentamount],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [versionno] decimal(3,0),
+        [service] varchar(20),
+        [paymenttype] varchar(20),
+        [regionid] varchar(10),
+        [periodid] decimal(3,0),
+        [paymentamount] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[paymenttype] = src.[paymenttype]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[service] = src.[service]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[versionno] = src.[versionno],
+        tgt.[service] = src.[service],
+        tgt.[paymenttype] = src.[paymenttype],
+        tgt.[regionid] = src.[regionid],
+        tgt.[periodid] = src.[periodid],
+        tgt.[paymentamount] = src.[paymentamount],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [versionno],
+        [service],
+        [paymenttype],
+        [regionid],
+        [periodid],
+        [paymentamount],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[versionno],
+        src.[service],
+        src.[paymenttype],
+        src.[regionid],
+        src.[periodid],
+        src.[paymentamount],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsEnergyGensetDetail1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementsEnergyGensetDetail1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[versionno],
+        d.[periodid],
+        d.[participantid],
+        d.[stationid],
+        d.[duid],
+        d.[gensetid],
+        d.[regionid],
+        d.[connectionpointid],
+        d.[rrp],
+        d.[tlf],
+        d.[meterid],
+        d.[ce_mwh],
+        d.[ufea_mwh],
+        d.[ace_mwh],
+        d.[asoe_mwh],
+        d.[total_mwh],
+        d.[dme_mwh],
+        d.[ace_amount],
+        d.[asoe_amount],
+        d.[total_amount],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [versionno] decimal(3,0),
+        [periodid] decimal(3,0),
+        [participantid] varchar(20),
+        [stationid] varchar(20),
+        [duid] varchar(20),
+        [gensetid] varchar(20),
+        [regionid] varchar(20),
+        [connectionpointid] varchar(20),
+        [rrp] decimal(18,8),
+        [tlf] decimal(18,8),
+        [meterid] varchar(20),
+        [ce_mwh] decimal(18,8),
+        [ufea_mwh] decimal(18,8),
+        [ace_mwh] decimal(18,8),
+        [asoe_mwh] decimal(18,8),
+        [total_mwh] decimal(18,8),
+        [dme_mwh] decimal(18,8),
+        [ace_amount] decimal(18,8),
+        [asoe_amount] decimal(18,8),
+        [total_amount] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[duid] = src.[duid]
+    and tgt.[gensetid] = src.[gensetid]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[stationid] = src.[stationid]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[versionno] = src.[versionno],
+        tgt.[periodid] = src.[periodid],
+        tgt.[participantid] = src.[participantid],
+        tgt.[stationid] = src.[stationid],
+        tgt.[duid] = src.[duid],
+        tgt.[gensetid] = src.[gensetid],
+        tgt.[regionid] = src.[regionid],
+        tgt.[connectionpointid] = src.[connectionpointid],
+        tgt.[rrp] = src.[rrp],
+        tgt.[tlf] = src.[tlf],
+        tgt.[meterid] = src.[meterid],
+        tgt.[ce_mwh] = src.[ce_mwh],
+        tgt.[ufea_mwh] = src.[ufea_mwh],
+        tgt.[ace_mwh] = src.[ace_mwh],
+        tgt.[asoe_mwh] = src.[asoe_mwh],
+        tgt.[total_mwh] = src.[total_mwh],
+        tgt.[dme_mwh] = src.[dme_mwh],
+        tgt.[ace_amount] = src.[ace_amount],
+        tgt.[asoe_amount] = src.[asoe_amount],
+        tgt.[total_amount] = src.[total_amount],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [versionno],
+        [periodid],
+        [participantid],
+        [stationid],
+        [duid],
+        [gensetid],
+        [regionid],
+        [connectionpointid],
+        [rrp],
+        [tlf],
+        [meterid],
+        [ce_mwh],
+        [ufea_mwh],
+        [ace_mwh],
+        [asoe_mwh],
+        [total_mwh],
+        [dme_mwh],
+        [ace_amount],
+        [asoe_amount],
+        [total_amount],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[versionno],
+        src.[periodid],
+        src.[participantid],
+        src.[stationid],
+        src.[duid],
+        src.[gensetid],
+        src.[regionid],
+        src.[connectionpointid],
+        src.[rrp],
+        src.[tlf],
+        src.[meterid],
+        src.[ce_mwh],
+        src.[ufea_mwh],
+        src.[ace_mwh],
+        src.[asoe_mwh],
+        src.[total_mwh],
+        src.[dme_mwh],
+        src.[ace_amount],
+        src.[asoe_amount],
+        src.[total_amount],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsEnergyRegionSummary1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementsEnergyRegionSummary1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[versionno],
+        d.[periodid],
+        d.[regionid],
+        d.[ce_mwh],
+        d.[ufea_mwh],
+        d.[ace_mwh],
+        d.[asoe_mwh],
+        d.[ace_amount],
+        d.[asoe_amount],
+        d.[total_mwh],
+        d.[total_amount],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [versionno] decimal(3,0),
+        [periodid] decimal(3,0),
+        [regionid] varchar(20),
+        [ce_mwh] decimal(18,8),
+        [ufea_mwh] decimal(18,8),
+        [ace_mwh] decimal(18,8),
+        [asoe_mwh] decimal(18,8),
+        [ace_amount] decimal(18,8),
+        [asoe_amount] decimal(18,8),
+        [total_mwh] decimal(18,8),
+        [total_amount] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[periodid] = src.[periodid]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[versionno] = src.[versionno],
+        tgt.[periodid] = src.[periodid],
+        tgt.[regionid] = src.[regionid],
+        tgt.[ce_mwh] = src.[ce_mwh],
+        tgt.[ufea_mwh] = src.[ufea_mwh],
+        tgt.[ace_mwh] = src.[ace_mwh],
+        tgt.[asoe_mwh] = src.[asoe_mwh],
+        tgt.[ace_amount] = src.[ace_amount],
+        tgt.[asoe_amount] = src.[asoe_amount],
+        tgt.[total_mwh] = src.[total_mwh],
+        tgt.[total_amount] = src.[total_amount],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [versionno],
+        [periodid],
+        [regionid],
+        [ce_mwh],
+        [ufea_mwh],
+        [ace_mwh],
+        [asoe_mwh],
+        [ace_amount],
+        [asoe_amount],
+        [total_mwh],
+        [total_amount],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[versionno],
+        src.[periodid],
+        src.[regionid],
+        src.[ce_mwh],
+        src.[ufea_mwh],
+        src.[ace_mwh],
+        src.[asoe_mwh],
+        src.[ace_amount],
+        src.[asoe_amount],
+        src.[total_mwh],
+        src.[total_amount],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsEnergyTranSaps1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementsEnergyTranSaps1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[versionno],
+        d.[periodid],
+        d.[participantid],
+        d.[tni],
+        d.[regionid],
+        d.[saps_rrp],
+        d.[consumed_energy_mwh],
+        d.[sentout_energy_mwh],
+        d.[consumed_energy_cost],
+        d.[sentout_energy_cost],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [versionno] decimal(3,0),
+        [periodid] decimal(3,0),
+        [participantid] varchar(20),
+        [tni] varchar(20),
+        [regionid] varchar(20),
+        [saps_rrp] decimal(18,8),
+        [consumed_energy_mwh] decimal(18,8),
+        [sentout_energy_mwh] decimal(18,8),
+        [consumed_energy_cost] decimal(18,8),
+        [sentout_energy_cost] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[participantid] = src.[participantid]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[tni] = src.[tni]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[versionno] = src.[versionno],
+        tgt.[periodid] = src.[periodid],
+        tgt.[participantid] = src.[participantid],
+        tgt.[tni] = src.[tni],
+        tgt.[regionid] = src.[regionid],
+        tgt.[saps_rrp] = src.[saps_rrp],
+        tgt.[consumed_energy_mwh] = src.[consumed_energy_mwh],
+        tgt.[sentout_energy_mwh] = src.[sentout_energy_mwh],
+        tgt.[consumed_energy_cost] = src.[consumed_energy_cost],
+        tgt.[sentout_energy_cost] = src.[sentout_energy_cost],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [versionno],
+        [periodid],
+        [participantid],
+        [tni],
+        [regionid],
+        [saps_rrp],
+        [consumed_energy_mwh],
+        [sentout_energy_mwh],
+        [consumed_energy_cost],
+        [sentout_energy_cost],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[versionno],
+        src.[periodid],
+        src.[participantid],
+        src.[tni],
+        src.[regionid],
+        src.[saps_rrp],
+        src.[consumed_energy_mwh],
+        src.[sentout_energy_mwh],
+        src.[consumed_energy_cost],
+        src.[sentout_energy_cost],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsEnergyTransaction1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementsEnergyTransaction1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[versionno],
+        d.[periodid],
+        d.[participantid],
+        d.[connectionpointid],
+        d.[meter_type],
+        d.[regionid],
+        d.[rrp],
+        d.[tlf],
+        d.[ce_mwh],
+        d.[ufea_mwh],
+        d.[ace_mwh],
+        d.[asoe_mwh],
+        d.[total_mwh],
+        d.[ace_amount],
+        d.[asoe_amount],
+        d.[total_amount],
+        d.[case_id],
+        d.[dme_mwh],
+        d.[aggregate_read_flag],
+        d.[individual_read_flag],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [versionno] decimal(3,0),
+        [periodid] decimal(3,0),
+        [participantid] varchar(20),
+        [connectionpointid] varchar(20),
+        [meter_type] varchar(20),
+        [regionid] varchar(20),
+        [rrp] decimal(18,8),
+        [tlf] decimal(18,8),
+        [ce_mwh] decimal(18,8),
+        [ufea_mwh] decimal(18,8),
+        [ace_mwh] decimal(18,8),
+        [asoe_mwh] decimal(18,8),
+        [total_mwh] decimal(18,8),
+        [ace_amount] decimal(18,8),
+        [asoe_amount] decimal(18,8),
+        [total_amount] decimal(18,8),
+        [case_id] decimal(10,0),
+        [dme_mwh] decimal(18,8),
+        [aggregate_read_flag] decimal(3,0),
+        [individual_read_flag] decimal(3,0),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[connectionpointid] = src.[connectionpointid]
+    and tgt.[meter_type] = src.[meter_type]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[versionno] = src.[versionno],
+        tgt.[periodid] = src.[periodid],
+        tgt.[participantid] = src.[participantid],
+        tgt.[connectionpointid] = src.[connectionpointid],
+        tgt.[meter_type] = src.[meter_type],
+        tgt.[regionid] = src.[regionid],
+        tgt.[rrp] = src.[rrp],
+        tgt.[tlf] = src.[tlf],
+        tgt.[ce_mwh] = src.[ce_mwh],
+        tgt.[ufea_mwh] = src.[ufea_mwh],
+        tgt.[ace_mwh] = src.[ace_mwh],
+        tgt.[asoe_mwh] = src.[asoe_mwh],
+        tgt.[total_mwh] = src.[total_mwh],
+        tgt.[ace_amount] = src.[ace_amount],
+        tgt.[asoe_amount] = src.[asoe_amount],
+        tgt.[total_amount] = src.[total_amount],
+        tgt.[case_id] = src.[case_id],
+        tgt.[dme_mwh] = src.[dme_mwh],
+        tgt.[aggregate_read_flag] = src.[aggregate_read_flag],
+        tgt.[individual_read_flag] = src.[individual_read_flag],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [versionno],
+        [periodid],
+        [participantid],
+        [connectionpointid],
+        [meter_type],
+        [regionid],
+        [rrp],
+        [tlf],
+        [ce_mwh],
+        [ufea_mwh],
+        [ace_mwh],
+        [asoe_mwh],
+        [total_mwh],
+        [ace_amount],
+        [asoe_amount],
+        [total_amount],
+        [case_id],
+        [dme_mwh],
+        [aggregate_read_flag],
+        [individual_read_flag],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[versionno],
+        src.[periodid],
+        src.[participantid],
+        src.[connectionpointid],
+        src.[meter_type],
+        src.[regionid],
+        src.[rrp],
+        src.[tlf],
+        src.[ce_mwh],
+        src.[ufea_mwh],
+        src.[ace_mwh],
+        src.[asoe_mwh],
+        src.[total_mwh],
+        src.[ace_amount],
+        src.[asoe_amount],
+        src.[total_amount],
+        src.[case_id],
+        src.[dme_mwh],
+        src.[aggregate_read_flag],
+        src.[individual_read_flag],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsFcasPayment6
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementsFcasPayment6 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[versionno],
+        d.[participantid],
+        d.[duid],
+        d.[regionid],
+        d.[periodid],
+        d.[lower6sec_payment],
+        d.[raise6sec_payment],
+        d.[lower60sec_payment],
+        d.[raise60sec_payment],
+        d.[lower5min_payment],
+        d.[raise5min_payment],
+        d.[lowerreg_payment],
+        d.[raisereg_payment],
+        d.[lastchanged],
+        d.[raise1sec_payment],
+        d.[lower1sec_payment]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [versionno] decimal(3,0),
+        [participantid] varchar(10),
+        [duid] varchar(10),
+        [regionid] varchar(10),
+        [periodid] decimal(3,0),
+        [lower6sec_payment] decimal(18,8),
+        [raise6sec_payment] decimal(18,8),
+        [lower60sec_payment] decimal(18,8),
+        [raise60sec_payment] decimal(18,8),
+        [lower5min_payment] decimal(18,8),
+        [raise5min_payment] decimal(18,8),
+        [lowerreg_payment] decimal(18,8),
+        [raisereg_payment] decimal(18,8),
+        [lastchanged] datetime2,
+        [raise1sec_payment] decimal(18,8),
+        [lower1sec_payment] decimal(18,8)
+    ) d
+) as src 
+on (
+    tgt.[duid] = src.[duid]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[versionno] = src.[versionno],
+        tgt.[participantid] = src.[participantid],
+        tgt.[duid] = src.[duid],
+        tgt.[regionid] = src.[regionid],
+        tgt.[periodid] = src.[periodid],
+        tgt.[lower6sec_payment] = src.[lower6sec_payment],
+        tgt.[raise6sec_payment] = src.[raise6sec_payment],
+        tgt.[lower60sec_payment] = src.[lower60sec_payment],
+        tgt.[raise60sec_payment] = src.[raise60sec_payment],
+        tgt.[lower5min_payment] = src.[lower5min_payment],
+        tgt.[raise5min_payment] = src.[raise5min_payment],
+        tgt.[lowerreg_payment] = src.[lowerreg_payment],
+        tgt.[raisereg_payment] = src.[raisereg_payment],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[raise1sec_payment] = src.[raise1sec_payment],
+        tgt.[lower1sec_payment] = src.[lower1sec_payment]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [versionno],
+        [participantid],
+        [duid],
+        [regionid],
+        [periodid],
+        [lower6sec_payment],
+        [raise6sec_payment],
+        [lower60sec_payment],
+        [raise60sec_payment],
+        [lower5min_payment],
+        [raise5min_payment],
+        [lowerreg_payment],
+        [raisereg_payment],
+        [lastchanged],
+        [raise1sec_payment],
+        [lower1sec_payment]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[versionno],
+        src.[participantid],
+        src.[duid],
+        src.[regionid],
+        src.[periodid],
+        src.[lower6sec_payment],
+        src.[raise6sec_payment],
+        src.[lower60sec_payment],
+        src.[raise60sec_payment],
+        src.[lower5min_payment],
+        src.[raise5min_payment],
+        src.[lowerreg_payment],
+        src.[raisereg_payment],
+        src.[lastchanged],
+        src.[raise1sec_payment],
+        src.[lower1sec_payment]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsFcasRecovery8
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementsFcasRecovery8 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[versionno],
+        d.[participantid],
+        d.[regionid],
+        d.[periodid],
+        d.[lower6sec_recovery],
+        d.[raise6sec_recovery],
+        d.[lower60sec_recovery],
+        d.[raise60sec_recovery],
+        d.[lower5min_recovery],
+        d.[raise5min_recovery],
+        d.[lowerreg_recovery],
+        d.[raisereg_recovery],
+        d.[lastchanged],
+        d.[lower6sec_recovery_gen],
+        d.[raise6sec_recovery_gen],
+        d.[lower60sec_recovery_gen],
+        d.[raise60sec_recovery_gen],
+        d.[lower5min_recovery_gen],
+        d.[raise5min_recovery_gen],
+        d.[lowerreg_recovery_gen],
+        d.[raisereg_recovery_gen],
+        d.[raise1sec_recovery],
+        d.[lower1sec_recovery],
+        d.[raise1sec_recovery_gen],
+        d.[lower1sec_recovery_gen],
+        d.[lowerreg_ace],
+        d.[raisereg_ace],
+        d.[raise1sec_ace],
+        d.[raise1sec_asoe],
+        d.[lower1sec_ace],
+        d.[lower1sec_asoe],
+        d.[raise6sec_ace],
+        d.[raise6sec_asoe],
+        d.[lower6sec_ace],
+        d.[lower6sec_asoe],
+        d.[raise60sec_ace],
+        d.[raise60sec_asoe],
+        d.[lower60sec_ace],
+        d.[lower60sec_asoe],
+        d.[raise5min_ace],
+        d.[raise5min_asoe],
+        d.[lower5min_ace],
+        d.[lower5min_asoe]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [versionno] varchar(3),
+        [participantid] varchar(10),
+        [regionid] varchar(10),
+        [periodid] decimal(3,0),
+        [lower6sec_recovery] decimal(18,8),
+        [raise6sec_recovery] decimal(18,8),
+        [lower60sec_recovery] decimal(18,8),
+        [raise60sec_recovery] decimal(18,8),
+        [lower5min_recovery] decimal(18,8),
+        [raise5min_recovery] decimal(18,8),
+        [lowerreg_recovery] decimal(18,8),
+        [raisereg_recovery] decimal(18,8),
+        [lastchanged] datetime2,
+        [lower6sec_recovery_gen] decimal(18,8),
+        [raise6sec_recovery_gen] decimal(18,8),
+        [lower60sec_recovery_gen] decimal(18,8),
+        [raise60sec_recovery_gen] decimal(18,8),
+        [lower5min_recovery_gen] decimal(18,8),
+        [raise5min_recovery_gen] decimal(18,8),
+        [lowerreg_recovery_gen] decimal(18,8),
+        [raisereg_recovery_gen] decimal(18,8),
+        [raise1sec_recovery] decimal(18,8),
+        [lower1sec_recovery] decimal(18,8),
+        [raise1sec_recovery_gen] decimal(18,8),
+        [lower1sec_recovery_gen] decimal(18,8),
+        [lowerreg_ace] decimal(18,8),
+        [raisereg_ace] decimal(18,8),
+        [raise1sec_ace] decimal(18,8),
+        [raise1sec_asoe] decimal(18,8),
+        [lower1sec_ace] decimal(18,8),
+        [lower1sec_asoe] decimal(18,8),
+        [raise6sec_ace] decimal(18,8),
+        [raise6sec_asoe] decimal(18,8),
+        [lower6sec_ace] decimal(18,8),
+        [lower6sec_asoe] decimal(18,8),
+        [raise60sec_ace] decimal(18,8),
+        [raise60sec_asoe] decimal(18,8),
+        [lower60sec_ace] decimal(18,8),
+        [lower60sec_asoe] decimal(18,8),
+        [raise5min_ace] decimal(18,8),
+        [raise5min_asoe] decimal(18,8),
+        [lower5min_ace] decimal(18,8),
+        [lower5min_asoe] decimal(18,8)
+    ) d
+) as src 
+on (
+    tgt.[participantid] = src.[participantid]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[versionno] = src.[versionno],
+        tgt.[participantid] = src.[participantid],
+        tgt.[regionid] = src.[regionid],
+        tgt.[periodid] = src.[periodid],
+        tgt.[lower6sec_recovery] = src.[lower6sec_recovery],
+        tgt.[raise6sec_recovery] = src.[raise6sec_recovery],
+        tgt.[lower60sec_recovery] = src.[lower60sec_recovery],
+        tgt.[raise60sec_recovery] = src.[raise60sec_recovery],
+        tgt.[lower5min_recovery] = src.[lower5min_recovery],
+        tgt.[raise5min_recovery] = src.[raise5min_recovery],
+        tgt.[lowerreg_recovery] = src.[lowerreg_recovery],
+        tgt.[raisereg_recovery] = src.[raisereg_recovery],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[lower6sec_recovery_gen] = src.[lower6sec_recovery_gen],
+        tgt.[raise6sec_recovery_gen] = src.[raise6sec_recovery_gen],
+        tgt.[lower60sec_recovery_gen] = src.[lower60sec_recovery_gen],
+        tgt.[raise60sec_recovery_gen] = src.[raise60sec_recovery_gen],
+        tgt.[lower5min_recovery_gen] = src.[lower5min_recovery_gen],
+        tgt.[raise5min_recovery_gen] = src.[raise5min_recovery_gen],
+        tgt.[lowerreg_recovery_gen] = src.[lowerreg_recovery_gen],
+        tgt.[raisereg_recovery_gen] = src.[raisereg_recovery_gen],
+        tgt.[raise1sec_recovery] = src.[raise1sec_recovery],
+        tgt.[lower1sec_recovery] = src.[lower1sec_recovery],
+        tgt.[raise1sec_recovery_gen] = src.[raise1sec_recovery_gen],
+        tgt.[lower1sec_recovery_gen] = src.[lower1sec_recovery_gen],
+        tgt.[lowerreg_ace] = src.[lowerreg_ace],
+        tgt.[raisereg_ace] = src.[raisereg_ace],
+        tgt.[raise1sec_ace] = src.[raise1sec_ace],
+        tgt.[raise1sec_asoe] = src.[raise1sec_asoe],
+        tgt.[lower1sec_ace] = src.[lower1sec_ace],
+        tgt.[lower1sec_asoe] = src.[lower1sec_asoe],
+        tgt.[raise6sec_ace] = src.[raise6sec_ace],
+        tgt.[raise6sec_asoe] = src.[raise6sec_asoe],
+        tgt.[lower6sec_ace] = src.[lower6sec_ace],
+        tgt.[lower6sec_asoe] = src.[lower6sec_asoe],
+        tgt.[raise60sec_ace] = src.[raise60sec_ace],
+        tgt.[raise60sec_asoe] = src.[raise60sec_asoe],
+        tgt.[lower60sec_ace] = src.[lower60sec_ace],
+        tgt.[lower60sec_asoe] = src.[lower60sec_asoe],
+        tgt.[raise5min_ace] = src.[raise5min_ace],
+        tgt.[raise5min_asoe] = src.[raise5min_asoe],
+        tgt.[lower5min_ace] = src.[lower5min_ace],
+        tgt.[lower5min_asoe] = src.[lower5min_asoe]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [versionno],
+        [participantid],
+        [regionid],
+        [periodid],
+        [lower6sec_recovery],
+        [raise6sec_recovery],
+        [lower60sec_recovery],
+        [raise60sec_recovery],
+        [lower5min_recovery],
+        [raise5min_recovery],
+        [lowerreg_recovery],
+        [raisereg_recovery],
+        [lastchanged],
+        [lower6sec_recovery_gen],
+        [raise6sec_recovery_gen],
+        [lower60sec_recovery_gen],
+        [raise60sec_recovery_gen],
+        [lower5min_recovery_gen],
+        [raise5min_recovery_gen],
+        [lowerreg_recovery_gen],
+        [raisereg_recovery_gen],
+        [raise1sec_recovery],
+        [lower1sec_recovery],
+        [raise1sec_recovery_gen],
+        [lower1sec_recovery_gen],
+        [lowerreg_ace],
+        [raisereg_ace],
+        [raise1sec_ace],
+        [raise1sec_asoe],
+        [lower1sec_ace],
+        [lower1sec_asoe],
+        [raise6sec_ace],
+        [raise6sec_asoe],
+        [lower6sec_ace],
+        [lower6sec_asoe],
+        [raise60sec_ace],
+        [raise60sec_asoe],
+        [lower60sec_ace],
+        [lower60sec_asoe],
+        [raise5min_ace],
+        [raise5min_asoe],
+        [lower5min_ace],
+        [lower5min_asoe]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[versionno],
+        src.[participantid],
+        src.[regionid],
+        src.[periodid],
+        src.[lower6sec_recovery],
+        src.[raise6sec_recovery],
+        src.[lower60sec_recovery],
+        src.[raise60sec_recovery],
+        src.[lower5min_recovery],
+        src.[raise5min_recovery],
+        src.[lowerreg_recovery],
+        src.[raisereg_recovery],
+        src.[lastchanged],
+        src.[lower6sec_recovery_gen],
+        src.[raise6sec_recovery_gen],
+        src.[lower60sec_recovery_gen],
+        src.[raise60sec_recovery_gen],
+        src.[lower5min_recovery_gen],
+        src.[raise5min_recovery_gen],
+        src.[lowerreg_recovery_gen],
+        src.[raisereg_recovery_gen],
+        src.[raise1sec_recovery],
+        src.[lower1sec_recovery],
+        src.[raise1sec_recovery_gen],
+        src.[lower1sec_recovery_gen],
+        src.[lowerreg_ace],
+        src.[raisereg_ace],
+        src.[raise1sec_ace],
+        src.[raise1sec_asoe],
+        src.[lower1sec_ace],
+        src.[lower1sec_asoe],
+        src.[raise6sec_ace],
+        src.[raise6sec_asoe],
+        src.[lower6sec_ace],
+        src.[lower6sec_asoe],
+        src.[raise60sec_ace],
+        src.[raise60sec_asoe],
+        src.[lower60sec_ace],
+        src.[lower60sec_asoe],
+        src.[raise5min_ace],
+        src.[raise5min_asoe],
+        src.[lower5min_ace],
+        src.[lower5min_asoe]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsSetFcasRegulationTrk2
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementsSetFcasRegulationTrk2 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[versionno],
+        d.[interval_datetime],
+        d.[constraintid],
+        d.[cmpf],
+        d.[crmpf],
+        d.[recovery_factor_cmpf],
+        d.[recovery_factor_crmpf],
+        d.[lastchanged],
+        d.[usesubstitutedemand],
+        d.[requirementdemand]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [versionno] decimal(3,0),
+        [interval_datetime] datetime2,
+        [constraintid] varchar(20),
+        [cmpf] decimal(18,8),
+        [crmpf] decimal(18,8),
+        [recovery_factor_cmpf] decimal(18,8),
+        [recovery_factor_crmpf] decimal(18,8),
+        [lastchanged] datetime2,
+        [usesubstitutedemand] decimal(1,0),
+        [requirementdemand] decimal(18,8)
+    ) d
+) as src 
+on (
+    tgt.[constraintid] = src.[constraintid]
+    and tgt.[interval_datetime] = src.[interval_datetime]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[versionno] = src.[versionno],
+        tgt.[interval_datetime] = src.[interval_datetime],
+        tgt.[constraintid] = src.[constraintid],
+        tgt.[cmpf] = src.[cmpf],
+        tgt.[crmpf] = src.[crmpf],
+        tgt.[recovery_factor_cmpf] = src.[recovery_factor_cmpf],
+        tgt.[recovery_factor_crmpf] = src.[recovery_factor_crmpf],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[usesubstitutedemand] = src.[usesubstitutedemand],
+        tgt.[requirementdemand] = src.[requirementdemand]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [versionno],
+        [interval_datetime],
+        [constraintid],
+        [cmpf],
+        [crmpf],
+        [recovery_factor_cmpf],
+        [recovery_factor_crmpf],
+        [lastchanged],
+        [usesubstitutedemand],
+        [requirementdemand]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[versionno],
+        src.[interval_datetime],
+        src.[constraintid],
+        src.[cmpf],
+        src.[crmpf],
+        src.[recovery_factor_cmpf],
+        src.[recovery_factor_crmpf],
+        src.[lastchanged],
+        src.[usesubstitutedemand],
+        src.[requirementdemand]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsNmasRecovery3
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementsNmasRecovery3 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[versionno],
+        d.[periodid],
+        d.[participantid],
+        d.[service],
+        d.[contractid],
+        d.[paymenttype],
+        d.[regionid],
+        d.[rbf],
+        d.[payment_amount],
+        d.[participant_energy],
+        d.[region_energy],
+        d.[recovery_amount],
+        d.[lastchanged],
+        d.[participant_generation],
+        d.[region_generation],
+        d.[recovery_amount_customer],
+        d.[recovery_amount_generator],
+        d.[participant_ace_mwh],
+        d.[region_ace_mwh],
+        d.[participant_asoe_mwh],
+        d.[region_asoe_mwh],
+        d.[recoveryamount_ace],
+        d.[recoveryamount_asoe]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [versionno] decimal(3,0),
+        [periodid] decimal(3,0),
+        [participantid] varchar(20),
+        [service] varchar(10),
+        [contractid] varchar(10),
+        [paymenttype] varchar(20),
+        [regionid] varchar(10),
+        [rbf] decimal(18,8),
+        [payment_amount] decimal(18,8),
+        [participant_energy] decimal(18,8),
+        [region_energy] decimal(18,8),
+        [recovery_amount] decimal(18,8),
+        [lastchanged] datetime2,
+        [participant_generation] decimal(18,8),
+        [region_generation] decimal(18,8),
+        [recovery_amount_customer] decimal(18,8),
+        [recovery_amount_generator] decimal(18,8),
+        [participant_ace_mwh] decimal(18,8),
+        [region_ace_mwh] decimal(18,8),
+        [participant_asoe_mwh] decimal(18,8),
+        [region_asoe_mwh] decimal(18,8),
+        [recoveryamount_ace] decimal(18,8),
+        [recoveryamount_asoe] decimal(18,8)
+    ) d
+) as src 
+on (
+    tgt.[contractid] = src.[contractid]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[paymenttype] = src.[paymenttype]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[service] = src.[service]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[versionno] = src.[versionno],
+        tgt.[periodid] = src.[periodid],
+        tgt.[participantid] = src.[participantid],
+        tgt.[service] = src.[service],
+        tgt.[contractid] = src.[contractid],
+        tgt.[paymenttype] = src.[paymenttype],
+        tgt.[regionid] = src.[regionid],
+        tgt.[rbf] = src.[rbf],
+        tgt.[payment_amount] = src.[payment_amount],
+        tgt.[participant_energy] = src.[participant_energy],
+        tgt.[region_energy] = src.[region_energy],
+        tgt.[recovery_amount] = src.[recovery_amount],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[participant_generation] = src.[participant_generation],
+        tgt.[region_generation] = src.[region_generation],
+        tgt.[recovery_amount_customer] = src.[recovery_amount_customer],
+        tgt.[recovery_amount_generator] = src.[recovery_amount_generator],
+        tgt.[participant_ace_mwh] = src.[participant_ace_mwh],
+        tgt.[region_ace_mwh] = src.[region_ace_mwh],
+        tgt.[participant_asoe_mwh] = src.[participant_asoe_mwh],
+        tgt.[region_asoe_mwh] = src.[region_asoe_mwh],
+        tgt.[recoveryamount_ace] = src.[recoveryamount_ace],
+        tgt.[recoveryamount_asoe] = src.[recoveryamount_asoe]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [versionno],
+        [periodid],
+        [participantid],
+        [service],
+        [contractid],
+        [paymenttype],
+        [regionid],
+        [rbf],
+        [payment_amount],
+        [participant_energy],
+        [region_energy],
+        [recovery_amount],
+        [lastchanged],
+        [participant_generation],
+        [region_generation],
+        [recovery_amount_customer],
+        [recovery_amount_generator],
+        [participant_ace_mwh],
+        [region_ace_mwh],
+        [participant_asoe_mwh],
+        [region_asoe_mwh],
+        [recoveryamount_ace],
+        [recoveryamount_asoe]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[versionno],
+        src.[periodid],
+        src.[participantid],
+        src.[service],
+        src.[contractid],
+        src.[paymenttype],
+        src.[regionid],
+        src.[rbf],
+        src.[payment_amount],
+        src.[participant_energy],
+        src.[region_energy],
+        src.[recovery_amount],
+        src.[lastchanged],
+        src.[participant_generation],
+        src.[region_generation],
+        src.[recovery_amount_customer],
+        src.[recovery_amount_generator],
+        src.[participant_ace_mwh],
+        src.[region_ace_mwh],
+        src.[participant_asoe_mwh],
+        src.[region_asoe_mwh],
+        src.[recoveryamount_ace],
+        src.[recoveryamount_asoe]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsNmasRecoveryRbf1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.SettlementsNmasRecoveryRbf1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[versionno],
+        d.[periodid],
+        d.[service],
+        d.[contractid],
+        d.[paymenttype],
+        d.[regionid],
+        d.[rbf],
+        d.[payment_amount],
+        d.[recovery_amount],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [versionno] decimal(3,0),
+        [periodid] decimal(3,0),
+        [service] varchar(10),
+        [contractid] varchar(10),
+        [paymenttype] varchar(20),
+        [regionid] varchar(10),
+        [rbf] decimal(18,8),
+        [payment_amount] decimal(18,8),
+        [recovery_amount] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[contractid] = src.[contractid]
+    and tgt.[paymenttype] = src.[paymenttype]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[service] = src.[service]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[versionno] = src.[versionno],
+        tgt.[periodid] = src.[periodid],
+        tgt.[service] = src.[service],
+        tgt.[contractid] = src.[contractid],
+        tgt.[paymenttype] = src.[paymenttype],
+        tgt.[regionid] = src.[regionid],
+        tgt.[rbf] = src.[rbf],
+        tgt.[payment_amount] = src.[payment_amount],
+        tgt.[recovery_amount] = src.[recovery_amount],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [versionno],
+        [periodid],
+        [service],
+        [contractid],
+        [paymenttype],
+        [regionid],
+        [rbf],
+        [payment_amount],
+        [recovery_amount],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[versionno],
+        src.[periodid],
+        src.[service],
+        src.[contractid],
+        src.[paymenttype],
+        src.[regionid],
+        src.[rbf],
+        src.[payment_amount],
+        src.[recovery_amount],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsRecoveryEnergy2
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.SettlementsRecoveryEnergy2(
+file_log_id,
+[settlementdate],
+        [settlementrunno],
+        [participantid],
+        [regionid],
+        [periodid],
+        [customerenergyactual],
+        [customerenergympfexactual],
+        [customerenergysubstitute],
+        [customerenergympfexsubstitute],
+        [generatorenergyactual],
+        [regioncustenergyactual],
+        [regioncustenergympfexactual],
+        [regioncustenergysubst],
+        [regioncustenergympfexsubst],
+        [regiongenenergyactual],
+        [ace_mwh_actual],
+        [ace_mwh_mpfex_actual],
+        [ace_mwh_substitute],
+        [ace_mwh_mpfex_substitute],
+        [asoe_mwh_actual],
+        [region_ace_mwh_actual],
+        [region_ace_mwh_mpfex_actual],
+        [region_ace_mwh_subst],
+        [region_ace_mwh_mpfex_subst],
+        [region_asoe_mwh_actual]
+)
+select 
+@file_log_id,
+d.[settlementdate],
+        d.[settlementrunno],
+        d.[participantid],
+        d.[regionid],
+        d.[periodid],
+        d.[customerenergyactual],
+        d.[customerenergympfexactual],
+        d.[customerenergysubstitute],
+        d.[customerenergympfexsubstitute],
+        d.[generatorenergyactual],
+        d.[regioncustenergyactual],
+        d.[regioncustenergympfexactual],
+        d.[regioncustenergysubst],
+        d.[regioncustenergympfexsubst],
+        d.[regiongenenergyactual],
+        d.[ace_mwh_actual],
+        d.[ace_mwh_mpfex_actual],
+        d.[ace_mwh_substitute],
+        d.[ace_mwh_mpfex_substitute],
+        d.[asoe_mwh_actual],
+        d.[region_ace_mwh_actual],
+        d.[region_ace_mwh_mpfex_actual],
+        d.[region_ace_mwh_subst],
+        d.[region_ace_mwh_mpfex_subst],
+        d.[region_asoe_mwh_actual]
+from openjson(@data) with (
+[settlementdate] datetime2,
+        [settlementrunno] decimal(3,0),
+        [participantid] varchar(20),
+        [regionid] varchar(20),
+        [periodid] decimal(3,0),
+        [customerenergyactual] decimal(18,8),
+        [customerenergympfexactual] decimal(18,8),
+        [customerenergysubstitute] decimal(18,8),
+        [customerenergympfexsubstitute] decimal(18,8),
+        [generatorenergyactual] decimal(18,8),
+        [regioncustenergyactual] decimal(18,8),
+        [regioncustenergympfexactual] decimal(18,8),
+        [regioncustenergysubst] decimal(18,8),
+        [regioncustenergympfexsubst] decimal(18,8),
+        [regiongenenergyactual] decimal(18,8),
+        [ace_mwh_actual] decimal(18,8),
+        [ace_mwh_mpfex_actual] decimal(18,8),
+        [ace_mwh_substitute] decimal(18,8),
+        [ace_mwh_mpfex_substitute] decimal(18,8),
+        [asoe_mwh_actual] decimal(18,8),
+        [region_ace_mwh_actual] decimal(18,8),
+        [region_ace_mwh_mpfex_actual] decimal(18,8),
+        [region_ace_mwh_subst] decimal(18,8),
+        [region_ace_mwh_mpfex_subst] decimal(18,8),
+        [region_asoe_mwh_actual] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsSubstRunVersion1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.SettlementsSubstRunVersion1(
+file_log_id,
+[settlementdate],
+        [settlementrunno],
+        [referencesettlementdate],
+        [referencesettlementrunno]
+)
+select 
+@file_log_id,
+d.[settlementdate],
+        d.[settlementrunno],
+        d.[referencesettlementdate],
+        d.[referencesettlementrunno]
+from openjson(@data) with (
+[settlementdate] datetime2,
+        [settlementrunno] decimal(3,0),
+        [referencesettlementdate] datetime2,
+        [referencesettlementrunno] decimal(3,0)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsSubstDemand1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.SettlementsSubstDemand1(
+file_log_id,
+[settlementdate],
+        [settlementrunno],
+        [tni],
+        [participantid],
+        [regionid],
+        [substitutedemand]
+)
+select 
+@file_log_id,
+d.[settlementdate],
+        d.[settlementrunno],
+        d.[tni],
+        d.[participantid],
+        d.[regionid],
+        d.[substitutedemand]
+from openjson(@data) with (
+[settlementdate] datetime2,
+        [settlementrunno] decimal(3,0),
+        [tni] varchar(20),
+        [participantid] varchar(20),
+        [regionid] varchar(20),
+        [substitutedemand] decimal(18,8)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsWdrReconDetail1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.SettlementsWdrReconDetail1(
+file_log_id,
+[settlementdate],
+        [settlementrunno],
+        [nmi],
+        [tni],
+        [regionid],
+        [frmp],
+        [drsp],
+        [periodid],
+        [wdrsq_uncapped],
+        [wdrsq_capped],
+        [mrc],
+        [mrcsq],
+        [wdrrr],
+        [rrp],
+        [tlf],
+        [me_dlfadjusted],
+        [bq_dlfadjusted],
+        [isnoncompliant],
+        [qualityflag],
+        [transactionamount],
+        [baselinecalculationid]
+)
+select 
+@file_log_id,
+d.[settlementdate],
+        d.[settlementrunno],
+        d.[nmi],
+        d.[tni],
+        d.[regionid],
+        d.[frmp],
+        d.[drsp],
+        d.[periodid],
+        d.[wdrsq_uncapped],
+        d.[wdrsq_capped],
+        d.[mrc],
+        d.[mrcsq],
+        d.[wdrrr],
+        d.[rrp],
+        d.[tlf],
+        d.[me_dlfadjusted],
+        d.[bq_dlfadjusted],
+        d.[isnoncompliant],
+        d.[qualityflag],
+        d.[transactionamount],
+        d.[baselinecalculationid]
+from openjson(@data) with (
+[settlementdate] datetime2,
+        [settlementrunno] decimal(3,0),
+        [nmi] varchar(20),
+        [tni] varchar(20),
+        [regionid] varchar(20),
+        [frmp] varchar(20),
+        [drsp] varchar(20),
+        [periodid] decimal(3,0),
+        [wdrsq_uncapped] decimal(18,8),
+        [wdrsq_capped] decimal(18,8),
+        [mrc] decimal(18,8),
+        [mrcsq] decimal(18,8),
+        [wdrrr] decimal(18,8),
+        [rrp] decimal(18,8),
+        [tlf] decimal(18,8),
+        [me_dlfadjusted] decimal(18,8),
+        [bq_dlfadjusted] decimal(18,8),
+        [isnoncompliant] decimal(1,0),
+        [qualityflag] varchar(20),
+        [transactionamount] decimal(18,8),
+        [baselinecalculationid] varchar(100)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertSettlementsWdrTransact1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.SettlementsWdrTransact1(
+file_log_id,
+[settlementdate],
+        [settlementrunno],
+        [periodid],
+        [regionid],
+        [participantid],
+        [participantroleid],
+        [counterpartyparticipantid],
+        [transactionamount]
+)
+select 
+@file_log_id,
+d.[settlementdate],
+        d.[settlementrunno],
+        d.[periodid],
+        d.[regionid],
+        d.[participantid],
+        d.[participantroleid],
+        d.[counterpartyparticipantid],
+        d.[transactionamount]
+from openjson(@data) with (
+[settlementdate] datetime2,
+        [settlementrunno] decimal(3,0),
+        [periodid] decimal(3,0),
+        [regionid] varchar(20),
+        [participantid] varchar(20),
+        [participantroleid] varchar(20),
+        [counterpartyparticipantid] varchar(20),
+        [transactionamount] decimal(18,8)
+) d
 end
 go
 create or alter procedure mmsdm_proc.InsertSettlementsCpdata7
@@ -30961,1498 +29298,6 @@ when not matched
     
 end
 go
-create or alter procedure mmsdm_proc.InsertSettlementsAncillarySummary5
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementsAncillarySummary5 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[versionno],
-        d.[service],
-        d.[paymenttype],
-        d.[regionid],
-        d.[periodid],
-        d.[paymentamount],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [versionno] decimal(3,0),
-        [service] varchar(20),
-        [paymenttype] varchar(20),
-        [regionid] varchar(10),
-        [periodid] decimal(3,0),
-        [paymentamount] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[paymenttype] = src.[paymenttype]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[service] = src.[service]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[versionno] = src.[versionno],
-        tgt.[service] = src.[service],
-        tgt.[paymenttype] = src.[paymenttype],
-        tgt.[regionid] = src.[regionid],
-        tgt.[periodid] = src.[periodid],
-        tgt.[paymentamount] = src.[paymentamount],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [versionno],
-        [service],
-        [paymenttype],
-        [regionid],
-        [periodid],
-        [paymentamount],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[versionno],
-        src.[service],
-        src.[paymenttype],
-        src.[regionid],
-        src.[periodid],
-        src.[paymentamount],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsEnergyGensetDetail1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementsEnergyGensetDetail1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[versionno],
-        d.[periodid],
-        d.[participantid],
-        d.[stationid],
-        d.[duid],
-        d.[gensetid],
-        d.[regionid],
-        d.[connectionpointid],
-        d.[rrp],
-        d.[tlf],
-        d.[meterid],
-        d.[ce_mwh],
-        d.[ufea_mwh],
-        d.[ace_mwh],
-        d.[asoe_mwh],
-        d.[total_mwh],
-        d.[dme_mwh],
-        d.[ace_amount],
-        d.[asoe_amount],
-        d.[total_amount],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [versionno] decimal(3,0),
-        [periodid] decimal(3,0),
-        [participantid] varchar(20),
-        [stationid] varchar(20),
-        [duid] varchar(20),
-        [gensetid] varchar(20),
-        [regionid] varchar(20),
-        [connectionpointid] varchar(20),
-        [rrp] decimal(18,8),
-        [tlf] decimal(18,8),
-        [meterid] varchar(20),
-        [ce_mwh] decimal(18,8),
-        [ufea_mwh] decimal(18,8),
-        [ace_mwh] decimal(18,8),
-        [asoe_mwh] decimal(18,8),
-        [total_mwh] decimal(18,8),
-        [dme_mwh] decimal(18,8),
-        [ace_amount] decimal(18,8),
-        [asoe_amount] decimal(18,8),
-        [total_amount] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[duid] = src.[duid]
-    and tgt.[gensetid] = src.[gensetid]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[stationid] = src.[stationid]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[versionno] = src.[versionno],
-        tgt.[periodid] = src.[periodid],
-        tgt.[participantid] = src.[participantid],
-        tgt.[stationid] = src.[stationid],
-        tgt.[duid] = src.[duid],
-        tgt.[gensetid] = src.[gensetid],
-        tgt.[regionid] = src.[regionid],
-        tgt.[connectionpointid] = src.[connectionpointid],
-        tgt.[rrp] = src.[rrp],
-        tgt.[tlf] = src.[tlf],
-        tgt.[meterid] = src.[meterid],
-        tgt.[ce_mwh] = src.[ce_mwh],
-        tgt.[ufea_mwh] = src.[ufea_mwh],
-        tgt.[ace_mwh] = src.[ace_mwh],
-        tgt.[asoe_mwh] = src.[asoe_mwh],
-        tgt.[total_mwh] = src.[total_mwh],
-        tgt.[dme_mwh] = src.[dme_mwh],
-        tgt.[ace_amount] = src.[ace_amount],
-        tgt.[asoe_amount] = src.[asoe_amount],
-        tgt.[total_amount] = src.[total_amount],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [versionno],
-        [periodid],
-        [participantid],
-        [stationid],
-        [duid],
-        [gensetid],
-        [regionid],
-        [connectionpointid],
-        [rrp],
-        [tlf],
-        [meterid],
-        [ce_mwh],
-        [ufea_mwh],
-        [ace_mwh],
-        [asoe_mwh],
-        [total_mwh],
-        [dme_mwh],
-        [ace_amount],
-        [asoe_amount],
-        [total_amount],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[versionno],
-        src.[periodid],
-        src.[participantid],
-        src.[stationid],
-        src.[duid],
-        src.[gensetid],
-        src.[regionid],
-        src.[connectionpointid],
-        src.[rrp],
-        src.[tlf],
-        src.[meterid],
-        src.[ce_mwh],
-        src.[ufea_mwh],
-        src.[ace_mwh],
-        src.[asoe_mwh],
-        src.[total_mwh],
-        src.[dme_mwh],
-        src.[ace_amount],
-        src.[asoe_amount],
-        src.[total_amount],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsEnergyRegionSummary1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementsEnergyRegionSummary1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[versionno],
-        d.[periodid],
-        d.[regionid],
-        d.[ce_mwh],
-        d.[ufea_mwh],
-        d.[ace_mwh],
-        d.[asoe_mwh],
-        d.[ace_amount],
-        d.[asoe_amount],
-        d.[total_mwh],
-        d.[total_amount],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [versionno] decimal(3,0),
-        [periodid] decimal(3,0),
-        [regionid] varchar(20),
-        [ce_mwh] decimal(18,8),
-        [ufea_mwh] decimal(18,8),
-        [ace_mwh] decimal(18,8),
-        [asoe_mwh] decimal(18,8),
-        [ace_amount] decimal(18,8),
-        [asoe_amount] decimal(18,8),
-        [total_mwh] decimal(18,8),
-        [total_amount] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[periodid] = src.[periodid]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[versionno] = src.[versionno],
-        tgt.[periodid] = src.[periodid],
-        tgt.[regionid] = src.[regionid],
-        tgt.[ce_mwh] = src.[ce_mwh],
-        tgt.[ufea_mwh] = src.[ufea_mwh],
-        tgt.[ace_mwh] = src.[ace_mwh],
-        tgt.[asoe_mwh] = src.[asoe_mwh],
-        tgt.[ace_amount] = src.[ace_amount],
-        tgt.[asoe_amount] = src.[asoe_amount],
-        tgt.[total_mwh] = src.[total_mwh],
-        tgt.[total_amount] = src.[total_amount],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [versionno],
-        [periodid],
-        [regionid],
-        [ce_mwh],
-        [ufea_mwh],
-        [ace_mwh],
-        [asoe_mwh],
-        [ace_amount],
-        [asoe_amount],
-        [total_mwh],
-        [total_amount],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[versionno],
-        src.[periodid],
-        src.[regionid],
-        src.[ce_mwh],
-        src.[ufea_mwh],
-        src.[ace_mwh],
-        src.[asoe_mwh],
-        src.[ace_amount],
-        src.[asoe_amount],
-        src.[total_mwh],
-        src.[total_amount],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsEnergyTransaction1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementsEnergyTransaction1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[versionno],
-        d.[periodid],
-        d.[participantid],
-        d.[connectionpointid],
-        d.[meter_type],
-        d.[regionid],
-        d.[rrp],
-        d.[tlf],
-        d.[ce_mwh],
-        d.[ufea_mwh],
-        d.[ace_mwh],
-        d.[asoe_mwh],
-        d.[total_mwh],
-        d.[ace_amount],
-        d.[asoe_amount],
-        d.[total_amount],
-        d.[case_id],
-        d.[dme_mwh],
-        d.[aggregate_read_flag],
-        d.[individual_read_flag],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [versionno] decimal(3,0),
-        [periodid] decimal(3,0),
-        [participantid] varchar(20),
-        [connectionpointid] varchar(20),
-        [meter_type] varchar(20),
-        [regionid] varchar(20),
-        [rrp] decimal(18,8),
-        [tlf] decimal(18,8),
-        [ce_mwh] decimal(18,8),
-        [ufea_mwh] decimal(18,8),
-        [ace_mwh] decimal(18,8),
-        [asoe_mwh] decimal(18,8),
-        [total_mwh] decimal(18,8),
-        [ace_amount] decimal(18,8),
-        [asoe_amount] decimal(18,8),
-        [total_amount] decimal(18,8),
-        [case_id] decimal(10,0),
-        [dme_mwh] decimal(18,8),
-        [aggregate_read_flag] decimal(3,0),
-        [individual_read_flag] decimal(3,0),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[connectionpointid] = src.[connectionpointid]
-    and tgt.[meter_type] = src.[meter_type]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[versionno] = src.[versionno],
-        tgt.[periodid] = src.[periodid],
-        tgt.[participantid] = src.[participantid],
-        tgt.[connectionpointid] = src.[connectionpointid],
-        tgt.[meter_type] = src.[meter_type],
-        tgt.[regionid] = src.[regionid],
-        tgt.[rrp] = src.[rrp],
-        tgt.[tlf] = src.[tlf],
-        tgt.[ce_mwh] = src.[ce_mwh],
-        tgt.[ufea_mwh] = src.[ufea_mwh],
-        tgt.[ace_mwh] = src.[ace_mwh],
-        tgt.[asoe_mwh] = src.[asoe_mwh],
-        tgt.[total_mwh] = src.[total_mwh],
-        tgt.[ace_amount] = src.[ace_amount],
-        tgt.[asoe_amount] = src.[asoe_amount],
-        tgt.[total_amount] = src.[total_amount],
-        tgt.[case_id] = src.[case_id],
-        tgt.[dme_mwh] = src.[dme_mwh],
-        tgt.[aggregate_read_flag] = src.[aggregate_read_flag],
-        tgt.[individual_read_flag] = src.[individual_read_flag],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [versionno],
-        [periodid],
-        [participantid],
-        [connectionpointid],
-        [meter_type],
-        [regionid],
-        [rrp],
-        [tlf],
-        [ce_mwh],
-        [ufea_mwh],
-        [ace_mwh],
-        [asoe_mwh],
-        [total_mwh],
-        [ace_amount],
-        [asoe_amount],
-        [total_amount],
-        [case_id],
-        [dme_mwh],
-        [aggregate_read_flag],
-        [individual_read_flag],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[versionno],
-        src.[periodid],
-        src.[participantid],
-        src.[connectionpointid],
-        src.[meter_type],
-        src.[regionid],
-        src.[rrp],
-        src.[tlf],
-        src.[ce_mwh],
-        src.[ufea_mwh],
-        src.[ace_mwh],
-        src.[asoe_mwh],
-        src.[total_mwh],
-        src.[ace_amount],
-        src.[asoe_amount],
-        src.[total_amount],
-        src.[case_id],
-        src.[dme_mwh],
-        src.[aggregate_read_flag],
-        src.[individual_read_flag],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsEnergyTranSaps1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementsEnergyTranSaps1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[versionno],
-        d.[periodid],
-        d.[participantid],
-        d.[tni],
-        d.[regionid],
-        d.[saps_rrp],
-        d.[consumed_energy_mwh],
-        d.[sentout_energy_mwh],
-        d.[consumed_energy_cost],
-        d.[sentout_energy_cost],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [versionno] decimal(3,0),
-        [periodid] decimal(3,0),
-        [participantid] varchar(20),
-        [tni] varchar(20),
-        [regionid] varchar(20),
-        [saps_rrp] decimal(18,8),
-        [consumed_energy_mwh] decimal(18,8),
-        [sentout_energy_mwh] decimal(18,8),
-        [consumed_energy_cost] decimal(18,8),
-        [sentout_energy_cost] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[participantid] = src.[participantid]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[tni] = src.[tni]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[versionno] = src.[versionno],
-        tgt.[periodid] = src.[periodid],
-        tgt.[participantid] = src.[participantid],
-        tgt.[tni] = src.[tni],
-        tgt.[regionid] = src.[regionid],
-        tgt.[saps_rrp] = src.[saps_rrp],
-        tgt.[consumed_energy_mwh] = src.[consumed_energy_mwh],
-        tgt.[sentout_energy_mwh] = src.[sentout_energy_mwh],
-        tgt.[consumed_energy_cost] = src.[consumed_energy_cost],
-        tgt.[sentout_energy_cost] = src.[sentout_energy_cost],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [versionno],
-        [periodid],
-        [participantid],
-        [tni],
-        [regionid],
-        [saps_rrp],
-        [consumed_energy_mwh],
-        [sentout_energy_mwh],
-        [consumed_energy_cost],
-        [sentout_energy_cost],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[versionno],
-        src.[periodid],
-        src.[participantid],
-        src.[tni],
-        src.[regionid],
-        src.[saps_rrp],
-        src.[consumed_energy_mwh],
-        src.[sentout_energy_mwh],
-        src.[consumed_energy_cost],
-        src.[sentout_energy_cost],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsFcasPayment6
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementsFcasPayment6 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[versionno],
-        d.[participantid],
-        d.[duid],
-        d.[regionid],
-        d.[periodid],
-        d.[lower6sec_payment],
-        d.[raise6sec_payment],
-        d.[lower60sec_payment],
-        d.[raise60sec_payment],
-        d.[lower5min_payment],
-        d.[raise5min_payment],
-        d.[lowerreg_payment],
-        d.[raisereg_payment],
-        d.[lastchanged],
-        d.[raise1sec_payment],
-        d.[lower1sec_payment]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [versionno] decimal(3,0),
-        [participantid] varchar(10),
-        [duid] varchar(10),
-        [regionid] varchar(10),
-        [periodid] decimal(3,0),
-        [lower6sec_payment] decimal(18,8),
-        [raise6sec_payment] decimal(18,8),
-        [lower60sec_payment] decimal(18,8),
-        [raise60sec_payment] decimal(18,8),
-        [lower5min_payment] decimal(18,8),
-        [raise5min_payment] decimal(18,8),
-        [lowerreg_payment] decimal(18,8),
-        [raisereg_payment] decimal(18,8),
-        [lastchanged] datetime2,
-        [raise1sec_payment] decimal(18,8),
-        [lower1sec_payment] decimal(18,8)
-    ) d
-) as src 
-on (
-    tgt.[duid] = src.[duid]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[versionno] = src.[versionno],
-        tgt.[participantid] = src.[participantid],
-        tgt.[duid] = src.[duid],
-        tgt.[regionid] = src.[regionid],
-        tgt.[periodid] = src.[periodid],
-        tgt.[lower6sec_payment] = src.[lower6sec_payment],
-        tgt.[raise6sec_payment] = src.[raise6sec_payment],
-        tgt.[lower60sec_payment] = src.[lower60sec_payment],
-        tgt.[raise60sec_payment] = src.[raise60sec_payment],
-        tgt.[lower5min_payment] = src.[lower5min_payment],
-        tgt.[raise5min_payment] = src.[raise5min_payment],
-        tgt.[lowerreg_payment] = src.[lowerreg_payment],
-        tgt.[raisereg_payment] = src.[raisereg_payment],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[raise1sec_payment] = src.[raise1sec_payment],
-        tgt.[lower1sec_payment] = src.[lower1sec_payment]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [versionno],
-        [participantid],
-        [duid],
-        [regionid],
-        [periodid],
-        [lower6sec_payment],
-        [raise6sec_payment],
-        [lower60sec_payment],
-        [raise60sec_payment],
-        [lower5min_payment],
-        [raise5min_payment],
-        [lowerreg_payment],
-        [raisereg_payment],
-        [lastchanged],
-        [raise1sec_payment],
-        [lower1sec_payment]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[versionno],
-        src.[participantid],
-        src.[duid],
-        src.[regionid],
-        src.[periodid],
-        src.[lower6sec_payment],
-        src.[raise6sec_payment],
-        src.[lower60sec_payment],
-        src.[raise60sec_payment],
-        src.[lower5min_payment],
-        src.[raise5min_payment],
-        src.[lowerreg_payment],
-        src.[raisereg_payment],
-        src.[lastchanged],
-        src.[raise1sec_payment],
-        src.[lower1sec_payment]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsFcasRecovery8
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementsFcasRecovery8 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[versionno],
-        d.[participantid],
-        d.[regionid],
-        d.[periodid],
-        d.[lower6sec_recovery],
-        d.[raise6sec_recovery],
-        d.[lower60sec_recovery],
-        d.[raise60sec_recovery],
-        d.[lower5min_recovery],
-        d.[raise5min_recovery],
-        d.[lowerreg_recovery],
-        d.[raisereg_recovery],
-        d.[lastchanged],
-        d.[lower6sec_recovery_gen],
-        d.[raise6sec_recovery_gen],
-        d.[lower60sec_recovery_gen],
-        d.[raise60sec_recovery_gen],
-        d.[lower5min_recovery_gen],
-        d.[raise5min_recovery_gen],
-        d.[lowerreg_recovery_gen],
-        d.[raisereg_recovery_gen],
-        d.[raise1sec_recovery],
-        d.[lower1sec_recovery],
-        d.[raise1sec_recovery_gen],
-        d.[lower1sec_recovery_gen],
-        d.[lowerreg_ace],
-        d.[raisereg_ace],
-        d.[raise1sec_ace],
-        d.[raise1sec_asoe],
-        d.[lower1sec_ace],
-        d.[lower1sec_asoe],
-        d.[raise6sec_ace],
-        d.[raise6sec_asoe],
-        d.[lower6sec_ace],
-        d.[lower6sec_asoe],
-        d.[raise60sec_ace],
-        d.[raise60sec_asoe],
-        d.[lower60sec_ace],
-        d.[lower60sec_asoe],
-        d.[raise5min_ace],
-        d.[raise5min_asoe],
-        d.[lower5min_ace],
-        d.[lower5min_asoe]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [versionno] varchar(3),
-        [participantid] varchar(10),
-        [regionid] varchar(10),
-        [periodid] decimal(3,0),
-        [lower6sec_recovery] decimal(18,8),
-        [raise6sec_recovery] decimal(18,8),
-        [lower60sec_recovery] decimal(18,8),
-        [raise60sec_recovery] decimal(18,8),
-        [lower5min_recovery] decimal(18,8),
-        [raise5min_recovery] decimal(18,8),
-        [lowerreg_recovery] decimal(18,8),
-        [raisereg_recovery] decimal(18,8),
-        [lastchanged] datetime2,
-        [lower6sec_recovery_gen] decimal(18,8),
-        [raise6sec_recovery_gen] decimal(18,8),
-        [lower60sec_recovery_gen] decimal(18,8),
-        [raise60sec_recovery_gen] decimal(18,8),
-        [lower5min_recovery_gen] decimal(18,8),
-        [raise5min_recovery_gen] decimal(18,8),
-        [lowerreg_recovery_gen] decimal(18,8),
-        [raisereg_recovery_gen] decimal(18,8),
-        [raise1sec_recovery] decimal(18,8),
-        [lower1sec_recovery] decimal(18,8),
-        [raise1sec_recovery_gen] decimal(18,8),
-        [lower1sec_recovery_gen] decimal(18,8),
-        [lowerreg_ace] decimal(18,8),
-        [raisereg_ace] decimal(18,8),
-        [raise1sec_ace] decimal(18,8),
-        [raise1sec_asoe] decimal(18,8),
-        [lower1sec_ace] decimal(18,8),
-        [lower1sec_asoe] decimal(18,8),
-        [raise6sec_ace] decimal(18,8),
-        [raise6sec_asoe] decimal(18,8),
-        [lower6sec_ace] decimal(18,8),
-        [lower6sec_asoe] decimal(18,8),
-        [raise60sec_ace] decimal(18,8),
-        [raise60sec_asoe] decimal(18,8),
-        [lower60sec_ace] decimal(18,8),
-        [lower60sec_asoe] decimal(18,8),
-        [raise5min_ace] decimal(18,8),
-        [raise5min_asoe] decimal(18,8),
-        [lower5min_ace] decimal(18,8),
-        [lower5min_asoe] decimal(18,8)
-    ) d
-) as src 
-on (
-    tgt.[participantid] = src.[participantid]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[versionno] = src.[versionno],
-        tgt.[participantid] = src.[participantid],
-        tgt.[regionid] = src.[regionid],
-        tgt.[periodid] = src.[periodid],
-        tgt.[lower6sec_recovery] = src.[lower6sec_recovery],
-        tgt.[raise6sec_recovery] = src.[raise6sec_recovery],
-        tgt.[lower60sec_recovery] = src.[lower60sec_recovery],
-        tgt.[raise60sec_recovery] = src.[raise60sec_recovery],
-        tgt.[lower5min_recovery] = src.[lower5min_recovery],
-        tgt.[raise5min_recovery] = src.[raise5min_recovery],
-        tgt.[lowerreg_recovery] = src.[lowerreg_recovery],
-        tgt.[raisereg_recovery] = src.[raisereg_recovery],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[lower6sec_recovery_gen] = src.[lower6sec_recovery_gen],
-        tgt.[raise6sec_recovery_gen] = src.[raise6sec_recovery_gen],
-        tgt.[lower60sec_recovery_gen] = src.[lower60sec_recovery_gen],
-        tgt.[raise60sec_recovery_gen] = src.[raise60sec_recovery_gen],
-        tgt.[lower5min_recovery_gen] = src.[lower5min_recovery_gen],
-        tgt.[raise5min_recovery_gen] = src.[raise5min_recovery_gen],
-        tgt.[lowerreg_recovery_gen] = src.[lowerreg_recovery_gen],
-        tgt.[raisereg_recovery_gen] = src.[raisereg_recovery_gen],
-        tgt.[raise1sec_recovery] = src.[raise1sec_recovery],
-        tgt.[lower1sec_recovery] = src.[lower1sec_recovery],
-        tgt.[raise1sec_recovery_gen] = src.[raise1sec_recovery_gen],
-        tgt.[lower1sec_recovery_gen] = src.[lower1sec_recovery_gen],
-        tgt.[lowerreg_ace] = src.[lowerreg_ace],
-        tgt.[raisereg_ace] = src.[raisereg_ace],
-        tgt.[raise1sec_ace] = src.[raise1sec_ace],
-        tgt.[raise1sec_asoe] = src.[raise1sec_asoe],
-        tgt.[lower1sec_ace] = src.[lower1sec_ace],
-        tgt.[lower1sec_asoe] = src.[lower1sec_asoe],
-        tgt.[raise6sec_ace] = src.[raise6sec_ace],
-        tgt.[raise6sec_asoe] = src.[raise6sec_asoe],
-        tgt.[lower6sec_ace] = src.[lower6sec_ace],
-        tgt.[lower6sec_asoe] = src.[lower6sec_asoe],
-        tgt.[raise60sec_ace] = src.[raise60sec_ace],
-        tgt.[raise60sec_asoe] = src.[raise60sec_asoe],
-        tgt.[lower60sec_ace] = src.[lower60sec_ace],
-        tgt.[lower60sec_asoe] = src.[lower60sec_asoe],
-        tgt.[raise5min_ace] = src.[raise5min_ace],
-        tgt.[raise5min_asoe] = src.[raise5min_asoe],
-        tgt.[lower5min_ace] = src.[lower5min_ace],
-        tgt.[lower5min_asoe] = src.[lower5min_asoe]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [versionno],
-        [participantid],
-        [regionid],
-        [periodid],
-        [lower6sec_recovery],
-        [raise6sec_recovery],
-        [lower60sec_recovery],
-        [raise60sec_recovery],
-        [lower5min_recovery],
-        [raise5min_recovery],
-        [lowerreg_recovery],
-        [raisereg_recovery],
-        [lastchanged],
-        [lower6sec_recovery_gen],
-        [raise6sec_recovery_gen],
-        [lower60sec_recovery_gen],
-        [raise60sec_recovery_gen],
-        [lower5min_recovery_gen],
-        [raise5min_recovery_gen],
-        [lowerreg_recovery_gen],
-        [raisereg_recovery_gen],
-        [raise1sec_recovery],
-        [lower1sec_recovery],
-        [raise1sec_recovery_gen],
-        [lower1sec_recovery_gen],
-        [lowerreg_ace],
-        [raisereg_ace],
-        [raise1sec_ace],
-        [raise1sec_asoe],
-        [lower1sec_ace],
-        [lower1sec_asoe],
-        [raise6sec_ace],
-        [raise6sec_asoe],
-        [lower6sec_ace],
-        [lower6sec_asoe],
-        [raise60sec_ace],
-        [raise60sec_asoe],
-        [lower60sec_ace],
-        [lower60sec_asoe],
-        [raise5min_ace],
-        [raise5min_asoe],
-        [lower5min_ace],
-        [lower5min_asoe]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[versionno],
-        src.[participantid],
-        src.[regionid],
-        src.[periodid],
-        src.[lower6sec_recovery],
-        src.[raise6sec_recovery],
-        src.[lower60sec_recovery],
-        src.[raise60sec_recovery],
-        src.[lower5min_recovery],
-        src.[raise5min_recovery],
-        src.[lowerreg_recovery],
-        src.[raisereg_recovery],
-        src.[lastchanged],
-        src.[lower6sec_recovery_gen],
-        src.[raise6sec_recovery_gen],
-        src.[lower60sec_recovery_gen],
-        src.[raise60sec_recovery_gen],
-        src.[lower5min_recovery_gen],
-        src.[raise5min_recovery_gen],
-        src.[lowerreg_recovery_gen],
-        src.[raisereg_recovery_gen],
-        src.[raise1sec_recovery],
-        src.[lower1sec_recovery],
-        src.[raise1sec_recovery_gen],
-        src.[lower1sec_recovery_gen],
-        src.[lowerreg_ace],
-        src.[raisereg_ace],
-        src.[raise1sec_ace],
-        src.[raise1sec_asoe],
-        src.[lower1sec_ace],
-        src.[lower1sec_asoe],
-        src.[raise6sec_ace],
-        src.[raise6sec_asoe],
-        src.[lower6sec_ace],
-        src.[lower6sec_asoe],
-        src.[raise60sec_ace],
-        src.[raise60sec_asoe],
-        src.[lower60sec_ace],
-        src.[lower60sec_asoe],
-        src.[raise5min_ace],
-        src.[raise5min_asoe],
-        src.[lower5min_ace],
-        src.[lower5min_asoe]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsSetFcasRegulationTrk2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementsSetFcasRegulationTrk2 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[versionno],
-        d.[interval_datetime],
-        d.[constraintid],
-        d.[cmpf],
-        d.[crmpf],
-        d.[recovery_factor_cmpf],
-        d.[recovery_factor_crmpf],
-        d.[lastchanged],
-        d.[usesubstitutedemand],
-        d.[requirementdemand]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [versionno] decimal(3,0),
-        [interval_datetime] datetime2,
-        [constraintid] varchar(20),
-        [cmpf] decimal(18,8),
-        [crmpf] decimal(18,8),
-        [recovery_factor_cmpf] decimal(18,8),
-        [recovery_factor_crmpf] decimal(18,8),
-        [lastchanged] datetime2,
-        [usesubstitutedemand] decimal(1,0),
-        [requirementdemand] decimal(18,8)
-    ) d
-) as src 
-on (
-    tgt.[constraintid] = src.[constraintid]
-    and tgt.[interval_datetime] = src.[interval_datetime]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[versionno] = src.[versionno],
-        tgt.[interval_datetime] = src.[interval_datetime],
-        tgt.[constraintid] = src.[constraintid],
-        tgt.[cmpf] = src.[cmpf],
-        tgt.[crmpf] = src.[crmpf],
-        tgt.[recovery_factor_cmpf] = src.[recovery_factor_cmpf],
-        tgt.[recovery_factor_crmpf] = src.[recovery_factor_crmpf],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[usesubstitutedemand] = src.[usesubstitutedemand],
-        tgt.[requirementdemand] = src.[requirementdemand]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [versionno],
-        [interval_datetime],
-        [constraintid],
-        [cmpf],
-        [crmpf],
-        [recovery_factor_cmpf],
-        [recovery_factor_crmpf],
-        [lastchanged],
-        [usesubstitutedemand],
-        [requirementdemand]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[versionno],
-        src.[interval_datetime],
-        src.[constraintid],
-        src.[cmpf],
-        src.[crmpf],
-        src.[recovery_factor_cmpf],
-        src.[recovery_factor_crmpf],
-        src.[lastchanged],
-        src.[usesubstitutedemand],
-        src.[requirementdemand]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsNmasRecovery3
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementsNmasRecovery3 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[versionno],
-        d.[periodid],
-        d.[participantid],
-        d.[service],
-        d.[contractid],
-        d.[paymenttype],
-        d.[regionid],
-        d.[rbf],
-        d.[payment_amount],
-        d.[participant_energy],
-        d.[region_energy],
-        d.[recovery_amount],
-        d.[lastchanged],
-        d.[participant_generation],
-        d.[region_generation],
-        d.[recovery_amount_customer],
-        d.[recovery_amount_generator],
-        d.[participant_ace_mwh],
-        d.[region_ace_mwh],
-        d.[participant_asoe_mwh],
-        d.[region_asoe_mwh],
-        d.[recoveryamount_ace],
-        d.[recoveryamount_asoe]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [versionno] decimal(3,0),
-        [periodid] decimal(3,0),
-        [participantid] varchar(20),
-        [service] varchar(10),
-        [contractid] varchar(10),
-        [paymenttype] varchar(20),
-        [regionid] varchar(10),
-        [rbf] decimal(18,8),
-        [payment_amount] decimal(18,8),
-        [participant_energy] decimal(18,8),
-        [region_energy] decimal(18,8),
-        [recovery_amount] decimal(18,8),
-        [lastchanged] datetime2,
-        [participant_generation] decimal(18,8),
-        [region_generation] decimal(18,8),
-        [recovery_amount_customer] decimal(18,8),
-        [recovery_amount_generator] decimal(18,8),
-        [participant_ace_mwh] decimal(18,8),
-        [region_ace_mwh] decimal(18,8),
-        [participant_asoe_mwh] decimal(18,8),
-        [region_asoe_mwh] decimal(18,8),
-        [recoveryamount_ace] decimal(18,8),
-        [recoveryamount_asoe] decimal(18,8)
-    ) d
-) as src 
-on (
-    tgt.[contractid] = src.[contractid]
-    and tgt.[participantid] = src.[participantid]
-    and tgt.[paymenttype] = src.[paymenttype]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[service] = src.[service]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[versionno] = src.[versionno],
-        tgt.[periodid] = src.[periodid],
-        tgt.[participantid] = src.[participantid],
-        tgt.[service] = src.[service],
-        tgt.[contractid] = src.[contractid],
-        tgt.[paymenttype] = src.[paymenttype],
-        tgt.[regionid] = src.[regionid],
-        tgt.[rbf] = src.[rbf],
-        tgt.[payment_amount] = src.[payment_amount],
-        tgt.[participant_energy] = src.[participant_energy],
-        tgt.[region_energy] = src.[region_energy],
-        tgt.[recovery_amount] = src.[recovery_amount],
-        tgt.[lastchanged] = src.[lastchanged],
-        tgt.[participant_generation] = src.[participant_generation],
-        tgt.[region_generation] = src.[region_generation],
-        tgt.[recovery_amount_customer] = src.[recovery_amount_customer],
-        tgt.[recovery_amount_generator] = src.[recovery_amount_generator],
-        tgt.[participant_ace_mwh] = src.[participant_ace_mwh],
-        tgt.[region_ace_mwh] = src.[region_ace_mwh],
-        tgt.[participant_asoe_mwh] = src.[participant_asoe_mwh],
-        tgt.[region_asoe_mwh] = src.[region_asoe_mwh],
-        tgt.[recoveryamount_ace] = src.[recoveryamount_ace],
-        tgt.[recoveryamount_asoe] = src.[recoveryamount_asoe]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [versionno],
-        [periodid],
-        [participantid],
-        [service],
-        [contractid],
-        [paymenttype],
-        [regionid],
-        [rbf],
-        [payment_amount],
-        [participant_energy],
-        [region_energy],
-        [recovery_amount],
-        [lastchanged],
-        [participant_generation],
-        [region_generation],
-        [recovery_amount_customer],
-        [recovery_amount_generator],
-        [participant_ace_mwh],
-        [region_ace_mwh],
-        [participant_asoe_mwh],
-        [region_asoe_mwh],
-        [recoveryamount_ace],
-        [recoveryamount_asoe]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[versionno],
-        src.[periodid],
-        src.[participantid],
-        src.[service],
-        src.[contractid],
-        src.[paymenttype],
-        src.[regionid],
-        src.[rbf],
-        src.[payment_amount],
-        src.[participant_energy],
-        src.[region_energy],
-        src.[recovery_amount],
-        src.[lastchanged],
-        src.[participant_generation],
-        src.[region_generation],
-        src.[recovery_amount_customer],
-        src.[recovery_amount_generator],
-        src.[participant_ace_mwh],
-        src.[region_ace_mwh],
-        src.[participant_asoe_mwh],
-        src.[region_asoe_mwh],
-        src.[recoveryamount_ace],
-        src.[recoveryamount_asoe]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsNmasRecoveryRbf1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-
-merge mmsdm.SettlementsNmasRecoveryRbf1 as tgt 
-using (
-    select 
-        d.[settlementdate],
-        d.[versionno],
-        d.[periodid],
-        d.[service],
-        d.[contractid],
-        d.[paymenttype],
-        d.[regionid],
-        d.[rbf],
-        d.[payment_amount],
-        d.[recovery_amount],
-        d.[lastchanged]
-    from openjson(@data) with (
-        [settlementdate] datetime2,
-        [versionno] decimal(3,0),
-        [periodid] decimal(3,0),
-        [service] varchar(10),
-        [contractid] varchar(10),
-        [paymenttype] varchar(20),
-        [regionid] varchar(10),
-        [rbf] decimal(18,8),
-        [payment_amount] decimal(18,8),
-        [recovery_amount] decimal(18,8),
-        [lastchanged] datetime2
-    ) d
-) as src 
-on (
-    tgt.[contractid] = src.[contractid]
-    and tgt.[paymenttype] = src.[paymenttype]
-    and tgt.[periodid] = src.[periodid]
-    and tgt.[regionid] = src.[regionid]
-    and tgt.[service] = src.[service]
-    and tgt.[settlementdate] = src.[settlementdate]
-    and tgt.[versionno] = src.[versionno]
-
-)
-when matched and src.[lastchanged] > tgt.[lastchanged]
-    then update set 
-        tgt.file_log_id = @file_log_id,
-        tgt.[settlementdate] = src.[settlementdate],
-        tgt.[versionno] = src.[versionno],
-        tgt.[periodid] = src.[periodid],
-        tgt.[service] = src.[service],
-        tgt.[contractid] = src.[contractid],
-        tgt.[paymenttype] = src.[paymenttype],
-        tgt.[regionid] = src.[regionid],
-        tgt.[rbf] = src.[rbf],
-        tgt.[payment_amount] = src.[payment_amount],
-        tgt.[recovery_amount] = src.[recovery_amount],
-        tgt.[lastchanged] = src.[lastchanged]
-when not matched
-    then insert (
-        file_log_id,
-        [settlementdate],
-        [versionno],
-        [periodid],
-        [service],
-        [contractid],
-        [paymenttype],
-        [regionid],
-        [rbf],
-        [payment_amount],
-        [recovery_amount],
-        [lastchanged]
-    ) values (
-        @file_log_id,
-        src.[settlementdate],
-        src.[versionno],
-        src.[periodid],
-        src.[service],
-        src.[contractid],
-        src.[paymenttype],
-        src.[regionid],
-        src.[rbf],
-        src.[payment_amount],
-        src.[recovery_amount],
-        src.[lastchanged]
-    );
-    
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsRecoveryEnergy2
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsRecoveryEnergy2(
-file_log_id,
-[settlementdate],
-        [settlementrunno],
-        [participantid],
-        [regionid],
-        [periodid],
-        [customerenergyactual],
-        [customerenergympfexactual],
-        [customerenergysubstitute],
-        [customerenergympfexsubstitute],
-        [generatorenergyactual],
-        [regioncustenergyactual],
-        [regioncustenergympfexactual],
-        [regioncustenergysubst],
-        [regioncustenergympfexsubst],
-        [regiongenenergyactual],
-        [ace_mwh_actual],
-        [ace_mwh_mpfex_actual],
-        [ace_mwh_substitute],
-        [ace_mwh_mpfex_substitute],
-        [asoe_mwh_actual],
-        [region_ace_mwh_actual],
-        [region_ace_mwh_mpfex_actual],
-        [region_ace_mwh_subst],
-        [region_ace_mwh_mpfex_subst],
-        [region_asoe_mwh_actual]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-        d.[settlementrunno],
-        d.[participantid],
-        d.[regionid],
-        d.[periodid],
-        d.[customerenergyactual],
-        d.[customerenergympfexactual],
-        d.[customerenergysubstitute],
-        d.[customerenergympfexsubstitute],
-        d.[generatorenergyactual],
-        d.[regioncustenergyactual],
-        d.[regioncustenergympfexactual],
-        d.[regioncustenergysubst],
-        d.[regioncustenergympfexsubst],
-        d.[regiongenenergyactual],
-        d.[ace_mwh_actual],
-        d.[ace_mwh_mpfex_actual],
-        d.[ace_mwh_substitute],
-        d.[ace_mwh_mpfex_substitute],
-        d.[asoe_mwh_actual],
-        d.[region_ace_mwh_actual],
-        d.[region_ace_mwh_mpfex_actual],
-        d.[region_ace_mwh_subst],
-        d.[region_ace_mwh_mpfex_subst],
-        d.[region_asoe_mwh_actual]
-from openjson(@data) with (
-[settlementdate] datetime2,
-        [settlementrunno] decimal(3,0),
-        [participantid] varchar(20),
-        [regionid] varchar(20),
-        [periodid] decimal(3,0),
-        [customerenergyactual] decimal(18,8),
-        [customerenergympfexactual] decimal(18,8),
-        [customerenergysubstitute] decimal(18,8),
-        [customerenergympfexsubstitute] decimal(18,8),
-        [generatorenergyactual] decimal(18,8),
-        [regioncustenergyactual] decimal(18,8),
-        [regioncustenergympfexactual] decimal(18,8),
-        [regioncustenergysubst] decimal(18,8),
-        [regioncustenergympfexsubst] decimal(18,8),
-        [regiongenenergyactual] decimal(18,8),
-        [ace_mwh_actual] decimal(18,8),
-        [ace_mwh_mpfex_actual] decimal(18,8),
-        [ace_mwh_substitute] decimal(18,8),
-        [ace_mwh_mpfex_substitute] decimal(18,8),
-        [asoe_mwh_actual] decimal(18,8),
-        [region_ace_mwh_actual] decimal(18,8),
-        [region_ace_mwh_mpfex_actual] decimal(18,8),
-        [region_ace_mwh_subst] decimal(18,8),
-        [region_ace_mwh_mpfex_subst] decimal(18,8),
-        [region_asoe_mwh_actual] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsSubstDemand1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsSubstDemand1(
-file_log_id,
-[settlementdate],
-        [settlementrunno],
-        [tni],
-        [participantid],
-        [regionid],
-        [substitutedemand]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-        d.[settlementrunno],
-        d.[tni],
-        d.[participantid],
-        d.[regionid],
-        d.[substitutedemand]
-from openjson(@data) with (
-[settlementdate] datetime2,
-        [settlementrunno] decimal(3,0),
-        [tni] varchar(20),
-        [participantid] varchar(20),
-        [regionid] varchar(20),
-        [substitutedemand] decimal(18,8)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsSubstRunVersion1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsSubstRunVersion1(
-file_log_id,
-[settlementdate],
-        [settlementrunno],
-        [referencesettlementdate],
-        [referencesettlementrunno]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-        d.[settlementrunno],
-        d.[referencesettlementdate],
-        d.[referencesettlementrunno]
-from openjson(@data) with (
-[settlementdate] datetime2,
-        [settlementrunno] decimal(3,0),
-        [referencesettlementdate] datetime2,
-        [referencesettlementrunno] decimal(3,0)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsWdrReconDetail1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsWdrReconDetail1(
-file_log_id,
-[settlementdate],
-        [settlementrunno],
-        [nmi],
-        [tni],
-        [regionid],
-        [frmp],
-        [drsp],
-        [periodid],
-        [wdrsq_uncapped],
-        [wdrsq_capped],
-        [mrc],
-        [mrcsq],
-        [wdrrr],
-        [rrp],
-        [tlf],
-        [me_dlfadjusted],
-        [bq_dlfadjusted],
-        [isnoncompliant],
-        [qualityflag],
-        [transactionamount],
-        [baselinecalculationid]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-        d.[settlementrunno],
-        d.[nmi],
-        d.[tni],
-        d.[regionid],
-        d.[frmp],
-        d.[drsp],
-        d.[periodid],
-        d.[wdrsq_uncapped],
-        d.[wdrsq_capped],
-        d.[mrc],
-        d.[mrcsq],
-        d.[wdrrr],
-        d.[rrp],
-        d.[tlf],
-        d.[me_dlfadjusted],
-        d.[bq_dlfadjusted],
-        d.[isnoncompliant],
-        d.[qualityflag],
-        d.[transactionamount],
-        d.[baselinecalculationid]
-from openjson(@data) with (
-[settlementdate] datetime2,
-        [settlementrunno] decimal(3,0),
-        [nmi] varchar(20),
-        [tni] varchar(20),
-        [regionid] varchar(20),
-        [frmp] varchar(20),
-        [drsp] varchar(20),
-        [periodid] decimal(3,0),
-        [wdrsq_uncapped] decimal(18,8),
-        [wdrsq_capped] decimal(18,8),
-        [mrc] decimal(18,8),
-        [mrcsq] decimal(18,8),
-        [wdrrr] decimal(18,8),
-        [rrp] decimal(18,8),
-        [tlf] decimal(18,8),
-        [me_dlfadjusted] decimal(18,8),
-        [bq_dlfadjusted] decimal(18,8),
-        [isnoncompliant] decimal(1,0),
-        [qualityflag] varchar(20),
-        [transactionamount] decimal(18,8),
-        [baselinecalculationid] varchar(100)
-) d
-end
-go
-create or alter procedure mmsdm_proc.InsertSettlementsWdrTransact1
-    @file_log_id bigint,
-    @data nvarchar(max)
-as begin
-insert into mmsdm.SettlementsWdrTransact1(
-file_log_id,
-[settlementdate],
-        [settlementrunno],
-        [periodid],
-        [regionid],
-        [participantid],
-        [participantroleid],
-        [counterpartyparticipantid],
-        [transactionamount]
-)
-select 
-@file_log_id,
-d.[settlementdate],
-        d.[settlementrunno],
-        d.[periodid],
-        d.[regionid],
-        d.[participantid],
-        d.[participantroleid],
-        d.[counterpartyparticipantid],
-        d.[transactionamount]
-from openjson(@data) with (
-[settlementdate] datetime2,
-        [settlementrunno] decimal(3,0),
-        [periodid] decimal(3,0),
-        [regionid] varchar(20),
-        [participantid] varchar(20),
-        [participantroleid] varchar(20),
-        [counterpartyparticipantid] varchar(20),
-        [transactionamount] decimal(18,8)
-) d
-end
-go
 create or alter procedure mmsdm_proc.InsertStpasaCasesolution3
     @file_log_id bigint,
     @data nvarchar(max)
@@ -33306,6 +30151,3268 @@ when not matched
         src.[raise1secrop],
         src.[lower1secrrp],
         src.[lower1secrop]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertOfferBidperoffer1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.OfferBidperoffer1 as tgt 
+using (
+    select 
+        d.[duid],
+        d.[bidtype],
+        d.[settlementdate],
+        d.[offerdate],
+        d.[periodid],
+        d.[versionno],
+        d.[maxavail],
+        d.[fixedload],
+        d.[rocup],
+        d.[rocdown],
+        d.[enablementmin],
+        d.[enablementmax],
+        d.[lowbreakpoint],
+        d.[highbreakpoint],
+        d.[bandavail1],
+        d.[bandavail2],
+        d.[bandavail3],
+        d.[bandavail4],
+        d.[bandavail5],
+        d.[bandavail6],
+        d.[bandavail7],
+        d.[bandavail8],
+        d.[bandavail9],
+        d.[bandavail10],
+        d.[lastchanged],
+        d.[pasaavailability],
+        d.[mr_capacity]
+    from openjson(@data) with (
+        [duid] varchar(10),
+        [bidtype] varchar(10),
+        [settlementdate] datetime2,
+        [offerdate] datetime2,
+        [periodid] decimal(22,0),
+        [versionno] decimal(22,0),
+        [maxavail] decimal(12,6),
+        [fixedload] decimal(12,6),
+        [rocup] decimal(6,0),
+        [rocdown] decimal(6,0),
+        [enablementmin] decimal(6,0),
+        [enablementmax] decimal(6,0),
+        [lowbreakpoint] decimal(6,0),
+        [highbreakpoint] decimal(6,0),
+        [bandavail1] decimal(22,0),
+        [bandavail2] decimal(22,0),
+        [bandavail3] decimal(22,0),
+        [bandavail4] decimal(22,0),
+        [bandavail5] decimal(22,0),
+        [bandavail6] decimal(22,0),
+        [bandavail7] decimal(22,0),
+        [bandavail8] decimal(22,0),
+        [bandavail9] decimal(22,0),
+        [bandavail10] decimal(22,0),
+        [lastchanged] datetime2,
+        [pasaavailability] decimal(12,0),
+        [mr_capacity] decimal(6,0)
+    ) d
+) as src 
+on (
+    tgt.[bidtype] = src.[bidtype]
+    and tgt.[duid] = src.[duid]
+    and tgt.[offerdate] = src.[offerdate]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[settlementdate] = src.[settlementdate]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[duid] = src.[duid],
+        tgt.[bidtype] = src.[bidtype],
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[offerdate] = src.[offerdate],
+        tgt.[periodid] = src.[periodid],
+        tgt.[versionno] = src.[versionno],
+        tgt.[maxavail] = src.[maxavail],
+        tgt.[fixedload] = src.[fixedload],
+        tgt.[rocup] = src.[rocup],
+        tgt.[rocdown] = src.[rocdown],
+        tgt.[enablementmin] = src.[enablementmin],
+        tgt.[enablementmax] = src.[enablementmax],
+        tgt.[lowbreakpoint] = src.[lowbreakpoint],
+        tgt.[highbreakpoint] = src.[highbreakpoint],
+        tgt.[bandavail1] = src.[bandavail1],
+        tgt.[bandavail2] = src.[bandavail2],
+        tgt.[bandavail3] = src.[bandavail3],
+        tgt.[bandavail4] = src.[bandavail4],
+        tgt.[bandavail5] = src.[bandavail5],
+        tgt.[bandavail6] = src.[bandavail6],
+        tgt.[bandavail7] = src.[bandavail7],
+        tgt.[bandavail8] = src.[bandavail8],
+        tgt.[bandavail9] = src.[bandavail9],
+        tgt.[bandavail10] = src.[bandavail10],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[pasaavailability] = src.[pasaavailability],
+        tgt.[mr_capacity] = src.[mr_capacity]
+when not matched
+    then insert (
+        file_log_id,
+        [duid],
+        [bidtype],
+        [settlementdate],
+        [offerdate],
+        [periodid],
+        [versionno],
+        [maxavail],
+        [fixedload],
+        [rocup],
+        [rocdown],
+        [enablementmin],
+        [enablementmax],
+        [lowbreakpoint],
+        [highbreakpoint],
+        [bandavail1],
+        [bandavail2],
+        [bandavail3],
+        [bandavail4],
+        [bandavail5],
+        [bandavail6],
+        [bandavail7],
+        [bandavail8],
+        [bandavail9],
+        [bandavail10],
+        [lastchanged],
+        [pasaavailability],
+        [mr_capacity]
+    ) values (
+        @file_log_id,
+        src.[duid],
+        src.[bidtype],
+        src.[settlementdate],
+        src.[offerdate],
+        src.[periodid],
+        src.[versionno],
+        src.[maxavail],
+        src.[fixedload],
+        src.[rocup],
+        src.[rocdown],
+        src.[enablementmin],
+        src.[enablementmax],
+        src.[lowbreakpoint],
+        src.[highbreakpoint],
+        src.[bandavail1],
+        src.[bandavail2],
+        src.[bandavail3],
+        src.[bandavail4],
+        src.[bandavail5],
+        src.[bandavail6],
+        src.[bandavail7],
+        src.[bandavail8],
+        src.[bandavail9],
+        src.[bandavail10],
+        src.[lastchanged],
+        src.[pasaavailability],
+        src.[mr_capacity]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertDispatchocdCase1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.DispatchocdCase1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[runno],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [runno] decimal(3,0),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[runno] = src.[runno]
+    and tgt.[settlementdate] = src.[settlementdate]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[runno] = src.[runno],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [runno],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[runno],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertDispatchbncCasesolution1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.DispatchbncCasesolution1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[runno],
+        d.[intervention],
+        d.[casesubtype],
+        d.[solutionstatus],
+        d.[spdversion],
+        d.[startperiod],
+        d.[nonphysicallosses],
+        d.[totalobjective],
+        d.[totalareagenviolation],
+        d.[totalinterconnectorviolation],
+        d.[totalgenericviolation],
+        d.[totalramprateviolation],
+        d.[totalunitmwcapacityviolation],
+        d.[total5minviolation],
+        d.[totalregviolation],
+        d.[total6secviolation],
+        d.[total60secviolation],
+        d.[totalenergyconstrviolation],
+        d.[totalenergyofferviolation],
+        d.[totalasprofileviolation],
+        d.[totalfaststartviolation],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [runno] decimal(3,0),
+        [intervention] decimal(2,0),
+        [casesubtype] varchar(3),
+        [solutionstatus] decimal(2,0),
+        [spdversion] decimal(10,3),
+        [startperiod] varchar(20),
+        [nonphysicallosses] decimal(1,0),
+        [totalobjective] decimal(27,10),
+        [totalareagenviolation] decimal(15,5),
+        [totalinterconnectorviolation] decimal(15,5),
+        [totalgenericviolation] decimal(15,5),
+        [totalramprateviolation] decimal(15,5),
+        [totalunitmwcapacityviolation] decimal(15,5),
+        [total5minviolation] decimal(15,5),
+        [totalregviolation] decimal(15,5),
+        [total6secviolation] decimal(15,5),
+        [total60secviolation] decimal(15,5),
+        [totalenergyconstrviolation] decimal(15,5),
+        [totalenergyofferviolation] decimal(15,5),
+        [totalasprofileviolation] decimal(15,5),
+        [totalfaststartviolation] decimal(15,5),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[intervention] = src.[intervention]
+    and tgt.[runno] = src.[runno]
+    and tgt.[settlementdate] = src.[settlementdate]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[runno] = src.[runno],
+        tgt.[intervention] = src.[intervention],
+        tgt.[casesubtype] = src.[casesubtype],
+        tgt.[solutionstatus] = src.[solutionstatus],
+        tgt.[spdversion] = src.[spdversion],
+        tgt.[startperiod] = src.[startperiod],
+        tgt.[nonphysicallosses] = src.[nonphysicallosses],
+        tgt.[totalobjective] = src.[totalobjective],
+        tgt.[totalareagenviolation] = src.[totalareagenviolation],
+        tgt.[totalinterconnectorviolation] = src.[totalinterconnectorviolation],
+        tgt.[totalgenericviolation] = src.[totalgenericviolation],
+        tgt.[totalramprateviolation] = src.[totalramprateviolation],
+        tgt.[totalunitmwcapacityviolation] = src.[totalunitmwcapacityviolation],
+        tgt.[total5minviolation] = src.[total5minviolation],
+        tgt.[totalregviolation] = src.[totalregviolation],
+        tgt.[total6secviolation] = src.[total6secviolation],
+        tgt.[total60secviolation] = src.[total60secviolation],
+        tgt.[totalenergyconstrviolation] = src.[totalenergyconstrviolation],
+        tgt.[totalenergyofferviolation] = src.[totalenergyofferviolation],
+        tgt.[totalasprofileviolation] = src.[totalasprofileviolation],
+        tgt.[totalfaststartviolation] = src.[totalfaststartviolation],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [runno],
+        [intervention],
+        [casesubtype],
+        [solutionstatus],
+        [spdversion],
+        [startperiod],
+        [nonphysicallosses],
+        [totalobjective],
+        [totalareagenviolation],
+        [totalinterconnectorviolation],
+        [totalgenericviolation],
+        [totalramprateviolation],
+        [totalunitmwcapacityviolation],
+        [total5minviolation],
+        [totalregviolation],
+        [total6secviolation],
+        [total60secviolation],
+        [totalenergyconstrviolation],
+        [totalenergyofferviolation],
+        [totalasprofileviolation],
+        [totalfaststartviolation],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[runno],
+        src.[intervention],
+        src.[casesubtype],
+        src.[solutionstatus],
+        src.[spdversion],
+        src.[startperiod],
+        src.[nonphysicallosses],
+        src.[totalobjective],
+        src.[totalareagenviolation],
+        src.[totalinterconnectorviolation],
+        src.[totalgenericviolation],
+        src.[totalramprateviolation],
+        src.[totalunitmwcapacityviolation],
+        src.[total5minviolation],
+        src.[totalregviolation],
+        src.[total6secviolation],
+        src.[total60secviolation],
+        src.[totalenergyconstrviolation],
+        src.[totalenergyofferviolation],
+        src.[totalasprofileviolation],
+        src.[totalfaststartviolation],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertDispatchbncUnitsolution1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.DispatchbncUnitsolution1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[runno],
+        d.[duid],
+        d.[intervention],
+        d.[connectionpointid],
+        d.[dispatchmode],
+        d.[totalcleared],
+        d.[raisereg],
+        d.[raise5min],
+        d.[raise60sec],
+        d.[raise6sec],
+        d.[lowerreg],
+        d.[lower5min],
+        d.[lower60sec],
+        d.[lower6sec],
+        d.[raiseregflags],
+        d.[raise5minflags],
+        d.[raise60secflags],
+        d.[raise6secflags],
+        d.[lowerregflags],
+        d.[lower5minflags],
+        d.[lower60secflags],
+        d.[lower6secflags],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [runno] decimal(3,0),
+        [duid] varchar(10),
+        [intervention] decimal(2,0),
+        [connectionpointid] varchar(12),
+        [dispatchmode] decimal(2,0),
+        [totalcleared] decimal(15,5),
+        [raisereg] decimal(15,5),
+        [raise5min] decimal(15,5),
+        [raise60sec] decimal(15,5),
+        [raise6sec] decimal(15,5),
+        [lowerreg] decimal(15,5),
+        [lower5min] decimal(15,5),
+        [lower60sec] decimal(15,5),
+        [lower6sec] decimal(15,5),
+        [raiseregflags] decimal(3,0),
+        [raise5minflags] decimal(3,0),
+        [raise60secflags] decimal(3,0),
+        [raise6secflags] decimal(3,0),
+        [lowerregflags] decimal(3,0),
+        [lower5minflags] decimal(3,0),
+        [lower60secflags] decimal(3,0),
+        [lower6secflags] decimal(3,0),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[duid] = src.[duid]
+    and tgt.[intervention] = src.[intervention]
+    and tgt.[runno] = src.[runno]
+    and tgt.[settlementdate] = src.[settlementdate]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[runno] = src.[runno],
+        tgt.[duid] = src.[duid],
+        tgt.[intervention] = src.[intervention],
+        tgt.[connectionpointid] = src.[connectionpointid],
+        tgt.[dispatchmode] = src.[dispatchmode],
+        tgt.[totalcleared] = src.[totalcleared],
+        tgt.[raisereg] = src.[raisereg],
+        tgt.[raise5min] = src.[raise5min],
+        tgt.[raise60sec] = src.[raise60sec],
+        tgt.[raise6sec] = src.[raise6sec],
+        tgt.[lowerreg] = src.[lowerreg],
+        tgt.[lower5min] = src.[lower5min],
+        tgt.[lower60sec] = src.[lower60sec],
+        tgt.[lower6sec] = src.[lower6sec],
+        tgt.[raiseregflags] = src.[raiseregflags],
+        tgt.[raise5minflags] = src.[raise5minflags],
+        tgt.[raise60secflags] = src.[raise60secflags],
+        tgt.[raise6secflags] = src.[raise6secflags],
+        tgt.[lowerregflags] = src.[lowerregflags],
+        tgt.[lower5minflags] = src.[lower5minflags],
+        tgt.[lower60secflags] = src.[lower60secflags],
+        tgt.[lower6secflags] = src.[lower6secflags],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [runno],
+        [duid],
+        [intervention],
+        [connectionpointid],
+        [dispatchmode],
+        [totalcleared],
+        [raisereg],
+        [raise5min],
+        [raise60sec],
+        [raise6sec],
+        [lowerreg],
+        [lower5min],
+        [lower60sec],
+        [lower6sec],
+        [raiseregflags],
+        [raise5minflags],
+        [raise60secflags],
+        [raise6secflags],
+        [lowerregflags],
+        [lower5minflags],
+        [lower60secflags],
+        [lower6secflags],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[runno],
+        src.[duid],
+        src.[intervention],
+        src.[connectionpointid],
+        src.[dispatchmode],
+        src.[totalcleared],
+        src.[raisereg],
+        src.[raise5min],
+        src.[raise60sec],
+        src.[raise6sec],
+        src.[lowerreg],
+        src.[lower5min],
+        src.[lower60sec],
+        src.[lower6sec],
+        src.[raiseregflags],
+        src.[raise5minflags],
+        src.[raise60secflags],
+        src.[raise6secflags],
+        src.[lowerregflags],
+        src.[lower5minflags],
+        src.[lower60secflags],
+        src.[lower6secflags],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertMeterDataCustomer1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.MeterDataCustomer1 as tgt 
+using (
+    select 
+        d.[participantid],
+        d.[periodid],
+        d.[settlementdate],
+        d.[meterrunno],
+        d.[connectionpointid],
+        d.[importenergyvalue],
+        d.[exportenergyvalue],
+        d.[importreactivevalue],
+        d.[exportreactivevalue],
+        d.[hostdistributor],
+        d.[lastchanged],
+        d.[mda]
+    from openjson(@data) with (
+        [participantid] varchar(10),
+        [periodid] decimal(3,0),
+        [settlementdate] datetime2,
+        [meterrunno] decimal(6,0),
+        [connectionpointid] varchar(10),
+        [importenergyvalue] decimal(9,6),
+        [exportenergyvalue] decimal(9,6),
+        [importreactivevalue] decimal(9,6),
+        [exportreactivevalue] decimal(9,6),
+        [hostdistributor] varchar(10),
+        [lastchanged] datetime2,
+        [mda] varchar(10)
+    ) d
+) as src 
+on (
+    tgt.[connectionpointid] = src.[connectionpointid]
+    and tgt.[hostdistributor] = src.[hostdistributor]
+    and tgt.[mda] = src.[mda]
+    and tgt.[meterrunno] = src.[meterrunno]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[settlementdate] = src.[settlementdate]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[participantid] = src.[participantid],
+        tgt.[periodid] = src.[periodid],
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[meterrunno] = src.[meterrunno],
+        tgt.[connectionpointid] = src.[connectionpointid],
+        tgt.[importenergyvalue] = src.[importenergyvalue],
+        tgt.[exportenergyvalue] = src.[exportenergyvalue],
+        tgt.[importreactivevalue] = src.[importreactivevalue],
+        tgt.[exportreactivevalue] = src.[exportreactivevalue],
+        tgt.[hostdistributor] = src.[hostdistributor],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[mda] = src.[mda]
+when not matched
+    then insert (
+        file_log_id,
+        [participantid],
+        [periodid],
+        [settlementdate],
+        [meterrunno],
+        [connectionpointid],
+        [importenergyvalue],
+        [exportenergyvalue],
+        [importreactivevalue],
+        [exportreactivevalue],
+        [hostdistributor],
+        [lastchanged],
+        [mda]
+    ) values (
+        @file_log_id,
+        src.[participantid],
+        src.[periodid],
+        src.[settlementdate],
+        src.[meterrunno],
+        src.[connectionpointid],
+        src.[importenergyvalue],
+        src.[exportenergyvalue],
+        src.[importreactivevalue],
+        src.[exportreactivevalue],
+        src.[hostdistributor],
+        src.[lastchanged],
+        src.[mda]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertMeterDataGenDuid1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.MeterDataGenDuid1 as tgt 
+using (
+    select 
+        d.[interval_datetime],
+        d.[duid],
+        d.[mwh_reading],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [interval_datetime] datetime2,
+        [duid] varchar(10),
+        [mwh_reading] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[duid] = src.[duid]
+    and tgt.[interval_datetime] = src.[interval_datetime]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[interval_datetime] = src.[interval_datetime],
+        tgt.[duid] = src.[duid],
+        tgt.[mwh_reading] = src.[mwh_reading],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [interval_datetime],
+        [duid],
+        [mwh_reading],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[interval_datetime],
+        src.[duid],
+        src.[mwh_reading],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertMeterdataTrk1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.MeterdataTrk1 as tgt 
+using (
+    select 
+        d.[case_id],
+        d.[aggregate_reads_load_datetime],
+        d.[individual_reads_load_datetime],
+        d.[startdate],
+        d.[enddate],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [case_id] decimal(15,0),
+        [aggregate_reads_load_datetime] datetime2,
+        [individual_reads_load_datetime] datetime2,
+        [startdate] datetime2,
+        [enddate] datetime2,
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[case_id] = src.[case_id]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[case_id] = src.[case_id],
+        tgt.[aggregate_reads_load_datetime] = src.[aggregate_reads_load_datetime],
+        tgt.[individual_reads_load_datetime] = src.[individual_reads_load_datetime],
+        tgt.[startdate] = src.[startdate],
+        tgt.[enddate] = src.[enddate],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [case_id],
+        [aggregate_reads_load_datetime],
+        [individual_reads_load_datetime],
+        [startdate],
+        [enddate],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[case_id],
+        src.[aggregate_reads_load_datetime],
+        src.[individual_reads_load_datetime],
+        src.[startdate],
+        src.[enddate],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertMeterDataCustomerTrk1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.MeterDataCustomerTrk1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[meterrunno],
+        d.[participantid],
+        d.[filename],
+        d.[ackfilename],
+        d.[connectionpointid],
+        d.[authoriseddate],
+        d.[authorisedby],
+        d.[meteringdataagent],
+        d.[hostdistributor],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [meterrunno] decimal(6,0),
+        [participantid] varchar(10),
+        [filename] varchar(40),
+        [ackfilename] varchar(40),
+        [connectionpointid] varchar(10),
+        [authoriseddate] datetime2,
+        [authorisedby] varchar(15),
+        [meteringdataagent] varchar(10),
+        [hostdistributor] varchar(10),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[connectionpointid] = src.[connectionpointid]
+    and tgt.[hostdistributor] = src.[hostdistributor]
+    and tgt.[meteringdataagent] = src.[meteringdataagent]
+    and tgt.[meterrunno] = src.[meterrunno]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[settlementdate] = src.[settlementdate]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[meterrunno] = src.[meterrunno],
+        tgt.[participantid] = src.[participantid],
+        tgt.[filename] = src.[filename],
+        tgt.[ackfilename] = src.[ackfilename],
+        tgt.[connectionpointid] = src.[connectionpointid],
+        tgt.[authoriseddate] = src.[authoriseddate],
+        tgt.[authorisedby] = src.[authorisedby],
+        tgt.[meteringdataagent] = src.[meteringdataagent],
+        tgt.[hostdistributor] = src.[hostdistributor],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [meterrunno],
+        [participantid],
+        [filename],
+        [ackfilename],
+        [connectionpointid],
+        [authoriseddate],
+        [authorisedby],
+        [meteringdataagent],
+        [hostdistributor],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[meterrunno],
+        src.[participantid],
+        src.[filename],
+        src.[ackfilename],
+        src.[connectionpointid],
+        src.[authoriseddate],
+        src.[authorisedby],
+        src.[meteringdataagent],
+        src.[hostdistributor],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBidMnspFiletrk1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BidMnspFiletrk1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[offerdate],
+        d.[participantid],
+        d.[filename],
+        d.[status],
+        d.[ackfilename],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [offerdate] datetime2,
+        [participantid] varchar(10),
+        [filename] varchar(40),
+        [status] varchar(10),
+        [ackfilename] varchar(40),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[filename] = src.[filename]
+    and tgt.[offerdate] = src.[offerdate]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[settlementdate] = src.[settlementdate]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[offerdate] = src.[offerdate],
+        tgt.[participantid] = src.[participantid],
+        tgt.[filename] = src.[filename],
+        tgt.[status] = src.[status],
+        tgt.[ackfilename] = src.[ackfilename],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [offerdate],
+        [participantid],
+        [filename],
+        [status],
+        [ackfilename],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[offerdate],
+        src.[participantid],
+        src.[filename],
+        src.[status],
+        src.[ackfilename],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBidMnspOffertrk1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BidMnspOffertrk1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[offerdate],
+        d.[versionno],
+        d.[participantid],
+        d.[filename],
+        d.[authoriseddate],
+        d.[authorisedby],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [offerdate] datetime2,
+        [versionno] decimal(3,0),
+        [participantid] varchar(10),
+        [filename] varchar(40),
+        [authoriseddate] datetime2,
+        [authorisedby] varchar(15),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[filename] = src.[filename]
+    and tgt.[offerdate] = src.[offerdate]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[offerdate] = src.[offerdate],
+        tgt.[versionno] = src.[versionno],
+        tgt.[participantid] = src.[participantid],
+        tgt.[filename] = src.[filename],
+        tgt.[authoriseddate] = src.[authoriseddate],
+        tgt.[authorisedby] = src.[authorisedby],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [offerdate],
+        [versionno],
+        [participantid],
+        [filename],
+        [authoriseddate],
+        [authorisedby],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[offerdate],
+        src.[versionno],
+        src.[participantid],
+        src.[filename],
+        src.[authoriseddate],
+        src.[authorisedby],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertBidMnspPeroffer1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.BidMnspPeroffer1 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[offerdate],
+        d.[versionno],
+        d.[participantid],
+        d.[linkid],
+        d.[periodid],
+        d.[maxavail],
+        d.[bandavail1],
+        d.[bandavail2],
+        d.[bandavail3],
+        d.[bandavail4],
+        d.[bandavail5],
+        d.[bandavail6],
+        d.[bandavail7],
+        d.[bandavail8],
+        d.[bandavail9],
+        d.[bandavail10],
+        d.[lastchanged],
+        d.[fixedload],
+        d.[rampuprate],
+        d.[pasaavailability],
+        d.[mr_capacity]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [offerdate] datetime2,
+        [versionno] decimal(3,0),
+        [participantid] varchar(10),
+        [linkid] varchar(10),
+        [periodid] decimal(22,0),
+        [maxavail] decimal(6,0),
+        [bandavail1] decimal(6,0),
+        [bandavail2] decimal(6,0),
+        [bandavail3] decimal(6,0),
+        [bandavail4] decimal(6,0),
+        [bandavail5] decimal(6,0),
+        [bandavail6] decimal(6,0),
+        [bandavail7] decimal(6,0),
+        [bandavail8] decimal(6,0),
+        [bandavail9] decimal(6,0),
+        [bandavail10] decimal(6,0),
+        [lastchanged] datetime2,
+        [fixedload] decimal(12,6),
+        [rampuprate] decimal(6,0),
+        [pasaavailability] decimal(12,0),
+        [mr_capacity] decimal(6,0)
+    ) d
+) as src 
+on (
+    tgt.[linkid] = src.[linkid]
+    and tgt.[offerdate] = src.[offerdate]
+    and tgt.[participantid] = src.[participantid]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[versionno] = src.[versionno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[offerdate] = src.[offerdate],
+        tgt.[versionno] = src.[versionno],
+        tgt.[participantid] = src.[participantid],
+        tgt.[linkid] = src.[linkid],
+        tgt.[periodid] = src.[periodid],
+        tgt.[maxavail] = src.[maxavail],
+        tgt.[bandavail1] = src.[bandavail1],
+        tgt.[bandavail2] = src.[bandavail2],
+        tgt.[bandavail3] = src.[bandavail3],
+        tgt.[bandavail4] = src.[bandavail4],
+        tgt.[bandavail5] = src.[bandavail5],
+        tgt.[bandavail6] = src.[bandavail6],
+        tgt.[bandavail7] = src.[bandavail7],
+        tgt.[bandavail8] = src.[bandavail8],
+        tgt.[bandavail9] = src.[bandavail9],
+        tgt.[bandavail10] = src.[bandavail10],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[fixedload] = src.[fixedload],
+        tgt.[rampuprate] = src.[rampuprate],
+        tgt.[pasaavailability] = src.[pasaavailability],
+        tgt.[mr_capacity] = src.[mr_capacity]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [offerdate],
+        [versionno],
+        [participantid],
+        [linkid],
+        [periodid],
+        [maxavail],
+        [bandavail1],
+        [bandavail2],
+        [bandavail3],
+        [bandavail4],
+        [bandavail5],
+        [bandavail6],
+        [bandavail7],
+        [bandavail8],
+        [bandavail9],
+        [bandavail10],
+        [lastchanged],
+        [fixedload],
+        [rampuprate],
+        [pasaavailability],
+        [mr_capacity]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[offerdate],
+        src.[versionno],
+        src.[participantid],
+        src.[linkid],
+        src.[periodid],
+        src.[maxavail],
+        src.[bandavail1],
+        src.[bandavail2],
+        src.[bandavail3],
+        src.[bandavail4],
+        src.[bandavail5],
+        src.[bandavail6],
+        src.[bandavail7],
+        src.[bandavail8],
+        src.[bandavail9],
+        src.[bandavail10],
+        src.[lastchanged],
+        src.[fixedload],
+        src.[rampuprate],
+        src.[pasaavailability],
+        src.[mr_capacity]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertMrDayofferStack1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.MrDayofferStack1 as tgt 
+using (
+    select 
+        d.[mr_date],
+        d.[regionid],
+        d.[version_datetime],
+        d.[stack_position],
+        d.[duid],
+        d.[authorised],
+        d.[offer_settlementdate],
+        d.[offer_offerdate],
+        d.[offer_versionno],
+        d.[offer_type],
+        d.[laof],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [mr_date] datetime2,
+        [regionid] varchar(10),
+        [version_datetime] datetime2,
+        [stack_position] decimal(3,0),
+        [duid] varchar(10),
+        [authorised] decimal(1,0),
+        [offer_settlementdate] datetime2,
+        [offer_offerdate] datetime2,
+        [offer_versionno] decimal(3,0),
+        [offer_type] varchar(20),
+        [laof] decimal(16,6),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[mr_date] = src.[mr_date]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[stack_position] = src.[stack_position]
+    and tgt.[version_datetime] = src.[version_datetime]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[mr_date] = src.[mr_date],
+        tgt.[regionid] = src.[regionid],
+        tgt.[version_datetime] = src.[version_datetime],
+        tgt.[stack_position] = src.[stack_position],
+        tgt.[duid] = src.[duid],
+        tgt.[authorised] = src.[authorised],
+        tgt.[offer_settlementdate] = src.[offer_settlementdate],
+        tgt.[offer_offerdate] = src.[offer_offerdate],
+        tgt.[offer_versionno] = src.[offer_versionno],
+        tgt.[offer_type] = src.[offer_type],
+        tgt.[laof] = src.[laof],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [mr_date],
+        [regionid],
+        [version_datetime],
+        [stack_position],
+        [duid],
+        [authorised],
+        [offer_settlementdate],
+        [offer_offerdate],
+        [offer_versionno],
+        [offer_type],
+        [laof],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[mr_date],
+        src.[regionid],
+        src.[version_datetime],
+        src.[stack_position],
+        src.[duid],
+        src.[authorised],
+        src.[offer_settlementdate],
+        src.[offer_offerdate],
+        src.[offer_versionno],
+        src.[offer_type],
+        src.[laof],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertMrEvent1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.MrEvent1 as tgt 
+using (
+    select 
+        d.[mr_date],
+        d.[regionid],
+        d.[description],
+        d.[authoriseddate],
+        d.[authorisedby],
+        d.[offer_cut_off_time],
+        d.[settlement_complete],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [mr_date] datetime2,
+        [regionid] varchar(10),
+        [description] varchar(200),
+        [authoriseddate] datetime2,
+        [authorisedby] varchar(20),
+        [offer_cut_off_time] datetime2,
+        [settlement_complete] decimal(1,0),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[mr_date] = src.[mr_date]
+    and tgt.[regionid] = src.[regionid]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[mr_date] = src.[mr_date],
+        tgt.[regionid] = src.[regionid],
+        tgt.[description] = src.[description],
+        tgt.[authoriseddate] = src.[authoriseddate],
+        tgt.[authorisedby] = src.[authorisedby],
+        tgt.[offer_cut_off_time] = src.[offer_cut_off_time],
+        tgt.[settlement_complete] = src.[settlement_complete],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [mr_date],
+        [regionid],
+        [description],
+        [authoriseddate],
+        [authorisedby],
+        [offer_cut_off_time],
+        [settlement_complete],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[mr_date],
+        src.[regionid],
+        src.[description],
+        src.[authoriseddate],
+        src.[authorisedby],
+        src.[offer_cut_off_time],
+        src.[settlement_complete],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertMrEventSchedule1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.MrEventSchedule1 as tgt 
+using (
+    select 
+        d.[mr_date],
+        d.[regionid],
+        d.[version_datetime],
+        d.[demand_effectivedate],
+        d.[demand_offerdate],
+        d.[demand_versionno],
+        d.[authorisedby],
+        d.[authoriseddate],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [mr_date] datetime2,
+        [regionid] varchar(10),
+        [version_datetime] datetime2,
+        [demand_effectivedate] datetime2,
+        [demand_offerdate] datetime2,
+        [demand_versionno] decimal(3,0),
+        [authorisedby] varchar(20),
+        [authoriseddate] datetime2,
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[mr_date] = src.[mr_date]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[version_datetime] = src.[version_datetime]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[mr_date] = src.[mr_date],
+        tgt.[regionid] = src.[regionid],
+        tgt.[version_datetime] = src.[version_datetime],
+        tgt.[demand_effectivedate] = src.[demand_effectivedate],
+        tgt.[demand_offerdate] = src.[demand_offerdate],
+        tgt.[demand_versionno] = src.[demand_versionno],
+        tgt.[authorisedby] = src.[authorisedby],
+        tgt.[authoriseddate] = src.[authoriseddate],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [mr_date],
+        [regionid],
+        [version_datetime],
+        [demand_effectivedate],
+        [demand_offerdate],
+        [demand_versionno],
+        [authorisedby],
+        [authoriseddate],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[mr_date],
+        src.[regionid],
+        src.[version_datetime],
+        src.[demand_effectivedate],
+        src.[demand_offerdate],
+        src.[demand_versionno],
+        src.[authorisedby],
+        src.[authoriseddate],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertMrPerofferStack1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.MrPerofferStack1 as tgt 
+using (
+    select 
+        d.[mr_date],
+        d.[regionid],
+        d.[version_datetime],
+        d.[stack_position],
+        d.[periodid],
+        d.[duid],
+        d.[accepted_capacity],
+        d.[deducted_capacity],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [mr_date] datetime2,
+        [regionid] varchar(10),
+        [version_datetime] datetime2,
+        [stack_position] decimal(3,0),
+        [periodid] decimal(3,0),
+        [duid] varchar(10),
+        [accepted_capacity] decimal(6,0),
+        [deducted_capacity] decimal(6,0),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[mr_date] = src.[mr_date]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[stack_position] = src.[stack_position]
+    and tgt.[version_datetime] = src.[version_datetime]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[mr_date] = src.[mr_date],
+        tgt.[regionid] = src.[regionid],
+        tgt.[version_datetime] = src.[version_datetime],
+        tgt.[stack_position] = src.[stack_position],
+        tgt.[periodid] = src.[periodid],
+        tgt.[duid] = src.[duid],
+        tgt.[accepted_capacity] = src.[accepted_capacity],
+        tgt.[deducted_capacity] = src.[deducted_capacity],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [mr_date],
+        [regionid],
+        [version_datetime],
+        [stack_position],
+        [periodid],
+        [duid],
+        [accepted_capacity],
+        [deducted_capacity],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[mr_date],
+        src.[regionid],
+        src.[version_datetime],
+        src.[stack_position],
+        src.[periodid],
+        src.[duid],
+        src.[accepted_capacity],
+        src.[deducted_capacity],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertTradingUnitSolution2
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.TradingUnitSolution2 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[runno],
+        d.[duid],
+        d.[tradetype],
+        d.[periodid],
+        d.[initialmw],
+        d.[totalcleared],
+        d.[rampdownrate],
+        d.[rampuprate],
+        d.[lower5min],
+        d.[lower60sec],
+        d.[lower6sec],
+        d.[raise5min],
+        d.[raise60sec],
+        d.[raise6sec],
+        d.[lastchanged],
+        d.[lowerreg],
+        d.[raisereg],
+        d.[availability],
+        d.[semidispatchcap]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [runno] decimal(3,0),
+        [duid] varchar(10),
+        [tradetype] decimal(2,0),
+        [periodid] decimal(3,0),
+        [initialmw] decimal(15,5),
+        [totalcleared] decimal(15,5),
+        [rampdownrate] decimal(15,5),
+        [rampuprate] decimal(15,5),
+        [lower5min] decimal(15,5),
+        [lower60sec] decimal(15,5),
+        [lower6sec] decimal(15,5),
+        [raise5min] decimal(15,5),
+        [raise60sec] decimal(15,5),
+        [raise6sec] decimal(15,5),
+        [lastchanged] datetime2,
+        [lowerreg] decimal(15,5),
+        [raisereg] decimal(15,5),
+        [availability] decimal(15,5),
+        [semidispatchcap] decimal(3,0)
+    ) d
+) as src 
+on (
+    tgt.[duid] = src.[duid]
+    and tgt.[periodid] = src.[periodid]
+    and tgt.[runno] = src.[runno]
+    and tgt.[settlementdate] = src.[settlementdate]
+    and tgt.[tradetype] = src.[tradetype]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[runno] = src.[runno],
+        tgt.[duid] = src.[duid],
+        tgt.[tradetype] = src.[tradetype],
+        tgt.[periodid] = src.[periodid],
+        tgt.[initialmw] = src.[initialmw],
+        tgt.[totalcleared] = src.[totalcleared],
+        tgt.[rampdownrate] = src.[rampdownrate],
+        tgt.[rampuprate] = src.[rampuprate],
+        tgt.[lower5min] = src.[lower5min],
+        tgt.[lower60sec] = src.[lower60sec],
+        tgt.[lower6sec] = src.[lower6sec],
+        tgt.[raise5min] = src.[raise5min],
+        tgt.[raise60sec] = src.[raise60sec],
+        tgt.[raise6sec] = src.[raise6sec],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[lowerreg] = src.[lowerreg],
+        tgt.[raisereg] = src.[raisereg],
+        tgt.[availability] = src.[availability],
+        tgt.[semidispatchcap] = src.[semidispatchcap]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [runno],
+        [duid],
+        [tradetype],
+        [periodid],
+        [initialmw],
+        [totalcleared],
+        [rampdownrate],
+        [rampuprate],
+        [lower5min],
+        [lower60sec],
+        [lower6sec],
+        [raise5min],
+        [raise60sec],
+        [raise6sec],
+        [lastchanged],
+        [lowerreg],
+        [raisereg],
+        [availability],
+        [semidispatchcap]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[runno],
+        src.[duid],
+        src.[tradetype],
+        src.[periodid],
+        src.[initialmw],
+        src.[totalcleared],
+        src.[rampdownrate],
+        src.[rampuprate],
+        src.[lower5min],
+        src.[lower60sec],
+        src.[lower6sec],
+        src.[raise5min],
+        src.[raise60sec],
+        src.[raise6sec],
+        src.[lastchanged],
+        src.[lowerreg],
+        src.[raisereg],
+        src.[availability],
+        src.[semidispatchcap]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertTradingRegionsum4
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.TradingRegionsum4 as tgt 
+using (
+    select 
+        d.[settlementdate],
+        d.[runno],
+        d.[regionid],
+        d.[periodid],
+        d.[totaldemand],
+        d.[availablegeneration],
+        d.[availableload],
+        d.[demandforecast],
+        d.[dispatchablegeneration],
+        d.[dispatchableload],
+        d.[netinterchange],
+        d.[excessgeneration],
+        d.[lower5mindispatch],
+        d.[lower5minimport],
+        d.[lower5minlocaldispatch],
+        d.[lower5minlocalprice],
+        d.[lower5minlocalreq],
+        d.[lower5minprice],
+        d.[lower5minreq],
+        d.[lower5minsupplyprice],
+        d.[lower60secdispatch],
+        d.[lower60secimport],
+        d.[lower60seclocaldispatch],
+        d.[lower60seclocalprice],
+        d.[lower60seclocalreq],
+        d.[lower60secprice],
+        d.[lower60secreq],
+        d.[lower60secsupplyprice],
+        d.[lower6secdispatch],
+        d.[lower6secimport],
+        d.[lower6seclocaldispatch],
+        d.[lower6seclocalprice],
+        d.[lower6seclocalreq],
+        d.[lower6secprice],
+        d.[lower6secreq],
+        d.[lower6secsupplyprice],
+        d.[raise5mindispatch],
+        d.[raise5minimport],
+        d.[raise5minlocaldispatch],
+        d.[raise5minlocalprice],
+        d.[raise5minlocalreq],
+        d.[raise5minprice],
+        d.[raise5minreq],
+        d.[raise5minsupplyprice],
+        d.[raise60secdispatch],
+        d.[raise60secimport],
+        d.[raise60seclocaldispatch],
+        d.[raise60seclocalprice],
+        d.[raise60seclocalreq],
+        d.[raise60secprice],
+        d.[raise60secreq],
+        d.[raise60secsupplyprice],
+        d.[raise6secdispatch],
+        d.[raise6secimport],
+        d.[raise6seclocaldispatch],
+        d.[raise6seclocalprice],
+        d.[raise6seclocalreq],
+        d.[raise6secprice],
+        d.[raise6secreq],
+        d.[raise6secsupplyprice],
+        d.[lastchanged],
+        d.[initialsupply],
+        d.[clearedsupply],
+        d.[lowerregimport],
+        d.[lowerreglocaldispatch],
+        d.[lowerreglocalreq],
+        d.[lowerregreq],
+        d.[raiseregimport],
+        d.[raisereglocaldispatch],
+        d.[raisereglocalreq],
+        d.[raiseregreq],
+        d.[raise5minlocalviolation],
+        d.[raisereglocalviolation],
+        d.[raise60seclocalviolation],
+        d.[raise6seclocalviolation],
+        d.[lower5minlocalviolation],
+        d.[lowerreglocalviolation],
+        d.[lower60seclocalviolation],
+        d.[lower6seclocalviolation],
+        d.[raise5minviolation],
+        d.[raiseregviolation],
+        d.[raise60secviolation],
+        d.[raise6secviolation],
+        d.[lower5minviolation],
+        d.[lowerregviolation],
+        d.[lower60secviolation],
+        d.[lower6secviolation],
+        d.[totalintermittentgeneration],
+        d.[demand_and_nonschedgen],
+        d.[uigf]
+    from openjson(@data) with (
+        [settlementdate] datetime2,
+        [runno] decimal(3,0),
+        [regionid] varchar(10),
+        [periodid] decimal(3,0),
+        [totaldemand] decimal(15,5),
+        [availablegeneration] decimal(15,5),
+        [availableload] decimal(15,5),
+        [demandforecast] decimal(15,5),
+        [dispatchablegeneration] decimal(15,5),
+        [dispatchableload] decimal(15,5),
+        [netinterchange] decimal(15,5),
+        [excessgeneration] decimal(15,5),
+        [lower5mindispatch] decimal(15,5),
+        [lower5minimport] decimal(15,5),
+        [lower5minlocaldispatch] decimal(15,5),
+        [lower5minlocalprice] decimal(15,5),
+        [lower5minlocalreq] decimal(15,5),
+        [lower5minprice] decimal(15,5),
+        [lower5minreq] decimal(15,5),
+        [lower5minsupplyprice] decimal(15,5),
+        [lower60secdispatch] decimal(15,5),
+        [lower60secimport] decimal(15,5),
+        [lower60seclocaldispatch] decimal(15,5),
+        [lower60seclocalprice] decimal(15,5),
+        [lower60seclocalreq] decimal(15,5),
+        [lower60secprice] decimal(15,5),
+        [lower60secreq] decimal(15,5),
+        [lower60secsupplyprice] decimal(15,5),
+        [lower6secdispatch] decimal(15,5),
+        [lower6secimport] decimal(15,5),
+        [lower6seclocaldispatch] decimal(15,5),
+        [lower6seclocalprice] decimal(15,5),
+        [lower6seclocalreq] decimal(15,5),
+        [lower6secprice] decimal(15,5),
+        [lower6secreq] decimal(15,5),
+        [lower6secsupplyprice] decimal(15,5),
+        [raise5mindispatch] decimal(15,5),
+        [raise5minimport] decimal(15,5),
+        [raise5minlocaldispatch] decimal(15,5),
+        [raise5minlocalprice] decimal(15,5),
+        [raise5minlocalreq] decimal(15,5),
+        [raise5minprice] decimal(15,5),
+        [raise5minreq] decimal(15,5),
+        [raise5minsupplyprice] decimal(15,5),
+        [raise60secdispatch] decimal(15,5),
+        [raise60secimport] decimal(15,5),
+        [raise60seclocaldispatch] decimal(15,5),
+        [raise60seclocalprice] decimal(15,5),
+        [raise60seclocalreq] decimal(15,5),
+        [raise60secprice] decimal(15,5),
+        [raise60secreq] decimal(15,5),
+        [raise60secsupplyprice] decimal(15,5),
+        [raise6secdispatch] decimal(15,5),
+        [raise6secimport] decimal(15,5),
+        [raise6seclocaldispatch] decimal(15,5),
+        [raise6seclocalprice] decimal(15,5),
+        [raise6seclocalreq] decimal(15,5),
+        [raise6secprice] decimal(15,5),
+        [raise6secreq] decimal(15,5),
+        [raise6secsupplyprice] decimal(15,5),
+        [lastchanged] datetime2,
+        [initialsupply] decimal(15,5),
+        [clearedsupply] decimal(15,5),
+        [lowerregimport] decimal(15,5),
+        [lowerreglocaldispatch] decimal(15,5),
+        [lowerreglocalreq] decimal(15,5),
+        [lowerregreq] decimal(15,5),
+        [raiseregimport] decimal(15,5),
+        [raisereglocaldispatch] decimal(15,5),
+        [raisereglocalreq] decimal(15,5),
+        [raiseregreq] decimal(15,5),
+        [raise5minlocalviolation] decimal(15,5),
+        [raisereglocalviolation] decimal(15,5),
+        [raise60seclocalviolation] decimal(15,5),
+        [raise6seclocalviolation] decimal(15,5),
+        [lower5minlocalviolation] decimal(15,5),
+        [lowerreglocalviolation] decimal(15,5),
+        [lower60seclocalviolation] decimal(15,5),
+        [lower6seclocalviolation] decimal(15,5),
+        [raise5minviolation] decimal(15,5),
+        [raiseregviolation] decimal(15,5),
+        [raise60secviolation] decimal(15,5),
+        [raise6secviolation] decimal(15,5),
+        [lower5minviolation] decimal(15,5),
+        [lowerregviolation] decimal(15,5),
+        [lower60secviolation] decimal(15,5),
+        [lower6secviolation] decimal(15,5),
+        [totalintermittentgeneration] decimal(15,5),
+        [demand_and_nonschedgen] decimal(15,5),
+        [uigf] decimal(15,5)
+    ) d
+) as src 
+on (
+    tgt.[periodid] = src.[periodid]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[runno] = src.[runno]
+    and tgt.[settlementdate] = src.[settlementdate]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[settlementdate] = src.[settlementdate],
+        tgt.[runno] = src.[runno],
+        tgt.[regionid] = src.[regionid],
+        tgt.[periodid] = src.[periodid],
+        tgt.[totaldemand] = src.[totaldemand],
+        tgt.[availablegeneration] = src.[availablegeneration],
+        tgt.[availableload] = src.[availableload],
+        tgt.[demandforecast] = src.[demandforecast],
+        tgt.[dispatchablegeneration] = src.[dispatchablegeneration],
+        tgt.[dispatchableload] = src.[dispatchableload],
+        tgt.[netinterchange] = src.[netinterchange],
+        tgt.[excessgeneration] = src.[excessgeneration],
+        tgt.[lower5mindispatch] = src.[lower5mindispatch],
+        tgt.[lower5minimport] = src.[lower5minimport],
+        tgt.[lower5minlocaldispatch] = src.[lower5minlocaldispatch],
+        tgt.[lower5minlocalprice] = src.[lower5minlocalprice],
+        tgt.[lower5minlocalreq] = src.[lower5minlocalreq],
+        tgt.[lower5minprice] = src.[lower5minprice],
+        tgt.[lower5minreq] = src.[lower5minreq],
+        tgt.[lower5minsupplyprice] = src.[lower5minsupplyprice],
+        tgt.[lower60secdispatch] = src.[lower60secdispatch],
+        tgt.[lower60secimport] = src.[lower60secimport],
+        tgt.[lower60seclocaldispatch] = src.[lower60seclocaldispatch],
+        tgt.[lower60seclocalprice] = src.[lower60seclocalprice],
+        tgt.[lower60seclocalreq] = src.[lower60seclocalreq],
+        tgt.[lower60secprice] = src.[lower60secprice],
+        tgt.[lower60secreq] = src.[lower60secreq],
+        tgt.[lower60secsupplyprice] = src.[lower60secsupplyprice],
+        tgt.[lower6secdispatch] = src.[lower6secdispatch],
+        tgt.[lower6secimport] = src.[lower6secimport],
+        tgt.[lower6seclocaldispatch] = src.[lower6seclocaldispatch],
+        tgt.[lower6seclocalprice] = src.[lower6seclocalprice],
+        tgt.[lower6seclocalreq] = src.[lower6seclocalreq],
+        tgt.[lower6secprice] = src.[lower6secprice],
+        tgt.[lower6secreq] = src.[lower6secreq],
+        tgt.[lower6secsupplyprice] = src.[lower6secsupplyprice],
+        tgt.[raise5mindispatch] = src.[raise5mindispatch],
+        tgt.[raise5minimport] = src.[raise5minimport],
+        tgt.[raise5minlocaldispatch] = src.[raise5minlocaldispatch],
+        tgt.[raise5minlocalprice] = src.[raise5minlocalprice],
+        tgt.[raise5minlocalreq] = src.[raise5minlocalreq],
+        tgt.[raise5minprice] = src.[raise5minprice],
+        tgt.[raise5minreq] = src.[raise5minreq],
+        tgt.[raise5minsupplyprice] = src.[raise5minsupplyprice],
+        tgt.[raise60secdispatch] = src.[raise60secdispatch],
+        tgt.[raise60secimport] = src.[raise60secimport],
+        tgt.[raise60seclocaldispatch] = src.[raise60seclocaldispatch],
+        tgt.[raise60seclocalprice] = src.[raise60seclocalprice],
+        tgt.[raise60seclocalreq] = src.[raise60seclocalreq],
+        tgt.[raise60secprice] = src.[raise60secprice],
+        tgt.[raise60secreq] = src.[raise60secreq],
+        tgt.[raise60secsupplyprice] = src.[raise60secsupplyprice],
+        tgt.[raise6secdispatch] = src.[raise6secdispatch],
+        tgt.[raise6secimport] = src.[raise6secimport],
+        tgt.[raise6seclocaldispatch] = src.[raise6seclocaldispatch],
+        tgt.[raise6seclocalprice] = src.[raise6seclocalprice],
+        tgt.[raise6seclocalreq] = src.[raise6seclocalreq],
+        tgt.[raise6secprice] = src.[raise6secprice],
+        tgt.[raise6secreq] = src.[raise6secreq],
+        tgt.[raise6secsupplyprice] = src.[raise6secsupplyprice],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[initialsupply] = src.[initialsupply],
+        tgt.[clearedsupply] = src.[clearedsupply],
+        tgt.[lowerregimport] = src.[lowerregimport],
+        tgt.[lowerreglocaldispatch] = src.[lowerreglocaldispatch],
+        tgt.[lowerreglocalreq] = src.[lowerreglocalreq],
+        tgt.[lowerregreq] = src.[lowerregreq],
+        tgt.[raiseregimport] = src.[raiseregimport],
+        tgt.[raisereglocaldispatch] = src.[raisereglocaldispatch],
+        tgt.[raisereglocalreq] = src.[raisereglocalreq],
+        tgt.[raiseregreq] = src.[raiseregreq],
+        tgt.[raise5minlocalviolation] = src.[raise5minlocalviolation],
+        tgt.[raisereglocalviolation] = src.[raisereglocalviolation],
+        tgt.[raise60seclocalviolation] = src.[raise60seclocalviolation],
+        tgt.[raise6seclocalviolation] = src.[raise6seclocalviolation],
+        tgt.[lower5minlocalviolation] = src.[lower5minlocalviolation],
+        tgt.[lowerreglocalviolation] = src.[lowerreglocalviolation],
+        tgt.[lower60seclocalviolation] = src.[lower60seclocalviolation],
+        tgt.[lower6seclocalviolation] = src.[lower6seclocalviolation],
+        tgt.[raise5minviolation] = src.[raise5minviolation],
+        tgt.[raiseregviolation] = src.[raiseregviolation],
+        tgt.[raise60secviolation] = src.[raise60secviolation],
+        tgt.[raise6secviolation] = src.[raise6secviolation],
+        tgt.[lower5minviolation] = src.[lower5minviolation],
+        tgt.[lowerregviolation] = src.[lowerregviolation],
+        tgt.[lower60secviolation] = src.[lower60secviolation],
+        tgt.[lower6secviolation] = src.[lower6secviolation],
+        tgt.[totalintermittentgeneration] = src.[totalintermittentgeneration],
+        tgt.[demand_and_nonschedgen] = src.[demand_and_nonschedgen],
+        tgt.[uigf] = src.[uigf]
+when not matched
+    then insert (
+        file_log_id,
+        [settlementdate],
+        [runno],
+        [regionid],
+        [periodid],
+        [totaldemand],
+        [availablegeneration],
+        [availableload],
+        [demandforecast],
+        [dispatchablegeneration],
+        [dispatchableload],
+        [netinterchange],
+        [excessgeneration],
+        [lower5mindispatch],
+        [lower5minimport],
+        [lower5minlocaldispatch],
+        [lower5minlocalprice],
+        [lower5minlocalreq],
+        [lower5minprice],
+        [lower5minreq],
+        [lower5minsupplyprice],
+        [lower60secdispatch],
+        [lower60secimport],
+        [lower60seclocaldispatch],
+        [lower60seclocalprice],
+        [lower60seclocalreq],
+        [lower60secprice],
+        [lower60secreq],
+        [lower60secsupplyprice],
+        [lower6secdispatch],
+        [lower6secimport],
+        [lower6seclocaldispatch],
+        [lower6seclocalprice],
+        [lower6seclocalreq],
+        [lower6secprice],
+        [lower6secreq],
+        [lower6secsupplyprice],
+        [raise5mindispatch],
+        [raise5minimport],
+        [raise5minlocaldispatch],
+        [raise5minlocalprice],
+        [raise5minlocalreq],
+        [raise5minprice],
+        [raise5minreq],
+        [raise5minsupplyprice],
+        [raise60secdispatch],
+        [raise60secimport],
+        [raise60seclocaldispatch],
+        [raise60seclocalprice],
+        [raise60seclocalreq],
+        [raise60secprice],
+        [raise60secreq],
+        [raise60secsupplyprice],
+        [raise6secdispatch],
+        [raise6secimport],
+        [raise6seclocaldispatch],
+        [raise6seclocalprice],
+        [raise6seclocalreq],
+        [raise6secprice],
+        [raise6secreq],
+        [raise6secsupplyprice],
+        [lastchanged],
+        [initialsupply],
+        [clearedsupply],
+        [lowerregimport],
+        [lowerreglocaldispatch],
+        [lowerreglocalreq],
+        [lowerregreq],
+        [raiseregimport],
+        [raisereglocaldispatch],
+        [raisereglocalreq],
+        [raiseregreq],
+        [raise5minlocalviolation],
+        [raisereglocalviolation],
+        [raise60seclocalviolation],
+        [raise6seclocalviolation],
+        [lower5minlocalviolation],
+        [lowerreglocalviolation],
+        [lower60seclocalviolation],
+        [lower6seclocalviolation],
+        [raise5minviolation],
+        [raiseregviolation],
+        [raise60secviolation],
+        [raise6secviolation],
+        [lower5minviolation],
+        [lowerregviolation],
+        [lower60secviolation],
+        [lower6secviolation],
+        [totalintermittentgeneration],
+        [demand_and_nonschedgen],
+        [uigf]
+    ) values (
+        @file_log_id,
+        src.[settlementdate],
+        src.[runno],
+        src.[regionid],
+        src.[periodid],
+        src.[totaldemand],
+        src.[availablegeneration],
+        src.[availableload],
+        src.[demandforecast],
+        src.[dispatchablegeneration],
+        src.[dispatchableload],
+        src.[netinterchange],
+        src.[excessgeneration],
+        src.[lower5mindispatch],
+        src.[lower5minimport],
+        src.[lower5minlocaldispatch],
+        src.[lower5minlocalprice],
+        src.[lower5minlocalreq],
+        src.[lower5minprice],
+        src.[lower5minreq],
+        src.[lower5minsupplyprice],
+        src.[lower60secdispatch],
+        src.[lower60secimport],
+        src.[lower60seclocaldispatch],
+        src.[lower60seclocalprice],
+        src.[lower60seclocalreq],
+        src.[lower60secprice],
+        src.[lower60secreq],
+        src.[lower60secsupplyprice],
+        src.[lower6secdispatch],
+        src.[lower6secimport],
+        src.[lower6seclocaldispatch],
+        src.[lower6seclocalprice],
+        src.[lower6seclocalreq],
+        src.[lower6secprice],
+        src.[lower6secreq],
+        src.[lower6secsupplyprice],
+        src.[raise5mindispatch],
+        src.[raise5minimport],
+        src.[raise5minlocaldispatch],
+        src.[raise5minlocalprice],
+        src.[raise5minlocalreq],
+        src.[raise5minprice],
+        src.[raise5minreq],
+        src.[raise5minsupplyprice],
+        src.[raise60secdispatch],
+        src.[raise60secimport],
+        src.[raise60seclocaldispatch],
+        src.[raise60seclocalprice],
+        src.[raise60seclocalreq],
+        src.[raise60secprice],
+        src.[raise60secreq],
+        src.[raise60secsupplyprice],
+        src.[raise6secdispatch],
+        src.[raise6secimport],
+        src.[raise6seclocaldispatch],
+        src.[raise6seclocalprice],
+        src.[raise6seclocalreq],
+        src.[raise6secprice],
+        src.[raise6secreq],
+        src.[raise6secsupplyprice],
+        src.[lastchanged],
+        src.[initialsupply],
+        src.[clearedsupply],
+        src.[lowerregimport],
+        src.[lowerreglocaldispatch],
+        src.[lowerreglocalreq],
+        src.[lowerregreq],
+        src.[raiseregimport],
+        src.[raisereglocaldispatch],
+        src.[raisereglocalreq],
+        src.[raiseregreq],
+        src.[raise5minlocalviolation],
+        src.[raisereglocalviolation],
+        src.[raise60seclocalviolation],
+        src.[raise6seclocalviolation],
+        src.[lower5minlocalviolation],
+        src.[lowerreglocalviolation],
+        src.[lower60seclocalviolation],
+        src.[lower6seclocalviolation],
+        src.[raise5minviolation],
+        src.[raiseregviolation],
+        src.[raise60secviolation],
+        src.[raise6secviolation],
+        src.[lower5minviolation],
+        src.[lowerregviolation],
+        src.[lower60secviolation],
+        src.[lower6secviolation],
+        src.[totalintermittentgeneration],
+        src.[demand_and_nonschedgen],
+        src.[uigf]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertPdpasaCasesolution3
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.PdpasaCasesolution3 as tgt 
+using (
+    select 
+        d.[run_datetime],
+        d.[pasaversion],
+        d.[reservecondition],
+        d.[lorcondition],
+        d.[capacityobjfunction],
+        d.[capacityoption],
+        d.[maxsurplusreserveoption],
+        d.[maxsparecapacityoption],
+        d.[interconnectorflowpenalty],
+        d.[lastchanged],
+        d.[reliabilitylrcdemandoption],
+        d.[outagelrcdemandoption],
+        d.[lordemandoption],
+        d.[reliabilitylrccapacityoption],
+        d.[outagelrccapacityoption],
+        d.[lorcapacityoption],
+        d.[loruigf_option],
+        d.[reliability_lrcuigf_option],
+        d.[outage_lrcuigf_option]
+    from openjson(@data) with (
+        [run_datetime] datetime2,
+        [pasaversion] varchar(10),
+        [reservecondition] decimal(1,0),
+        [lorcondition] decimal(1,0),
+        [capacityobjfunction] decimal(12,3),
+        [capacityoption] decimal(12,3),
+        [maxsurplusreserveoption] decimal(12,3),
+        [maxsparecapacityoption] decimal(12,3),
+        [interconnectorflowpenalty] decimal(12,3),
+        [lastchanged] datetime2,
+        [reliabilitylrcdemandoption] decimal(12,3),
+        [outagelrcdemandoption] decimal(12,3),
+        [lordemandoption] decimal(12,3),
+        [reliabilitylrccapacityoption] varchar(10),
+        [outagelrccapacityoption] varchar(10),
+        [lorcapacityoption] varchar(10),
+        [loruigf_option] decimal(3,0),
+        [reliability_lrcuigf_option] decimal(3,0),
+        [outage_lrcuigf_option] decimal(3,0)
+    ) d
+) as src 
+on (
+    tgt.[run_datetime] = src.[run_datetime]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[run_datetime] = src.[run_datetime],
+        tgt.[pasaversion] = src.[pasaversion],
+        tgt.[reservecondition] = src.[reservecondition],
+        tgt.[lorcondition] = src.[lorcondition],
+        tgt.[capacityobjfunction] = src.[capacityobjfunction],
+        tgt.[capacityoption] = src.[capacityoption],
+        tgt.[maxsurplusreserveoption] = src.[maxsurplusreserveoption],
+        tgt.[maxsparecapacityoption] = src.[maxsparecapacityoption],
+        tgt.[interconnectorflowpenalty] = src.[interconnectorflowpenalty],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[reliabilitylrcdemandoption] = src.[reliabilitylrcdemandoption],
+        tgt.[outagelrcdemandoption] = src.[outagelrcdemandoption],
+        tgt.[lordemandoption] = src.[lordemandoption],
+        tgt.[reliabilitylrccapacityoption] = src.[reliabilitylrccapacityoption],
+        tgt.[outagelrccapacityoption] = src.[outagelrccapacityoption],
+        tgt.[lorcapacityoption] = src.[lorcapacityoption],
+        tgt.[loruigf_option] = src.[loruigf_option],
+        tgt.[reliability_lrcuigf_option] = src.[reliability_lrcuigf_option],
+        tgt.[outage_lrcuigf_option] = src.[outage_lrcuigf_option]
+when not matched
+    then insert (
+        file_log_id,
+        [run_datetime],
+        [pasaversion],
+        [reservecondition],
+        [lorcondition],
+        [capacityobjfunction],
+        [capacityoption],
+        [maxsurplusreserveoption],
+        [maxsparecapacityoption],
+        [interconnectorflowpenalty],
+        [lastchanged],
+        [reliabilitylrcdemandoption],
+        [outagelrcdemandoption],
+        [lordemandoption],
+        [reliabilitylrccapacityoption],
+        [outagelrccapacityoption],
+        [lorcapacityoption],
+        [loruigf_option],
+        [reliability_lrcuigf_option],
+        [outage_lrcuigf_option]
+    ) values (
+        @file_log_id,
+        src.[run_datetime],
+        src.[pasaversion],
+        src.[reservecondition],
+        src.[lorcondition],
+        src.[capacityobjfunction],
+        src.[capacityoption],
+        src.[maxsurplusreserveoption],
+        src.[maxsparecapacityoption],
+        src.[interconnectorflowpenalty],
+        src.[lastchanged],
+        src.[reliabilitylrcdemandoption],
+        src.[outagelrcdemandoption],
+        src.[lordemandoption],
+        src.[reliabilitylrccapacityoption],
+        src.[outagelrccapacityoption],
+        src.[lorcapacityoption],
+        src.[loruigf_option],
+        src.[reliability_lrcuigf_option],
+        src.[outage_lrcuigf_option]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertPdpasaConstraintsolution1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.PdpasaConstraintsolution1 as tgt 
+using (
+    select 
+        d.[run_datetime],
+        d.[interval_datetime],
+        d.[constraintid],
+        d.[capacityrhs],
+        d.[capacitymarginalvalue],
+        d.[capacityviolationdegree],
+        d.[lastchanged],
+        d.[runtype],
+        d.[studyregionid]
+    from openjson(@data) with (
+        [run_datetime] datetime2,
+        [interval_datetime] datetime2,
+        [constraintid] varchar(20),
+        [capacityrhs] decimal(12,2),
+        [capacitymarginalvalue] decimal(12,2),
+        [capacityviolationdegree] decimal(12,2),
+        [lastchanged] datetime2,
+        [runtype] varchar(20),
+        [studyregionid] varchar(20)
+    ) d
+) as src 
+on (
+    tgt.[constraintid] = src.[constraintid]
+    and tgt.[interval_datetime] = src.[interval_datetime]
+    and tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[runtype] = src.[runtype]
+    and tgt.[studyregionid] = src.[studyregionid]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[run_datetime] = src.[run_datetime],
+        tgt.[interval_datetime] = src.[interval_datetime],
+        tgt.[constraintid] = src.[constraintid],
+        tgt.[capacityrhs] = src.[capacityrhs],
+        tgt.[capacitymarginalvalue] = src.[capacitymarginalvalue],
+        tgt.[capacityviolationdegree] = src.[capacityviolationdegree],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[runtype] = src.[runtype],
+        tgt.[studyregionid] = src.[studyregionid]
+when not matched
+    then insert (
+        file_log_id,
+        [run_datetime],
+        [interval_datetime],
+        [constraintid],
+        [capacityrhs],
+        [capacitymarginalvalue],
+        [capacityviolationdegree],
+        [lastchanged],
+        [runtype],
+        [studyregionid]
+    ) values (
+        @file_log_id,
+        src.[run_datetime],
+        src.[interval_datetime],
+        src.[constraintid],
+        src.[capacityrhs],
+        src.[capacitymarginalvalue],
+        src.[capacityviolationdegree],
+        src.[lastchanged],
+        src.[runtype],
+        src.[studyregionid]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertPdpasaInterconnectorsoln1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.PdpasaInterconnectorsoln1 as tgt 
+using (
+    select 
+        d.[run_datetime],
+        d.[interval_datetime],
+        d.[interconnectorid],
+        d.[capacitymwflow],
+        d.[capacitymarginalvalue],
+        d.[capacityviolationdegree],
+        d.[calculatedexportlimit],
+        d.[calculatedimportlimit],
+        d.[lastchanged],
+        d.[runtype],
+        d.[exportlimitconstraintid],
+        d.[importlimitconstraintid],
+        d.[studyregionid]
+    from openjson(@data) with (
+        [run_datetime] datetime2,
+        [interval_datetime] datetime2,
+        [interconnectorid] varchar(10),
+        [capacitymwflow] decimal(12,2),
+        [capacitymarginalvalue] decimal(12,2),
+        [capacityviolationdegree] decimal(12,2),
+        [calculatedexportlimit] decimal(12,2),
+        [calculatedimportlimit] decimal(12,2),
+        [lastchanged] datetime2,
+        [runtype] varchar(20),
+        [exportlimitconstraintid] varchar(20),
+        [importlimitconstraintid] varchar(20),
+        [studyregionid] varchar(20)
+    ) d
+) as src 
+on (
+    tgt.[interconnectorid] = src.[interconnectorid]
+    and tgt.[interval_datetime] = src.[interval_datetime]
+    and tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[runtype] = src.[runtype]
+    and tgt.[studyregionid] = src.[studyregionid]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[run_datetime] = src.[run_datetime],
+        tgt.[interval_datetime] = src.[interval_datetime],
+        tgt.[interconnectorid] = src.[interconnectorid],
+        tgt.[capacitymwflow] = src.[capacitymwflow],
+        tgt.[capacitymarginalvalue] = src.[capacitymarginalvalue],
+        tgt.[capacityviolationdegree] = src.[capacityviolationdegree],
+        tgt.[calculatedexportlimit] = src.[calculatedexportlimit],
+        tgt.[calculatedimportlimit] = src.[calculatedimportlimit],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[runtype] = src.[runtype],
+        tgt.[exportlimitconstraintid] = src.[exportlimitconstraintid],
+        tgt.[importlimitconstraintid] = src.[importlimitconstraintid],
+        tgt.[studyregionid] = src.[studyregionid]
+when not matched
+    then insert (
+        file_log_id,
+        [run_datetime],
+        [interval_datetime],
+        [interconnectorid],
+        [capacitymwflow],
+        [capacitymarginalvalue],
+        [capacityviolationdegree],
+        [calculatedexportlimit],
+        [calculatedimportlimit],
+        [lastchanged],
+        [runtype],
+        [exportlimitconstraintid],
+        [importlimitconstraintid],
+        [studyregionid]
+    ) values (
+        @file_log_id,
+        src.[run_datetime],
+        src.[interval_datetime],
+        src.[interconnectorid],
+        src.[capacitymwflow],
+        src.[capacitymarginalvalue],
+        src.[capacityviolationdegree],
+        src.[calculatedexportlimit],
+        src.[calculatedimportlimit],
+        src.[lastchanged],
+        src.[runtype],
+        src.[exportlimitconstraintid],
+        src.[importlimitconstraintid],
+        src.[studyregionid]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertPdpasaRegionsolution7
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.PdpasaRegionsolution7 as tgt 
+using (
+    select 
+        d.[run_datetime],
+        d.[interval_datetime],
+        d.[regionid],
+        d.[demand10],
+        d.[demand50],
+        d.[demand90],
+        d.[reservereq],
+        d.[capacityreq],
+        d.[energyreqdemand50],
+        d.[unconstrainedcapacity],
+        d.[constrainedcapacity],
+        d.[netinterchangeunderscarcity],
+        d.[surpluscapacity],
+        d.[surplusreserve],
+        d.[reservecondition],
+        d.[maxsurplusreserve],
+        d.[maxsparecapacity],
+        d.[lorcondition],
+        d.[aggregatecapacityavailable],
+        d.[aggregatescheduledload],
+        d.[lastchanged],
+        d.[aggregatepasaavailability],
+        d.[runtype],
+        d.[energyreqdemand10],
+        d.[calculatedlor1level],
+        d.[calculatedlor2level],
+        d.[msrnetinterchangeunderscarcity],
+        d.[lornetinterchangeunderscarcity],
+        d.[totalintermittentgeneration],
+        d.[demand_and_nonschedgen],
+        d.[uigf],
+        d.[semi_scheduled_capacity],
+        d.[lor_semi_scheduled_capacity],
+        d.[lcr],
+        d.[lcr2],
+        d.[fum],
+        d.[ss_solar_uigf],
+        d.[ss_wind_uigf],
+        d.[ss_solar_capacity],
+        d.[ss_wind_capacity],
+        d.[ss_solar_cleared],
+        d.[ss_wind_cleared],
+        d.[wdr_available],
+        d.[wdr_pasaavailable],
+        d.[wdr_capacity]
+    from openjson(@data) with (
+        [run_datetime] datetime2,
+        [interval_datetime] datetime2,
+        [regionid] varchar(10),
+        [demand10] decimal(12,2),
+        [demand50] decimal(12,2),
+        [demand90] decimal(12,2),
+        [reservereq] decimal(12,2),
+        [capacityreq] decimal(12,2),
+        [energyreqdemand50] decimal(12,2),
+        [unconstrainedcapacity] decimal(12,0),
+        [constrainedcapacity] decimal(12,0),
+        [netinterchangeunderscarcity] decimal(12,2),
+        [surpluscapacity] decimal(12,2),
+        [surplusreserve] decimal(12,2),
+        [reservecondition] decimal(1,0),
+        [maxsurplusreserve] decimal(12,2),
+        [maxsparecapacity] decimal(12,2),
+        [lorcondition] decimal(1,0),
+        [aggregatecapacityavailable] decimal(12,2),
+        [aggregatescheduledload] decimal(12,2),
+        [lastchanged] datetime2,
+        [aggregatepasaavailability] decimal(12,0),
+        [runtype] varchar(20),
+        [energyreqdemand10] decimal(12,2),
+        [calculatedlor1level] decimal(16,6),
+        [calculatedlor2level] decimal(16,6),
+        [msrnetinterchangeunderscarcity] decimal(12,2),
+        [lornetinterchangeunderscarcity] decimal(12,2),
+        [totalintermittentgeneration] decimal(15,5),
+        [demand_and_nonschedgen] decimal(15,5),
+        [uigf] decimal(12,2),
+        [semi_scheduled_capacity] decimal(12,2),
+        [lor_semi_scheduled_capacity] decimal(12,2),
+        [lcr] decimal(16,6),
+        [lcr2] decimal(16,6),
+        [fum] decimal(16,6),
+        [ss_solar_uigf] decimal(12,2),
+        [ss_wind_uigf] decimal(12,2),
+        [ss_solar_capacity] decimal(12,2),
+        [ss_wind_capacity] decimal(12,2),
+        [ss_solar_cleared] decimal(12,2),
+        [ss_wind_cleared] decimal(12,2),
+        [wdr_available] decimal(12,2),
+        [wdr_pasaavailable] decimal(12,2),
+        [wdr_capacity] decimal(12,2)
+    ) d
+) as src 
+on (
+    tgt.[interval_datetime] = src.[interval_datetime]
+    and tgt.[regionid] = src.[regionid]
+    and tgt.[run_datetime] = src.[run_datetime]
+    and tgt.[runtype] = src.[runtype]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[run_datetime] = src.[run_datetime],
+        tgt.[interval_datetime] = src.[interval_datetime],
+        tgt.[regionid] = src.[regionid],
+        tgt.[demand10] = src.[demand10],
+        tgt.[demand50] = src.[demand50],
+        tgt.[demand90] = src.[demand90],
+        tgt.[reservereq] = src.[reservereq],
+        tgt.[capacityreq] = src.[capacityreq],
+        tgt.[energyreqdemand50] = src.[energyreqdemand50],
+        tgt.[unconstrainedcapacity] = src.[unconstrainedcapacity],
+        tgt.[constrainedcapacity] = src.[constrainedcapacity],
+        tgt.[netinterchangeunderscarcity] = src.[netinterchangeunderscarcity],
+        tgt.[surpluscapacity] = src.[surpluscapacity],
+        tgt.[surplusreserve] = src.[surplusreserve],
+        tgt.[reservecondition] = src.[reservecondition],
+        tgt.[maxsurplusreserve] = src.[maxsurplusreserve],
+        tgt.[maxsparecapacity] = src.[maxsparecapacity],
+        tgt.[lorcondition] = src.[lorcondition],
+        tgt.[aggregatecapacityavailable] = src.[aggregatecapacityavailable],
+        tgt.[aggregatescheduledload] = src.[aggregatescheduledload],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[aggregatepasaavailability] = src.[aggregatepasaavailability],
+        tgt.[runtype] = src.[runtype],
+        tgt.[energyreqdemand10] = src.[energyreqdemand10],
+        tgt.[calculatedlor1level] = src.[calculatedlor1level],
+        tgt.[calculatedlor2level] = src.[calculatedlor2level],
+        tgt.[msrnetinterchangeunderscarcity] = src.[msrnetinterchangeunderscarcity],
+        tgt.[lornetinterchangeunderscarcity] = src.[lornetinterchangeunderscarcity],
+        tgt.[totalintermittentgeneration] = src.[totalintermittentgeneration],
+        tgt.[demand_and_nonschedgen] = src.[demand_and_nonschedgen],
+        tgt.[uigf] = src.[uigf],
+        tgt.[semi_scheduled_capacity] = src.[semi_scheduled_capacity],
+        tgt.[lor_semi_scheduled_capacity] = src.[lor_semi_scheduled_capacity],
+        tgt.[lcr] = src.[lcr],
+        tgt.[lcr2] = src.[lcr2],
+        tgt.[fum] = src.[fum],
+        tgt.[ss_solar_uigf] = src.[ss_solar_uigf],
+        tgt.[ss_wind_uigf] = src.[ss_wind_uigf],
+        tgt.[ss_solar_capacity] = src.[ss_solar_capacity],
+        tgt.[ss_wind_capacity] = src.[ss_wind_capacity],
+        tgt.[ss_solar_cleared] = src.[ss_solar_cleared],
+        tgt.[ss_wind_cleared] = src.[ss_wind_cleared],
+        tgt.[wdr_available] = src.[wdr_available],
+        tgt.[wdr_pasaavailable] = src.[wdr_pasaavailable],
+        tgt.[wdr_capacity] = src.[wdr_capacity]
+when not matched
+    then insert (
+        file_log_id,
+        [run_datetime],
+        [interval_datetime],
+        [regionid],
+        [demand10],
+        [demand50],
+        [demand90],
+        [reservereq],
+        [capacityreq],
+        [energyreqdemand50],
+        [unconstrainedcapacity],
+        [constrainedcapacity],
+        [netinterchangeunderscarcity],
+        [surpluscapacity],
+        [surplusreserve],
+        [reservecondition],
+        [maxsurplusreserve],
+        [maxsparecapacity],
+        [lorcondition],
+        [aggregatecapacityavailable],
+        [aggregatescheduledload],
+        [lastchanged],
+        [aggregatepasaavailability],
+        [runtype],
+        [energyreqdemand10],
+        [calculatedlor1level],
+        [calculatedlor2level],
+        [msrnetinterchangeunderscarcity],
+        [lornetinterchangeunderscarcity],
+        [totalintermittentgeneration],
+        [demand_and_nonschedgen],
+        [uigf],
+        [semi_scheduled_capacity],
+        [lor_semi_scheduled_capacity],
+        [lcr],
+        [lcr2],
+        [fum],
+        [ss_solar_uigf],
+        [ss_wind_uigf],
+        [ss_solar_capacity],
+        [ss_wind_capacity],
+        [ss_solar_cleared],
+        [ss_wind_cleared],
+        [wdr_available],
+        [wdr_pasaavailable],
+        [wdr_capacity]
+    ) values (
+        @file_log_id,
+        src.[run_datetime],
+        src.[interval_datetime],
+        src.[regionid],
+        src.[demand10],
+        src.[demand50],
+        src.[demand90],
+        src.[reservereq],
+        src.[capacityreq],
+        src.[energyreqdemand50],
+        src.[unconstrainedcapacity],
+        src.[constrainedcapacity],
+        src.[netinterchangeunderscarcity],
+        src.[surpluscapacity],
+        src.[surplusreserve],
+        src.[reservecondition],
+        src.[maxsurplusreserve],
+        src.[maxsparecapacity],
+        src.[lorcondition],
+        src.[aggregatecapacityavailable],
+        src.[aggregatescheduledload],
+        src.[lastchanged],
+        src.[aggregatepasaavailability],
+        src.[runtype],
+        src.[energyreqdemand10],
+        src.[calculatedlor1level],
+        src.[calculatedlor2level],
+        src.[msrnetinterchangeunderscarcity],
+        src.[lornetinterchangeunderscarcity],
+        src.[totalintermittentgeneration],
+        src.[demand_and_nonschedgen],
+        src.[uigf],
+        src.[semi_scheduled_capacity],
+        src.[lor_semi_scheduled_capacity],
+        src.[lcr],
+        src.[lcr2],
+        src.[fum],
+        src.[ss_solar_uigf],
+        src.[ss_wind_uigf],
+        src.[ss_solar_capacity],
+        src.[ss_wind_capacity],
+        src.[ss_solar_cleared],
+        src.[ss_wind_cleared],
+        src.[wdr_available],
+        src.[wdr_pasaavailable],
+        src.[wdr_capacity]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertPrudentialCompanyPosition1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.PrudentialCompanyPosition1 as tgt 
+using (
+    select 
+        d.[prudential_date],
+        d.[runno],
+        d.[company_id],
+        d.[mcl],
+        d.[credit_support],
+        d.[trading_limit],
+        d.[current_amount_balance],
+        d.[security_deposit_provision],
+        d.[security_deposit_offset],
+        d.[security_deposit_balance],
+        d.[expost_realloc_balance],
+        d.[default_balance],
+        d.[outstandings],
+        d.[trading_margin],
+        d.[typical_accrual],
+        d.[prudential_margin],
+        d.[early_payment_amount],
+        d.[percentage_outstandings],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [prudential_date] datetime2,
+        [runno] decimal(3,0),
+        [company_id] varchar(20),
+        [mcl] decimal(16,6),
+        [credit_support] decimal(16,6),
+        [trading_limit] decimal(16,6),
+        [current_amount_balance] decimal(16,6),
+        [security_deposit_provision] decimal(16,6),
+        [security_deposit_offset] decimal(16,6),
+        [security_deposit_balance] decimal(16,6),
+        [expost_realloc_balance] decimal(16,6),
+        [default_balance] decimal(16,6),
+        [outstandings] decimal(16,6),
+        [trading_margin] decimal(16,6),
+        [typical_accrual] decimal(16,6),
+        [prudential_margin] decimal(16,6),
+        [early_payment_amount] decimal(18,8),
+        [percentage_outstandings] decimal(18,8),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[company_id] = src.[company_id]
+    and tgt.[prudential_date] = src.[prudential_date]
+    and tgt.[runno] = src.[runno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[prudential_date] = src.[prudential_date],
+        tgt.[runno] = src.[runno],
+        tgt.[company_id] = src.[company_id],
+        tgt.[mcl] = src.[mcl],
+        tgt.[credit_support] = src.[credit_support],
+        tgt.[trading_limit] = src.[trading_limit],
+        tgt.[current_amount_balance] = src.[current_amount_balance],
+        tgt.[security_deposit_provision] = src.[security_deposit_provision],
+        tgt.[security_deposit_offset] = src.[security_deposit_offset],
+        tgt.[security_deposit_balance] = src.[security_deposit_balance],
+        tgt.[expost_realloc_balance] = src.[expost_realloc_balance],
+        tgt.[default_balance] = src.[default_balance],
+        tgt.[outstandings] = src.[outstandings],
+        tgt.[trading_margin] = src.[trading_margin],
+        tgt.[typical_accrual] = src.[typical_accrual],
+        tgt.[prudential_margin] = src.[prudential_margin],
+        tgt.[early_payment_amount] = src.[early_payment_amount],
+        tgt.[percentage_outstandings] = src.[percentage_outstandings],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [prudential_date],
+        [runno],
+        [company_id],
+        [mcl],
+        [credit_support],
+        [trading_limit],
+        [current_amount_balance],
+        [security_deposit_provision],
+        [security_deposit_offset],
+        [security_deposit_balance],
+        [expost_realloc_balance],
+        [default_balance],
+        [outstandings],
+        [trading_margin],
+        [typical_accrual],
+        [prudential_margin],
+        [early_payment_amount],
+        [percentage_outstandings],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[prudential_date],
+        src.[runno],
+        src.[company_id],
+        src.[mcl],
+        src.[credit_support],
+        src.[trading_limit],
+        src.[current_amount_balance],
+        src.[security_deposit_provision],
+        src.[security_deposit_offset],
+        src.[security_deposit_balance],
+        src.[expost_realloc_balance],
+        src.[default_balance],
+        src.[outstandings],
+        src.[trading_margin],
+        src.[typical_accrual],
+        src.[prudential_margin],
+        src.[early_payment_amount],
+        src.[percentage_outstandings],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertPrudentialRuntrk1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.PrudentialRuntrk1 as tgt 
+using (
+    select 
+        d.[prudential_date],
+        d.[runno],
+        d.[authorisedby],
+        d.[authoriseddate],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [prudential_date] datetime2,
+        [runno] decimal(3,0),
+        [authorisedby] varchar(15),
+        [authoriseddate] datetime2,
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[prudential_date] = src.[prudential_date]
+    and tgt.[runno] = src.[runno]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[prudential_date] = src.[prudential_date],
+        tgt.[runno] = src.[runno],
+        tgt.[authorisedby] = src.[authorisedby],
+        tgt.[authoriseddate] = src.[authoriseddate],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [prudential_date],
+        [runno],
+        [authorisedby],
+        [authoriseddate],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[prudential_date],
+        src.[runno],
+        src.[authorisedby],
+        src.[authoriseddate],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertMccCasesolution1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.MccCasesolution1(
+file_log_id,
+[run_datetime]
+)
+select 
+@file_log_id,
+d.[run_datetime]
+from openjson(@data) with (
+[run_datetime] datetime2
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertMccConstraintsolution1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.MccConstraintsolution1(
+file_log_id,
+[run_datetime],
+        [constraintid],
+        [rhs],
+        [marginalvalue]
+)
+select 
+@file_log_id,
+d.[run_datetime],
+        d.[constraintid],
+        d.[rhs],
+        d.[marginalvalue]
+from openjson(@data) with (
+[run_datetime] datetime2,
+        [constraintid] varchar(20),
+        [rhs] decimal(15,5),
+        [marginalvalue] decimal(15,5)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertNetworkEquipmentdetail2
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.NetworkEquipmentdetail2 as tgt 
+using (
+    select 
+        d.[substationid],
+        d.[equipmenttype],
+        d.[equipmentid],
+        d.[validfrom],
+        d.[validto],
+        d.[voltage],
+        d.[description],
+        d.[lastchanged],
+        d.[elementid]
+    from openjson(@data) with (
+        [substationid] varchar(30),
+        [equipmenttype] varchar(10),
+        [equipmentid] varchar(30),
+        [validfrom] datetime2,
+        [validto] datetime2,
+        [voltage] varchar(20),
+        [description] varchar(100),
+        [lastchanged] datetime2,
+        [elementid] decimal(15,0)
+    ) d
+) as src 
+on (
+    tgt.[elementid] = src.[elementid]
+    and tgt.[equipmentid] = src.[equipmentid]
+    and tgt.[equipmenttype] = src.[equipmenttype]
+    and tgt.[substationid] = src.[substationid]
+    and tgt.[validfrom] = src.[validfrom]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[substationid] = src.[substationid],
+        tgt.[equipmenttype] = src.[equipmenttype],
+        tgt.[equipmentid] = src.[equipmentid],
+        tgt.[validfrom] = src.[validfrom],
+        tgt.[validto] = src.[validto],
+        tgt.[voltage] = src.[voltage],
+        tgt.[description] = src.[description],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[elementid] = src.[elementid]
+when not matched
+    then insert (
+        file_log_id,
+        [substationid],
+        [equipmenttype],
+        [equipmentid],
+        [validfrom],
+        [validto],
+        [voltage],
+        [description],
+        [lastchanged],
+        [elementid]
+    ) values (
+        @file_log_id,
+        src.[substationid],
+        src.[equipmenttype],
+        src.[equipmentid],
+        src.[validfrom],
+        src.[validto],
+        src.[voltage],
+        src.[description],
+        src.[lastchanged],
+        src.[elementid]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertNetworkOutageconstraintset1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.NetworkOutageconstraintset1(
+file_log_id,
+[outageid],
+        [genconsetid],
+        [startinterval],
+        [endinterval]
+)
+select 
+@file_log_id,
+d.[outageid],
+        d.[genconsetid],
+        d.[startinterval],
+        d.[endinterval]
+from openjson(@data) with (
+[outageid] decimal(15,0),
+        [genconsetid] varchar(50),
+        [startinterval] datetime2,
+        [endinterval] datetime2
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertNetworkOutagedetail4
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.NetworkOutagedetail4 as tgt 
+using (
+    select 
+        d.[outageid],
+        d.[substationid],
+        d.[equipmenttype],
+        d.[equipmentid],
+        d.[starttime],
+        d.[endtime],
+        d.[submitteddate],
+        d.[outagestatuscode],
+        d.[resubmitreason],
+        d.[resubmitoutageid],
+        d.[recalltimeday],
+        d.[recalltimenight],
+        d.[lastchanged],
+        d.[reason],
+        d.[issecondary],
+        d.[actual_starttime],
+        d.[actual_endtime],
+        d.[companyrefcode],
+        d.[elementid]
+    from openjson(@data) with (
+        [outageid] decimal(15,0),
+        [substationid] varchar(30),
+        [equipmenttype] varchar(10),
+        [equipmentid] varchar(30),
+        [starttime] datetime2,
+        [endtime] datetime2,
+        [submitteddate] datetime2,
+        [outagestatuscode] varchar(10),
+        [resubmitreason] varchar(50),
+        [resubmitoutageid] decimal(15,0),
+        [recalltimeday] decimal(10,0),
+        [recalltimenight] decimal(10,0),
+        [lastchanged] datetime2,
+        [reason] varchar(100),
+        [issecondary] decimal(1,0),
+        [actual_starttime] datetime2,
+        [actual_endtime] datetime2,
+        [companyrefcode] varchar(20),
+        [elementid] decimal(15,0)
+    ) d
+) as src 
+on (
+    tgt.[elementid] = src.[elementid]
+    and tgt.[equipmentid] = src.[equipmentid]
+    and tgt.[equipmenttype] = src.[equipmenttype]
+    and tgt.[outageid] = src.[outageid]
+    and tgt.[starttime] = src.[starttime]
+    and tgt.[substationid] = src.[substationid]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[outageid] = src.[outageid],
+        tgt.[substationid] = src.[substationid],
+        tgt.[equipmenttype] = src.[equipmenttype],
+        tgt.[equipmentid] = src.[equipmentid],
+        tgt.[starttime] = src.[starttime],
+        tgt.[endtime] = src.[endtime],
+        tgt.[submitteddate] = src.[submitteddate],
+        tgt.[outagestatuscode] = src.[outagestatuscode],
+        tgt.[resubmitreason] = src.[resubmitreason],
+        tgt.[resubmitoutageid] = src.[resubmitoutageid],
+        tgt.[recalltimeday] = src.[recalltimeday],
+        tgt.[recalltimenight] = src.[recalltimenight],
+        tgt.[lastchanged] = src.[lastchanged],
+        tgt.[reason] = src.[reason],
+        tgt.[issecondary] = src.[issecondary],
+        tgt.[actual_starttime] = src.[actual_starttime],
+        tgt.[actual_endtime] = src.[actual_endtime],
+        tgt.[companyrefcode] = src.[companyrefcode],
+        tgt.[elementid] = src.[elementid]
+when not matched
+    then insert (
+        file_log_id,
+        [outageid],
+        [substationid],
+        [equipmenttype],
+        [equipmentid],
+        [starttime],
+        [endtime],
+        [submitteddate],
+        [outagestatuscode],
+        [resubmitreason],
+        [resubmitoutageid],
+        [recalltimeday],
+        [recalltimenight],
+        [lastchanged],
+        [reason],
+        [issecondary],
+        [actual_starttime],
+        [actual_endtime],
+        [companyrefcode],
+        [elementid]
+    ) values (
+        @file_log_id,
+        src.[outageid],
+        src.[substationid],
+        src.[equipmenttype],
+        src.[equipmentid],
+        src.[starttime],
+        src.[endtime],
+        src.[submitteddate],
+        src.[outagestatuscode],
+        src.[resubmitreason],
+        src.[resubmitoutageid],
+        src.[recalltimeday],
+        src.[recalltimenight],
+        src.[lastchanged],
+        src.[reason],
+        src.[issecondary],
+        src.[actual_starttime],
+        src.[actual_endtime],
+        src.[companyrefcode],
+        src.[elementid]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertNetworkOutagestatuscode1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.NetworkOutagestatuscode1 as tgt 
+using (
+    select 
+        d.[outagestatuscode],
+        d.[description],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [outagestatuscode] varchar(10),
+        [description] varchar(100),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[outagestatuscode] = src.[outagestatuscode]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[outagestatuscode] = src.[outagestatuscode],
+        tgt.[description] = src.[description],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [outagestatuscode],
+        [description],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[outagestatuscode],
+        src.[description],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertNetworkRating1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.NetworkRating1 as tgt 
+using (
+    select 
+        d.[spd_id],
+        d.[validfrom],
+        d.[validto],
+        d.[regionid],
+        d.[substationid],
+        d.[equipmenttype],
+        d.[equipmentid],
+        d.[ratinglevel],
+        d.[isdynamic],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [spd_id] varchar(21),
+        [validfrom] datetime2,
+        [validto] datetime2,
+        [regionid] varchar(10),
+        [substationid] varchar(30),
+        [equipmenttype] varchar(10),
+        [equipmentid] varchar(30),
+        [ratinglevel] varchar(10),
+        [isdynamic] decimal(1,0),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[spd_id] = src.[spd_id]
+    and tgt.[validfrom] = src.[validfrom]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[spd_id] = src.[spd_id],
+        tgt.[validfrom] = src.[validfrom],
+        tgt.[validto] = src.[validto],
+        tgt.[regionid] = src.[regionid],
+        tgt.[substationid] = src.[substationid],
+        tgt.[equipmenttype] = src.[equipmenttype],
+        tgt.[equipmentid] = src.[equipmentid],
+        tgt.[ratinglevel] = src.[ratinglevel],
+        tgt.[isdynamic] = src.[isdynamic],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [spd_id],
+        [validfrom],
+        [validto],
+        [regionid],
+        [substationid],
+        [equipmenttype],
+        [equipmentid],
+        [ratinglevel],
+        [isdynamic],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[spd_id],
+        src.[validfrom],
+        src.[validto],
+        src.[regionid],
+        src.[substationid],
+        src.[equipmenttype],
+        src.[equipmentid],
+        src.[ratinglevel],
+        src.[isdynamic],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertNetworkRealtimerating1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+insert into mmsdm.NetworkRealtimerating1(
+file_log_id,
+[settlementdate],
+        [spd_id],
+        [ratingvalue]
+)
+select 
+@file_log_id,
+d.[settlementdate],
+        d.[spd_id],
+        d.[ratingvalue]
+from openjson(@data) with (
+[settlementdate] datetime2,
+        [spd_id] varchar(21),
+        [ratingvalue] decimal(16,6)
+) d
+end
+go
+create or alter procedure mmsdm_proc.InsertNetworkStaticrating1
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.NetworkStaticrating1 as tgt 
+using (
+    select 
+        d.[substationid],
+        d.[equipmenttype],
+        d.[equipmentid],
+        d.[ratinglevel],
+        d.[applicationid],
+        d.[validfrom],
+        d.[validto],
+        d.[ratingvalue],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [substationid] varchar(30),
+        [equipmenttype] varchar(10),
+        [equipmentid] varchar(30),
+        [ratinglevel] varchar(10),
+        [applicationid] varchar(20),
+        [validfrom] datetime2,
+        [validto] datetime2,
+        [ratingvalue] decimal(16,6),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[applicationid] = src.[applicationid]
+    and tgt.[equipmentid] = src.[equipmentid]
+    and tgt.[equipmenttype] = src.[equipmenttype]
+    and tgt.[ratinglevel] = src.[ratinglevel]
+    and tgt.[substationid] = src.[substationid]
+    and tgt.[validfrom] = src.[validfrom]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[substationid] = src.[substationid],
+        tgt.[equipmenttype] = src.[equipmenttype],
+        tgt.[equipmentid] = src.[equipmentid],
+        tgt.[ratinglevel] = src.[ratinglevel],
+        tgt.[applicationid] = src.[applicationid],
+        tgt.[validfrom] = src.[validfrom],
+        tgt.[validto] = src.[validto],
+        tgt.[ratingvalue] = src.[ratingvalue],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [substationid],
+        [equipmenttype],
+        [equipmentid],
+        [ratinglevel],
+        [applicationid],
+        [validfrom],
+        [validto],
+        [ratingvalue],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[substationid],
+        src.[equipmenttype],
+        src.[equipmentid],
+        src.[ratinglevel],
+        src.[applicationid],
+        src.[validfrom],
+        src.[validto],
+        src.[ratingvalue],
+        src.[lastchanged]
+    );
+    
+end
+go
+create or alter procedure mmsdm_proc.InsertNetworkSubstationdetail2
+    @file_log_id bigint,
+    @data nvarchar(max)
+as begin
+
+merge mmsdm.NetworkSubstationdetail2 as tgt 
+using (
+    select 
+        d.[substationid],
+        d.[validfrom],
+        d.[validto],
+        d.[description],
+        d.[regionid],
+        d.[ownerid],
+        d.[lastchanged]
+    from openjson(@data) with (
+        [substationid] varchar(30),
+        [validfrom] datetime2,
+        [validto] datetime2,
+        [description] varchar(100),
+        [regionid] varchar(10),
+        [ownerid] varchar(30),
+        [lastchanged] datetime2
+    ) d
+) as src 
+on (
+    tgt.[substationid] = src.[substationid]
+    and tgt.[validfrom] = src.[validfrom]
+
+)
+when matched and src.[lastchanged] > tgt.[lastchanged]
+    then update set 
+        tgt.file_log_id = @file_log_id,
+        tgt.[substationid] = src.[substationid],
+        tgt.[validfrom] = src.[validfrom],
+        tgt.[validto] = src.[validto],
+        tgt.[description] = src.[description],
+        tgt.[regionid] = src.[regionid],
+        tgt.[ownerid] = src.[ownerid],
+        tgt.[lastchanged] = src.[lastchanged]
+when not matched
+    then insert (
+        file_log_id,
+        [substationid],
+        [validfrom],
+        [validto],
+        [description],
+        [regionid],
+        [ownerid],
+        [lastchanged]
+    ) values (
+        @file_log_id,
+        src.[substationid],
+        src.[validfrom],
+        src.[validto],
+        src.[description],
+        src.[regionid],
+        src.[ownerid],
+        src.[lastchanged]
     );
     
 end

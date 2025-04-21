@@ -30,15 +30,18 @@ pub struct PrudentialCompanyPosition1Mapping([usize; 19]);
 /// # Summary
 ///
 /// ## PRUDENTIALCOMPANYPOSITION
-///  _The prudential position of each company as at the datetime of a specific prudential run_
+///
+/// The prudential position of each company as at the datetime of a specific prudential run
 ///
 /// * Data Set Name: Prudential
 /// * File Name: Company Position
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -754,15 +757,18 @@ pub struct PrudentialRuntrk1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## PRUDENTIALRUNTRK
-///  _Records the prudential run accepted by Settlements staff for each prudential date_
+///
+/// Records the prudential run accepted by Settlements staff for each prudential date
 ///
 /// * Data Set Name: Prudential
 /// * File Name: Runtrk
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///

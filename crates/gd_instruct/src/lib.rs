@@ -30,16 +30,18 @@ pub struct GdInstructGdinstruct1Mapping([usize; 15]);
 /// # Summary
 ///
 /// ## GDINSTRUCT
-///  _GDINSTRUCT shows all manually issued dispatch instructions for a dispatchable unit. Ancillary Service instructions are to enable and to disable (i.e. 2 separate instructions) a service. Non-conforming units are also instructed via this facility. However, this facility is not the same as the market notice._
+///
+/// GDINSTRUCT shows all manually issued dispatch instructions for a dispatchable unit. Ancillary Service instructions are to enable and to disable (i.e. 2 separate instructions) a service. Non-conforming units are also instructed via this facility. However, this facility is not the same as the market notice.
 ///
 /// * Data Set Name: Gd Instruct
 /// * File Name: Gdinstruct
 /// * Data Version: 1
 ///
 /// # Description
-///  Source GDINSTRUCT updates on issue of an instruction by AEMO, with visibility restricted on the day of issue to the relevant participant. All participants have previous days' data available.
+/// SourceGDINSTRUCT updates on issue of an instruction by AEMO, with visibility restricted on the day of issue to the relevant participant. All participants have previous days' data available.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -622,16 +624,18 @@ pub struct GdInstructInstructionsubtype1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## INSTRUCTIONSUBTYPE
-///  _Each Dispatch instruction (GD instruct) has a type and subtype. INSTRUCTIONSUBTYPE, together with INSTRUCTIONTYPE, sets out valid instruction types._
+///
+/// Each Dispatch instruction (GD instruct) has a type and subtype. INSTRUCTIONSUBTYPE, together with INSTRUCTIONTYPE, sets out valid instruction types.
 ///
 /// * Data Set Name: Gd Instruct
 /// * File Name: Instructionsubtype
 /// * Data Version: 1
 ///
 /// # Description
-///  INSTRUCTIONSUBTYPE is public data, and is available to all participants. Source INSTRUCTIONSUBTYPE shows ad hoc updates to market configuration.
+/// INSTRUCTIONSUBTYPE is public data, and is available to all participants.SourceINSTRUCTIONSUBTYPE shows ad hoc updates to market configuration.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -905,16 +909,18 @@ pub struct GdInstructInstructiontype1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## INSTRUCTIONTYPE
-///  _Dispatch instruction (GD instruct) has types and subtypes. INSTRUCTIONTYPE, together with INSTRUCTIONSUBTYPE, sets out valid instruction types._
+///
+/// Dispatch instruction (GD instruct) has types and subtypes. INSTRUCTIONTYPE, together with INSTRUCTIONSUBTYPE, sets out valid instruction types.
 ///
 /// * Data Set Name: Gd Instruct
 /// * File Name: Instructiontype
 /// * Data Version: 1
 ///
 /// # Description
-///  INSTRUCTIONTYPE data is public to all participants. Source INSTRUCTIONTYPE shows ad hoc updates to market configuration.
+/// INSTRUCTIONTYPE data is public to all participants.SourceINSTRUCTIONTYPE shows ad hoc updates to market configuration.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///

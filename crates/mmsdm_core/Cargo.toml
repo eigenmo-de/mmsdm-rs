@@ -2,7 +2,7 @@
 name = "mmsdm_core"
 version = "0.3.0"
 authors = ["Eric Sheppard <eric@sheppard.cloud>", "Nayika Sheppard <nayika@eigenmo.de>"]
-edition = "2021"
+edition = "2024"
 license = "MIT"
 repository = "https://github.com/eigenmo-de/mmsdm-rs"
 description = "Parse and Transform MMSDM data"

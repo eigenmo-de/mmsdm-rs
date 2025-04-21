@@ -30,16 +30,18 @@ pub struct MarketConfigBidtypes1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## BIDTYPES
-///  _BIDTYPES, together with the associated tracking data in BIDTYPESTRK, define a set of ancillary services with bidding parameters from a given date.<br>BIDTYPES is static data describing each type of bid quantity, the number of applicable bands, how many days ahead a price lock down becomes effective and the validation rule that applies._
+///
+/// BIDTYPES, together with the associated tracking data in BIDTYPESTRK, define a set of ancillary services with bidding parameters from a given date.BIDTYPES is static data describing each type of bid quantity, the number of applicable bands, how many days ahead a price lock down becomes effective and the validation rule that applies.
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Bidtypes
 /// * Data Version: 1
 ///
 /// # Description
-///  BIDTYPES  is public to participants Source BIDTYPES updates when the static data relating to an ancillary service type is modified. Volume Expect modifications to be rare. Allow for approximately 20 records per year.
+/// BIDTYPES is public to participantsSourceBIDTYPES updates when the static data relating to an ancillary service type is modified.VolumeExpect modifications to be rare. Allow for approximately 20 records per year.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -459,16 +461,18 @@ pub struct MarketConfigBidtypestrk1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## BIDTYPESTRK
-///  _BIDTYPESTRK, together with the associated data in BIDTYPES, define a set of ancillary services with bidding parameters from a given date._
+///
+/// BIDTYPESTRK, together with the associated data in BIDTYPES, define a set of ancillary services with bidding parameters from a given date.
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Bidtypestrk
 /// * Data Version: 1
 ///
 /// # Description
-///  BIDTYPESTRK is public to participants Source BIDTYPESTRK updates when the static data relating to an ancillary service type is modified. Volume Expect modifications to be rare. Allow for approximately 20 records per year.
+/// BIDTYPESTRK is public to participantsSourceBIDTYPESTRK updates when the static data relating to an ancillary service type is modified.VolumeExpect modifications to be rare. Allow for approximately 20 records per year.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -774,15 +778,18 @@ pub struct MarketConfigFcasregusefactors1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## FCAS_REGU_USAGE_FACTORS
-///  _Stores the proportion of enabled regulation FCAS dispatch that is typically consumed for frequency regulation. Used to calculate the projected state of charge for energy storage systems._
+///
+/// Stores the proportion of enabled regulation FCAS dispatch that is typically consumed for frequency regulation. Used to calculate the projected state of charge for energy storage systems.
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Fcasregusefactors
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1148,15 +1155,18 @@ pub struct MarketConfigFcasregusefactorsTrk1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## FCAS_REGU_USAGE_FACTORS_TRK
-///  _Stores the proportion of enabled regulation FCAS dispatch that is typically consumed for frequency regulation. Used to calculate the projected state of charge for energy storage systems._
+///
+/// Stores the proportion of enabled regulation FCAS dispatch that is typically consumed for frequency regulation. Used to calculate the projected state of charge for energy storage systems.
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Fcasregusefactors Trk
 /// * Data Version: 1
 ///
+/// # Description
+/// INTERCONNECTOR is public data, available to all participants.SourceINTERCONNECTOR changes infrequently, usually annually.
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1436,16 +1446,18 @@ pub struct MarketConfigInterconnector1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## INTERCONNECTOR
-///  _INTERCONNECTOR sets out valid identifiers for each interconnector._
+///
+/// INTERCONNECTOR sets out valid identifiers for each interconnector.
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Interconnector
 /// * Data Version: 1
 ///
 /// # Description
-///  INTERCONNECTOR is public data, available to all participants. Source INTERCONNECTOR changes infrequently, usually annually.
+/// INTERCONNECTOR is public data, available to all participants.SourceINTERCONNECTOR changes infrequently, usually annually.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1769,16 +1781,18 @@ pub struct MarketConfigInterconnectoralloc1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## INTERCONNECTORALLOC
-///  _INTERCONNECTORALLOC shows allocations of interconnector residues to Network Service Providers._
+///
+/// INTERCONNECTORALLOC shows allocations of interconnector residues to Network Service Providers.
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Interconnectoralloc
 /// * Data Version: 1
 ///
 /// # Description
-///  INTERCONNECTORALLOC data is confidential to the relevant participant. Source INTERCONNECTORALLOC changes infrequently, typically annually.
+/// INTERCONNECTORALLOC data is confidential to the relevant participant.SourceINTERCONNECTORALLOC changes infrequently, typically annually.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -2142,16 +2156,18 @@ pub struct MarketConfigInterconnectorconstraint1Mapping([usize; 22]);
 /// # Summary
 ///
 /// ## INTERCONNECTORCONSTRAINT
-///  _INTERCONNECTORCONSTRAINT sets out Interconnector limit data used as defaults in dispatch, predispatch and STPASA and used by SPD in calculating flows. INTERCONNECTORCONSTRAINT includes an additional field to restrict an interconnector from support transfer of FCAS._
+///
+/// INTERCONNECTORCONSTRAINT sets out Interconnector limit data used as defaults in dispatch, predispatch and STPASA and used by SPD in calculating flows. INTERCONNECTORCONSTRAINT includes an additional field to restrict an interconnector from support transfer of FCAS.
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Interconnectorconstraint
 /// * Data Version: 1
 ///
 /// # Description
-///  INTERCONNECTORCONSTRAINT is public data, available to all participants. Source INTERCONNECTORCONSTRAINT changes infrequently, typically annually.
+/// INTERCONNECTORCONSTRAINT is public data, available to all participants.SourceINTERCONNECTORCONSTRAINT changes infrequently, typically annually.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -2202,7 +2218,7 @@ pub struct MarketConfigInterconnectorconstraint1Row<'data> {
     pub lastchanged: Option<chrono::NaiveDateTime>,
     /// Flag to indicate that the interconnector cannot support FCAS Transfers
     pub fcassupportunavailable: Option<rust_decimal::Decimal>,
-    /// Interconnector type - Currently either "REGULATED" or "MNSP"
+    /// Interconnector type - Currently either "REGULATED"or "MNSP"
     pub ictype: core::ops::Range<usize>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
@@ -2973,16 +2989,18 @@ pub struct MarketConfigIntraregionalloc1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## INTRAREGIONALLOC
-///  _INTRAREGIONALLOC shows allocations of intra-regional residues to participants._
+///
+/// INTRAREGIONALLOC shows allocations of intra-regional residues to participants.
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Intraregionalloc
 /// * Data Version: 1
 ///
 /// # Description
-///  INTRAREGIONALLOC data is confidential to the relevant participant. Source The data in INTRAREGIONALLOC changes infrequently.
+/// INTRAREGIONALLOC data is confidential to the relevant participant.SourceThe data in INTRAREGIONALLOC changes infrequently.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -3315,16 +3333,18 @@ pub struct MarketConfigLossfactormodel1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## LOSSFACTORMODEL
-///  _LOSSFACTORMODEL sets out the demand coefficients for each interconnector, used by LP Solver modelling of interconnector flows._
+///
+/// LOSSFACTORMODEL sets out the demand coefficients for each interconnector, used by LP Solver modelling of interconnector flows.
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Lossfactormodel
 /// * Data Version: 1
 ///
 /// # Description
-///  LOSSFACTORMODEL is public data, so is available to all participants. Source LOSSFACTORMODEL only changes annually, when there is a change in the interconnector.
+/// LOSSFACTORMODEL is public data, so is available to all participants.SourceLOSSFACTORMODEL only changes annually, when there is a change in the interconnector.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -3660,16 +3680,18 @@ pub struct MarketConfigLossmodel1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## LOSSMODEL
-///  _LOSSMODEL sets out segment breakpoints in loss model for each interconnector, used by LP Solver modelling of interconnector flows._
+///
+/// LOSSMODEL sets out segment breakpoints in loss model for each interconnector, used by LP Solver modelling of interconnector flows.
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Lossmodel
 /// * Data Version: 1
 ///
 /// # Description
-///  LOSSMODEL data is public, so is available to all participants. Source LOSSMODEL only changes annually, when there is a change in the interconnector.
+/// LOSSMODEL data is public, so is available to all participants.SourceLOSSMODEL only changes annually, when there is a change in the interconnector.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -4071,16 +4093,18 @@ pub struct MarketConfigMarketPriceThresholds1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## MARKET_PRICE_THRESHOLDS
-///  _MARKET_PRICE_THRESHOLDS sets out the market cap , floor and administered price thresholds applying to the electricity market_
+///
+/// MARKET_PRICE_THRESHOLDS sets out the market cap , floor and administered price thresholds applying to the electricity market
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Market Price Thresholds
 /// * Data Version: 1
 ///
 /// # Description
-///  MARKET_PRICE_THRESHOLDS data is public, so is available to all participants. Source MARKET_PRICE_THRESHOLDS only changes when a change is made to a market price threshold. This table changes infrequently.
+/// MARKET_PRICE_THRESHOLDS data is public, so is available to all participants.SourceMARKET_PRICE_THRESHOLDS only changes when a change is made to a market price threshold. This table changes infrequently.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -4480,16 +4504,18 @@ pub struct MarketConfigRegion1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## REGION
-///  _REGION sets out valid region IDs._
+///
+/// REGION sets out valid region IDs.
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Region
 /// * Data Version: 1
 ///
 /// # Description
-///  REGION data is public, so is available to all participants. Source REGION updates if a change is ever made to a region. This table is static data and is likely to change very infrequently.
+/// REGION data is public, so is available to all participants.SourceREGION updates if a change is ever made to a region. This table is static data and is likely to change very infrequently.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -4757,16 +4783,18 @@ pub struct MarketConfigRegionstandingdata1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## REGIONSTANDINGDATA
-///  _REGIONSTANDINGDATA sets out standing region data including the region reference node._
+///
+/// REGIONSTANDINGDATA sets out standing region data including the region reference node.
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Regionstandingdata
 /// * Data Version: 1
 ///
 /// # Description
-///  REGIONSTANDINGDATA data is public, so is available to all participants. Source REGIONSTANDINGDATA only changes when a change is made to a region. This table changes infrequently.
+/// REGIONSTANDINGDATA data is public, so is available to all participants.SourceREGIONSTANDINGDATA only changes when a change is made to a region. This table changes infrequently.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -5218,16 +5246,18 @@ pub struct MarketConfigTransmissionlossfactor2Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## TRANSMISSIONLOSSFACTOR
-///  _TRANSMISSIONLOSSFACTOR shows the Transmission Loss factors applied at each connection point._
+///
+/// TRANSMISSIONLOSSFACTOR shows the Transmission Loss factors applied at each connection point.
 ///
 /// * Data Set Name: Market Config
 /// * File Name: Transmissionlossfactor
 /// * Data Version: 2
 ///
 /// # Description
-///  TRANSMISSIONLOSSFACTOR is public data, and is available to all participants. Source TRANSMISSIONLOSSFACTOR updates when new connection points are created or loss factors change.
+/// TRANSMISSIONLOSSFACTOR is public data, and is available to all participants.SourceTRANSMISSIONLOSSFACTOR updates when new connection points are created or loss factors change.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
