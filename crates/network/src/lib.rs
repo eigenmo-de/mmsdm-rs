@@ -30,15 +30,18 @@ pub struct NetworkEquipmentdetail2Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## NETWORK_EQUIPMENTDETAIL
-///  _NETWORK_EQUIPMENTDETAIL Provides details on equipment that may have outages or ratings. A single piece of equipment may have multiple records if its details change.<br>A line will typically have at least two valid records at a time, once for each end of the line._
+///
+/// NETWORK_EQUIPMENTDETAIL Provides details on equipment that may have outages or ratings. A single piece of equipment may have multiple records if its details change.A line will typically have at least two valid records at a time, once for each end of the line.
 ///
 /// * Data Set Name: Network
 /// * File Name: Equipmentdetail
 /// * Data Version: 2
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -51,7 +54,7 @@ pub struct NetworkEquipmentdetail2Mapping([usize; 9]);
 pub struct NetworkEquipmentdetail2Row<'data> {
     /// ID uniquely identifying the substation this equipment is located at
     pub substationid: core::ops::Range<usize>,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit
+    /// The type of equipment. Valid values are:LINE = LineTRANS = TransformerCB = Circuit breakerISOL = IsolatorCAP = CapacitorREAC = ReactorUNIT = Unit
     pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this type of equipment at this substation
     pub equipmentid: core::ops::Range<usize>,
@@ -59,7 +62,7 @@ pub struct NetworkEquipmentdetail2Row<'data> {
     pub validfrom: chrono::NaiveDateTime,
     /// The date that this record applies until (exclusive)
     pub validto: Option<chrono::NaiveDateTime>,
-    /// The voltage in KV for this equipment.<br>Transformers may have multiple voltages defined.<br>E.g. 132_110_33
+    /// The voltage in KV for this equipment.Transformers may have multiple voltages defined.E.g. 132_110_33
     pub voltage: core::ops::Range<usize>,
     /// A short description for this equipment.
     pub description: core::ops::Range<usize>,
@@ -443,15 +446,18 @@ pub struct NetworkOutageconstraintset1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## NETWORK_OUTAGECONSTRAINTSET
-///  _NETWORK_OUTAGECONSTRAINTSET lists the Constraint Set or Sets that are expected to be invoked for the outage once it is confirmed to proceed._
+///
+/// NETWORK_OUTAGECONSTRAINTSET lists the Constraint Set or Sets that are expected to be invoked for the outage once it is confirmed to proceed.
 ///
 /// * Data Set Name: Network
 /// * File Name: Outageconstraintset
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -722,15 +728,18 @@ pub struct NetworkOutagedetail4Mapping([usize; 19]);
 /// # Summary
 ///
 /// ## NETWORK_OUTAGEDETAIL
-///  _Lists asset owners planned outages for transmission equipment. This also includes details for transmission equipment that will not have an outage, but associated secondary equipment has an outage and a related constraint set may be invoked. This scenario is indicated by the ISSECONDARY field in the table_
+///
+/// Lists asset owners planned outages for transmission equipment. This also includes details for transmission equipment that will not have an outage, but associated secondary equipment has an outage and a related constraint set may be invoked. This scenario is indicated by the ISSECONDARY field in the table
 ///
 /// * Data Set Name: Network
 /// * File Name: Outagedetail
 /// * Data Version: 4
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -746,7 +755,7 @@ pub struct NetworkOutagedetail4Row<'data> {
     pub outageid: rust_decimal::Decimal,
     /// The substation this equipment is located at
     pub substationid: core::ops::Range<usize>,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit
+    /// The type of equipment. Valid values are:LINE = LineTRANS = TransformerCB = Circuit breakerISOL = IsolatorCAP = CapacitorREAC = ReactorUNIT = Unit
     pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this equipment at this substation, and based on its type
     pub equipmentid: core::ops::Range<usize>,
@@ -756,9 +765,9 @@ pub struct NetworkOutagedetail4Row<'data> {
     pub endtime: Option<chrono::NaiveDateTime>,
     /// The date and time this outage was first submitted
     pub submitteddate: Option<chrono::NaiveDateTime>,
-    /// A code representing the status of the outage.<br>The OUTAGESTATUSCODE table will store a detailed description of each code.
+    /// A code representing the status of the outage.The OUTAGESTATUSCODE table will store a detailed description of each code.
     pub outagestatuscode: core::ops::Range<usize>,
-    /// Changes to an outage key details may require the outage to be resubmitted.<br>A new outage id will then be allocated and the outage will be reassessed.<br>This field will detail the reason for the change.
+    /// Changes to an outage key details may require the outage to be resubmitted.A new outage id will then be allocated and the outage will be reassessed.This field will detail the reason for the change.
     pub resubmitreason: core::ops::Range<usize>,
     /// The new outage id created from a resubmit.
     pub resubmitoutageid: Option<rust_decimal::Decimal>,
@@ -1426,15 +1435,18 @@ pub struct NetworkOutagestatuscode1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## NETWORK_OUTAGESTATUSCODE
-///  _NETWORK_OUTAGESTATUSCODE describes the different outage status codes_
+///
+/// NETWORK_OUTAGESTATUSCODE describes the different outage status codes
 ///
 /// * Data Set Name: Network
 /// * File Name: Outagestatuscode
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1677,15 +1689,18 @@ pub struct NetworkRating1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## NETWORK_RATING
-///  _NETWORK_RATING defines a list of the equipment ratings that may be used as inputs to market constraints.<br>If the rating is flagged as dynamic then in real-time the rating will be dynamically determined and the static value will be used as a fallback value should the dynamic value fail.<br>Note:<br>In some rare cases equipment has ratings provided from more than one TNSP. This is identified by a different SPD Id. The value used in the NEM is normally the more restrictive of the two values._
+///
+/// NETWORK_RATING defines a list of the equipment ratings that may be used as inputs to market constraints.If the rating is flagged as dynamic then in real-time the rating will be dynamically determined and the static value will be used as a fallback value should the dynamic value fail.Note:In some rare cases equipment has ratings provided from more than one TNSP. This is identified by a different SPD Id. The value used in the NEM is normally the more restrictive of the two values.
 ///
 /// * Data Set Name: Network
 /// * File Name: Rating
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1703,13 +1718,13 @@ pub struct NetworkRating1Row<'data> {
     pub regionid: core::ops::Range<usize>,
     /// The substation the equipment is located at
     pub substationid: core::ops::Range<usize>,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit
+    /// The type of equipment. Valid values are:LINE = LineTRANS = TransformerCB = Circuit breakerISOL = IsolatorCAP = CapacitorREAC = ReactorUNIT = Unit
     pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this equipment at this substation, and based on its type
     pub equipmentid: core::ops::Range<usize>,
-    /// The rating level of the value used, one of:<br>NORM = Continuous rating value. Applied under pre-contingent conditions.<br>EMER = Continuous rating value. Applied under pre-contingent conditions<br>LDSH = Load Shedding
+    /// The rating level of the value used, one of:NORM = Continuous rating value. Applied under pre-contingent conditions.EMER = Continuous rating value. Applied under pre-contingent conditionsLDSH = Load Shedding
     pub ratinglevel: core::ops::Range<usize>,
-    /// One of:<br>1 = Normally uses dynamic ratings<br>0 = No dynamic ratings, static ratings are used
+    /// One of:1 = Normally uses dynamic ratings0 = No dynamic ratings, static ratings are used
     pub isdynamic: Option<rust_decimal::Decimal>,
     /// The time that this record was last changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -2120,15 +2135,18 @@ pub struct NetworkRealtimerating1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## NETWORK_REALTIMERATING
-///  _The NETWORK_REALTIMERATING table shows the equipment rating values in MVA used as inputs to constraints in the dispatch solution. This includes values for both static and dynamic ratings. The NETWORK_RATING table can be used to determine the physical equipment the rating is for based on the SPD_ID value._
+///
+/// The NETWORK_REALTIMERATING table shows the equipment rating values in MVA used as inputs to constraints in the dispatch solution. This includes values for both static and dynamic ratings. The NETWORK_RATING table can be used to determine the physical equipment the rating is for based on the SPD_ID value.
 ///
 /// * Data Set Name: Network
 /// * File Name: Realtimerating
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -2371,15 +2389,18 @@ pub struct NetworkStaticrating1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## NETWORK_STATICRATING
-///  _NETWORK_STATICRATING lists the static rating values that will apply for a Rating Application ID.<br>This data does not provide information for when the rating actually applies in the NEM. This is dependent on the Rating Application definition.<br>For information on the Rating Applications please refer to the information published on the AEMO website under the topic "Transmission Equipment Ratings". The Rating Applications are referred to as Alternate Value Application Ratings.<br>Ratings that normally use dynamic values will also have static rating values defined. These are used as a fallback if the dynamic rating fails._
+///
+/// NETWORK_STATICRATING lists the static rating values that will apply for a Rating Application ID.This data does not provide information for when the rating actually applies in the NEM. This is dependent on the Rating Application definition.For information on the Rating Applications please refer to the information published on the AEMO website under the topic "Transmission Equipment Ratings". The Rating Applications are referred to as Alternate Value Application Ratings.Ratings that normally use dynamic values will also have static rating values defined. These are used as a fallback if the dynamic rating fails.
 ///
 /// * Data Set Name: Network
 /// * File Name: Staticrating
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -2393,11 +2414,11 @@ pub struct NetworkStaticrating1Mapping([usize; 9]);
 pub struct NetworkStaticrating1Row<'data> {
     /// The substation the equipment is located at
     pub substationid: core::ops::Range<usize>,
-    /// The type of equipment. Valid values are:<br>LINE = Line<br>TRANS = Transformer<br>CB = Circuit breaker<br>ISOL = Isolator<br>CAP = Capacitor<br>REAC = Reactor<br>UNIT = Unit
+    /// The type of equipment. Valid values are:LINE = LineTRANS = TransformerCB = Circuit breakerISOL = IsolatorCAP = CapacitorREAC = ReactorUNIT = Unit
     pub equipmenttype: core::ops::Range<usize>,
     /// A unique identifier for this type of equipment at this substation
     pub equipmentid: core::ops::Range<usize>,
-    /// The rating level of the value used, one of:<br>NORM = Continuous rating value. Applied under pre-contingent conditions.<br>EMER = Continuous rating value. Applied under pre-contingent conditions<br>LDSH = Load Shedding
+    /// The rating level of the value used, one of:NORM = Continuous rating value. Applied under pre-contingent conditions.EMER = Continuous rating value. Applied under pre-contingent conditionsLDSH = Load Shedding
     pub ratinglevel: core::ops::Range<usize>,
     /// The applicationid which defines the application timeframes of this rating.
     pub applicationid: core::ops::Range<usize>,
@@ -2405,7 +2426,7 @@ pub struct NetworkStaticrating1Row<'data> {
     pub validfrom: chrono::NaiveDateTime,
     /// The date that this record applies until (exclusive)
     pub validto: Option<chrono::NaiveDateTime>,
-    /// The rating value in MVA that applies. This may be positive or negative depending on which side of the nominal MW flow direction the rating value applies.<br>Flow into a transmission device is positive, flow out of the device is negative.
+    /// The rating value in MVA that applies. This may be positive or negative depending on which side of the nominal MW flow direction the rating value applies.Flow into a transmission device is positive, flow out of the device is negative.
     pub ratingvalue: Option<rust_decimal::Decimal>,
     /// The time that this record was last changed.
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -2778,15 +2799,18 @@ pub struct NetworkSubstationdetail2Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## NETWORK_SUBSTATIONDETAIL
-///  _NETWORK_SUBSTATIONDETAIL sets out the attributes of sub-stations across time_
+///
+/// NETWORK_SUBSTATIONDETAIL sets out the attributes of sub-stations across time
 ///
 /// * Data Set Name: Network
 /// * File Name: Substationdetail
 /// * Data Version: 2
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///

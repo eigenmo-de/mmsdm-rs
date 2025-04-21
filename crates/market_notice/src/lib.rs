@@ -30,16 +30,18 @@ pub struct MarketNoticeMarketnoticedata1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## MARKETNOTICEDATA
-///  _MARKETNOTICEDATA shows market notices data provided to all participants (market) and specific participants (participant)._
+///
+/// MARKETNOTICEDATA shows market notices data provided to all participants (market) and specific participants (participant).
 ///
 /// * Data Set Name: Market Notice
 /// * File Name: Marketnoticedata
 /// * Data Version: 1
 ///
 /// # Description
-///  MARKETNOTICEDATA data is confidential to each participant, although some notices are sent to all participants. Source MARKETNOTICEDATA updates immediately available.
+/// MARKETNOTICEDATA data is confidential to each participant, although some notices are sent to all participants.SourceMARKETNOTICEDATA updates immediately available.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public
 ///
 /// # Primary Key Columns
 ///
@@ -402,16 +404,18 @@ pub struct MarketNoticeMarketnoticetype1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## MARKETNOTICETYPE
-///  _MARKETNOTICETYPE sets out the different types of market notices (e.g. market systems)._
+///
+/// MARKETNOTICETYPE sets out the different types of market notices (e.g. market systems).
 ///
 /// * Data Set Name: Market Notice
 /// * File Name: Marketnoticetype
 /// * Data Version: 1
 ///
 /// # Description
-///  MARKETNOTICETYPE data is public, so is available to all participants. Source MARKETNOTICETYPE updates whenever market notice types change.
+/// MARKETNOTICETYPE data is public, so is available to all participants.SourceMARKETNOTICETYPE updates whenever market notice types change.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -680,16 +684,18 @@ pub struct MarketNoticeParticipantnoticetrk1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## PARTICIPANTNOTICETRK
-///  _PARTICIPANTNOTICETRK provides the cross-reference between participant market notices and participants._
+///
+/// PARTICIPANTNOTICETRK provides the cross-reference between participant market notices and participants.
 ///
 /// * Data Set Name: Market Notice
 /// * File Name: Participantnoticetrk
 /// * Data Version: 1
 ///
 /// # Description
-///  PARTICIPANTNOTICETRK data is Confidential to the relevant participant. Source PARTICIPANTNOTICETRK updates immediately, whenever a participant notice is issued.
+/// PARTICIPANTNOTICETRK data is Confidential to the relevant participant.SourcePARTICIPANTNOTICETRK updates immediately, whenever a participant notice is issued.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///

@@ -28,15 +28,18 @@ pub struct ApApevent1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## APEVENT
-///  _APEVENT is the driving data defining the existence and timeframes of an administered pricing event._
+///
+/// APEVENT is the driving data defining the existence and timeframes of an administered pricing event.
 ///
 /// * Data Set Name: Ap
 /// * File Name: Apevent
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -454,15 +457,18 @@ pub struct ApApeventregion2Mapping([usize; 14]);
 /// # Summary
 ///
 /// ## APEVENTREGION
-///  _APEVENTREGION is the Region detail for an administered pricing event defined through APEVENT._
+///
+/// APEVENTREGION is the Region detail for an administered pricing event defined through APEVENT.
 ///
 /// * Data Set Name: Ap
 /// * File Name: Apeventregion
 /// * Data Version: 2
 ///
+/// # Description
+/// IRFMAMOUNTis public data.SourceIRFMAMOUNT is obsolete; was updated with each settlement run as required.
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -488,7 +494,7 @@ pub struct ApApeventregion2Row<'data> {
     pub raiseregapflag: Option<rust_decimal::Decimal>,
     /// flag indicating if the apevent covers a lower6sec AP
     pub lower6secapflag: Option<rust_decimal::Decimal>,
-    /// flag indicating if the apevent covers a lower60sec AP<br>flag indicating if the apevent covers a lower5min AP<br>flag indicating if the apevent covers a lowerreg AP<br>flag indicating if the apevent covers a lower60sec AP
+    /// flag indicating if the apevent covers a lower60sec APflag indicating if the apevent covers a lower5min APflag indicating if the apevent covers a lowerreg APflag indicating if the apevent covers a lower60sec AP
     pub lower60secapflag: Option<rust_decimal::Decimal>,
     /// flag indicating if the apevent covers a lower5min AP
     pub lower5minapflag: Option<rust_decimal::Decimal>,
@@ -1035,16 +1041,18 @@ pub struct ForceMajeureIrfmamount1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## IRFMAMOUNT
-///  _IRFMAMOUNT sets out settlement amounts associated with Industrial Relations Forced Majeure events._
+///
+/// IRFMAMOUNT sets out settlement amounts associated with Industrial Relations Forced Majeure events.
 ///
 /// * Data Set Name: Force Majeure
 /// * File Name: Irfmamount
 /// * Data Version: 1
 ///
 /// # Description
-///  IRFMAMOUNTis public data. Source IRFMAMOUNT is obsolete; was updated with each settlement run as required.
+/// IRFMAMOUNTis public data.SourceIRFMAMOUNT is obsolete; was updated with each settlement run as required.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1436,33 +1444,29 @@ pub struct ForceMajeureIrfmevents1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## IRFMEVENTS
-///  _IRFMEVENTS sets out specific Industrial Relations Forced Majeure events._
+///
+/// IRFMEVENTS sets out specific Industrial Relations Forced Majeure events.
 ///
 /// * Data Set Name: Force Majeure
 /// * File Name: Irfmevents
 /// * Data Version: 1
 ///
 /// # Description
-///  IRFMEVENTS is public data. Source IRFMEVENTS updates with the occurrence of any such events.
+/// IRFMEVENTS is public data.SourceIRFMEVENTS updates with the occurrence of any such events.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
 /// * IRFMID
 #[derive(Debug, PartialEq, Eq)]
 pub struct ForceMajeureIrfmevents1Row<'data> {
-    /// &nbsp;
     pub irfmid: core::ops::Range<usize>,
-    /// &nbsp;
     pub startdate: Option<chrono::NaiveDateTime>,
-    /// &nbsp;
     pub startperiod: Option<rust_decimal::Decimal>,
-    /// &nbsp;
     pub enddate: Option<chrono::NaiveDateTime>,
-    /// &nbsp;
     pub endperiod: Option<rust_decimal::Decimal>,
-    /// &nbsp;
     pub lastchanged: Option<chrono::NaiveDateTime>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
@@ -1769,16 +1773,18 @@ pub struct ForceMajeureMarketSuspendRegimeSum1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## MARKET_SUSPEND_REGIME_SUM
-///  _Tracks the evolution of pricing regimes applied to the suspended region and from which Dispatch Interval_
+///
+/// Tracks the evolution of pricing regimes applied to the suspended region and from which Dispatch Interval
 ///
 /// * Data Set Name: Force Majeure
 /// * File Name: Market Suspend Regime Sum
 /// * Data Version: 1
 ///
 /// # Description
-///  MARKET_SUSPEND_REGIME_SUM is public data, so is available to all participants.
+/// MARKET_SUSPEND_REGIME_SUM is public data, so is available to all participants.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -2107,16 +2113,18 @@ pub struct ForceMajeureMarketSuspendRegionSum1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## MARKET_SUSPEND_REGION_SUM
-///  _Summary of Market Suspension timings_
+///
+/// Summary of Market Suspension timings
 ///
 /// * Data Set Name: Force Majeure
 /// * File Name: Market Suspend Region Sum
 /// * Data Version: 1
 ///
 /// # Description
-///  MARKET_SUSPEND is public data, so is available to all participants.
+/// MARKET_SUSPEND is public data, so is available to all participants.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -2442,16 +2450,18 @@ pub struct ForceMajeureMarketSuspendSchedule2Mapping([usize; 16]);
 /// # Summary
 ///
 /// ## MARKET_SUSPEND_SCHEDULE
-///  _Trading prices that will apply in the event of a market suspension event updated weekly._
+///
+/// Trading prices that will apply in the event of a market suspension event updated weekly.
 ///
 /// * Data Set Name: Force Majeure
 /// * File Name: Market Suspend Schedule
 /// * Data Version: 2
 ///
 /// # Description
-///  MARKET_SUSPEND_SCHEDULE is public data, so is available to all participants.
+/// MARKET_SUSPEND_SCHEDULE is public data, so is available to all participants.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -3082,15 +3092,18 @@ pub struct ForceMajeureMarketSuspendScheduleTrk1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## MARKET_SUSPEND_SCHEDULE_TRK
-///  _Parent table for pricing regimes used in suspensions_
+///
+/// Parent table for pricing regimes used in suspensions
 ///
 /// * Data Set Name: Force Majeure
 /// * File Name: Market Suspend Schedule Trk
 /// * Data Version: 1
 ///
+/// # Description
+/// OVERRIDERRP data is public, so is available to all participants.SourceOVERRIDERRP updates every five minutes when override prices apply for the period.
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -3429,16 +3442,18 @@ pub struct ForceMajeureOverriderrp1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## OVERRIDERRP
-///  _OVERRIDERRP shows details of override price periods._
+///
+/// OVERRIDERRP shows details of override price periods.
 ///
 /// * Data Set Name: Force Majeure
 /// * File Name: Overriderrp
 /// * Data Version: 1
 ///
 /// # Description
-///  OVERRIDERRP data is public, so is available to all participants. Source OVERRIDERRP updates every five minutes when override prices apply for the period.
+/// OVERRIDERRP data is public, so is available to all participants.SourceOVERRIDERRP updates every five minutes when override prices apply for the period.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -3882,16 +3897,18 @@ pub struct ApRegionapc1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## REGIONAPC
-///  _REGIONAPC defines Administered Price profiles (Energy and FCAS) for a region._
+///
+/// REGIONAPC defines Administered Price profiles (Energy and FCAS) for a region.
 ///
 /// * Data Set Name: Ap
 /// * File Name: Regionapc
 /// * Data Version: 1
 ///
 /// # Description
-///  REGIONAPC data is public, so is available to all participants. Source REGIONAPC updates when a change is ever made to the Administered Price Cap details. Changes to this table are infrequent.
+/// REGIONAPC data is public, so is available to all participants.SourceREGIONAPC updates when a change is ever made to the Administered Price Cap details. Changes to this table are infrequent.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -4223,16 +4240,18 @@ pub struct ApRegionapcintervals1Mapping([usize; 9]);
 /// # Summary
 ///
 /// ## REGIONAPCINTERVALS
-///  _REGIONAPCINTERVALS contains Administered Price profiles (Energy and FCAS) applicable to each interval for a region._
+///
+/// REGIONAPCINTERVALS contains Administered Price profiles (Energy and FCAS) applicable to each interval for a region.
 ///
 /// * Data Set Name: Ap
 /// * File Name: Regionapcintervals
 /// * Data Version: 1
 ///
 /// # Description
-///  REGIONAPCINTERVALS data is public, so is available to all participants. Source REGIONAPCINTERVALS is updated whenever an Administered Price Cap occurs.
+/// REGIONAPCINTERVALS data is public, so is available to all participants.SourceREGIONAPCINTERVALS is updated whenever an Administered Price Cap occurs.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///

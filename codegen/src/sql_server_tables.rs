@@ -1,52 +1,14 @@
+use anyhow::anyhow;
 use heck::ToSnakeCase;
+use log::info;
 use std::{fs, str};
 
-use crate::VERSION;
+use crate::json::{DataModel, Table};
 use crate::{mms, rust::TableMapping};
 
-impl mms::PkColumns {
-    fn get_sql(&self) -> String {
-        let cols = self
-            .cols
-            .iter()
-            .map(|c| c.to_snake_case())
-            .collect::<Vec<_>>();
-        format!("primary key ([{}])", cols.join("],["))
-    }
-
-    fn merge_check(&self) -> String {
-        let mut sql = String::new();
-        for (idx, col) in self.cols.iter().enumerate() {
-            let col = col.to_snake_case();
-            if idx == 0 {
-                sql.push_str(&format!("    tgt.[{0}] = src.[{0}]\n", col));
-            } else {
-                sql.push_str(&format!("    and tgt.[{0}] = src.[{0}]\n", col));
-            }
-        }
-        sql
-    }
-}
-
-impl mms::TableColumns {
-    fn merge_update(&self) -> String {
-        self.columns
-            .iter()
-            .map(|c| format!("tgt.[{0}] = src.[{0}]", c.field_name()))
-            .collect::<Vec<_>>()
-            .join(",\n        ")
-    }
-
-    fn get_sql(&self) -> String {
-        self.columns
-            .iter()
-            .map(|c| format!("{},", c.get_sql()))
-            .collect::<Vec<_>>()
-            .join("\n    ")
-    }
+impl Table {
     fn get_columns_sql(&self, prefix: Option<&'static str>) -> String {
-        self.columns
-            .iter()
+        self.columns()
             .map(|c| {
                 if let Some(pfx) = prefix {
                     format!("{}.[{}]", pfx, c.field_name())
@@ -58,9 +20,14 @@ impl mms::TableColumns {
             .join(",\n        ")
     }
     fn get_column_schema(&self) -> String {
-        self.columns
-            .iter()
+        self.columns()
             .map(|c| format!("[{}] {}", c.field_name(), c.data_type.as_sql_type()))
+            .collect::<Vec<_>>()
+            .join(",\n        ")
+    }
+    fn merge_update(&self) -> String {
+        self.columns()
+            .map(|c| format!("tgt.[{0}] = src.[{0}]", c.field_name()))
             .collect::<Vec<_>>()
             .join(",\n        ")
     }
@@ -94,8 +61,7 @@ impl mms::DataType {
     }
 }
 
-pub fn run() -> anyhow::Result<()> {
-    let rdr = fs::File::open(format!("mmsdm_v{VERSION}.json"))?;
+pub fn run(local_info: DataModel) -> anyhow::Result<()> {
     let map = TableMapping::read()?;
 
     // abv
@@ -129,11 +95,17 @@ go
             "#
     .to_string();
     let mut proc_str = String::new();
-    let local_info: mms::Packages = serde_json::from_reader(rdr).unwrap();
-    for (_, tables) in local_info.into_iter() {
-        for (table_key, table) in tables.into_iter() {
+    for (_data_set, package) in local_info.packages.iter() {
+        for (table_key, _table_header) in package.tables.iter() {
+            info!("Processing table {table_key}");
+
+            let table = local_info
+                .tables
+                .get(table_key)
+                .ok_or_else(|| anyhow!("missing table {table_key}"))?;
+
             let mms_report = mms::Report {
-                sub_type: table_key,
+                sub_type: table_key.to_string(),
             };
             if let Some(pdr_report) = map.get(&mms_report) {
                 let create_table = format!(
@@ -149,17 +121,38 @@ create nonclustered index Mmsdm{table_name}FileLogId on mmsdm.{table_name}(file_
 go
                         "#,
                     table_name = pdr_report.sql_table_name(),
-                    columns = table.columns().get_sql(),
-                    primary_key = table.primary_key_columns().get_sql(),
-                    // primary_key = ""
+                    columns = table
+                        .columns()
+                        .map(|c| format!("{},", c.get_sql()))
+                        .collect::<Vec<_>>()
+                        .join("\n    "),
+                    primary_key = format!(
+                        "primary key ([{}])",
+                        table
+                            .primary_key_columns()
+                            .iter()
+                            .map(|c| c.to_snake_case())
+                            .collect::<Vec<_>>()
+                            .join("],[")
+                    ) // primary_key = ""
                 );
 
                 table_str.push_str(&create_table);
 
+                let merge_check = {
+                    let mut sql = String::new();
+                    for (idx, col) in table.primary_key_columns().iter().enumerate() {
+                        let col = col.to_snake_case();
+                        if idx == 0 {
+                            sql.push_str(&format!("    tgt.[{0}] = src.[{0}]\n", col));
+                        } else {
+                            sql.push_str(&format!("    and tgt.[{0}] = src.[{0}]\n", col));
+                        }
+                    }
+                    sql
+                };
                 if table
                     .columns()
-                    .columns
-                    .iter()
                     .any(|col| col.name.to_lowercase() == "lastchanged")
                 {
                     let merge_proc = format!(
@@ -196,12 +189,11 @@ when not matched
 end
 go"#,
                         target_table = pdr_report.sql_table_name(),
-                        merge_check = table.primary_key_columns().merge_check(),
-                        insert_columns = table.columns().get_columns_sql(None),
-                        select_columns_d = table.columns().get_columns_sql(Some("d")),
-                        select_columns_src = table.columns().get_columns_sql(Some("src")),
-                        update_columns = table.columns().merge_update(),
-                        column_schema = table.columns().get_column_schema(),
+                        insert_columns = table.get_columns_sql(None),
+                        select_columns_d = table.get_columns_sql(Some("d")),
+                        select_columns_src = table.get_columns_sql(Some("src")),
+                        update_columns = table.merge_update(),
+                        column_schema = table.get_column_schema(),
                     );
                     proc_str.push_str(&merge_proc);
                 } else {
@@ -224,9 +216,9 @@ from openjson(@data) with (
 end
 go"#,
                         target_table = pdr_report.sql_table_name(),
-                        insert_columns = table.columns().get_columns_sql(None),
-                        select_columns = table.columns().get_columns_sql(Some("d")),
-                        column_schema = table.columns().get_column_schema(),
+                        insert_columns = table.get_columns_sql(None),
+                        select_columns = table.get_columns_sql(Some("d")),
+                        column_schema = table.get_column_schema(),
                     );
                     proc_str.push_str(&insert_proc);
                 }

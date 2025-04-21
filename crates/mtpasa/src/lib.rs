@@ -30,16 +30,18 @@ pub struct MtpasaCaseresult1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## MTPASA_CASERESULT
-///  _MTPASA solution header table_
+///
+/// MTPASA solution header table
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Caseresult
 /// * Data Version: 1
 ///
 /// # Description
-///  MTPASA_CASERESULT is public data. Holds one Record for entire solution
+/// MTPASA_CASERESULT is public data.Holds one Record for entire solution
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -305,16 +307,18 @@ pub struct MtpasaConstraintresult1Mapping([usize; 15]);
 /// # Summary
 ///
 /// ## MTPASA_CONSTRAINTRESULT
-///  _Constraint results for Binding or Violating Constraints_
+///
+/// Constraint results for Binding or Violating Constraints
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Constraintresult
 /// * Data Version: 1
 ///
 /// # Description
-///  MTPASA_CONSTRAINTRESULT is public data. &nbsp;
+/// MTPASA_CONSTRAINTRESULT is public data.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -898,16 +902,18 @@ pub struct MtpasaConstraintsummary1Mapping([usize; 11]);
 /// # Summary
 ///
 /// ## MTPASA_CONSTRAINTSUMMARY
-///  _Constraint Summary results over aggregation periods_
+///
+/// Constraint Summary results over aggregation periods
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Constraintsummary
 /// * Data Version: 1
 ///
 /// # Description
-///  MTPASA_CONSTRAINTSUMMARY is public data.
+/// MTPASA_CONSTRAINTSUMMARY is public data.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1370,15 +1376,18 @@ pub struct MtpasaDuidavailability3Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## MTPASA_DUIDAVAILABILITY
-///  _Offered PASA Availability of the scheduled generator DUID for each day over the Medium Term PASA period. The data in this table is input data to the MT PASA process it is not part of the MTPASA solution. The availability does not reflect any energy limitations in the MT PASA offers_
+///
+/// Offered PASA Availability of the scheduled generator DUID for each day over the Medium Term PASA period. The data in this table is input data to the MT PASA process it is not part of the MTPASA solution. The availability does not reflect any energy limitations in the MT PASA offers
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Duidavailability
 /// * Data Version: 3
 ///
+/// # Description
+/// MTPASA_INTERCONNECTORRESULT is public data.
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1809,16 +1818,18 @@ pub struct MtpasaInterconnectorresult1Mapping([usize; 15]);
 /// # Summary
 ///
 /// ## MTPASA_INTERCONNECTORRESULT
-///  _Interconnector results for interval of max demand per day_
+///
+/// Interconnector results for interval of max demand per day
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Interconnectorresult
 /// * Data Version: 1
 ///
 /// # Description
-///  MTPASA_INTERCONNECTORRESULT is public data.
+/// MTPASA_INTERCONNECTORRESULT is public data.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -2409,16 +2420,18 @@ pub struct MtpasaLolpresult1Mapping([usize; 12]);
 /// # Summary
 ///
 /// ## MTPASA_LOLPRESULT
-///  _Results for Loss of Load Probability (LOLP) run per day_
+///
+/// Results for Loss of Load Probability (LOLP) run per day
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Lolpresult
 /// * Data Version: 1
 ///
 /// # Description
-///  MTPASA_LOLPRESULT is public data.
+/// MTPASA_LOLPRESULT is public data.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -2889,6 +2902,289 @@ pub struct MtpasaLolpresult1Builder {
     lossofloadmagnitude_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
+pub struct MtpasaRegionavailtrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MtpasaRegionavailtrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MtpasaRegionavailtrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct MtpasaRegionavailtrk1Mapping([usize; 4]);
+/// # Summary
+///
+/// ## MTPASA_REGIONAVAIL_TRK
+///
+/// The tracking table to assist in versioning of the region-aggregate offered PASA Availability data published to the MTPASA_REGIONAVAILABILITY table.
+///
+/// * Data Set Name: Mtpasa
+/// * File Name: Regionavailtrk
+/// * Data Version: 1
+///
+/// # Description
+/// MTPASA_REGIONAVAILABILITY is public data.
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * PUBLISH_DATETIME
+#[derive(Debug, PartialEq, Eq)]
+pub struct MtpasaRegionavailtrk1Row<'data> {
+    /// Date Time the report was published.
+    pub publish_datetime: chrono::NaiveDateTime,
+    /// First date of the report inclusive.
+    pub startdate: Option<chrono::NaiveDateTime>,
+    /// Last date of the report inclusive.
+    pub enddate: Option<chrono::NaiveDateTime>,
+    /// Date Time of the latest offer used in the report.
+    pub latest_offer_datetime: Option<chrono::NaiveDateTime>,
+    backing_data: core::marker::PhantomData<&'data ()>,
+}
+impl<'data> MtpasaRegionavailtrk1Row<'data> {}
+impl mmsdm_core::GetTable for MtpasaRegionavailtrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MTPASA";
+    const TABLE_NAME: &'static str = "REGIONAVAILTRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaRegionavailtrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PUBLISH_DATETIME",
+        "STARTDATE",
+        "ENDDATE",
+        "LATEST_OFFER_DATETIME",
+    ];
+    type Row<'row> = MtpasaRegionavailtrk1Row<'row>;
+    type FieldMapping = MtpasaRegionavailtrk1Mapping;
+    type PrimaryKey = MtpasaRegionavailtrk1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MtpasaRegionavailtrk1Row {
+            publish_datetime: row
+                .get_custom_parsed_at_idx(
+                    "publish_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            startdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "startdate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            enddate: row
+                .get_opt_custom_parsed_at_idx(
+                    "enddate",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            latest_offer_datetime: row
+                .get_opt_custom_parsed_at_idx(
+                    "latest_offer_datetime",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: core::marker::PhantomData,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MtpasaRegionavailtrk1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MtpasaRegionavailtrk1PrimaryKey {
+        MtpasaRegionavailtrk1PrimaryKey {
+            publish_datetime: row.publish_datetime,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("mtpasa_regionavailtrk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MtpasaRegionavailtrk1Row {
+            publish_datetime: row.publish_datetime.clone(),
+            startdate: row.startdate.clone(),
+            enddate: row.enddate.clone(),
+            latest_offer_datetime: row.latest_offer_datetime.clone(),
+            backing_data: core::marker::PhantomData,
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MtpasaRegionavailtrk1PrimaryKey {
+    pub publish_datetime: chrono::NaiveDateTime,
+}
+impl mmsdm_core::PrimaryKey for MtpasaRegionavailtrk1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for MtpasaRegionavailtrk1Row<'data> {
+    type Row<'other> = MtpasaRegionavailtrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.publish_datetime == row.publish_datetime
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MtpasaRegionavailtrk1Row<'data> {
+    type PrimaryKey = MtpasaRegionavailtrk1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.publish_datetime == key.publish_datetime
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for MtpasaRegionavailtrk1PrimaryKey {
+    type Row<'other> = MtpasaRegionavailtrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.publish_datetime == row.publish_datetime
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for MtpasaRegionavailtrk1PrimaryKey {
+    type PrimaryKey = MtpasaRegionavailtrk1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.publish_datetime == key.publish_datetime
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for MtpasaRegionavailtrk1 {
+    type Builder = MtpasaRegionavailtrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "publish_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "startdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "enddate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "latest_offer_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        MtpasaRegionavailtrk1Builder {
+            publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .publish_datetime_array
+            .append_value(row.publish_datetime.and_utc().timestamp_millis());
+        builder
+            .startdate_array
+            .append_option(row.startdate.map(|val| val.and_utc().timestamp_millis()));
+        builder
+            .enddate_array
+            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
+        builder
+            .latest_offer_datetime_array
+            .append_option(
+                row.latest_offer_datetime.map(|val| val.and_utc().timestamp_millis()),
+            );
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.publish_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.startdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.enddate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.latest_offer_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct MtpasaRegionavailtrk1Builder {
+    publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct MtpasaRegionavailability4 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -2914,16 +3210,18 @@ pub struct MtpasaRegionavailability4Mapping([usize; 18]);
 /// # Summary
 ///
 /// ## MTPASA_REGIONAVAILABILITY
-///  _Stores the Region-aggregate offered PASA Availability of scheduled generators for each day over the Medium Term PASA period. The data in this table is an aggregate of input data to the MT PASA process it is not part of the MTPASA solution. The aggregate availability does not reflect any energy limitations in the MT PASA offers._
+///
+/// Stores the Region-aggregate offered PASA Availability of scheduled generators for each day over the Medium Term PASA period. The data in this table is an aggregate of input data to the MT PASA process it is not part of the MTPASA solution. The aggregate availability does not reflect any energy limitations in the MT PASA offers.
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Regionavailability
 /// * Data Version: 4
 ///
 /// # Description
-///  MTPASA_REGIONAVAILABILITY is public data.
+/// MTPASA_REGIONAVAILABILITY is public data.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -3591,286 +3889,6 @@ pub struct MtpasaRegionavailability4Builder {
     demand50max_array: arrow::array::builder::Decimal128Builder,
     carryovercapacity_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct MtpasaRegionavailtrk1 {
-    extract_row_partition: alloc::boxed::Box<
-        dyn Fn(
-            &MtpasaRegionavailtrk1Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    >,
-    row_partition_key: mmsdm_core::PartitionKey,
-}
-impl MtpasaRegionavailtrk1 {
-    pub fn new(
-        row_partition_key: mmsdm_core::PartitionKey,
-        func: impl Fn(
-            &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    ) -> Self {
-        Self {
-            extract_row_partition: alloc::boxed::Box::new(func),
-            row_partition_key,
-        }
-    }
-}
-pub struct MtpasaRegionavailtrk1Mapping([usize; 4]);
-/// # Summary
-///
-/// ## MTPASA_REGIONAVAIL_TRK
-///  _The tracking table to assist in versioning of the region-aggregate offered PASA Availability data published to the MTPASA_REGIONAVAILABILITY table._
-///
-/// * Data Set Name: Mtpasa
-/// * File Name: Regionavailtrk
-/// * Data Version: 1
-///
-///
-///
-///
-///
-/// # Primary Key Columns
-///
-/// * PUBLISH_DATETIME
-#[derive(Debug, PartialEq, Eq)]
-pub struct MtpasaRegionavailtrk1Row<'data> {
-    /// Date Time the report was published.
-    pub publish_datetime: chrono::NaiveDateTime,
-    /// First date of the report inclusive.
-    pub startdate: Option<chrono::NaiveDateTime>,
-    /// Last date of the report inclusive.
-    pub enddate: Option<chrono::NaiveDateTime>,
-    /// Date Time of the latest offer used in the report.
-    pub latest_offer_datetime: Option<chrono::NaiveDateTime>,
-    backing_data: core::marker::PhantomData<&'data ()>,
-}
-impl<'data> MtpasaRegionavailtrk1Row<'data> {}
-impl mmsdm_core::GetTable for MtpasaRegionavailtrk1 {
-    const VERSION: i32 = 1;
-    const DATA_SET_NAME: &'static str = "MTPASA";
-    const TABLE_NAME: &'static str = "REGIONAVAILTRK";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaRegionavailtrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-    ]);
-    const COLUMNS: &'static [&'static str] = &[
-        "PUBLISH_DATETIME",
-        "STARTDATE",
-        "ENDDATE",
-        "LATEST_OFFER_DATETIME",
-    ];
-    type Row<'row> = MtpasaRegionavailtrk1Row<'row>;
-    type FieldMapping = MtpasaRegionavailtrk1Mapping;
-    type PrimaryKey = MtpasaRegionavailtrk1PrimaryKey;
-    fn from_row<'data>(
-        row: mmsdm_core::CsvRow<'data>,
-        field_mapping: &Self::FieldMapping,
-    ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(MtpasaRegionavailtrk1Row {
-            publish_datetime: row
-                .get_custom_parsed_at_idx(
-                    "publish_datetime",
-                    field_mapping.0[0],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            startdate: row
-                .get_opt_custom_parsed_at_idx(
-                    "startdate",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            enddate: row
-                .get_opt_custom_parsed_at_idx(
-                    "enddate",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            latest_offer_datetime: row
-                .get_opt_custom_parsed_at_idx(
-                    "latest_offer_datetime",
-                    field_mapping.0[3],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            backing_data: core::marker::PhantomData,
-        })
-    }
-    fn field_mapping_from_row<'a>(
-        mut row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
-        }
-        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
-        if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
-        }
-        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
-        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
-            base_mapping[field_index] = row
-                .iter_fields()
-                .position(|f| f == *field)
-                .unwrap_or(usize::MAX);
-        }
-        Ok(MtpasaRegionavailtrk1Mapping(base_mapping))
-    }
-    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
-            && Self::TABLE_NAME == key.table_name()
-    }
-    fn primary_key(row: &Self::Row<'_>) -> MtpasaRegionavailtrk1PrimaryKey {
-        MtpasaRegionavailtrk1PrimaryKey {
-            publish_datetime: row.publish_datetime,
-        }
-    }
-    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
-        (self.extract_row_partition)(row)
-    }
-    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("mtpasa_regionavailtrk_v1_{}", self.partition_value(row))
-    }
-    fn partition_key(&self) -> mmsdm_core::PartitionKey {
-        self.row_partition_key
-    }
-    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        MtpasaRegionavailtrk1Row {
-            publish_datetime: row.publish_datetime.clone(),
-            startdate: row.startdate.clone(),
-            enddate: row.enddate.clone(),
-            latest_offer_datetime: row.latest_offer_datetime.clone(),
-            backing_data: core::marker::PhantomData,
-        }
-    }
-}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct MtpasaRegionavailtrk1PrimaryKey {
-    pub publish_datetime: chrono::NaiveDateTime,
-}
-impl mmsdm_core::PrimaryKey for MtpasaRegionavailtrk1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for MtpasaRegionavailtrk1Row<'data> {
-    type Row<'other> = MtpasaRegionavailtrk1Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.publish_datetime == row.publish_datetime
-    }
-}
-impl<'data> mmsdm_core::CompareWithPrimaryKey for MtpasaRegionavailtrk1Row<'data> {
-    type PrimaryKey = MtpasaRegionavailtrk1PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.publish_datetime == key.publish_datetime
-    }
-}
-impl<'data> mmsdm_core::CompareWithRow for MtpasaRegionavailtrk1PrimaryKey {
-    type Row<'other> = MtpasaRegionavailtrk1Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.publish_datetime == row.publish_datetime
-    }
-}
-impl mmsdm_core::CompareWithPrimaryKey for MtpasaRegionavailtrk1PrimaryKey {
-    type PrimaryKey = MtpasaRegionavailtrk1PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.publish_datetime == key.publish_datetime
-    }
-}
-#[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for MtpasaRegionavailtrk1 {
-    type Builder = MtpasaRegionavailtrk1Builder;
-    fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "publish_datetime",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "startdate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "enddate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "latest_offer_datetime",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
-    }
-    fn new_builder() -> Self::Builder {
-        MtpasaRegionavailtrk1Builder {
-            publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-        }
-    }
-    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder
-            .publish_datetime_array
-            .append_value(row.publish_datetime.and_utc().timestamp_millis());
-        builder
-            .startdate_array
-            .append_option(row.startdate.map(|val| val.and_utc().timestamp_millis()));
-        builder
-            .enddate_array
-            .append_option(row.enddate.map(|val| val.and_utc().timestamp_millis()));
-        builder
-            .latest_offer_datetime_array
-            .append_option(
-                row.latest_offer_datetime.map(|val| val.and_utc().timestamp_millis()),
-            );
-    }
-    fn finalize_builder(
-        builder: &mut Self::Builder,
-    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
-        arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.publish_datetime_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.startdate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.enddate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.latest_offer_datetime_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
-    }
-}
-#[cfg(feature = "arrow")]
-pub struct MtpasaRegionavailtrk1Builder {
-    publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-}
 pub struct MtpasaRegioniteration1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -3896,16 +3914,18 @@ pub struct MtpasaRegioniteration1Mapping([usize; 11]);
 /// # Summary
 ///
 /// ## MTPASA_REGIONITERATION
-///  _Region results for Unserved Energy (USE)_
+///
+/// Region results for Unserved Energy (USE)
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Regioniteration
 /// * Data Version: 1
 ///
 /// # Description
-///  MTPASA_REGIONITERATION is public data.
+/// MTPASA_REGIONITERATION is public data.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -3933,7 +3953,7 @@ pub struct MtpasaRegioniteration1Row<'data> {
     pub period_ending: chrono::NaiveDateTime,
     /// The unique region identifier
     pub regionid: core::ops::Range<usize>,
-    /// Iteration ID, only produced for iterations showing unserved energy&gt;0
+    /// Iteration ID, only produced for iterations showing unserved energy>0
     pub use_iteration_id: i64,
     /// Number of half hours showing unserved energy over year, for iteration
     pub use_iteration_event_number: Option<rust_decimal::Decimal>,
@@ -4368,16 +4388,18 @@ pub struct MtpasaRegionresult2Mapping([usize; 36]);
 /// # Summary
 ///
 /// ## MTPASA_REGIONRESULT
-///  _Region results for interval of max demand per day._
+///
+/// Region results for interval of max demand per day.
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Regionresult
 /// * Data Version: 2
 ///
 /// # Description
-///  MTPASA_REGIONRESULT is public data.
+/// MTPASA_REGIONRESULT is public data.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -4409,7 +4431,7 @@ pub struct MtpasaRegionresult2Row<'data> {
     pub aggregateinstalledcapacity: Option<rust_decimal::Decimal>,
     /// Total number of iterations and reference years performed
     pub numberofiterations: Option<rust_decimal::Decimal>,
-    /// Number of iterations and reference years with unserved energy&gt;0
+    /// Number of iterations and reference years with unserved energy>0
     pub use_numberofiterations: Option<rust_decimal::Decimal>,
     /// Maximum unserved energy, across iterations and reference years (MW)
     pub use_max: Option<rust_decimal::Decimal>,
@@ -5593,16 +5615,18 @@ pub struct MtpasaRegionsummary1Mapping([usize; 30]);
 /// # Summary
 ///
 /// ## MTPASA_REGIONSUMMARY
-///  _Region Results summary over aggregation periods._
+///
+/// Region Results summary over aggregation periods.
 ///
 /// * Data Set Name: Mtpasa
 /// * File Name: Regionsummary
 /// * Data Version: 1
 ///
 /// # Description
-///  MTPASA_REGIONSUMMARY is public data.
+/// MTPASA_REGIONSUMMARY is public data.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -5657,21 +5681,21 @@ pub struct MtpasaRegionsummary1Row<'data> {
     pub numberofiterations: Option<rust_decimal::Decimal>,
     /// Number of iterations and reference years showing unserved energy
     pub use_numberofiterations: Option<rust_decimal::Decimal>,
-    /// Maximum unserved energy event size across all half hourly intervals and iterations and reference years that have unserved energy&gt;0 (MW)
+    /// Maximum unserved energy event size across all half hourly intervals and iterations and reference years that have unserved energy>0 (MW)
     pub use_event_max: Option<rust_decimal::Decimal>,
-    /// Upper quartile unserved energy event size across all half hourly intervals and iterations and reference years that have unserved energy&gt;0 (MW)
+    /// Upper quartile unserved energy event size across all half hourly intervals and iterations and reference years that have unserved energy>0 (MW)
     pub use_event_upperquartile: Option<rust_decimal::Decimal>,
-    /// Median unserved energy event size across all half hourly intervals and iterations and reference years that have unserved energy&gt;0 (MW)
+    /// Median unserved energy event size across all half hourly intervals and iterations and reference years that have unserved energy>0 (MW)
     pub use_event_median: Option<rust_decimal::Decimal>,
-    /// Lower quartile unserved energy event size across all half hourly intervals and iterations and reference years that have unserved energy&gt;0 (MW)
+    /// Lower quartile unserved energy event size across all half hourly intervals and iterations and reference years that have unserved energy>0 (MW)
     pub use_event_lowerquartile: Option<rust_decimal::Decimal>,
-    /// Minimum unserved energy event size across all half hourly intervals and iterations and reference years that have unserved energy&gt;0 (MW)
+    /// Minimum unserved energy event size across all half hourly intervals and iterations and reference years that have unserved energy>0 (MW)
     pub use_event_min: Option<rust_decimal::Decimal>,
     /// Fixed Values of 0.696 for 50 POE and 0.304 for 10 POE.
     pub weight: Option<rust_decimal::Decimal>,
     /// Weighted average USE per region = (USE_AVERAGE_POE10/NATIVE_DEMAND_POE_10*WEIGHT_POE_10 + USE_AVERAGE_POE50/NATIVE_DEMAND_POE_50*WEIGHT_POE_50)*100
     pub use_weighted_avg: Option<rust_decimal::Decimal>,
-    /// LRC Condition reported (Value=1) if USE_WEIGHTED_AVG &gt;= 0.002% otherwise (Value=0)
+    /// LRC Condition reported (Value=1) if USE_WEIGHTED_AVG >= 0.002% otherwise (Value=0)
     pub lrc: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
     pub lastchanged: Option<chrono::NaiveDateTime>,

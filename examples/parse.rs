@@ -1,18 +1,10 @@
-use mmsdm_bids::{BidBidperofferD2, BidsBidofferperiod1, OfferBiddayoffer2};
-use mmsdm_core::{FileReader, GetTable, IterTyped};
-use mmsdm_dispatch::{
-    DispatchConstraint5, DispatchLocalPrice1, DispatchMnspbidtrk1, DispatchOffertrk1,
-    DispatchUnitSolution4,
-};
-use mmsdm_p5min::P5minUnitsolution5;
-use mmsdm_pre_dispatch::PredispatchRegionfcasrequirement2;
-use mmsdm_settlement_data::{SettlementsFcasRecovery7, SettlementsFcasregionrecovery5};
+use mmsdm::{PartitionKey, PartitionValue};
+use mmsdm_bids::OfferBiddayoffer3;
+use mmsdm_core::FileReader;
 use std::boxed::Box;
-use std::collections::BTreeSet;
 use std::error::Error;
 use std::fs::File;
-use std::io::{BufRead, BufReader};
-use std::mem;
+use std::sync::Arc;
 use zip::ZipArchive;
 
 // PUBLIC_NEXT_DAY_DISPATCH_20230105_0000000378281515.zip 5.4mb zipped, 81mb unzipped, 1s raw, 3s parsed
@@ -23,7 +15,7 @@ use zip::ZipArchive;
 
 // PUBLIC_DVD_BIDDAYOFFER_202312010000.zip
 fn main() -> Result<(), Box<dyn Error>> {
-    let file = File::open("./PUBLIC_DVD_BIDPEROFFER1_202312010000.zip")?;
+    let file = File::open("./PUBLIC_DVD_BIDPEROFFER1_202407010000.zip")?;
 
     let mut archive = ZipArchive::new(file)?;
 
@@ -75,7 +67,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         // fr.iter_closest::<P5minUnitsolution5>().unwrap().count(),
         // fr.iter_closest::<SettlementsFcasregionrecovery5>().unwrap().count(),
         // fr.iter_closest::<BidsBidofferperiod1>().unwrap().count(),
-        fr.iter_closest::<OfferBiddayoffer2>().unwrap().count(),
+        fr.iter_closest::<OfferBiddayoffer3>(Arc::new(OfferBiddayoffer3::new(
+            PartitionKey("settlementdate"),
+            |row| PartitionValue(row.settlementdate.date().to_string())
+        )))
+        .unwrap()
+        .count(),
     );
 
     Ok(())

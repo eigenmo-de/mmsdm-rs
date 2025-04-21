@@ -1,25 +1,22 @@
 [package]
 name = "mmsdm-codegen"
-version = "0.1.0"
+version = "0.0.0"
 authors = ["Eric Sheppard <eric@eigenmo.de>", "Nayika Sheppard <nayika@eigenmo.de>"]
-edition = "2018"
+edition = "2024"
 license = "MIT"
 repository = "https://github.com/esheppa/aemo-rs"
 #maintenance = { status = "experimental" }
 description = "Code generation for MMSDM data types"
 
 [dependencies]
+html5ever = "0.29.1"
 log = "0.4"
-# zip = "0.6"
 serde = { version = "1", features = ["derive"] }
 csv = "1.2"
 chrono = { version = "0.4", features = ["serde"] }
-chrono-tz = "0.8"
 serde_json = "1"
 env_logger = "0.10"
 reqwest = "0.11"
-scraper = "0.16"
-# rayon = "1.7"
 tokio = { version = "1", features = ["full"] }
 futures = "0.3"
 codegen = "0.2"
@@ -31,3 +28,4 @@ structopt = "0.3"
 prettyplease = "0.2.9"
 syn = "2.0.17"
 itertools = "0.12.1"
+indexmap = { version = "2.9.0", features = ["serde"] }

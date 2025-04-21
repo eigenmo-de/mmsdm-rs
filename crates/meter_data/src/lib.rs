@@ -30,15 +30,18 @@ pub struct MeterdataAggregateReads1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## METERDATA_AGGREGATE_READS
-///  _Publishes aggregated metering data associated with a wholesale connection point for a given CASE_ID_
+///
+/// Publishes aggregated metering data associated with a wholesale connection point for a given CASE_ID
 ///
 /// * Data Set Name: Meterdata
 /// * File Name: Aggregate Reads
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -479,15 +482,18 @@ pub struct MeterdataIndividualReads1Mapping([usize; 12]);
 /// # Summary
 ///
 /// ## METERDATA_INDIVIDUAL_READS
-///  _Publishes metering data associated with individual metering points for a given CASE_ID_
+///
+/// Publishes metering data associated with individual metering points for a given CASE_ID
 ///
 /// * Data Set Name: Meterdata
 /// * File Name: Individual Reads
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -958,15 +964,18 @@ pub struct MeterdataInterconnector1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## METERDATA_INTERCONNECTOR
-///  _Publishes metering data associated with wholesale interconnectors for a given CASE_ID_
+///
+/// Publishes metering data associated with wholesale interconnectors for a given CASE_ID
 ///
 /// * Data Set Name: Meterdata
 /// * File Name: Interconnector
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1336,15 +1345,18 @@ pub struct MeterdataMeterdataSaps1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## METERDATA_SAPS
-///  _The SAPS Meter data for MSRP and Retailer used in the Settlement Calculation_
+///
+/// The SAPS Meter data for MSRP and Retailer used in the Settlement Calculation
 ///
 /// * Data Set Name: Meterdata
 /// * File Name: Meterdata Saps
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -1791,15 +1803,18 @@ pub struct MeterdataWdrReads1Mapping([usize; 14]);
 /// # Summary
 ///
 /// ## METERDATA_WDR_READS
-///  _Metering Data WDR Readings_
+///
+/// Metering Data WDR Readings
 ///
 /// * Data Set Name: Meterdata
 /// * File Name: Wdr Reads
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///

@@ -30,15 +30,18 @@ pub struct ParticipantRegistrationAdgDetail1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## ADG_DETAIL
-///  _Table for tracking evolving Aggregate Dispatch Group attributes_
+///
+/// Table for tracking evolving Aggregate Dispatch Group attributes
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Adg Detail
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -53,7 +56,7 @@ pub struct ParticipantRegistrationAdgDetail1Row<'data> {
     pub effectivedate: chrono::NaiveDateTime,
     /// Date and time of the version of Dispatchable Unit details
     pub version_datetime: chrono::NaiveDateTime,
-    /// Conformance Type for the Aggregate Dispatch Group. &nbsp;&nbsp;One of the following: CAP, MIXED, TARGET
+    /// Conformance Type for the Aggregate Dispatch Group.   One of the following: CAP, MIXED, TARGET
     pub adg_type: core::ops::Range<usize>,
     /// Date record authorised
     pub authoriseddate: Option<chrono::NaiveDateTime>,
@@ -399,15 +402,18 @@ pub struct ParticipantRegistrationAggregateDispatchGroup1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## AGGREGATE_DISPATCH_GROUP
-///  _Entity allowing for compliance monitoring over grouped DUIDs_
+///
+/// Entity allowing for compliance monitoring over grouped DUIDs
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Aggregate Dispatch Group
 /// * Data Version: 1
 ///
+/// # Description
+/// BIDDUIDDETAILS data is public to participants.SourceBIDDUIDDETAILS updates as dispatchable unit registration details are modified.VolumeApproximately 1000 records per year.
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -653,16 +659,18 @@ pub struct ParticipantRegistrationBidduiddetails1Mapping([usize; 10]);
 /// # Summary
 ///
 /// ## BIDDUIDDETAILS
-///  _BIDDUIDDETAILS and the associated tracking object BIDDUIDDETAILSTRK define the registration data for each ancillary service a dispatchable unit is registered to provide. The registration data is required to validate a dispatchable unit bid submitted for that ancillary service._
+///
+/// BIDDUIDDETAILS and the associated tracking object BIDDUIDDETAILSTRK define the registration data for each ancillary service a dispatchable unit is registered to provide. The registration data is required to validate a dispatchable unit bid submitted for that ancillary service.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Bidduiddetails
 /// * Data Version: 1
 ///
 /// # Description
-///  BIDDUIDDETAILS data is public to participants. Source BIDDUIDDETAILS updates as dispatchable unit registration details are modified. Volume Approximately 1000 records per year.
+/// BIDDUIDDETAILS data is public to participants.SourceBIDDUIDDETAILS updates as dispatchable unit registration details are modified.VolumeApproximately 1000 records per year.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1118,16 +1126,18 @@ pub struct ParticipantRegistrationBidduiddetailstrk1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## BIDDUIDDETAILSTRK
-///  _BIDDUIDDETAILSTRK shows the tracking for the associated object BIDDUIDDETAILS. Together, BIDDUIDDETAILSTRK and BIDDUIDDETAILS define the registration data for each ancillary service a dispatchable unit is registered to provide. The registration data is required to validate a dispatchable unit bid submitted for that ancillary service._
+///
+/// BIDDUIDDETAILSTRK shows the tracking for the associated object BIDDUIDDETAILS. Together, BIDDUIDDETAILSTRK and BIDDUIDDETAILS define the registration data for each ancillary service a dispatchable unit is registered to provide. The registration data is required to validate a dispatchable unit bid submitted for that ancillary service.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Bidduiddetailstrk
 /// * Data Version: 1
 ///
 /// # Description
-///  BIDDUIDDETAILSTRK data is public to participants. Source BIDDUIDDETAILSTRK updates as dispatchable unit registration details are modified. Volume Approximately 200 records per year
+/// BIDDUIDDETAILSTRK data is public to participants.SourceBIDDUIDDETAILSTRK updates as dispatchable unit registration details are modified.VolumeApproximately 200 records per year
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1467,16 +1477,18 @@ pub struct ParticipantRegistrationDispatchableunit1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## DISPATCHABLEUNIT
-///  _DISPATCHABLEUNIT sets out the unit name and type of each dispatchable unit in the market._
+///
+/// DISPATCHABLEUNIT sets out the unit name and type of each dispatchable unit in the market.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Dispatchableunit
 /// * Data Version: 1
 ///
 /// # Description
-///  DISPATCHABLEUNIT data is public data, and is available to all participants. Source DISPATCHABLEUNIT pdates as new units added or names changed.
+/// DISPATCHABLEUNIT data is public data, and is available to all participants.SourceDISPATCHABLEUNIT pdates as new units added or names changed.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1752,16 +1764,18 @@ pub struct ParticipantRegistrationDualloc1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## DUALLOC
-///  _DUALLOC cross references dispatch unit identifier to genset ID for each participant._
+///
+/// DUALLOC cross references dispatch unit identifier to genset ID for each participant.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Dualloc
 /// * Data Version: 1
 ///
 /// # Description
-///  Source DUALLOC updates where changed.
+/// SourceDUALLOC updates where changed.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -2037,15 +2051,15 @@ pub struct ParticipantRegistrationDualloc1Builder {
     gensetid_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct ParticipantRegistrationDudetail6 {
+pub struct ParticipantRegistrationDudetail7 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
-            &ParticipantRegistrationDudetail6Row<'_>,
+            &ParticipantRegistrationDudetail7Row<'_>,
         ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
-impl ParticipantRegistrationDudetail6 {
+impl ParticipantRegistrationDudetail7 {
     pub fn new(
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
@@ -2058,20 +2072,22 @@ impl ParticipantRegistrationDudetail6 {
         }
     }
 }
-pub struct ParticipantRegistrationDudetail6Mapping([usize; 33]);
+pub struct ParticipantRegistrationDudetail7Mapping([usize; 34]);
 /// # Summary
 ///
 /// ## DUDETAIL
-///  _DUDETAIL sets out a records specific details for each unit including start type and whether normally on or off load. Much of this data is information only and is not used in dispatch or settlements._
+///
+/// DUDETAIL sets out a records specific details for each unit including start type and whether normally on or off load. Much of this data is information only and is not used in dispatch or settlements.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Dudetail
-/// * Data Version: 6
+/// * Data Version: 7
 ///
 /// # Description
-///  DUDETAIL is public data, and is available to all participants. Source DUDETAIL updates only when registration details change. Note To find the current set of details for selected dispatchable units, query the participant's local database as follows. Select du.* from dudetail du where (du.EFFECTIVEDATE, du.VERSIONNO) = ( select effectivedate, max(versionno) from dudetail where EFFECTIVEDATE = (select max(effectivedate) from  dudetail where EFFECTIVEDATE &lt;= sysdate and duid = du.duid and authoriseddate is not null) and duid = du.duid and authoriseddate is not null group by effectivedate ) and du.duid in ('UNIT1', 'UNIT2') ; The following notes apply to this SQL code: · This table is specific to dispatch units only. · If you wish to query details for a different date, substitute a date expression for "sysdate" in the "where EFFECTIVEDATE &lt;= sysdate" clause. · If you wish to list all the units, remove the line "and du.duid in ('UNIT1', 'UNIT2')" · The DUDETAIL table does not indicate if a unit is active;  this is done through ownership (STADUALLOC) by an active station owned by an active participant (STATIONOWNER ) · If you wish to query Station details refer to STATION, STATIONOWNER and STADUALLOC. · If you wish to look at connection point loss factors, refer to TRANSMISSIONLOSSFACTOR.
+/// DUDETAIL is public data, and is available to all participants.SourceDUDETAIL updates only when registration details change.NoteTo find the current set of details for selected dispatchable units, query the participant's local database as follows.Select du.* from dudetail duwhere (du.EFFECTIVEDATE, du.VERSIONNO) =(select effectivedate, max(versionno)from dudetailwhere EFFECTIVEDATE = (select max(effectivedate)from  dudetailwhere EFFECTIVEDATE <= sysdateand duid = du.duidand authoriseddate is not null)and duid = du.duidand authoriseddate is not nullgroup by effectivedate)and du.duid in ('UNIT1', 'UNIT2');The following notes apply to this SQL code:·This table is specific to dispatch units only.·If you wish to query details for a different date, substitute a date expression for "sysdate"in the "where EFFECTIVEDATE <= sysdate"clause.·If you wish to list all the units, remove the line "and du.duid in ('UNIT1', 'UNIT2')"·The DUDETAIL table does not indicate if a unit is active;  this is done through ownership (STADUALLOC) by an active station owned by an active participant (STATIONOWNER )·If you wish to query Station details refer to STATION, STATIONOWNER and STADUALLOC.·If you wish to look at connection point loss factors, refer to TRANSMISSIONLOSSFACTOR.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -2079,7 +2095,7 @@ pub struct ParticipantRegistrationDudetail6Mapping([usize; 33]);
 /// * EFFECTIVEDATE
 /// * VERSIONNO
 #[derive(Debug, PartialEq, Eq)]
-pub struct ParticipantRegistrationDudetail6Row<'data> {
+pub struct ParticipantRegistrationDudetail7Row<'data> {
     /// Effective calendar date of record
     pub effectivedate: chrono::NaiveDateTime,
     /// Dispatchable Unit Identifier
@@ -2120,7 +2136,7 @@ pub struct ParticipantRegistrationDudetail6Row<'data> {
     pub maxrateofchangeup: Option<rust_decimal::Decimal>,
     /// Maximum ramp down rate for Unit (Mw/min)
     pub maxrateofchangedown: Option<rust_decimal::Decimal>,
-    /// Additional information for DISPATCHTYPE. For DISPATCHTYPE = LOAD, subtype value is WDR for wholesale demand response units. For DISPATCHTYPE = LOAD, subtype value is NULL for Scheduled Loads. For DISPATCHTYPE = GENERATOR type, subtype value is NULL. For DISPATCHTYPE = BIDIRECTIONAL type, subtype value is NULL.
+    /// Additional information for DISPATCHTYPE. For DISPATCHTYPE = LOAD, subtype value is WDR for wholesale demand response units. For DISPATCHTYPE = LOAD, subtype value is NULL for Scheduled Loads. For DISPATCHTYPE = GENERATOR type, the subtype value is NULL.
     pub dispatchsubtype: core::ops::Range<usize>,
     /// Aggregate Dispatch Group to which this dispatch unit belongs
     pub adg_id: core::ops::Range<usize>,
@@ -2146,9 +2162,11 @@ pub struct ParticipantRegistrationDudetail6Row<'data> {
     pub load_min_ramp_rate_up: Option<rust_decimal::Decimal>,
     /// Calculated Minimum Ramp Rate Down value accepted for Energy Offers or Bids on BDU Load component with explanation for energy imports (MW/min)
     pub load_min_ramp_rate_down: Option<rust_decimal::Decimal>,
+    /// Identifies if a unit is aggregated. This flag was initially added in GENUNITS_UNIT table which is now deprecated with IESS release.
+    pub aggregated: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> ParticipantRegistrationDudetail6Row<'data> {
+impl<'data> ParticipantRegistrationDudetail7Row<'data> {
     pub fn duid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
     }
@@ -2309,11 +2327,11 @@ impl<'data> ParticipantRegistrationDudetail6Row<'data> {
         }
     }
 }
-impl mmsdm_core::GetTable for ParticipantRegistrationDudetail6 {
-    const VERSION: i32 = 6;
+impl mmsdm_core::GetTable for ParticipantRegistrationDudetail7 {
+    const VERSION: i32 = 7;
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "DUDETAIL";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDudetail6Mapping([
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDudetail7Mapping([
         4,
         5,
         6,
@@ -2347,6 +2365,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail6 {
         34,
         35,
         36,
+        37,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -2382,15 +2401,16 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail6 {
         "MIN_RAMP_RATE_DOWN",
         "LOAD_MIN_RAMP_RATE_UP",
         "LOAD_MIN_RAMP_RATE_DOWN",
+        "AGGREGATED",
     ];
-    type Row<'row> = ParticipantRegistrationDudetail6Row<'row>;
-    type FieldMapping = ParticipantRegistrationDudetail6Mapping;
-    type PrimaryKey = ParticipantRegistrationDudetail6PrimaryKey;
+    type Row<'row> = ParticipantRegistrationDudetail7Row<'row>;
+    type FieldMapping = ParticipantRegistrationDudetail7Mapping;
+    type PrimaryKey = ParticipantRegistrationDudetail7PrimaryKey;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(ParticipantRegistrationDudetail6Row {
+        Ok(ParticipantRegistrationDudetail7Row {
             effectivedate: row
                 .get_custom_parsed_at_idx(
                     "effectivedate",
@@ -2524,6 +2544,12 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail6 {
                     field_mapping.0[32],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            aggregated: row
+                .get_opt_custom_parsed_at_idx(
+                    "aggregated",
+                    field_mapping.0[33],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -2555,14 +2581,14 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail6 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(ParticipantRegistrationDudetail6Mapping(base_mapping))
+        Ok(ParticipantRegistrationDudetail7Mapping(base_mapping))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationDudetail6PrimaryKey {
-        ParticipantRegistrationDudetail6PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> ParticipantRegistrationDudetail7PrimaryKey {
+        ParticipantRegistrationDudetail7PrimaryKey {
             duid: row.duid().to_string(),
             effectivedate: row.effectivedate,
             versionno: row.versionno,
@@ -2573,14 +2599,14 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail6 {
     }
     fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
         alloc::format!(
-            "participant_registration_dudetail_v6_{}", self.partition_value(row)
+            "participant_registration_dudetail_v7_{}", self.partition_value(row)
         )
     }
     fn partition_key(&self) -> mmsdm_core::PartitionKey {
         self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        ParticipantRegistrationDudetail6Row {
+        ParticipantRegistrationDudetail7Row {
             effectivedate: row.effectivedate.clone(),
             duid: row.duid.clone(),
             versionno: row.versionno.clone(),
@@ -2614,49 +2640,50 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail6 {
             min_ramp_rate_down: row.min_ramp_rate_down.clone(),
             load_min_ramp_rate_up: row.load_min_ramp_rate_up.clone(),
             load_min_ramp_rate_down: row.load_min_ramp_rate_down.clone(),
+            aggregated: row.aggregated.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct ParticipantRegistrationDudetail6PrimaryKey {
+pub struct ParticipantRegistrationDudetail7PrimaryKey {
     pub duid: alloc::string::String,
     pub effectivedate: chrono::NaiveDateTime,
     pub versionno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for ParticipantRegistrationDudetail6PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationDudetail6Row<'data> {
-    type Row<'other> = ParticipantRegistrationDudetail6Row<'other>;
+impl mmsdm_core::PrimaryKey for ParticipantRegistrationDudetail7PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationDudetail7Row<'data> {
+    type Row<'other> = ParticipantRegistrationDudetail7Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.duid() == row.duid() && self.effectivedate == row.effectivedate
             && self.versionno == row.versionno
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for ParticipantRegistrationDudetail6Row<'data> {
-    type PrimaryKey = ParticipantRegistrationDudetail6PrimaryKey;
+for ParticipantRegistrationDudetail7Row<'data> {
+    type PrimaryKey = ParticipantRegistrationDudetail7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid() == key.duid && self.effectivedate == key.effectivedate
             && self.versionno == key.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationDudetail6PrimaryKey {
-    type Row<'other> = ParticipantRegistrationDudetail6Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for ParticipantRegistrationDudetail7PrimaryKey {
+    type Row<'other> = ParticipantRegistrationDudetail7Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.duid == row.duid() && self.effectivedate == row.effectivedate
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDudetail6PrimaryKey {
-    type PrimaryKey = ParticipantRegistrationDudetail6PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for ParticipantRegistrationDudetail7PrimaryKey {
+    type PrimaryKey = ParticipantRegistrationDudetail7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.effectivedate == key.effectivedate
             && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail6 {
-    type Builder = ParticipantRegistrationDudetail6Builder;
+impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail7 {
+    type Builder = ParticipantRegistrationDudetail7Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -2834,11 +2861,16 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail6 {
                     arrow::datatypes::DataType::Decimal128(6, 0),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "aggregated",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        ParticipantRegistrationDudetail6Builder {
+        ParticipantRegistrationDudetail7Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             duid_array: arrow::array::builder::StringBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
@@ -2888,6 +2920,8 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail6 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             load_min_ramp_rate_down_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
+            aggregated_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -3058,6 +3092,15 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail6 {
                         val.mantissa()
                     })
             });
+        builder
+            .aggregated_array
+            .append_option({
+                row.aggregated
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3134,13 +3177,15 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail6 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.load_min_ramp_rate_down_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.aggregated_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct ParticipantRegistrationDudetail6Builder {
+pub struct ParticipantRegistrationDudetail7Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     duid_array: arrow::array::builder::StringBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
@@ -3174,6 +3219,7 @@ pub struct ParticipantRegistrationDudetail6Builder {
     min_ramp_rate_down_array: arrow::array::builder::Decimal128Builder,
     load_min_ramp_rate_up_array: arrow::array::builder::Decimal128Builder,
     load_min_ramp_rate_down_array: arrow::array::builder::Decimal128Builder,
+    aggregated_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct ParticipantRegistrationDudetailsummary7 {
     extract_row_partition: alloc::boxed::Box<
@@ -3200,16 +3246,18 @@ pub struct ParticipantRegistrationDudetailsummary7Mapping([usize; 29]);
 /// # Summary
 ///
 /// ## DUDETAILSUMMARY
-///  _DUDETAILSUMMARY sets out a single summary unit table so reducing the need for participants to use the various dispatchable unit detail and owner tables to establish generating unit specific details._
+///
+/// DUDETAILSUMMARY sets out a single summary unit table so reducing the need for participants to use the various dispatchable unit detail and owner tables to establish generating unit specific details.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Dudetailsummary
 /// * Data Version: 7
 ///
 /// # Description
-///  DUDETAILSUMMARY is a public table, and is available to all participants. Source DUDETAILSUMMARY updates only when registration details change.
+/// DUDETAILSUMMARY is a public table, and is available to all participants.SourceDUDETAILSUMMARY updates only when registration details change.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -3245,7 +3293,7 @@ pub struct ParticipantRegistrationDudetailsummary7Row<'data> {
     pub minimum_energy_price: Option<rust_decimal::Decimal>,
     /// Capped Offer/Bid Energy Price adjusted for TLF, DLF and VoLL
     pub maximum_energy_price: Option<rust_decimal::Decimal>,
-    /// Scheduled status of the unit:<br>    'SCHEDULED'<br>    'NON-SCHEDULED'<br>    'SEMI-SCHEDULED'
+    /// Scheduled status of the unit:   'SCHEDULED'   'NON-SCHEDULED'   'SEMI-SCHEDULED'
     pub schedule_type: core::ops::Range<usize>,
     /// MW/Min. Calculated Minimum Ramp Rate Up value accepted for Energy Offers or Bids with explanation
     pub min_ramp_rate_up: Option<rust_decimal::Decimal>,
@@ -3255,9 +3303,9 @@ pub struct ParticipantRegistrationDudetailsummary7Row<'data> {
     pub max_ramp_rate_up: Option<rust_decimal::Decimal>,
     /// Maximum ramp down rate for Unit (Mw/min) - from DUDetail table
     pub max_ramp_rate_down: Option<rust_decimal::Decimal>,
-    /// Whether the DUID is classified as an "Aggregated Unit" under the rules. This impacts the Minimum Ramp Rate calculation
+    /// Whether the DUID is classified as an "Aggregated Unit"under the rules. This impacts the Minimum Ramp Rate calculation
     pub is_aggregated: Option<rust_decimal::Decimal>,
-    /// Additional information for DISPATCHTYPE. For DISPATCHTYPE = LOAD, subtype value is WDR for wholesale demand response units. For DISPATCHTYPE = LOAD, subtype value is NULL for Scheduled Loads. For DISPATCHTYPE = GENERATOR type, subtype value is NULL. For DISPATCHTYPE = BIDIRECTIONAL type, subtype value is NULL.
+    /// Additional information for DISPATCHTYPE. For DISPATCHTYPE = LOAD, subtype value is WDR for wholesale demand response units For DISPATCHTYPE = LOAD, subtype value is NULL for Scheduled Loads. For DISPATCHTYPE = GENERATOR type, subtype value is NULL.
     pub dispatchsubtype: core::ops::Range<usize>,
     /// Aggregate Dispatch Group. Group into which the DUID is aggregated for Conformance. Null if DUID not aggregated for Conformance
     pub adg_id: core::ops::Range<usize>,
@@ -4217,16 +4265,18 @@ pub struct ParticipantRegistrationGenmeter1Mapping([usize; 16]);
 /// # Summary
 ///
 /// ## GENMETER
-///  _GENMETER shows details of generator meter sets._
+///
+/// GENMETER shows details of generator meter sets.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Genmeter
 /// * Data Version: 1
 ///
 /// # Description
-///  GENMETER is a public table, and is available to all participants. Source GENMETER updates only when meter details change.
+/// GENMETER is a public table, and is available to all participants.SourceGENMETER updates only when meter details change.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -4834,16 +4884,18 @@ pub struct ParticipantRegistrationGenunits3Mapping([usize; 22]);
 /// # Summary
 ///
 /// ## GENUNITS
-///  _GENUNITS shows Genset details for each physical unit with the relevant station._
+///
+/// GENUNITS shows Genset details for each physical unit with the relevant station.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Genunits
 /// * Data Version: 3
 ///
 /// # Description
-///  GENUNITS is a public table, and is available to all participants. Source GENUNITS updates whenever plant details change.
+/// GENUNITS is a public table, and is available to all participants.SourceGENUNITS updates whenever plant details change.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -5636,15 +5688,18 @@ pub struct ParticipantRegistrationGenunitsUnit2Mapping([usize; 13]);
 /// # Summary
 ///
 /// ## GENUNITS_UNIT
-///  _Physical units within a Gen Unit Set_
+///
+/// Physical units within a Gen Unit Set
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Genunits Unit
 /// * Data Version: 2
 ///
+/// # Description
+/// MNSP_INTERCONNECTOR data is public, so is available to all participants.SourceMNSP_INTERCONNECTOR changes infrequently, typically annually.VolumeTwice the number of MNSPs.
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -5668,7 +5723,7 @@ pub struct ParticipantRegistrationGenunitsUnit2Row<'data> {
     pub unit_size: Option<rust_decimal::Decimal>,
     /// Maximum Capacity for each unit in this grouping
     pub unit_max_size: Option<rust_decimal::Decimal>,
-    /// Indicator that Unit is part of an Aggregated Unit (at the DUID level)
+    /// Deprecated as this flag is moved to DUDETAIL table with IESS release.
     pub aggregation_flag: Option<rust_decimal::Decimal>,
     /// Date/Time when record was changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -6198,16 +6253,18 @@ pub struct ParticipantRegistrationMnspInterconnector2Mapping([usize; 15]);
 /// # Summary
 ///
 /// ## MNSP_INTERCONNECTOR
-///  _MNSP_INTERCONNECTOR sets out attributes of each interconnector._
+///
+/// MNSP_INTERCONNECTOR sets out attributes of each interconnector.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Mnsp Interconnector
 /// * Data Version: 2
 ///
 /// # Description
-///  MNSP_INTERCONNECTOR data is public, so is available to all participants. Source MNSP_INTERCONNECTOR changes infrequently, typically annually. Volume Twice the number of MNSPs.
+/// MNSP_INTERCONNECTOR data is public, so is available to all participants.SourceMNSP_INTERCONNECTOR changes infrequently, typically annually.VolumeTwice the number of MNSPs.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -6242,9 +6299,9 @@ pub struct ParticipantRegistrationMnspInterconnector2Row<'data> {
     pub authorisedby: core::ops::Range<usize>,
     /// Last date and time record changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Transmission Loss Factor for Link "From Region" end
+    /// Transmission Loss Factor for Link "From Region"end
     pub from_region_tlf: Option<rust_decimal::Decimal>,
-    /// Transmission Loss Factor for Link at "To Region" end
+    /// Transmission Loss Factor for Link at "To Region"end
     pub to_region_tlf: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
@@ -6812,16 +6869,18 @@ pub struct ParticipantRegistrationMnspParticipant1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## MNSP_PARTICIPANT
-///  _MNSP_PARTICIPANT registers MNSP ownership._
+///
+/// MNSP_PARTICIPANT registers MNSP ownership.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Mnsp Participant
 /// * Data Version: 1
 ///
 /// # Description
-///  MNSP_PARTICIPANT data is public, so is available to all participants. Source MNSP_PARTICIPANT updates infrequently, typically annually. Volume Number of MNSPs.
+/// MNSP_PARTICIPANT data is public, so is available to all participants.SourceMNSP_PARTICIPANT updates infrequently, typically annually.VolumeNumber of MNSPs.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -7137,16 +7196,18 @@ pub struct ParticipantRegistrationParticipant1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## PARTICIPANT
-///  _PARTICIPANT sets out Participant ID, name and class for all participants._
+///
+/// PARTICIPANT sets out Participant ID, name and class for all participants.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Participant
 /// * Data Version: 1
 ///
 /// # Description
-///  PARTICIPANT is public data, so is available to all participants. Source PARTICIPANT updates as new participants register or existing participants change details.
+/// PARTICIPANT is public data, so is available to all participants.SourcePARTICIPANT updates as new participants register or existing participants change details.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -7499,16 +7560,18 @@ pub struct ParticipantRegistrationParticipantaccount1Mapping([usize; 15]);
 /// # Summary
 ///
 /// ## PARTICIPANTACCOUNT
-///  _PARTICIPANTACCOUNT shows financial details on participants._
+///
+/// PARTICIPANTACCOUNT shows financial details on participants.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Participantaccount
 /// * Data Version: 1
 ///
 /// # Description
-///  PARTICIPANTACCOUNT data is confidential to the relevant participant. Source PARTICIPANTACCOUNT updates as new participants register or existing participants change details.
+/// PARTICIPANTACCOUNT data is confidential to the relevant participant.SourcePARTICIPANTACCOUNT updates as new participants register or existing participants change details.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -8098,16 +8161,18 @@ pub struct ParticipantRegistrationParticipantcategory1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## PARTICIPANTCATEGORY
-///  _PARTICIPANTCATEGORY sets out valid participant categories._
+///
+/// PARTICIPANTCATEGORY sets out valid participant categories.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Participantcategory
 /// * Data Version: 1
 ///
 /// # Description
-///  PARTICIPANTCATEGORY is public data, so is available to all participants. Source PARTICIPANTCATEGORY updates as categories change. PARTICIPANTCATEGORY changes infrequently.
+/// PARTICIPANTCATEGORY is public data, so is available to all participants.SourcePARTICIPANTCATEGORY updates as categories change. PARTICIPANTCATEGORY changes infrequently.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -8360,16 +8425,18 @@ pub struct ParticipantRegistrationParticipantcategoryalloc1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## PARTICIPANTCATEGORYALLOC
-///  _PARTICIPANTCATEGORYALLOC sets out the assignment of participants to particular categories._
+///
+/// PARTICIPANTCATEGORYALLOC sets out the assignment of participants to particular categories.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Participantcategoryalloc
 /// * Data Version: 1
 ///
 /// # Description
-///  PARTICIPANTCATEGORYALLOC data is public, so is available to all participants. Source PARTICIPANTCATEGORYALLOC updates for new participants or when categories change. PARTICIPANTCATEGORYALLOC changes infrequently.
+/// PARTICIPANTCATEGORYALLOC data is public, so is available to all participants.SourcePARTICIPANTCATEGORYALLOC updates for new participants or when categories change. PARTICIPANTCATEGORYALLOC changes infrequently.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -8621,16 +8688,18 @@ pub struct ParticipantRegistrationParticipantclass1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## PARTICIPANTCLASS
-///  _PARTICIPANTCLASS sets out valid participant classifications._
+///
+/// PARTICIPANTCLASS sets out valid participant classifications.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Participantclass
 /// * Data Version: 1
 ///
 /// # Description
-///  PARTICIPANTCLASS data is public, so is available to all participants. Source PARTICIPANTCLASS updates only if classifications change. This table changes infrequently.
+/// PARTICIPANTCLASS data is public, so is available to all participants.SourcePARTICIPANTCLASS updates only if classifications change. This table changes infrequently.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -8881,16 +8950,18 @@ pub struct ParticipantRegistrationParticipantcreditdetail1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## PARTICIPANTCREDITDETAIL
-///  _&nbsp; _
+///
+///
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Participantcreditdetail
 /// * Data Version: 1
 ///
 /// # Description
-///  PARTICIPANTCREDITDETAIL data is confidential to each participant. Source PARTICIPANTCREDITDETAIL updates infrequently.
+/// PARTICIPANTCREDITDETAIL data is confidential to each participant.SourcePARTICIPANTCREDITDETAIL updates infrequently.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -8898,15 +8969,10 @@ pub struct ParticipantRegistrationParticipantcreditdetail1Mapping([usize; 6]);
 /// * PARTICIPANTID
 #[derive(Debug, PartialEq, Eq)]
 pub struct ParticipantRegistrationParticipantcreditdetail1Row<'data> {
-    /// &nbsp;
     pub effectivedate: chrono::NaiveDateTime,
-    /// &nbsp;
     pub participantid: core::ops::Range<usize>,
-    /// &nbsp;
     pub creditlimit: Option<rust_decimal::Decimal>,
-    /// &nbsp;
     pub authorisedby: core::ops::Range<usize>,
-    /// &nbsp;
     pub authoriseddate: Option<chrono::NaiveDateTime>,
     /// Last date and time record changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -9231,15 +9297,18 @@ pub struct ParticipantRegistrationPmsGroup1Mapping([usize; 3]);
 /// # Summary
 ///
 /// ## PMS_GROUP
-///  _Entity table for group_
+///
+/// Entity table for group
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Pms Group
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -9484,15 +9553,18 @@ pub struct ParticipantRegistrationPmsGroupnmi1Mapping([usize; 17]);
 /// # Summary
 ///
 /// ## PMS_GROUPNMI
-///  _Describe the NMIs that a group uses to provide its service_
+///
+/// Describe the NMIs that a group uses to provide its service
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Pms Groupnmi
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
@@ -10137,15 +10209,18 @@ pub struct ParticipantRegistrationPmsGroupservice1Mapping([usize; 16]);
 /// # Summary
 ///
 /// ## PMS_GROUPSERVICE
-///  _Describe the services a group provides and its relation to a market_
+///
+/// Describe the services a group provides and its relation to a market
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Pms Groupservice
 /// * Data Version: 1
 ///
+/// # Description
+/// STADUALLOC is public data, and is available to all participants.SourceSTADUALLOC is updated whenever there is a station configuration change or new unit registration.
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -10762,16 +10837,18 @@ pub struct ParticipantRegistrationStadualloc1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## STADUALLOC
-///  _STADUALLOC sets out details on the allocation of dispatchable units to particular sites or stations._
+///
+/// STADUALLOC sets out details on the allocation of dispatchable units to particular sites or stations.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Stadualloc
 /// * Data Version: 1
 ///
 /// # Description
-///  STADUALLOC is public data, and is available to all participants. Source STADUALLOC is updated whenever there is a station configuration change or new unit registration.
+/// STADUALLOC is public data, and is available to all participants.SourceSTADUALLOC is updated whenever there is a station configuration change or new unit registration.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -11072,16 +11149,18 @@ pub struct ParticipantRegistrationStation1Mapping([usize; 11]);
 /// # Summary
 ///
 /// ## STATION
-///  _STATION sets out valid station identifiers._
+///
+/// STATION sets out valid station identifiers.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Station
 /// * Data Version: 1
 ///
 /// # Description
-///  STATION is public data, and is available to all participants. Source STATION updates whenever there is a station configuration change or new unit registration.
+/// STATION is public data, and is available to all participants.SourceSTATION updates whenever there is a station configuration change or new unit registration.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -11543,16 +11622,18 @@ pub struct ParticipantRegistrationStationoperatingstatus1Mapping([usize; 7]);
 /// # Summary
 ///
 /// ## STATIONOPERATINGSTATUS
-///  _STATIONOPERATINGSTATUS sets out the operating status of each station._
+///
+/// STATIONOPERATINGSTATUS sets out the operating status of each station.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Stationoperatingstatus
 /// * Data Version: 1
 ///
 /// # Description
-///  STATIONOWNER is public data, and is available to all participants. Source STATIONOWNER is updated whenever there is a change in the station owner or new units are registered.
+/// STATIONOWNER is public data, and is available to all participants.SourceSTATIONOWNER is updated whenever there is a change in the station owner or new units are registered.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -11922,16 +12003,18 @@ pub struct ParticipantRegistrationStationowner1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## STATIONOWNER
-///  _STATIONOWNER sets out the owner details of each station._
+///
+/// STATIONOWNER sets out the owner details of each station.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Stationowner
 /// * Data Version: 1
 ///
 /// # Description
-///  STATIONOWNER is public data, and is available to all participants. Source STATIONOWNER is updated whenever there is a change in the station owner or new units are registered.
+/// STATIONOWNER is public data, and is available to all participants.SourceSTATIONOWNER is updated whenever there is a change in the station owner or new units are registered.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -12241,16 +12324,18 @@ pub struct ParticipantRegistrationStationownertrk1Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## STATIONOWNERTRK
-///  _STATIONOWNERTRK shows the tracking for the associated object STATIONOWNER. Together, STATIONOWNERTRK and STATIONOWNER sets out the owner details of each station._
+///
+/// STATIONOWNERTRK shows the tracking for the associated object STATIONOWNER. Together, STATIONOWNERTRK and STATIONOWNER sets out the owner details of each station.
 ///
 /// * Data Set Name: Participant Registration
 /// * File Name: Stationownertrk
 /// * Data Version: 1
 ///
 /// # Description
-///  STATIONOWNER is public data, and is available to all participants. Source STATIONOWNER is updated whenever there is a change in the station owner or new units are registered.
+/// STATIONOWNER is public data, and is available to all participants.SourceSTATIONOWNER is updated whenever there is a change in the station owner or new units are registered.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///

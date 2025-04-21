@@ -7,7 +7,7 @@ members = [
 ]
 
 [workspace.dependencies.tracing]
-version = "0.1.40"
+version = "0.1.41"
 default-features = false
 features = ["log"]
 
@@ -32,9 +32,9 @@ features = ["alloc"]
 default-features = false
 
 [workspace.dependencies.arrow]
-version = "54.0.0"
+version = "55.0.0"
 default-features = false
 
 [workspace.dependencies.csv-core]
-version = "0.1.11"
+version = "0.1.12"
 default-features = false

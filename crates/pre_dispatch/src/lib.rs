@@ -5,6 +5,2395 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
+pub struct PredispatchFcasReqConstraint1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchFcasReqConstraint1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchFcasReqConstraint1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PredispatchFcasReqConstraint1Mapping([usize; 17]);
+/// # Summary
+///
+/// ## PD_FCAS_REQ_CONSTRAINT
+///
+/// The constraint level FCAS cost / price details for constraint FCAS processor runs. This enhanced output table format is established for the constraint FCAS processor release required for the Frequency Performance Payments (FPP) release. This enhanced output is hierarchical in nature, with the parent *_FCAS_REQ_RUN table holding the details about the triggering case run and time, and the child *_FCAS_REQ_CONSTRAINT table holding the constraint level details of FCAS costs / prices.
+///
+/// * Data Set Name: Predispatch
+/// * File Name: Fcas Req Constraint
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * BIDTYPE
+/// * CONSTRAINTID
+/// * INTERVAL_DATETIME
+/// * PREDISPATCHSEQNO
+/// * REGIONID
+/// * RUN_DATETIME
+/// * RUNNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct PredispatchFcasReqConstraint1Row<'data> {
+    /// Predispatch sequence number for the 30 minute predispatch case that triggers the constraint FCAS processor run
+    pub predispatchseqno: mmsdm_core::TradingPeriod,
+    /// The run date and time of the 30 minute predispatch case that triggers the constraint FCAS processor run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// The 30 minute predispatch case run number that has triggers the constraint FCAS processor run
+    pub runno: i64,
+    /// The 30 minute interval date and time of the 30 minute predispatch interval that was processed by the constraint FCAS processor
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// ConstraintID join to table GenConData
+    pub constraintid: core::ops::Range<usize>,
+    /// Region identifier
+    pub regionid: core::ops::Range<usize>,
+    /// DUID offered type
+    pub bidtype: core::ops::Range<usize>,
+    /// Constraints summed LHS - aggregate LHS Solution values from the physical run from the PREDISPATCHCONSTRAINT table
+    pub lhs: Option<rust_decimal::Decimal>,
+    /// Constraints RHS value used in the solution - may be either dynamic (calculated) or static from the physical run from the PREDISPATCHCONSTRAINT table
+    pub rhs: Option<rust_decimal::Decimal>,
+    /// Shadow price of constraint from the PREDISPATCHCONSTRAINT table from the physical run.
+    pub marginalvalue: Option<rust_decimal::Decimal>,
+    /// Bid type prices for the region coming from the pricing run of the PREDISPATCHREGIONSUM table
+    pub rrp: Option<rust_decimal::Decimal>,
+    /// The dispatched MW for the bid type inside the region from the physical run of the PREDISPATCHREGIONSUM table
+    pub regional_enablement: Option<rust_decimal::Decimal>,
+    /// MW enabled for this bid type within the constraint
+    pub constraint_enablement: Option<rust_decimal::Decimal>,
+    /// The regional payment allocated to the constraint for the interval pro-rated based on marginal value ratios over the binding constraints for that service in that region (this is an intermediate calculation to get to the base cost)
+    pub region_base_cost: Option<rust_decimal::Decimal>,
+    /// The base cost of the constraint, before the regulation/contingency split
+    pub base_cost: Option<rust_decimal::Decimal>,
+    /// The adjusted cost of the constraint for this service, after the regulation/contingency split
+    pub adjusted_cost: Option<rust_decimal::Decimal>,
+    /// The adjusted marginal value of the constraint for FPP recovery (blank for constraints without REG terms)
+    pub p_regulation: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PredispatchFcasReqConstraint1Row<'data> {
+    pub fn constraintid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.constraintid.clone())
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+    pub fn bidtype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.bidtype.clone())
+    }
+}
+impl mmsdm_core::GetTable for PredispatchFcasReqConstraint1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PREDISPATCH";
+    const TABLE_NAME: &'static str = "FCAS_REQ_CONSTRAINT";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchFcasReqConstraint1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PREDISPATCHSEQNO",
+        "RUN_DATETIME",
+        "RUNNO",
+        "INTERVAL_DATETIME",
+        "CONSTRAINTID",
+        "REGIONID",
+        "BIDTYPE",
+        "LHS",
+        "RHS",
+        "MARGINALVALUE",
+        "RRP",
+        "REGIONAL_ENABLEMENT",
+        "CONSTRAINT_ENABLEMENT",
+        "REGION_BASE_COST",
+        "BASE_COST",
+        "ADJUSTED_COST",
+        "P_REGULATION",
+    ];
+    type Row<'row> = PredispatchFcasReqConstraint1Row<'row>;
+    type FieldMapping = PredispatchFcasReqConstraint1Mapping;
+    type PrimaryKey = PredispatchFcasReqConstraint1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PredispatchFcasReqConstraint1Row {
+            predispatchseqno: row
+                .get_parsed_at_idx("predispatchseqno", field_mapping.0[0])?,
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            runno: row.get_parsed_at_idx("runno", field_mapping.0[2])?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            constraintid: row.get_range("constraintid", field_mapping.0[4])?,
+            regionid: row.get_range("regionid", field_mapping.0[5])?,
+            bidtype: row.get_range("bidtype", field_mapping.0[6])?,
+            lhs: row
+                .get_opt_custom_parsed_at_idx(
+                    "lhs",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            rhs: row
+                .get_opt_custom_parsed_at_idx(
+                    "rhs",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            marginalvalue: row
+                .get_opt_custom_parsed_at_idx(
+                    "marginalvalue",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            rrp: row
+                .get_opt_custom_parsed_at_idx(
+                    "rrp",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            regional_enablement: row
+                .get_opt_custom_parsed_at_idx(
+                    "regional_enablement",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            constraint_enablement: row
+                .get_opt_custom_parsed_at_idx(
+                    "constraint_enablement",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            region_base_cost: row
+                .get_opt_custom_parsed_at_idx(
+                    "region_base_cost",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            base_cost: row
+                .get_opt_custom_parsed_at_idx(
+                    "base_cost",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            adjusted_cost: row
+                .get_opt_custom_parsed_at_idx(
+                    "adjusted_cost",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            p_regulation: row
+                .get_opt_custom_parsed_at_idx(
+                    "p_regulation",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PredispatchFcasReqConstraint1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PredispatchFcasReqConstraint1PrimaryKey {
+        PredispatchFcasReqConstraint1PrimaryKey {
+            bidtype: row.bidtype().to_string(),
+            constraintid: row.constraintid().to_string(),
+            interval_datetime: row.interval_datetime,
+            predispatchseqno: row.predispatchseqno,
+            regionid: row.regionid().to_string(),
+            run_datetime: row.run_datetime,
+            runno: row.runno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "predispatch_fcas_req_constraint_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PredispatchFcasReqConstraint1Row {
+            predispatchseqno: row.predispatchseqno.clone(),
+            run_datetime: row.run_datetime.clone(),
+            runno: row.runno.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            constraintid: row.constraintid.clone(),
+            regionid: row.regionid.clone(),
+            bidtype: row.bidtype.clone(),
+            lhs: row.lhs.clone(),
+            rhs: row.rhs.clone(),
+            marginalvalue: row.marginalvalue.clone(),
+            rrp: row.rrp.clone(),
+            regional_enablement: row.regional_enablement.clone(),
+            constraint_enablement: row.constraint_enablement.clone(),
+            region_base_cost: row.region_base_cost.clone(),
+            base_cost: row.base_cost.clone(),
+            adjusted_cost: row.adjusted_cost.clone(),
+            p_regulation: row.p_regulation.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PredispatchFcasReqConstraint1PrimaryKey {
+    pub bidtype: alloc::string::String,
+    pub constraintid: alloc::string::String,
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub predispatchseqno: mmsdm_core::TradingPeriod,
+    pub regionid: alloc::string::String,
+    pub run_datetime: chrono::NaiveDateTime,
+    pub runno: i64,
+}
+impl mmsdm_core::PrimaryKey for PredispatchFcasReqConstraint1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PredispatchFcasReqConstraint1Row<'data> {
+    type Row<'other> = PredispatchFcasReqConstraint1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.bidtype() == row.bidtype() && self.constraintid() == row.constraintid()
+            && self.interval_datetime == row.interval_datetime
+            && self.predispatchseqno == row.predispatchseqno
+            && self.regionid() == row.regionid() && self.run_datetime == row.run_datetime
+            && self.runno == row.runno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for PredispatchFcasReqConstraint1Row<'data> {
+    type PrimaryKey = PredispatchFcasReqConstraint1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype() == key.bidtype && self.constraintid() == key.constraintid
+            && self.interval_datetime == key.interval_datetime
+            && self.predispatchseqno == key.predispatchseqno
+            && self.regionid() == key.regionid && self.run_datetime == key.run_datetime
+            && self.runno == key.runno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PredispatchFcasReqConstraint1PrimaryKey {
+    type Row<'other> = PredispatchFcasReqConstraint1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.bidtype == row.bidtype() && self.constraintid == row.constraintid()
+            && self.interval_datetime == row.interval_datetime
+            && self.predispatchseqno == row.predispatchseqno
+            && self.regionid == row.regionid() && self.run_datetime == row.run_datetime
+            && self.runno == row.runno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchFcasReqConstraint1PrimaryKey {
+    type PrimaryKey = PredispatchFcasReqConstraint1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype == key.bidtype && self.constraintid == key.constraintid
+            && self.interval_datetime == key.interval_datetime
+            && self.predispatchseqno == key.predispatchseqno
+            && self.regionid == key.regionid && self.run_datetime == key.run_datetime
+            && self.runno == key.runno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PredispatchFcasReqConstraint1 {
+    type Builder = PredispatchFcasReqConstraint1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "predispatchseqno",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "constraintid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "bidtype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lhs",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "rhs",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "marginalvalue",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "rrp",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "regional_enablement",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "constraint_enablement",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "region_base_cost",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "base_cost",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "adjusted_cost",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "p_regulation",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PredispatchFcasReqConstraint1Builder {
+            predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            runno_array: arrow::array::builder::Int64Builder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            lhs_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            rhs_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            marginalvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            rrp_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            regional_enablement_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            constraint_enablement_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            region_base_cost_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            base_cost_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            adjusted_cost_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            p_regulation_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .predispatchseqno_array
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder.runno_array.append_value(row.runno);
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.constraintid_array.append_value(row.constraintid());
+        builder.regionid_array.append_value(row.regionid());
+        builder.bidtype_array.append_value(row.bidtype());
+        builder
+            .lhs_array
+            .append_option({
+                row.lhs
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .rhs_array
+            .append_option({
+                row.rhs
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .marginalvalue_array
+            .append_option({
+                row.marginalvalue
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .rrp_array
+            .append_option({
+                row.rrp
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .regional_enablement_array
+            .append_option({
+                row.regional_enablement
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .constraint_enablement_array
+            .append_option({
+                row.constraint_enablement
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .region_base_cost_array
+            .append_option({
+                row.region_base_cost
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .base_cost_array
+            .append_option({
+                row.base_cost
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .adjusted_cost_array
+            .append_option({
+                row.adjusted_cost
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .p_regulation_array
+            .append_option({
+                row.p_regulation
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.predispatchseqno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.constraintid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bidtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lhs_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.rhs_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.marginalvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.rrp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regional_enablement_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.constraint_enablement_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.region_base_cost_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.base_cost_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.adjusted_cost_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.p_regulation_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PredispatchFcasReqConstraint1Builder {
+    predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    runno_array: arrow::array::builder::Int64Builder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    constraintid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    bidtype_array: arrow::array::builder::StringBuilder,
+    lhs_array: arrow::array::builder::Decimal128Builder,
+    rhs_array: arrow::array::builder::Decimal128Builder,
+    marginalvalue_array: arrow::array::builder::Decimal128Builder,
+    rrp_array: arrow::array::builder::Decimal128Builder,
+    regional_enablement_array: arrow::array::builder::Decimal128Builder,
+    constraint_enablement_array: arrow::array::builder::Decimal128Builder,
+    region_base_cost_array: arrow::array::builder::Decimal128Builder,
+    base_cost_array: arrow::array::builder::Decimal128Builder,
+    adjusted_cost_array: arrow::array::builder::Decimal128Builder,
+    p_regulation_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct PredispatchFcasReqRun1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchFcasReqRun1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchFcasReqRun1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PredispatchFcasReqRun1Mapping([usize; 4]);
+/// # Summary
+///
+/// ## PD_FCAS_REQ_RUN
+///
+/// The constraint FCAS processor run details. This enhanced output table format is established for the constraint FCAS processor release required for the Frequency Performance Payments (FPP) release. This enhanced output is hierarchical in nature, with the parent *_FCAS_REQ_RUN table holding the details about the triggering case run and time, and the child *_FCAS_REQ_CONSTRAINT table holding the constraint level details of FCAS costs / prices.
+///
+/// * Data Set Name: Predispatch
+/// * File Name: Fcas Req Run
+/// * Data Version: 1
+///
+/// # Description
+/// SourcePREDISPATCH_FCAS_REQ updates with each pre-dispatch run (half hourly)VolumeApproximately 2,000 rows per day.NoteThe PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * PREDISPATCHSEQNO
+/// * RUN_DATETIME
+/// * RUNNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct PredispatchFcasReqRun1Row<'data> {
+    /// Predispatch sequence number for the 30 minute predispatch case that triggers the constraint FCAS processor run
+    pub predispatchseqno: mmsdm_core::TradingPeriod,
+    /// The run date and time of the 30 minute predispatch case that triggers the constraint FCAS processor run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// The 30 minute predispatch case run number that has triggers the constraint FCAS processor run
+    pub runno: i64,
+    /// The last time the constraint FCAS processor was executed for this case run time.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PredispatchFcasReqRun1Row<'data> {}
+impl mmsdm_core::GetTable for PredispatchFcasReqRun1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PREDISPATCH";
+    const TABLE_NAME: &'static str = "FCAS_REQ_RUN";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchFcasReqRun1Mapping([
+        4,
+        5,
+        6,
+        7,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PREDISPATCHSEQNO",
+        "RUN_DATETIME",
+        "RUNNO",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PredispatchFcasReqRun1Row<'row>;
+    type FieldMapping = PredispatchFcasReqRun1Mapping;
+    type PrimaryKey = PredispatchFcasReqRun1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PredispatchFcasReqRun1Row {
+            predispatchseqno: row
+                .get_parsed_at_idx("predispatchseqno", field_mapping.0[0])?,
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            runno: row.get_parsed_at_idx("runno", field_mapping.0[2])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PredispatchFcasReqRun1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PredispatchFcasReqRun1PrimaryKey {
+        PredispatchFcasReqRun1PrimaryKey {
+            predispatchseqno: row.predispatchseqno,
+            run_datetime: row.run_datetime,
+            runno: row.runno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("predispatch_fcas_req_run_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PredispatchFcasReqRun1Row {
+            predispatchseqno: row.predispatchseqno.clone(),
+            run_datetime: row.run_datetime.clone(),
+            runno: row.runno.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PredispatchFcasReqRun1PrimaryKey {
+    pub predispatchseqno: mmsdm_core::TradingPeriod,
+    pub run_datetime: chrono::NaiveDateTime,
+    pub runno: i64,
+}
+impl mmsdm_core::PrimaryKey for PredispatchFcasReqRun1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PredispatchFcasReqRun1Row<'data> {
+    type Row<'other> = PredispatchFcasReqRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.predispatchseqno == row.predispatchseqno
+            && self.run_datetime == row.run_datetime && self.runno == row.runno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PredispatchFcasReqRun1Row<'data> {
+    type PrimaryKey = PredispatchFcasReqRun1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.predispatchseqno == key.predispatchseqno
+            && self.run_datetime == key.run_datetime && self.runno == key.runno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PredispatchFcasReqRun1PrimaryKey {
+    type Row<'other> = PredispatchFcasReqRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.predispatchseqno == row.predispatchseqno
+            && self.run_datetime == row.run_datetime && self.runno == row.runno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchFcasReqRun1PrimaryKey {
+    type PrimaryKey = PredispatchFcasReqRun1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.predispatchseqno == key.predispatchseqno
+            && self.run_datetime == key.run_datetime && self.runno == key.runno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PredispatchFcasReqRun1 {
+    type Builder = PredispatchFcasReqRun1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "predispatchseqno",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PredispatchFcasReqRun1Builder {
+            predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            runno_array: arrow::array::builder::Int64Builder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .predispatchseqno_array
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder.runno_array.append_value(row.runno);
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.predispatchseqno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PredispatchFcasReqRun1Builder {
+    predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    runno_array: arrow::array::builder::Int64Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct PredispatchRegionfcasrequirement2 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchRegionfcasrequirement2Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchRegionfcasrequirement2 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PredispatchRegionfcasrequirement2Mapping([usize; 18]);
+/// # Summary
+///
+/// ## PREDISPATCH_FCAS_REQ
+///
+/// PREDISPATCH_FCAS_REQ shows Predispatch Constraint tracking for Regional FCAS Requirements.
+///
+/// * Data Set Name: Predispatch
+/// * File Name: Regionfcasrequirement
+/// * Data Version: 2
+///
+/// # Description
+/// SourcePREDISPATCH_FCAS_REQ updates with each pre-dispatch run (half hourly)VolumeApproximately 2,000 rows per day.NoteThe PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * BIDTYPE
+/// * DATETIME
+/// * GENCONID
+/// * REGIONID
+#[derive(Debug, PartialEq, Eq)]
+pub struct PredispatchRegionfcasrequirement2Row<'data> {
+    /// PreDispatch Sequence number
+    pub predispatchseqno: mmsdm_core::TradingPeriod,
+    /// Case Run number
+    pub runno: Option<rust_decimal::Decimal>,
+    /// Intervention Flag
+    pub intervention: rust_decimal::Decimal,
+    /// Unique period identifier, in the format yyyymmddpp. The period (pp) is 01 to 48, with 01 corresponding to the half-hour ending at 04:30am.
+    pub periodid: mmsdm_core::TradingPeriod,
+    /// Generic Constraint ID - Join to table GenConData
+    pub genconid: core::ops::Range<usize>,
+    /// Region ID
+    pub regionid: core::ops::Range<usize>,
+    /// Bid Type Identifier
+    pub bidtype: core::ops::Range<usize>,
+    /// Generic Constraint EffectiveDate - Join to table GenConData
+    pub genconeffectivedate: Option<chrono::NaiveDateTime>,
+    /// Generic Constraint Version number - Join to table GenConData
+    pub genconversionno: Option<rust_decimal::Decimal>,
+    /// Marginal Value of generic constraint
+    pub marginalvalue: Option<rust_decimal::Decimal>,
+    /// Date and Time of trading interval
+    pub datetime: chrono::NaiveDateTime,
+    /// Last date and time record changed
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    /// The base cost of the constraint for this service, before the regulation/contingency split
+    pub base_cost: Option<rust_decimal::Decimal>,
+    /// The adjusted cost of the constraint for this service, before the regulation/contingency split
+    pub adjusted_cost: Option<rust_decimal::Decimal>,
+    /// An estimated value for the constraint CMPF, based on dispatched data
+    pub estimated_cmpf: Option<rust_decimal::Decimal>,
+    /// An estimated value for the constraint CRMPF, based on dispatched data
+    pub estimated_crmpf: Option<rust_decimal::Decimal>,
+    /// Estimated recovery factor for CMPF based recovery
+    pub recovery_factor_cmpf: Option<rust_decimal::Decimal>,
+    /// Estimated recovery factor for CRMPF based recovery
+    pub recovery_factor_crmpf: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PredispatchRegionfcasrequirement2Row<'data> {
+    pub fn genconid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.genconid.clone())
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+    pub fn bidtype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.bidtype.clone())
+    }
+}
+impl mmsdm_core::GetTable for PredispatchRegionfcasrequirement2 {
+    const VERSION: i32 = 2;
+    const DATA_SET_NAME: &'static str = "PREDISPATCH";
+    const TABLE_NAME: &'static str = "REGIONFCASREQUIREMENT";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchRegionfcasrequirement2Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PREDISPATCHSEQNO",
+        "RUNNO",
+        "INTERVENTION",
+        "PERIODID",
+        "GENCONID",
+        "REGIONID",
+        "BIDTYPE",
+        "GENCONEFFECTIVEDATE",
+        "GENCONVERSIONNO",
+        "MARGINALVALUE",
+        "DATETIME",
+        "LASTCHANGED",
+        "BASE_COST",
+        "ADJUSTED_COST",
+        "ESTIMATED_CMPF",
+        "ESTIMATED_CRMPF",
+        "RECOVERY_FACTOR_CMPF",
+        "RECOVERY_FACTOR_CRMPF",
+    ];
+    type Row<'row> = PredispatchRegionfcasrequirement2Row<'row>;
+    type FieldMapping = PredispatchRegionfcasrequirement2Mapping;
+    type PrimaryKey = PredispatchRegionfcasrequirement2PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PredispatchRegionfcasrequirement2Row {
+            predispatchseqno: row
+                .get_parsed_at_idx("predispatchseqno", field_mapping.0[0])?,
+            runno: row
+                .get_opt_custom_parsed_at_idx(
+                    "runno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            intervention: row
+                .get_custom_parsed_at_idx(
+                    "intervention",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            periodid: row.get_parsed_at_idx("periodid", field_mapping.0[3])?,
+            genconid: row.get_range("genconid", field_mapping.0[4])?,
+            regionid: row.get_range("regionid", field_mapping.0[5])?,
+            bidtype: row.get_range("bidtype", field_mapping.0[6])?,
+            genconeffectivedate: row
+                .get_opt_custom_parsed_at_idx(
+                    "genconeffectivedate",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            genconversionno: row
+                .get_opt_custom_parsed_at_idx(
+                    "genconversionno",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            marginalvalue: row
+                .get_opt_custom_parsed_at_idx(
+                    "marginalvalue",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            datetime: row
+                .get_custom_parsed_at_idx(
+                    "datetime",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            base_cost: row
+                .get_opt_custom_parsed_at_idx(
+                    "base_cost",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            adjusted_cost: row
+                .get_opt_custom_parsed_at_idx(
+                    "adjusted_cost",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            estimated_cmpf: row
+                .get_opt_custom_parsed_at_idx(
+                    "estimated_cmpf",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            estimated_crmpf: row
+                .get_opt_custom_parsed_at_idx(
+                    "estimated_crmpf",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            recovery_factor_cmpf: row
+                .get_opt_custom_parsed_at_idx(
+                    "recovery_factor_cmpf",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            recovery_factor_crmpf: row
+                .get_opt_custom_parsed_at_idx(
+                    "recovery_factor_crmpf",
+                    field_mapping.0[17],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PredispatchRegionfcasrequirement2Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PredispatchRegionfcasrequirement2PrimaryKey {
+        PredispatchRegionfcasrequirement2PrimaryKey {
+            bidtype: row.bidtype().to_string(),
+            datetime: row.datetime,
+            genconid: row.genconid().to_string(),
+            regionid: row.regionid().to_string(),
+            intervention: row.intervention,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "predispatch_regionfcasrequirement_v2_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PredispatchRegionfcasrequirement2Row {
+            predispatchseqno: row.predispatchseqno.clone(),
+            runno: row.runno.clone(),
+            intervention: row.intervention.clone(),
+            periodid: row.periodid.clone(),
+            genconid: row.genconid.clone(),
+            regionid: row.regionid.clone(),
+            bidtype: row.bidtype.clone(),
+            genconeffectivedate: row.genconeffectivedate.clone(),
+            genconversionno: row.genconversionno.clone(),
+            marginalvalue: row.marginalvalue.clone(),
+            datetime: row.datetime.clone(),
+            lastchanged: row.lastchanged.clone(),
+            base_cost: row.base_cost.clone(),
+            adjusted_cost: row.adjusted_cost.clone(),
+            estimated_cmpf: row.estimated_cmpf.clone(),
+            estimated_crmpf: row.estimated_crmpf.clone(),
+            recovery_factor_cmpf: row.recovery_factor_cmpf.clone(),
+            recovery_factor_crmpf: row.recovery_factor_crmpf.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PredispatchRegionfcasrequirement2PrimaryKey {
+    pub bidtype: alloc::string::String,
+    pub datetime: chrono::NaiveDateTime,
+    pub genconid: alloc::string::String,
+    pub regionid: alloc::string::String,
+    pub intervention: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for PredispatchRegionfcasrequirement2PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionfcasrequirement2Row<'data> {
+    type Row<'other> = PredispatchRegionfcasrequirement2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.bidtype() == row.bidtype() && self.datetime == row.datetime
+            && self.genconid() == row.genconid() && self.regionid() == row.regionid()
+            && self.intervention == row.intervention
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for PredispatchRegionfcasrequirement2Row<'data> {
+    type PrimaryKey = PredispatchRegionfcasrequirement2PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype() == key.bidtype && self.datetime == key.datetime
+            && self.genconid() == key.genconid && self.regionid() == key.regionid
+            && self.intervention == key.intervention
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionfcasrequirement2PrimaryKey {
+    type Row<'other> = PredispatchRegionfcasrequirement2Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.bidtype == row.bidtype() && self.datetime == row.datetime
+            && self.genconid == row.genconid() && self.regionid == row.regionid()
+            && self.intervention == row.intervention
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionfcasrequirement2PrimaryKey {
+    type PrimaryKey = PredispatchRegionfcasrequirement2PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype == key.bidtype && self.datetime == key.datetime
+            && self.genconid == key.genconid && self.regionid == key.regionid
+            && self.intervention == key.intervention
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
+    type Builder = PredispatchRegionfcasrequirement2Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "predispatchseqno",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "runno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "intervention",
+                    arrow::datatypes::DataType::Decimal128(2, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "genconid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "bidtype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "genconeffectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "genconversionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "marginalvalue",
+                    arrow::datatypes::DataType::Decimal128(16, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "base_cost",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "adjusted_cost",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "estimated_cmpf",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "estimated_crmpf",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "recovery_factor_cmpf",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "recovery_factor_crmpf",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PredispatchRegionfcasrequirement2Builder {
+            predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            runno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            intervention_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
+            periodid_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            genconid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            genconeffectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            genconversionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            marginalvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
+            datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            base_cost_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            adjusted_cost_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            estimated_cmpf_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            estimated_crmpf_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            recovery_factor_cmpf_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            recovery_factor_crmpf_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .predispatchseqno_array
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
+        builder
+            .runno_array
+            .append_option({
+                row.runno
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .intervention_array
+            .append_value({
+                let mut val = row.intervention;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .periodid_array
+            .append_value(row.periodid.start().and_utc().timestamp_millis());
+        builder.genconid_array.append_value(row.genconid());
+        builder.regionid_array.append_value(row.regionid());
+        builder.bidtype_array.append_value(row.bidtype());
+        builder
+            .genconeffectivedate_array
+            .append_option(
+                row.genconeffectivedate.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder
+            .genconversionno_array
+            .append_option({
+                row.genconversionno
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .marginalvalue_array
+            .append_option({
+                row.marginalvalue
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+        builder
+            .base_cost_array
+            .append_option({
+                row.base_cost
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .adjusted_cost_array
+            .append_option({
+                row.adjusted_cost
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .estimated_cmpf_array
+            .append_option({
+                row.estimated_cmpf
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .estimated_crmpf_array
+            .append_option({
+                row.estimated_crmpf
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .recovery_factor_cmpf_array
+            .append_option({
+                row.recovery_factor_cmpf
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .recovery_factor_crmpf_array
+            .append_option({
+                row.recovery_factor_crmpf
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.predispatchseqno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.intervention_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.genconid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bidtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.genconeffectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.genconversionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.marginalvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.base_cost_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.adjusted_cost_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.estimated_cmpf_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.estimated_crmpf_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.recovery_factor_cmpf_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.recovery_factor_crmpf_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PredispatchRegionfcasrequirement2Builder {
+    predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
+    runno_array: arrow::array::builder::Decimal128Builder,
+    intervention_array: arrow::array::builder::Decimal128Builder,
+    periodid_array: arrow::array::builder::TimestampMillisecondBuilder,
+    genconid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    bidtype_array: arrow::array::builder::StringBuilder,
+    genconeffectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    genconversionno_array: arrow::array::builder::Decimal128Builder,
+    marginalvalue_array: arrow::array::builder::Decimal128Builder,
+    datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+    base_cost_array: arrow::array::builder::Decimal128Builder,
+    adjusted_cost_array: arrow::array::builder::Decimal128Builder,
+    estimated_cmpf_array: arrow::array::builder::Decimal128Builder,
+    estimated_crmpf_array: arrow::array::builder::Decimal128Builder,
+    recovery_factor_cmpf_array: arrow::array::builder::Decimal128Builder,
+    recovery_factor_crmpf_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct PredispatchLocalPrice1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchLocalPrice1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchLocalPrice1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PredispatchLocalPrice1Mapping([usize; 7]);
+/// # Summary
+///
+/// ## PREDISPATCH_LOCAL_PRICE
+///
+/// Sets out local pricing offsets associated with each DUID connection point for each dispatch period
+///
+/// * Data Set Name: Predispatch
+/// * File Name: Local Price
+/// * Data Version: 1
+///
+/// # Description
+/// SourceOwn (confidential) data updates every predispatch run. All bids are available to all participants as part of next day market data.Volume1, 700, 000 per year
+///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
+///
+/// # Primary Key Columns
+///
+/// * DATETIME
+/// * DUID
+#[derive(Debug, PartialEq, Eq)]
+pub struct PredispatchLocalPrice1Row<'data> {
+    /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
+    pub predispatchseqno: mmsdm_core::TradingPeriod,
+    /// The unique identifier for the interval within this study
+    pub datetime: chrono::NaiveDateTime,
+    /// Dispatchable unit identifier
+    pub duid: core::ops::Range<usize>,
+    /// A period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period
+    pub periodid: core::ops::Range<usize>,
+    /// Aggregate Constraint contribution cost of this unit: Sum(MarginalValue x Factor) for all relevant Constraints
+    pub local_price_adjustment: Option<rust_decimal::Decimal>,
+    /// Key for Local_Price_Adjustment: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
+    pub locally_constrained: Option<rust_decimal::Decimal>,
+    /// Last date and time record changed
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PredispatchLocalPrice1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn periodid(&self) -> Option<&str> {
+        if self.periodid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.periodid.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for PredispatchLocalPrice1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PREDISPATCH";
+    const TABLE_NAME: &'static str = "LOCAL_PRICE";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchLocalPrice1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PREDISPATCHSEQNO",
+        "DATETIME",
+        "DUID",
+        "PERIODID",
+        "LOCAL_PRICE_ADJUSTMENT",
+        "LOCALLY_CONSTRAINED",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PredispatchLocalPrice1Row<'row>;
+    type FieldMapping = PredispatchLocalPrice1Mapping;
+    type PrimaryKey = PredispatchLocalPrice1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PredispatchLocalPrice1Row {
+            predispatchseqno: row
+                .get_parsed_at_idx("predispatchseqno", field_mapping.0[0])?,
+            datetime: row
+                .get_custom_parsed_at_idx(
+                    "datetime",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[2])?,
+            periodid: row.get_opt_range("periodid", field_mapping.0[3])?,
+            local_price_adjustment: row
+                .get_opt_custom_parsed_at_idx(
+                    "local_price_adjustment",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            locally_constrained: row
+                .get_opt_custom_parsed_at_idx(
+                    "locally_constrained",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PredispatchLocalPrice1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PredispatchLocalPrice1PrimaryKey {
+        PredispatchLocalPrice1PrimaryKey {
+            datetime: row.datetime,
+            duid: row.duid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("predispatch_local_price_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PredispatchLocalPrice1Row {
+            predispatchseqno: row.predispatchseqno.clone(),
+            datetime: row.datetime.clone(),
+            duid: row.duid.clone(),
+            periodid: row.periodid.clone(),
+            local_price_adjustment: row.local_price_adjustment.clone(),
+            locally_constrained: row.locally_constrained.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PredispatchLocalPrice1PrimaryKey {
+    pub datetime: chrono::NaiveDateTime,
+    pub duid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for PredispatchLocalPrice1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PredispatchLocalPrice1Row<'data> {
+    type Row<'other> = PredispatchLocalPrice1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.datetime == row.datetime && self.duid() == row.duid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PredispatchLocalPrice1Row<'data> {
+    type PrimaryKey = PredispatchLocalPrice1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.datetime == key.datetime && self.duid() == key.duid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PredispatchLocalPrice1PrimaryKey {
+    type Row<'other> = PredispatchLocalPrice1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.datetime == row.datetime && self.duid == row.duid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchLocalPrice1PrimaryKey {
+    type PrimaryKey = PredispatchLocalPrice1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.datetime == key.datetime && self.duid == key.duid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PredispatchLocalPrice1 {
+    type Builder = PredispatchLocalPrice1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "predispatchseqno",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "local_price_adjustment",
+                    arrow::datatypes::DataType::Decimal128(10, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "locally_constrained",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PredispatchLocalPrice1Builder {
+            predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::builder::StringBuilder::new(),
+            local_price_adjustment_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 2)),
+            locally_constrained_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .predispatchseqno_array
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
+        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
+        builder.duid_array.append_value(row.duid());
+        builder.periodid_array.append_option(row.periodid());
+        builder
+            .local_price_adjustment_array
+            .append_option({
+                row.local_price_adjustment
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .locally_constrained_array
+            .append_option({
+                row.locally_constrained
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.predispatchseqno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.local_price_adjustment_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.locally_constrained_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PredispatchLocalPrice1Builder {
+    predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
+    datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::builder::StringBuilder,
+    local_price_adjustment_array: arrow::array::builder::Decimal128Builder,
+    locally_constrained_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct PredispatchMnspbidtrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PredispatchMnspbidtrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PredispatchMnspbidtrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PredispatchMnspbidtrk1Mapping([usize; 9]);
+/// # Summary
+///
+/// ## PREDISPATCH_MNSPBIDTRK
+///
+/// PREDISPATCH_MNSPBIDTRK shows the MNSP bid tracking, including the bid version used in each predispatch run for each MNSP Interconnector Link. PREDISPATCH_MNSPBIDTRK shows the audit trail of the bid used for each predispatch run.
+///
+/// * Data Set Name: Predispatch
+/// * File Name: Mnspbidtrk
+/// * Data Version: 1
+///
+/// # Description
+/// SourceOwn (confidential) data updates every predispatch run. All bids are available to all participants as part of next day market data.Volume1, 700, 000 per year
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * LINKID
+/// * PERIODID
+/// * PREDISPATCHSEQNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct PredispatchMnspbidtrk1Row<'data> {
+    /// Predispatch run identifier
+    pub predispatchseqno: mmsdm_core::TradingPeriod,
+    /// Identifier for each of the two MNSP Interconnector Links. Each link pertains to the direction from and to.
+    pub linkid: core::ops::Range<usize>,
+    /// Trading Interval number
+    pub periodid: mmsdm_core::TradingPeriod,
+    /// Participant Identifier
+    pub participantid: core::ops::Range<usize>,
+    /// Market Date from which bid is active
+    pub settlementdate: Option<chrono::NaiveDateTime>,
+    /// Time this bid was processed and loaded
+    pub offerdate: Option<chrono::NaiveDateTime>,
+    /// Version No. for given offer date and settlement date used
+    pub versionno: Option<rust_decimal::Decimal>,
+    /// Period expressed as Date/Time
+    pub datetime: Option<chrono::NaiveDateTime>,
+    /// Record creation timestamp
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PredispatchMnspbidtrk1Row<'data> {
+    pub fn linkid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.linkid.clone())
+    }
+    pub fn participantid(&self) -> Option<&str> {
+        if self.participantid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.participantid.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for PredispatchMnspbidtrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PREDISPATCH";
+    const TABLE_NAME: &'static str = "MNSPBIDTRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchMnspbidtrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PREDISPATCHSEQNO",
+        "LINKID",
+        "PERIODID",
+        "PARTICIPANTID",
+        "SETTLEMENTDATE",
+        "OFFERDATE",
+        "VERSIONNO",
+        "DATETIME",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PredispatchMnspbidtrk1Row<'row>;
+    type FieldMapping = PredispatchMnspbidtrk1Mapping;
+    type PrimaryKey = PredispatchMnspbidtrk1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PredispatchMnspbidtrk1Row {
+            predispatchseqno: row
+                .get_parsed_at_idx("predispatchseqno", field_mapping.0[0])?,
+            linkid: row.get_range("linkid", field_mapping.0[1])?,
+            periodid: row.get_parsed_at_idx("periodid", field_mapping.0[2])?,
+            participantid: row.get_opt_range("participantid", field_mapping.0[3])?,
+            settlementdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "settlementdate",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            offerdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "offerdate",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_opt_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            datetime: row
+                .get_opt_custom_parsed_at_idx(
+                    "datetime",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PredispatchMnspbidtrk1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PredispatchMnspbidtrk1PrimaryKey {
+        PredispatchMnspbidtrk1PrimaryKey {
+            linkid: row.linkid().to_string(),
+            periodid: row.periodid,
+            predispatchseqno: row.predispatchseqno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("predispatch_mnspbidtrk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PredispatchMnspbidtrk1Row {
+            predispatchseqno: row.predispatchseqno.clone(),
+            linkid: row.linkid.clone(),
+            periodid: row.periodid.clone(),
+            participantid: row.participantid.clone(),
+            settlementdate: row.settlementdate.clone(),
+            offerdate: row.offerdate.clone(),
+            versionno: row.versionno.clone(),
+            datetime: row.datetime.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PredispatchMnspbidtrk1PrimaryKey {
+    pub linkid: alloc::string::String,
+    pub periodid: mmsdm_core::TradingPeriod,
+    pub predispatchseqno: mmsdm_core::TradingPeriod,
+}
+impl mmsdm_core::PrimaryKey for PredispatchMnspbidtrk1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PredispatchMnspbidtrk1Row<'data> {
+    type Row<'other> = PredispatchMnspbidtrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.linkid() == row.linkid() && self.periodid == row.periodid
+            && self.predispatchseqno == row.predispatchseqno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PredispatchMnspbidtrk1Row<'data> {
+    type PrimaryKey = PredispatchMnspbidtrk1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.linkid() == key.linkid && self.periodid == key.periodid
+            && self.predispatchseqno == key.predispatchseqno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PredispatchMnspbidtrk1PrimaryKey {
+    type Row<'other> = PredispatchMnspbidtrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.linkid == row.linkid() && self.periodid == row.periodid
+            && self.predispatchseqno == row.predispatchseqno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchMnspbidtrk1PrimaryKey {
+    type PrimaryKey = PredispatchMnspbidtrk1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.linkid == key.linkid && self.periodid == key.periodid
+            && self.predispatchseqno == key.predispatchseqno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PredispatchMnspbidtrk1 {
+    type Builder = PredispatchMnspbidtrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "predispatchseqno",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "linkid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "settlementdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PredispatchMnspbidtrk1Builder {
+            predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            linkid_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .predispatchseqno_array
+            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
+        builder.linkid_array.append_value(row.linkid());
+        builder
+            .periodid_array
+            .append_value(row.periodid.start().and_utc().timestamp_millis());
+        builder.participantid_array.append_option(row.participantid());
+        builder
+            .settlementdate_array
+            .append_option(
+                row.settlementdate.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder
+            .offerdate_array
+            .append_option(row.offerdate.map(|val| val.and_utc().timestamp_millis()));
+        builder
+            .versionno_array
+            .append_option({
+                row.versionno
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .datetime_array
+            .append_option(row.datetime.map(|val| val.and_utc().timestamp_millis()));
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.predispatchseqno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.linkid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.settlementdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PredispatchMnspbidtrk1Builder {
+    predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
+    linkid_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::builder::TimestampMillisecondBuilder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct PredispatchBlockedConstraints1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -30,15 +2419,18 @@ pub struct PredispatchBlockedConstraints1Mapping([usize; 2]);
 /// # Summary
 ///
 /// ## PREDISPATCHBLOCKEDCONSTRAINT
-///  _PREDISPATCH Blocked Constraints lists any constraints that were blocked in a Predispatch run. If no constraints are blocked, there will be no rows for that predispatch run._
+///
+/// PREDISPATCH Blocked Constraints lists any constraints that were blocked in a Predispatch run. If no constraints are blocked, there will be no rows for that predispatch run.
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Blocked Constraints
 /// * Data Version: 1
 ///
+/// # Description
+/// PREDISPATCHCASESOLUTION data is public, so is available to all participants.SourcePREDISPATCHCASESOLUTION updates every half-hour.VolumeApproximately 48 records per day.
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -253,22 +2645,23 @@ pub struct PredispatchCaseSolution1Mapping([usize; 20]);
 /// # Summary
 ///
 /// ## PREDISPATCHCASESOLUTION
-///  _PREDISPATCHCASESOLUTION provides information relating to the complete predispatch run. The fields provide an overview of the dispatch run results allowing immediate identification of conditions such as energy or FCAS deficiencies._
+///
+/// PREDISPATCHCASESOLUTION provides information relating to the complete predispatch run. The fields provide an overview of the dispatch run results allowing immediate identification of conditions such as energy or FCAS deficiencies.
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Case Solution
 /// * Data Version: 1
 ///
 /// # Description
-///  PREDISPATCHCASESOLUTION data is public, so is available to all participants. Source PREDISPATCHCASESOLUTION updates every half-hour. Volume Approximately 48 records per day.
+/// PREDISPATCHCASESOLUTION data is public, so is available to all participants.SourcePREDISPATCHCASESOLUTION updates every half-hour.VolumeApproximately 48 records per day.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
 /// * PREDISPATCHSEQNO
 /// * RUNNO
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct PredispatchCaseSolution1Row<'data> {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -1025,22 +3418,23 @@ pub struct PredispatchConstraintSolution5Mapping([usize; 14]);
 /// # Summary
 ///
 /// ## PREDISPATCHCONSTRAINT
-///  _PREDISPATCHCONSTRAINT sets out constraints that are binding in each predispatch run and interconnector constraints (whether binding or not). Only binding and interconnector constraints are reported. Binding contracts have marginal value greater than $0. Interconnector constraints are listed so RHS values can be reported for ST PASA.<br>Constraint solutions only report fixed loading /MR constraints on the next day._
+///
+/// PREDISPATCHCONSTRAINT sets out constraints that are binding in each predispatch run and interconnector constraints (whether binding or not). Only binding and interconnector constraints are reported. Binding contracts have marginal value greater than $0. Interconnector constraints are listed so RHS values can be reported for ST PASA.Constraint solutions only report fixed loading /MR constraints on the next day.
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Constraint Solution
 /// * Data Version: 5
 ///
 /// # Description
-///  PREDISPATCHCONSTRAINT data is confidential on the day of creation, and public to all participants after the end of the market day. Source PREDISPATCHCONSTRAINT updates with every thirty-minute predispatch run. Note The PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
+/// PREDISPATCHCONSTRAINT data is confidential on the day of creation, and public to all participants after the end of the market day.SourcePREDISPATCHCONSTRAINT updates with every thirty-minute predispatch run.NoteThe PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
 /// * CONSTRAINTID
 /// * DATETIME
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct PredispatchConstraintSolution5Row<'data> {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -1587,22 +3981,23 @@ pub struct PredispatchInterconnectorSoln3Mapping([usize; 23]);
 /// # Summary
 ///
 /// ## PREDISPATCHINTERCONNECTORRES
-///  _PREDISPATCHINTERCONNECTORRES records Interconnector flows and losses for the periods calculated in each predispatch run. Only binding and interconnector constraints are reported.<br>Some fields are for the Frequency Controlled Ancillary Services export and import limits and extra reporting of the generic constraint setting the energy import and export limits._
+///
+/// PREDISPATCHINTERCONNECTORRES records Interconnector flows and losses for the periods calculated in each predispatch run. Only binding and interconnector constraints are reported.Some fields are for the Frequency Controlled Ancillary Services export and import limits and extra reporting of the generic constraint setting the energy import and export limits.
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Interconnector Soln
 /// * Data Version: 3
 ///
 /// # Description
-///  Source PREDISPATCHINTERCONNECTORRES updates with every thirty-minute predispatch run. Note MW losses can be negative depending on the flow. The definition of direction of flow for an interconnector is that positive flow starts from the FROMREGION in INTERCONNECTOR.
+/// SourcePREDISPATCHINTERCONNECTORRES updates with every thirty-minute predispatch run.NoteMW losses can be negative depending on the flow.The definition of direction of flow for an interconnector is that positive flow starts from the FROMREGION in INTERCONNECTOR.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
 /// * DATETIME
 /// * INTERCONNECTORID
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct PredispatchInterconnectorSoln3Row<'data> {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -1643,11 +4038,11 @@ pub struct PredispatchInterconnectorSoln3Row<'data> {
     pub fcasexportlimit: Option<rust_decimal::Decimal>,
     /// Calculated import limit applying to energy + FCAS.
     pub fcasimportlimit: Option<rust_decimal::Decimal>,
-    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Export (Factor &gt;= 0)
+    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Export (Factor >= 0)
     pub local_price_adjustment_export: Option<rust_decimal::Decimal>,
     /// Key for Local_Price_Adjustment_Export: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
     pub locally_constrained_export: Option<rust_decimal::Decimal>,
-    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Import (Factor &gt;= 0)
+    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Import (Factor >= 0)
     pub local_price_adjustment_import: Option<rust_decimal::Decimal>,
     /// Key for Local_Price_Adjustment_Import: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
     pub locally_constrained_import: Option<rust_decimal::Decimal>,
@@ -2437,21 +4832,23 @@ pub struct PredispatchInterconnectrSens1Mapping([usize; 51]);
 /// # Summary
 ///
 /// ## PREDISPATCHINTERSENSITIVITIES
-///  _PREDISPATCHINTERSENSITIVITIES sets out the sensitivity flows for each interconnector by period._
+///
+/// PREDISPATCHINTERSENSITIVITIES sets out the sensitivity flows for each interconnector by period.
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Interconnectr Sens
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
 /// * DATETIME
 /// * INTERCONNECTORID
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct PredispatchInterconnectrSens1Row<'data> {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -4124,22 +6521,23 @@ pub struct PredispatchUnitSolution4Mapping([usize; 64]);
 /// # Summary
 ///
 /// ## PREDISPATCHLOAD
-///  _PREDISPATCHLOAD shows pre-dispatch targets for each dispatchable unit, including additional fields to handle the Ancillary Services functionality. No record is written where a unit is not dispatched. PREDISPATCHLOAD shows all the results for each period._
+///
+/// PREDISPATCHLOAD shows pre-dispatch targets for each dispatchable unit, including additional fields to handle the Ancillary Services functionality. No record is written where a unit is not dispatched. PREDISPATCHLOAD shows all the results for each period.
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Unit Solution
 /// * Data Version: 4
 ///
 /// # Description
-///  Source Own (confidential) data updates every thirty minutes, with whole market data for the day before available as part of next day market data. Note ** A flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The flag is defined using the low 3 bits as follows: Flag Name Bit Description Enabled 0 The unit is enabled to provide this ancillary service type. Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. Interpretation of the bit-flags as a number gives the following possibilities (i.e. other combinations are not possible): Numeric Value Bit (2,1,0) Meaning 0 000 Not stranded, not trapped, not enabled. 1 001 Not stranded, not trapped, is enabled. 3 011 Not stranded, is trapped, is enabled. 4 100 Is stranded, not trapped, not enabled. For example, testing for availability can be done by checking for odd (=available) or even (=unavailable) number (e.g.  mod(flag,2)  results in 0 for unavailable and 1 for available). *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values.
+/// SourceOwn (confidential) data updates every thirty minutes, with whole market data for the day before available as part of next day market data.Note** A flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The flag is defined using the low 3 bits as follows:Flag NameBitDescriptionEnabled0The unit is enabled to provide this ancillary service type.Trapped1The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market.Stranded2The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service.Interpretation of the bit-flags as a number gives the following possibilities (i.e. other combinations are not possible):Numeric ValueBit (2,1,0)Meaning0000Not stranded, not trapped, not enabled.1001Not stranded, not trapped, is enabled.3011Not stranded, is trapped, is enabled.4100Is stranded, not trapped, not enabled.For example, testing for availability can be done by checking for odd (=available) or even (=unavailable) number (e.g. mod(flag,2) results in 0 for unavailable and 1 for available).*** "Actual FCAS availability"is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability"is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
 /// * DATETIME
 /// * DUID
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct PredispatchUnitSolution4Row<'data> {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -4262,7 +6660,7 @@ pub struct PredispatchUnitSolution4Row<'data> {
     pub lower1secactualavailability: Option<rust_decimal::Decimal>,
     /// BDU only. The energy storage at the start of this dispatch interval (MWh)
     pub initial_energy_storage: Option<rust_decimal::Decimal>,
-    /// BDU only. The projected energy storage based on cleared energy and regulation FCAS dispatch (MWh).<br>Participants may use negative values as an indicator of the relative “error” in profiling Max Availability to reflect energy limits
+    /// BDU only. The projected energy storage based on cleared energy and regulation FCAS dispatch (MWh).Participants may use negative values as an indicator of the relative “error” in profiling Max Availability to reflect energy limits
     pub energy_storage: Option<rust_decimal::Decimal>,
     /// BDU only - Minimum Energy Storage constraint limit (MWh)
     pub energy_storage_min: Option<rust_decimal::Decimal>,
@@ -6206,16 +8604,18 @@ pub struct PredispatchOffertrk1Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## PREDISPATCHOFFERTRK
-///  _PREDISPATCHOFFERTRK is for the ancillary service bid tracking of predispatch processing. PREDISPATCHOFFERTRK identifies which bids from BIDDAYOFFER and BIDOFFERPERIOD were applied for a given unit and ancillary service for each predispatch run._
+///
+/// PREDISPATCHOFFERTRK is for the ancillary service bid tracking of predispatch processing. PREDISPATCHOFFERTRK identifies which bids from BIDDAYOFFER and BIDOFFERPERIOD were applied for a given unit and ancillary service for each predispatch run.
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Offertrk
 /// * Data Version: 1
 ///
 /// # Description
-///  Source PREDISPATCHOFFERTRK updates every 30 minutes. The data is confidential to each participant until the next trading day.  Volume Approximately 45,000 records per day.
+/// SourcePREDISPATCHOFFERTRK updates every 30 minutes. The data is confidential to each participant until the next trading day. VolumeApproximately 45,000 records per day.
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
 ///
 /// # Primary Key Columns
 ///
@@ -6584,22 +8984,23 @@ pub struct PredispatchRegionPrices2Mapping([usize; 35]);
 /// # Summary
 ///
 /// ## PREDISPATCHPRICE
-///  _PREDISPATCHPRICE records predispatch prices for each region by period for each predispatch run, including fields to handle the Ancillary Services functionality._
+///
+/// PREDISPATCHPRICE records predispatch prices for each region by period for each predispatch run, including fields to handle the Ancillary Services functionality.
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Region Prices
 /// * Data Version: 2
 ///
 /// # Description
-///  PREDISPATCHPRICE data is public, so is available to all participants. Source PREDISPATCHPRICE updates with every thirty-minute predispatch run.
+/// PREDISPATCHPRICE data is public, so is available to all participants.SourcePREDISPATCHPRICE updates with every thirty-minute predispatch run.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
 /// * DATETIME
 /// * REGIONID
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct PredispatchRegionPrices2Row<'data> {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -7787,22 +10188,23 @@ pub struct PredispatchPricesensitivities1Mapping([usize; 51]);
 /// # Summary
 ///
 /// ## PREDISPATCHPRICESENSITIVITIES
-///  _PREDISPATCHPRICESENSITIVITIES sets out the sensitivity prices for each region by period._
+///
+/// PREDISPATCHPRICESENSITIVITIES sets out the sensitivity prices for each region by period.
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Pricesensitivities
 /// * Data Version: 1
 ///
 /// # Description
-///  Source The plan is to provide this data every half-hour.
+/// SourceThe plan is to provide this data every half-hour.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
 /// * DATETIME
 /// * REGIONID
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct PredispatchPricesensitivities1Row<'data> {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -9471,22 +11873,23 @@ pub struct PredispatchRegionSolution8Mapping([usize; 125]);
 /// # Summary
 ///
 /// ## PREDISPATCHREGIONSUM
-///  _PREDISPATCHREGIONSUM sets out the overall regional Pre-Dispatch results for base case details (excluding price)._
+///
+/// PREDISPATCHREGIONSUM sets out the overall regional Pre-Dispatch results for base case details (excluding price).
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Region Solution
 /// * Data Version: 8
 ///
 /// # Description
-///  PREDISPATCHREGIONSUM includes the forecast demand (total demand) and Frequency Control Ancillary Services (FCAS) requirements (specifically, for the Raise Regulation and Lower Regulation Ancillary Services plus improvements to demand calculations). PREDISPATCHREGIONSUM updates each half-hour with the latest Pre-Dispatch details for the remaining period. Regional demand can be calculated as total demand plus dispatchable load (i.e. Regional demand = Total Demand + Dispatchable Load) Source PREDISPATCHREGIONSUM updates every thirty minutes. Note *** "Actual FCAS availability" is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability" is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values. From 16 February 2006, the old reserve values are no longer populated (i.e. are null), being LORSurplus and LRCSurplus. For more details on the changes to Reporting of Reserve Condition Data, refer to AEMO Communication 2042. For the best available indicator of reserve condition in each of the regions of the NEM for each trading interval, refer to the latest run of the Pre-Dispatch PASA (see table PDPASA_REGIONSOLUTION).
+/// PREDISPATCHREGIONSUM includes the forecast demand (total demand) and Frequency Control Ancillary Services (FCAS) requirements (specifically, for the Raise Regulation and Lower Regulation Ancillary Services plus improvements to demand calculations). PREDISPATCHREGIONSUM updates each half-hour with the latest Pre-Dispatch details for the remaining period.Regional demand can be calculated as total demand plus dispatchable load (i.e. Regional demand = Total Demand + Dispatchable Load)SourcePREDISPATCHREGIONSUM updates every thirty minutes.Note*** "Actual FCAS availability"is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability"is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values.From 16 February 2006, the old reserve values are no longer populated (i.e. are null), being LORSurplus and LRCSurplus. For more details on the changes to Reporting of Reserve Condition Data, refer to AEMO Communication 2042. For the best available indicator of reserve condition in each of the regions of the NEM for each trading interval, refer to the latest run of the Pre-Dispatch PASA (see table PDPASA_REGIONSOLUTION).
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
 /// * DATETIME
 /// * REGIONID
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct PredispatchRegionSolution8Row<'data> {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
@@ -13388,15 +15791,18 @@ pub struct PredispatchScenarioDemand1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## PREDISPATCHSCENARIODEMAND
-///  _PREDISPATCHSCENARIODEMAND defines the demand offsets that are applied for each of the predispatch sensitivity scenarios._
+///
+/// PREDISPATCHSCENARIODEMAND defines the demand offsets that are applied for each of the predispatch sensitivity scenarios.
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Scenario Demand
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -13669,15 +16075,18 @@ pub struct PredispatchScenarioDemandTrk1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## PREDISPATCHSCENARIODEMANDTRK
-///  _Tracks the predispatch scenario offset updates across time_
+///
+/// Tracks the predispatch scenario offset updates across time
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Scenario Demand Trk
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -13947,1449 +16356,5 @@ pub struct PredispatchScenarioDemandTrk1Builder {
     versionno_array: arrow::array::builder::Int64Builder,
     authorisedby_array: arrow::array::builder::StringBuilder,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-}
-pub struct PredispatchRegionfcasrequirement2 {
-    extract_row_partition: alloc::boxed::Box<
-        dyn Fn(
-            &PredispatchRegionfcasrequirement2Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    >,
-    row_partition_key: mmsdm_core::PartitionKey,
-}
-impl PredispatchRegionfcasrequirement2 {
-    pub fn new(
-        row_partition_key: mmsdm_core::PartitionKey,
-        func: impl Fn(
-            &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    ) -> Self {
-        Self {
-            extract_row_partition: alloc::boxed::Box::new(func),
-            row_partition_key,
-        }
-    }
-}
-pub struct PredispatchRegionfcasrequirement2Mapping([usize; 18]);
-/// # Summary
-///
-/// ## PREDISPATCH_FCAS_REQ
-///  _PREDISPATCH_FCAS_REQ shows Predispatch Constraint tracking for Regional FCAS Requirements._
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Regionfcasrequirement
-/// * Data Version: 2
-///
-/// # Description
-///  Source PREDISPATCH_FCAS_REQ updates with each pre-dispatch run (half hourly) Volume Approximately 2,000 rows per day. Note The PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
-///
-///
-///
-/// # Primary Key Columns
-///
-/// * BIDTYPE
-/// * DATETIME
-/// * GENCONID
-/// * REGIONID
-/// * INTERVENTION
-#[derive(Debug, PartialEq, Eq)]
-pub struct PredispatchRegionfcasrequirement2Row<'data> {
-    /// PreDispatch Sequence number
-    pub predispatchseqno: mmsdm_core::TradingPeriod,
-    /// Case Run number
-    pub runno: Option<rust_decimal::Decimal>,
-    /// Intervention Flag
-    pub intervention: rust_decimal::Decimal,
-    /// Unique period identifier, in the format yyyymmddpp. The period (pp) is 01 to 48, with 01 corresponding to the half-hour ending at 04:30am.
-    pub periodid: mmsdm_core::TradingPeriod,
-    /// Generic Constraint ID - Join to table GenConData
-    pub genconid: core::ops::Range<usize>,
-    /// Region ID
-    pub regionid: core::ops::Range<usize>,
-    /// Bid Type Identifier
-    pub bidtype: core::ops::Range<usize>,
-    /// Generic Constraint EffectiveDate - Join to table GenConData
-    pub genconeffectivedate: Option<chrono::NaiveDateTime>,
-    /// Generic Constraint Version number - Join to table GenConData
-    pub genconversionno: Option<rust_decimal::Decimal>,
-    /// Marginal Value of generic constraint
-    pub marginalvalue: Option<rust_decimal::Decimal>,
-    /// Date and Time of trading interval
-    pub datetime: chrono::NaiveDateTime,
-    /// Last date and time record changed
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// The base cost of the constraint for this service, before the regulation/contingency split
-    pub base_cost: Option<rust_decimal::Decimal>,
-    /// The adjusted cost of the constraint for this service, before the regulation/contingency split
-    pub adjusted_cost: Option<rust_decimal::Decimal>,
-    /// An estimated value for the constraint CMPF, based on dispatched data
-    pub estimated_cmpf: Option<rust_decimal::Decimal>,
-    /// An estimated value for the constraint CRMPF, based on dispatched data
-    pub estimated_crmpf: Option<rust_decimal::Decimal>,
-    /// Estimated recovery factor for CMPF based recovery
-    pub recovery_factor_cmpf: Option<rust_decimal::Decimal>,
-    /// Estimated recovery factor for CRMPF based recovery
-    pub recovery_factor_crmpf: Option<rust_decimal::Decimal>,
-    backing_data: mmsdm_core::CsvRow<'data>,
-}
-impl<'data> PredispatchRegionfcasrequirement2Row<'data> {
-    pub fn genconid(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.genconid.clone())
-    }
-    pub fn regionid(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
-    }
-    pub fn bidtype(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.bidtype.clone())
-    }
-}
-impl mmsdm_core::GetTable for PredispatchRegionfcasrequirement2 {
-    const VERSION: i32 = 2;
-    const DATA_SET_NAME: &'static str = "PREDISPATCH";
-    const TABLE_NAME: &'static str = "REGIONFCASREQUIREMENT";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchRegionfcasrequirement2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-    ]);
-    const COLUMNS: &'static [&'static str] = &[
-        "PREDISPATCHSEQNO",
-        "RUNNO",
-        "INTERVENTION",
-        "PERIODID",
-        "GENCONID",
-        "REGIONID",
-        "BIDTYPE",
-        "GENCONEFFECTIVEDATE",
-        "GENCONVERSIONNO",
-        "MARGINALVALUE",
-        "DATETIME",
-        "LASTCHANGED",
-        "BASE_COST",
-        "ADJUSTED_COST",
-        "ESTIMATED_CMPF",
-        "ESTIMATED_CRMPF",
-        "RECOVERY_FACTOR_CMPF",
-        "RECOVERY_FACTOR_CRMPF",
-    ];
-    type Row<'row> = PredispatchRegionfcasrequirement2Row<'row>;
-    type FieldMapping = PredispatchRegionfcasrequirement2Mapping;
-    type PrimaryKey = PredispatchRegionfcasrequirement2PrimaryKey;
-    fn from_row<'data>(
-        row: mmsdm_core::CsvRow<'data>,
-        field_mapping: &Self::FieldMapping,
-    ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(PredispatchRegionfcasrequirement2Row {
-            predispatchseqno: row
-                .get_parsed_at_idx("predispatchseqno", field_mapping.0[0])?,
-            runno: row
-                .get_opt_custom_parsed_at_idx(
-                    "runno",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            intervention: row
-                .get_custom_parsed_at_idx(
-                    "intervention",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            periodid: row.get_parsed_at_idx("periodid", field_mapping.0[3])?,
-            genconid: row.get_range("genconid", field_mapping.0[4])?,
-            regionid: row.get_range("regionid", field_mapping.0[5])?,
-            bidtype: row.get_range("bidtype", field_mapping.0[6])?,
-            genconeffectivedate: row
-                .get_opt_custom_parsed_at_idx(
-                    "genconeffectivedate",
-                    field_mapping.0[7],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            genconversionno: row
-                .get_opt_custom_parsed_at_idx(
-                    "genconversionno",
-                    field_mapping.0[8],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            marginalvalue: row
-                .get_opt_custom_parsed_at_idx(
-                    "marginalvalue",
-                    field_mapping.0[9],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            datetime: row
-                .get_custom_parsed_at_idx(
-                    "datetime",
-                    field_mapping.0[10],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[11],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            base_cost: row
-                .get_opt_custom_parsed_at_idx(
-                    "base_cost",
-                    field_mapping.0[12],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            adjusted_cost: row
-                .get_opt_custom_parsed_at_idx(
-                    "adjusted_cost",
-                    field_mapping.0[13],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            estimated_cmpf: row
-                .get_opt_custom_parsed_at_idx(
-                    "estimated_cmpf",
-                    field_mapping.0[14],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            estimated_crmpf: row
-                .get_opt_custom_parsed_at_idx(
-                    "estimated_crmpf",
-                    field_mapping.0[15],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            recovery_factor_cmpf: row
-                .get_opt_custom_parsed_at_idx(
-                    "recovery_factor_cmpf",
-                    field_mapping.0[16],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            recovery_factor_crmpf: row
-                .get_opt_custom_parsed_at_idx(
-                    "recovery_factor_crmpf",
-                    field_mapping.0[17],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            backing_data: row,
-        })
-    }
-    fn field_mapping_from_row<'a>(
-        mut row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
-        }
-        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
-        if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
-        }
-        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
-        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
-            base_mapping[field_index] = row
-                .iter_fields()
-                .position(|f| f == *field)
-                .unwrap_or(usize::MAX);
-        }
-        Ok(PredispatchRegionfcasrequirement2Mapping(base_mapping))
-    }
-    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
-            && Self::TABLE_NAME == key.table_name()
-    }
-    fn primary_key(row: &Self::Row<'_>) -> PredispatchRegionfcasrequirement2PrimaryKey {
-        PredispatchRegionfcasrequirement2PrimaryKey {
-            bidtype: row.bidtype().to_string(),
-            datetime: row.datetime,
-            genconid: row.genconid().to_string(),
-            regionid: row.regionid().to_string(),
-            intervention: row.intervention,
-        }
-    }
-    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
-        (self.extract_row_partition)(row)
-    }
-    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "predispatch_regionfcasrequirement_v2_{}", self.partition_value(row)
-        )
-    }
-    fn partition_key(&self) -> mmsdm_core::PartitionKey {
-        self.row_partition_key
-    }
-    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        PredispatchRegionfcasrequirement2Row {
-            predispatchseqno: row.predispatchseqno.clone(),
-            runno: row.runno.clone(),
-            intervention: row.intervention.clone(),
-            periodid: row.periodid.clone(),
-            genconid: row.genconid.clone(),
-            regionid: row.regionid.clone(),
-            bidtype: row.bidtype.clone(),
-            genconeffectivedate: row.genconeffectivedate.clone(),
-            genconversionno: row.genconversionno.clone(),
-            marginalvalue: row.marginalvalue.clone(),
-            datetime: row.datetime.clone(),
-            lastchanged: row.lastchanged.clone(),
-            base_cost: row.base_cost.clone(),
-            adjusted_cost: row.adjusted_cost.clone(),
-            estimated_cmpf: row.estimated_cmpf.clone(),
-            estimated_crmpf: row.estimated_crmpf.clone(),
-            recovery_factor_cmpf: row.recovery_factor_cmpf.clone(),
-            recovery_factor_crmpf: row.recovery_factor_crmpf.clone(),
-            backing_data: row.backing_data.to_owned(),
-        }
-    }
-}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PredispatchRegionfcasrequirement2PrimaryKey {
-    pub bidtype: alloc::string::String,
-    pub datetime: chrono::NaiveDateTime,
-    pub genconid: alloc::string::String,
-    pub regionid: alloc::string::String,
-    pub intervention: rust_decimal::Decimal,
-}
-impl mmsdm_core::PrimaryKey for PredispatchRegionfcasrequirement2PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionfcasrequirement2Row<'data> {
-    type Row<'other> = PredispatchRegionfcasrequirement2Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.bidtype() == row.bidtype() && self.datetime == row.datetime
-            && self.genconid() == row.genconid() && self.regionid() == row.regionid()
-            && self.intervention == row.intervention
-    }
-}
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for PredispatchRegionfcasrequirement2Row<'data> {
-    type PrimaryKey = PredispatchRegionfcasrequirement2PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.bidtype() == key.bidtype && self.datetime == key.datetime
-            && self.genconid() == key.genconid && self.regionid() == key.regionid
-            && self.intervention == key.intervention
-    }
-}
-impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionfcasrequirement2PrimaryKey {
-    type Row<'other> = PredispatchRegionfcasrequirement2Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.bidtype == row.bidtype() && self.datetime == row.datetime
-            && self.genconid == row.genconid() && self.regionid == row.regionid()
-            && self.intervention == row.intervention
-    }
-}
-impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionfcasrequirement2PrimaryKey {
-    type PrimaryKey = PredispatchRegionfcasrequirement2PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.bidtype == key.bidtype && self.datetime == key.datetime
-            && self.genconid == key.genconid && self.regionid == key.regionid
-            && self.intervention == key.intervention
-    }
-}
-#[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
-    type Builder = PredispatchRegionfcasrequirement2Builder;
-    fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "predispatchseqno",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "runno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "intervention",
-                    arrow::datatypes::DataType::Decimal128(2, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "periodid",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "genconid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "regionid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "bidtype",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "genconeffectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "genconversionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "marginalvalue",
-                    arrow::datatypes::DataType::Decimal128(16, 6),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "datetime",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "base_cost",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "adjusted_cost",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "estimated_cmpf",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "estimated_crmpf",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "recovery_factor_cmpf",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "recovery_factor_crmpf",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-            ]),
-        )
-    }
-    fn new_builder() -> Self::Builder {
-        PredispatchRegionfcasrequirement2Builder {
-            predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            runno_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            intervention_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            periodid_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            genconid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
-            genconeffectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            genconversionno_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            marginalvalue_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            base_cost_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            adjusted_cost_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            estimated_cmpf_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            estimated_crmpf_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            recovery_factor_cmpf_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            recovery_factor_crmpf_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-        }
-    }
-    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder
-            .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
-        builder
-            .runno_array
-            .append_option({
-                row.runno
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .intervention_array
-            .append_value({
-                let mut val = row.intervention;
-                val.rescale(0);
-                val.mantissa()
-            });
-        builder
-            .periodid_array
-            .append_value(row.periodid.start().and_utc().timestamp_millis());
-        builder.genconid_array.append_value(row.genconid());
-        builder.regionid_array.append_value(row.regionid());
-        builder.bidtype_array.append_value(row.bidtype());
-        builder
-            .genconeffectivedate_array
-            .append_option(
-                row.genconeffectivedate.map(|val| val.and_utc().timestamp_millis()),
-            );
-        builder
-            .genconversionno_array
-            .append_option({
-                row.genconversionno
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .marginalvalue_array
-            .append_option({
-                row.marginalvalue
-                    .map(|mut val| {
-                        val.rescale(6);
-                        val.mantissa()
-                    })
-            });
-        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
-        builder
-            .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
-        builder
-            .base_cost_array
-            .append_option({
-                row.base_cost
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .adjusted_cost_array
-            .append_option({
-                row.adjusted_cost
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .estimated_cmpf_array
-            .append_option({
-                row.estimated_cmpf
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .estimated_crmpf_array
-            .append_option({
-                row.estimated_crmpf
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .recovery_factor_cmpf_array
-            .append_option({
-                row.recovery_factor_cmpf
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .recovery_factor_crmpf_array
-            .append_option({
-                row.recovery_factor_crmpf
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-    }
-    fn finalize_builder(
-        builder: &mut Self::Builder,
-    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
-        arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.predispatchseqno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.runno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.intervention_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.periodid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.genconid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.regionid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.bidtype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.genconeffectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.genconversionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.marginalvalue_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.datetime_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.base_cost_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.adjusted_cost_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.estimated_cmpf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.estimated_crmpf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.recovery_factor_cmpf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.recovery_factor_crmpf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
-    }
-}
-#[cfg(feature = "arrow")]
-pub struct PredispatchRegionfcasrequirement2Builder {
-    predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
-    runno_array: arrow::array::builder::Decimal128Builder,
-    intervention_array: arrow::array::builder::Decimal128Builder,
-    periodid_array: arrow::array::builder::TimestampMillisecondBuilder,
-    genconid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
-    genconeffectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    genconversionno_array: arrow::array::builder::Decimal128Builder,
-    marginalvalue_array: arrow::array::builder::Decimal128Builder,
-    datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    base_cost_array: arrow::array::builder::Decimal128Builder,
-    adjusted_cost_array: arrow::array::builder::Decimal128Builder,
-    estimated_cmpf_array: arrow::array::builder::Decimal128Builder,
-    estimated_crmpf_array: arrow::array::builder::Decimal128Builder,
-    recovery_factor_cmpf_array: arrow::array::builder::Decimal128Builder,
-    recovery_factor_crmpf_array: arrow::array::builder::Decimal128Builder,
-}
-pub struct PredispatchLocalPrice1 {
-    extract_row_partition: alloc::boxed::Box<
-        dyn Fn(
-            &PredispatchLocalPrice1Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    >,
-    row_partition_key: mmsdm_core::PartitionKey,
-}
-impl PredispatchLocalPrice1 {
-    pub fn new(
-        row_partition_key: mmsdm_core::PartitionKey,
-        func: impl Fn(
-            &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    ) -> Self {
-        Self {
-            extract_row_partition: alloc::boxed::Box::new(func),
-            row_partition_key,
-        }
-    }
-}
-pub struct PredispatchLocalPrice1Mapping([usize; 7]);
-/// # Summary
-///
-/// ## PREDISPATCH_LOCAL_PRICE
-///  _Sets out local pricing offsets associated with each DUID connection point for each dispatch period_
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Local Price
-/// * Data Version: 1
-///
-///
-///
-///
-///
-/// # Primary Key Columns
-///
-/// * DATETIME
-/// * DUID
-#[derive(Debug, PartialEq, Eq)]
-pub struct PredispatchLocalPrice1Row<'data> {
-    /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
-    pub predispatchseqno: mmsdm_core::TradingPeriod,
-    /// The unique identifier for the interval within this study
-    pub datetime: chrono::NaiveDateTime,
-    /// Dispatchable unit identifier
-    pub duid: core::ops::Range<usize>,
-    /// A period count, starting from 1 for each predispatch run. Use DATETIME to determine half hour period
-    pub periodid: core::ops::Range<usize>,
-    /// Aggregate Constraint contribution cost of this unit: Sum(MarginalValue x Factor) for all relevant Constraints
-    pub local_price_adjustment: Option<rust_decimal::Decimal>,
-    /// Key for Local_Price_Adjustment: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
-    pub locally_constrained: Option<rust_decimal::Decimal>,
-    /// Last date and time record changed
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    backing_data: mmsdm_core::CsvRow<'data>,
-}
-impl<'data> PredispatchLocalPrice1Row<'data> {
-    pub fn duid(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
-    }
-    pub fn periodid(&self) -> Option<&str> {
-        if self.periodid.is_empty() {
-            None
-        } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.periodid.clone(),
-                ),
-            )
-        }
-    }
-}
-impl mmsdm_core::GetTable for PredispatchLocalPrice1 {
-    const VERSION: i32 = 1;
-    const DATA_SET_NAME: &'static str = "PREDISPATCH";
-    const TABLE_NAME: &'static str = "LOCAL_PRICE";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchLocalPrice1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-    ]);
-    const COLUMNS: &'static [&'static str] = &[
-        "PREDISPATCHSEQNO",
-        "DATETIME",
-        "DUID",
-        "PERIODID",
-        "LOCAL_PRICE_ADJUSTMENT",
-        "LOCALLY_CONSTRAINED",
-        "LASTCHANGED",
-    ];
-    type Row<'row> = PredispatchLocalPrice1Row<'row>;
-    type FieldMapping = PredispatchLocalPrice1Mapping;
-    type PrimaryKey = PredispatchLocalPrice1PrimaryKey;
-    fn from_row<'data>(
-        row: mmsdm_core::CsvRow<'data>,
-        field_mapping: &Self::FieldMapping,
-    ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(PredispatchLocalPrice1Row {
-            predispatchseqno: row
-                .get_parsed_at_idx("predispatchseqno", field_mapping.0[0])?,
-            datetime: row
-                .get_custom_parsed_at_idx(
-                    "datetime",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            duid: row.get_range("duid", field_mapping.0[2])?,
-            periodid: row.get_opt_range("periodid", field_mapping.0[3])?,
-            local_price_adjustment: row
-                .get_opt_custom_parsed_at_idx(
-                    "local_price_adjustment",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            locally_constrained: row
-                .get_opt_custom_parsed_at_idx(
-                    "locally_constrained",
-                    field_mapping.0[5],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[6],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            backing_data: row,
-        })
-    }
-    fn field_mapping_from_row<'a>(
-        mut row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
-        }
-        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
-        if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
-        }
-        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
-        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
-            base_mapping[field_index] = row
-                .iter_fields()
-                .position(|f| f == *field)
-                .unwrap_or(usize::MAX);
-        }
-        Ok(PredispatchLocalPrice1Mapping(base_mapping))
-    }
-    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
-            && Self::TABLE_NAME == key.table_name()
-    }
-    fn primary_key(row: &Self::Row<'_>) -> PredispatchLocalPrice1PrimaryKey {
-        PredispatchLocalPrice1PrimaryKey {
-            datetime: row.datetime,
-            duid: row.duid().to_string(),
-        }
-    }
-    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
-        (self.extract_row_partition)(row)
-    }
-    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("predispatch_local_price_v1_{}", self.partition_value(row))
-    }
-    fn partition_key(&self) -> mmsdm_core::PartitionKey {
-        self.row_partition_key
-    }
-    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        PredispatchLocalPrice1Row {
-            predispatchseqno: row.predispatchseqno.clone(),
-            datetime: row.datetime.clone(),
-            duid: row.duid.clone(),
-            periodid: row.periodid.clone(),
-            local_price_adjustment: row.local_price_adjustment.clone(),
-            locally_constrained: row.locally_constrained.clone(),
-            lastchanged: row.lastchanged.clone(),
-            backing_data: row.backing_data.to_owned(),
-        }
-    }
-}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PredispatchLocalPrice1PrimaryKey {
-    pub datetime: chrono::NaiveDateTime,
-    pub duid: alloc::string::String,
-}
-impl mmsdm_core::PrimaryKey for PredispatchLocalPrice1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for PredispatchLocalPrice1Row<'data> {
-    type Row<'other> = PredispatchLocalPrice1Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.datetime == row.datetime && self.duid() == row.duid()
-    }
-}
-impl<'data> mmsdm_core::CompareWithPrimaryKey for PredispatchLocalPrice1Row<'data> {
-    type PrimaryKey = PredispatchLocalPrice1PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.datetime == key.datetime && self.duid() == key.duid
-    }
-}
-impl<'data> mmsdm_core::CompareWithRow for PredispatchLocalPrice1PrimaryKey {
-    type Row<'other> = PredispatchLocalPrice1Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.datetime == row.datetime && self.duid == row.duid()
-    }
-}
-impl mmsdm_core::CompareWithPrimaryKey for PredispatchLocalPrice1PrimaryKey {
-    type PrimaryKey = PredispatchLocalPrice1PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.datetime == key.datetime && self.duid == key.duid
-    }
-}
-#[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for PredispatchLocalPrice1 {
-    type Builder = PredispatchLocalPrice1Builder;
-    fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "predispatchseqno",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "datetime",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "duid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "periodid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "local_price_adjustment",
-                    arrow::datatypes::DataType::Decimal128(10, 2),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "locally_constrained",
-                    arrow::datatypes::DataType::Decimal128(1, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
-    }
-    fn new_builder() -> Self::Builder {
-        PredispatchLocalPrice1Builder {
-            predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            periodid_array: arrow::array::builder::StringBuilder::new(),
-            local_price_adjustment_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 2)),
-            locally_constrained_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-        }
-    }
-    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder
-            .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
-        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
-        builder.duid_array.append_value(row.duid());
-        builder.periodid_array.append_option(row.periodid());
-        builder
-            .local_price_adjustment_array
-            .append_option({
-                row.local_price_adjustment
-                    .map(|mut val| {
-                        val.rescale(2);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .locally_constrained_array
-            .append_option({
-                row.locally_constrained
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
-    }
-    fn finalize_builder(
-        builder: &mut Self::Builder,
-    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
-        arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.predispatchseqno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.datetime_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.duid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.periodid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.local_price_adjustment_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.locally_constrained_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
-    }
-}
-#[cfg(feature = "arrow")]
-pub struct PredispatchLocalPrice1Builder {
-    predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
-    datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    periodid_array: arrow::array::builder::StringBuilder,
-    local_price_adjustment_array: arrow::array::builder::Decimal128Builder,
-    locally_constrained_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-}
-pub struct PredispatchMnspbidtrk1 {
-    extract_row_partition: alloc::boxed::Box<
-        dyn Fn(
-            &PredispatchMnspbidtrk1Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    >,
-    row_partition_key: mmsdm_core::PartitionKey,
-}
-impl PredispatchMnspbidtrk1 {
-    pub fn new(
-        row_partition_key: mmsdm_core::PartitionKey,
-        func: impl Fn(
-            &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    ) -> Self {
-        Self {
-            extract_row_partition: alloc::boxed::Box::new(func),
-            row_partition_key,
-        }
-    }
-}
-pub struct PredispatchMnspbidtrk1Mapping([usize; 9]);
-/// # Summary
-///
-/// ## PREDISPATCH_MNSPBIDTRK
-///  _PREDISPATCH_MNSPBIDTRK shows the MNSP bid tracking, including the bid version used in each predispatch run for each MNSP Interconnector Link. PREDISPATCH_MNSPBIDTRK shows the audit trail of the bid used for each predispatch run._
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Mnspbidtrk
-/// * Data Version: 1
-///
-/// # Description
-///  Source Own (confidential) data updates every predispatch run. All bids are available to all participants as part of next day market data. Volume 1, 700, 000 per year
-///
-///
-///
-/// # Primary Key Columns
-///
-/// * LINKID
-/// * PERIODID
-/// * PREDISPATCHSEQNO
-#[derive(Debug, PartialEq, Eq)]
-pub struct PredispatchMnspbidtrk1Row<'data> {
-    /// Predispatch run identifier
-    pub predispatchseqno: mmsdm_core::TradingPeriod,
-    /// Identifier for each of the two MNSP Interconnector Links. Each link pertains to the direction from and to.
-    pub linkid: core::ops::Range<usize>,
-    /// Trading Interval number
-    pub periodid: mmsdm_core::TradingPeriod,
-    /// Participant Identifier
-    pub participantid: core::ops::Range<usize>,
-    /// Market Date from which bid is active
-    pub settlementdate: Option<chrono::NaiveDateTime>,
-    /// Time this bid was processed and loaded
-    pub offerdate: Option<chrono::NaiveDateTime>,
-    /// Version No. for given offer date and settlement date used
-    pub versionno: Option<rust_decimal::Decimal>,
-    /// Period expressed as Date/Time
-    pub datetime: Option<chrono::NaiveDateTime>,
-    /// Record creation timestamp
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    backing_data: mmsdm_core::CsvRow<'data>,
-}
-impl<'data> PredispatchMnspbidtrk1Row<'data> {
-    pub fn linkid(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.linkid.clone())
-    }
-    pub fn participantid(&self) -> Option<&str> {
-        if self.participantid.is_empty() {
-            None
-        } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.participantid.clone(),
-                ),
-            )
-        }
-    }
-}
-impl mmsdm_core::GetTable for PredispatchMnspbidtrk1 {
-    const VERSION: i32 = 1;
-    const DATA_SET_NAME: &'static str = "PREDISPATCH";
-    const TABLE_NAME: &'static str = "MNSPBIDTRK";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchMnspbidtrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-    ]);
-    const COLUMNS: &'static [&'static str] = &[
-        "PREDISPATCHSEQNO",
-        "LINKID",
-        "PERIODID",
-        "PARTICIPANTID",
-        "SETTLEMENTDATE",
-        "OFFERDATE",
-        "VERSIONNO",
-        "DATETIME",
-        "LASTCHANGED",
-    ];
-    type Row<'row> = PredispatchMnspbidtrk1Row<'row>;
-    type FieldMapping = PredispatchMnspbidtrk1Mapping;
-    type PrimaryKey = PredispatchMnspbidtrk1PrimaryKey;
-    fn from_row<'data>(
-        row: mmsdm_core::CsvRow<'data>,
-        field_mapping: &Self::FieldMapping,
-    ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(PredispatchMnspbidtrk1Row {
-            predispatchseqno: row
-                .get_parsed_at_idx("predispatchseqno", field_mapping.0[0])?,
-            linkid: row.get_range("linkid", field_mapping.0[1])?,
-            periodid: row.get_parsed_at_idx("periodid", field_mapping.0[2])?,
-            participantid: row.get_opt_range("participantid", field_mapping.0[3])?,
-            settlementdate: row
-                .get_opt_custom_parsed_at_idx(
-                    "settlementdate",
-                    field_mapping.0[4],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            offerdate: row
-                .get_opt_custom_parsed_at_idx(
-                    "offerdate",
-                    field_mapping.0[5],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            versionno: row
-                .get_opt_custom_parsed_at_idx(
-                    "versionno",
-                    field_mapping.0[6],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            datetime: row
-                .get_opt_custom_parsed_at_idx(
-                    "datetime",
-                    field_mapping.0[7],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[8],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            backing_data: row,
-        })
-    }
-    fn field_mapping_from_row<'a>(
-        mut row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
-        }
-        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
-        if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
-        }
-        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
-        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
-            base_mapping[field_index] = row
-                .iter_fields()
-                .position(|f| f == *field)
-                .unwrap_or(usize::MAX);
-        }
-        Ok(PredispatchMnspbidtrk1Mapping(base_mapping))
-    }
-    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
-            && Self::TABLE_NAME == key.table_name()
-    }
-    fn primary_key(row: &Self::Row<'_>) -> PredispatchMnspbidtrk1PrimaryKey {
-        PredispatchMnspbidtrk1PrimaryKey {
-            linkid: row.linkid().to_string(),
-            periodid: row.periodid,
-            predispatchseqno: row.predispatchseqno,
-        }
-    }
-    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
-        (self.extract_row_partition)(row)
-    }
-    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("predispatch_mnspbidtrk_v1_{}", self.partition_value(row))
-    }
-    fn partition_key(&self) -> mmsdm_core::PartitionKey {
-        self.row_partition_key
-    }
-    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        PredispatchMnspbidtrk1Row {
-            predispatchseqno: row.predispatchseqno.clone(),
-            linkid: row.linkid.clone(),
-            periodid: row.periodid.clone(),
-            participantid: row.participantid.clone(),
-            settlementdate: row.settlementdate.clone(),
-            offerdate: row.offerdate.clone(),
-            versionno: row.versionno.clone(),
-            datetime: row.datetime.clone(),
-            lastchanged: row.lastchanged.clone(),
-            backing_data: row.backing_data.to_owned(),
-        }
-    }
-}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PredispatchMnspbidtrk1PrimaryKey {
-    pub linkid: alloc::string::String,
-    pub periodid: mmsdm_core::TradingPeriod,
-    pub predispatchseqno: mmsdm_core::TradingPeriod,
-}
-impl mmsdm_core::PrimaryKey for PredispatchMnspbidtrk1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for PredispatchMnspbidtrk1Row<'data> {
-    type Row<'other> = PredispatchMnspbidtrk1Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.linkid() == row.linkid() && self.periodid == row.periodid
-            && self.predispatchseqno == row.predispatchseqno
-    }
-}
-impl<'data> mmsdm_core::CompareWithPrimaryKey for PredispatchMnspbidtrk1Row<'data> {
-    type PrimaryKey = PredispatchMnspbidtrk1PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.linkid() == key.linkid && self.periodid == key.periodid
-            && self.predispatchseqno == key.predispatchseqno
-    }
-}
-impl<'data> mmsdm_core::CompareWithRow for PredispatchMnspbidtrk1PrimaryKey {
-    type Row<'other> = PredispatchMnspbidtrk1Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.linkid == row.linkid() && self.periodid == row.periodid
-            && self.predispatchseqno == row.predispatchseqno
-    }
-}
-impl mmsdm_core::CompareWithPrimaryKey for PredispatchMnspbidtrk1PrimaryKey {
-    type PrimaryKey = PredispatchMnspbidtrk1PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.linkid == key.linkid && self.periodid == key.periodid
-            && self.predispatchseqno == key.predispatchseqno
-    }
-}
-#[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for PredispatchMnspbidtrk1 {
-    type Builder = PredispatchMnspbidtrk1Builder;
-    fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "predispatchseqno",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "linkid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "periodid",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "participantid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "settlementdate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "offerdate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "versionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "datetime",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
-    }
-    fn new_builder() -> Self::Builder {
-        PredispatchMnspbidtrk1Builder {
-            predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            linkid_array: arrow::array::builder::StringBuilder::new(),
-            periodid_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            versionno_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-        }
-    }
-    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder
-            .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
-        builder.linkid_array.append_value(row.linkid());
-        builder
-            .periodid_array
-            .append_value(row.periodid.start().and_utc().timestamp_millis());
-        builder.participantid_array.append_option(row.participantid());
-        builder
-            .settlementdate_array
-            .append_option(
-                row.settlementdate.map(|val| val.and_utc().timestamp_millis()),
-            );
-        builder
-            .offerdate_array
-            .append_option(row.offerdate.map(|val| val.and_utc().timestamp_millis()));
-        builder
-            .versionno_array
-            .append_option({
-                row.versionno
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .datetime_array
-            .append_option(row.datetime.map(|val| val.and_utc().timestamp_millis()));
-        builder
-            .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
-    }
-    fn finalize_builder(
-        builder: &mut Self::Builder,
-    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
-        arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.predispatchseqno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.linkid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.periodid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.participantid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.settlementdate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.offerdate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.datetime_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
-    }
-}
-#[cfg(feature = "arrow")]
-pub struct PredispatchMnspbidtrk1Builder {
-    predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
-    linkid_array: arrow::array::builder::StringBuilder,
-    periodid_array: arrow::array::builder::TimestampMillisecondBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    versionno_array: arrow::array::builder::Decimal128Builder,
-    datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

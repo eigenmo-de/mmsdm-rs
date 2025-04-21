@@ -30,15 +30,18 @@ pub struct TradingAverageprice301Mapping([usize; 6]);
 /// # Summary
 ///
 /// ## AVERAGEPRICE30
-///  _Reflects the 30-minute average price (the pre-5MS trading price)._
+///
+/// Reflects the 30-minute average price (the pre-5MS trading price).
 ///
 /// * Data Set Name: Trading
 /// * File Name: Averageprice30
 /// * Data Version: 1
 ///
+/// # Description
+/// TRADINGINTERCONNECT is public data, and is available to all participants.SourceTRADINGINTERCONNECT is updated half hourly.
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -54,7 +57,7 @@ pub struct TradingAverageprice301Row<'data> {
     pub periodid: rust_decimal::Decimal,
     /// Regional reference price for this period
     pub rrp: Option<rust_decimal::Decimal>,
-    /// Result of Manifestly Incorrect Inputs Price Status and OCD_Status - either "FIRM" or "NOT FIRM". Only FIRM if the Dispatch Interval is resolved for both MII and OCD
+    /// Result of Manifestly Incorrect Inputs Price Status and OCD_Status - either "FIRM"or "NOT FIRM". Only FIRM if the Dispatch Interval is resolved for both MII and OCD
     pub price_confidence: core::ops::Range<usize>,
     /// Last date and time record changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -365,16 +368,18 @@ pub struct TradingInterconnectorres2Mapping([usize; 8]);
 /// # Summary
 ///
 /// ## TRADINGINTERCONNECT
-///  _TRADINGINTERCONNECT shows the Interconnector flows for the 5 minutes Trading Interval.<br>Prior to 5 Minute Settlements, this was the average of the six 5 minute dispatch intervals within the 30 minute period._
+///
+/// TRADINGINTERCONNECT shows the Interconnector flows for the 5 minutes Trading Interval.Prior to 5 Minute Settlements, this was the average of the six 5 minute dispatch intervals within the 30 minute period.
 ///
 /// * Data Set Name: Trading
 /// * File Name: Interconnectorres
 /// * Data Version: 2
 ///
 /// # Description
-///  TRADINGINTERCONNECT is public data, and is available to all participants. Source TRADINGINTERCONNECT is updated half hourly.
+/// TRADINGINTERCONNECT is public data, and is available to all participants.SourceTRADINGINTERCONNECT is updated half hourly.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -775,16 +780,18 @@ pub struct TradingPrice3Mapping([usize; 30]);
 /// # Summary
 ///
 /// ## TRADINGPRICE
-///  _TRADINGPRICE sets out 5 minutes spot market price, including fields to handle the Ancillary Services functionality. If prices are adjusted, the final price is recorded in the regional reference price (RRP) field with price before adjustment recorded in the regional original price (ROP) field.<br>Prior to 5 Minute Settlements, this was half-hourly spot market values, which was calculated as the average of the six 5 minute dispatch intervals within the 30 minute period._
+///
+/// TRADINGPRICE sets out 5 minutes spot market price, including fields to handle the Ancillary Services functionality. If prices are adjusted, the final price is recorded in the regional reference price (RRP) field with price before adjustment recorded in the regional original price (ROP) field.Prior to 5 Minute Settlements, this was half-hourly spot market values, which was calculated as the average of the six 5 minute dispatch intervals within the 30 minute period.
 ///
 /// * Data Set Name: Trading
 /// * File Name: Price
 /// * Data Version: 3
 ///
 /// # Description
-///  TRADINGPRICE data is public, so is available to all participants. Source TRADINGPRICE updates every 30 minutes. Notes INVALIDFLAG The INVALIDFLAG field is used to indicate whether the Trading interval price has been adjusted after the trading interval was completed. On a very restricted set of events, the market rules allow a dispatch price (5 min) to be adjusted on the next business day, and, when this occurs, the corresponding trading interval price for that region is also adjusted and marked as adjusted with INVALIDFLAG of 'A'. The INVALIDFLAG = 'Y' only applies to historical periods when not all six of the 5-minute dispatch intervals were run in the trading interval. System changes implemented on 30 September 2001 mean this situation no longer occurs since missing dispatch intervals are automatically populated from a previous interval. If the INVALIDFLAG field = '0', the price was not adjusted and all six dispatch intervals are present. Prices There is no field in the TRADINGPRICE table (or the MMS data model anywhere) telling you that the price is provisional or final. The only reliable method is to ensure that the trading date is at least 2 business days old.
+/// TRADINGPRICE data is public, so is available to all participants.SourceTRADINGPRICE updates every 30 minutes.NotesINVALIDFLAGThe INVALIDFLAG field is used to indicate whether the Trading interval price has been adjusted after the trading interval was completed. On a very restricted set of events, the market rules allow a dispatch price (5 min) to be adjusted on the next business day, and, when this occurs, the corresponding trading interval price for that region is also adjusted and marked as adjusted with INVALIDFLAG of 'A'.The INVALIDFLAG = 'Y' only applies to historical periods when not all six of the 5-minute dispatch intervals were run in the trading interval. System changes implemented on 30 September 2001 mean this situation no longer occurs since missing dispatch intervals are automatically populated from a previous interval.If the INVALIDFLAG field = '0', the price was not adjusted and all six dispatch intervals are present.PricesThere is no field in the TRADINGPRICE table (or the MMS data model anywhere) telling you that the price is provisional or final. The only reliable method is to ensure that the trading date is at least 2 business days old.
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -844,7 +851,7 @@ pub struct TradingPrice3Row<'data> {
     pub lowerregrrp: Option<rust_decimal::Decimal>,
     /// Original regional price - prior to APC or VoLL overrides applied
     pub lowerregrop: Option<rust_decimal::Decimal>,
-    /// Status of regional prices for this dispatch interval "NOT FIRM" or "FIRM"
+    /// Status of regional prices for this dispatch interval "NOT FIRM"or "FIRM"
     pub price_status: core::ops::Range<usize>,
     /// Regional Raise 1Sec Price - R1Price attribute after capping/flooring
     pub raise1secrrp: Option<rust_decimal::Decimal>,

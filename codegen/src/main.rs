@@ -1,14 +1,18 @@
+use anyhow::Context;
+use log::info;
 use structopt::StructOpt;
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 mod analyse;
+mod download;
+mod html_tree;
 mod json;
 mod mms;
 mod pdr;
-mod python;
 mod rust;
 mod sql_server_tables;
 
-pub const VERSION: &str = "5.3";
+pub const VERSION: &str = "5.4";
 
 #[derive(structopt::StructOpt)]
 #[structopt(about = "Code generation on the MMS Data Model")]
@@ -16,8 +20,8 @@ enum AemoCodegen {
     Json,
     Rust,
     SqlServerTables,
-    Python,
     Analyse,
+    Download,
 }
 fn main() {
     if let Err(e) = run() {
@@ -27,32 +31,73 @@ fn main() {
 
 #[tokio::main]
 async fn run() -> Result<(), anyhow::Error> {
+    env_logger::Builder::new()
+        .filter_level(log::LevelFilter::Info)
+        .init();
+
+    let file_name = format!("mmsdm_v{VERSION}.json");
     match AemoCodegen::from_args() {
         AemoCodegen::SqlServerTables => {
-            sql_server_tables::run()?;
+            let mut data = String::new();
+            let mut f = tokio::fs::OpenOptions::new()
+                .read(true)
+                .open(&file_name)
+                .await
+                .with_context(|| format!("Opening file: `{file_name}`"))?;
+
+            f.read_to_string(&mut data).await?;
+            let de = serde_json::from_str(&data)?;
+
+            sql_server_tables::run(de)?;
         }
         AemoCodegen::Rust => {
-            rust::run()?;
+            let mut data = String::new();
+            let mut f = tokio::fs::OpenOptions::new()
+                .read(true)
+                .open(&file_name)
+                .await
+                .with_context(|| format!("Opening file: `{file_name}`"))?;
+
+            f.read_to_string(&mut data).await?;
+            let de = serde_json::from_str(&data)?;
+
+            info!("Generating rust code");
+            rust::run(de)?;
         }
         AemoCodegen::Analyse => {
-            analyse::run()?;
+            let mut data = String::new();
+            let mut f = tokio::fs::OpenOptions::new()
+                .read(true)
+                .open(&file_name)
+                .await
+                .with_context(|| format!("Opening file: `{file_name}`"))?;
+
+            f.read_to_string(&mut data).await?;
+            let de = serde_json::from_str(&data)?;
+
+            analyse::run(de)?;
         }
         AemoCodegen::Json => {
-            json::run().await?;
+            let dm = json::run().await?;
+
+            let ser = serde_json::to_string_pretty(&dm)?;
+            let mut f = tokio::fs::OpenOptions::new()
+                .create(true)
+                .truncate(true)
+                .write(true)
+                .open(&file_name)
+                .await
+                .with_context(|| format!("Opening file: `{file_name}`"))?;
+
+            f.write_all(ser.as_bytes()).await?;
+
+            f.flush().await?;
         }
-        AemoCodegen::Python => {
-            python::run()?;
+        AemoCodegen::Download => {
+            download::run().await?;
         }
     }
     Ok(())
-}
-
-fn swap_nonreq<T>(or: Option<anyhow::Result<T>>) -> anyhow::Result<Option<T>> {
-    match or {
-        Some(Ok(o)) => Ok(Some(o)),
-        Some(Err(e)) => Err(e),
-        None => Ok(None),
-    }
 }
 
 const KW: [&str; 51] = [

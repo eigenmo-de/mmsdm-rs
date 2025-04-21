@@ -30,15 +30,18 @@ pub struct P5minBlockedConstraints1Mapping([usize; 2]);
 /// # Summary
 ///
 /// ## P5MIN_BLOCKEDCONSTRAINT
-///  _P5MIN Blocked Constraints lists any constraints that were blocked in a P5MIN run. If no constraints are blocked, there will be no rows for that 5 minute predispatch run._
+///
+/// P5MIN Blocked Constraints lists any constraints that were blocked in a P5MIN run. If no constraints are blocked, there will be no rows for that 5 minute predispatch run.
 ///
 /// * Data Set Name: P5min
 /// * File Name: Blocked Constraints
 /// * Data Version: 1
 ///
+/// # Description
+/// P5MIN_CASESOLUTION data is public, so is available to all participants.SourceP5MIN_CASESOLUTION updates every 5 minutes.VolumeRows per day: 288
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -251,21 +254,22 @@ pub struct P5minCasesolution2Mapping([usize; 19]);
 /// # Summary
 ///
 /// ## P5MIN_CASESOLUTION
-///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_CASESOLUTION shows one record containing results pertaining to the entire solution._
+///
+/// The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.P5MIN_CASESOLUTION shows one record containing results pertaining to the entire solution.
 ///
 /// * Data Set Name: P5min
 /// * File Name: Casesolution
 /// * Data Version: 2
 ///
 /// # Description
-///  P5MIN_CASESOLUTION data is public, so is available to all participants. Source P5MIN_CASESOLUTION updates every 5 minutes. Volume Rows per day: 288
+/// P5MIN_CASESOLUTION data is public, so is available to all participants.SourceP5MIN_CASESOLUTION updates every 5 minutes.VolumeRows per day: 288
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
 /// * RUN_DATETIME
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct P5minCasesolution2Row<'data> {
     /// Unique Timestamp Identifier for this study
@@ -993,23 +997,24 @@ pub struct P5minConstraintsolution6Mapping([usize; 12]);
 /// # Summary
 ///
 /// ## P5MIN_CONSTRAINTSOLUTION
-///  _The Five-Minute Pre-Dispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The Five-Minute Pre-dispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value._
+///
+/// The Five-Minute Pre-Dispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The Five-Minute Pre-dispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.P5MIN_CONSTRAINTSOLUTION shows binding and violated constraint results from the capacity evaluation, including the RHS value.
 ///
 /// * Data Set Name: P5min
 /// * File Name: Constraintsolution
 /// * Data Version: 6
 ///
 /// # Description
-///  P5MIN_CONSTRAINTSOLUTION is public data, so is available to all participants. Source P5MIN_CONSTRAINTSOLUTION updates every five minutes. Volume Rows per day: ~2.3 million
+/// P5MIN_CONSTRAINTSOLUTION is public data, so is available to all participants.SourceP5MIN_CONSTRAINTSOLUTION updates every five minutes.VolumeRows per day: ~2.3 million
 ///
-///
+/// # Notes
+/// * (Visibility)  Private &Public
 ///
 /// # Primary Key Columns
 ///
 /// * CONSTRAINTID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct P5minConstraintsolution6Row<'data> {
     /// Unique Timestamp Identifier for this study
@@ -1020,9 +1025,9 @@ pub struct P5minConstraintsolution6Row<'data> {
     pub constraintid: core::ops::Range<usize>,
     /// Right Hand Side value in the capacity evaluation
     pub rhs: Option<rust_decimal::Decimal>,
-    /// Marginal cost of constraint (&gt;0 if binding)
+    /// Marginal cost of constraint (>0 if binding)
     pub marginalvalue: Option<rust_decimal::Decimal>,
-    /// Amount of Violation (&gt;0 if  violating)
+    /// Amount of Violation (>0 if  violating)
     pub violationdegree: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -1493,6 +1498,876 @@ pub struct P5minConstraintsolution6Builder {
     lhs_array: arrow::array::builder::Decimal128Builder,
     intervention_array: arrow::array::builder::Decimal128Builder,
 }
+pub struct P5minFcasReqConstraint1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &P5minFcasReqConstraint1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minFcasReqConstraint1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct P5minFcasReqConstraint1Mapping([usize; 16]);
+/// # Summary
+///
+/// ## P5MIN_FCAS_REQ_CONSTRAINT
+///
+/// The constraint level FCAS cost / price details for constraint FCAS processor runs. This enhanced output table format is established for the constraint FCAS processor release required for the Frequency Performance Payments (FPP) release. This enhanced output is hierarchical in nature, with the parent *_FCAS_REQ_RUN table holding the details about the triggering case run and time, and the child *_FCAS_REQ_CONSTRAINT table holding the constraint level details of FCAS costs / prices.
+///
+/// * Data Set Name: P5min
+/// * File Name: Fcas Req Constraint
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * BIDTYPE
+/// * CONSTRAINTID
+/// * INTERVAL_DATETIME
+/// * REGIONID
+/// * RUN_DATETIME
+/// * RUNNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct P5minFcasReqConstraint1Row<'data> {
+    /// The run date and time of the 5 minute predispatch case that triggers the constraint FCAS processor run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// The 5 minute predispatch case run number that has triggers the constraint FCAS processor run
+    pub runno: i64,
+    /// The 5 minute interval date and time of the 5 minute predispatch interval that was processed by the constraint FCAS processor
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// ConstraintID join to table GenConData
+    pub constraintid: core::ops::Range<usize>,
+    /// Region identifier
+    pub regionid: core::ops::Range<usize>,
+    /// DUID offered type
+    pub bidtype: core::ops::Range<usize>,
+    /// Constraints summed LHS - aggregate LHS Solution values from the physical run from the P5MIN_CONSTRAINTSOLUTION table
+    pub lhs: Option<rust_decimal::Decimal>,
+    /// Constraints RHS value used in the solution - may be either dynamic (calculated) or static from the physical run from the P5MIN_CONSTRAINTSOLUTION table
+    pub rhs: Option<rust_decimal::Decimal>,
+    /// Shadow price of constraint from the P5MIN_CONSTRAINTSOLUTION table from the physical run.
+    pub marginalvalue: Option<rust_decimal::Decimal>,
+    /// Bid type prices for the region coming from the pricing run of the P5MIN_REGIONSOLUTION table
+    pub rrp: Option<rust_decimal::Decimal>,
+    /// The dispatched MW for the bid type inside the region from the physical run of the P5MIN_REGIONSOLUTION table
+    pub regional_enablement: Option<rust_decimal::Decimal>,
+    /// MW enabled for this bid type within the constraint
+    pub constraint_enablement: Option<rust_decimal::Decimal>,
+    /// The regional payment allocated to the constraint for the interval pro- rated based on marginal value ratios over the binding constraints for that service in that region (this is an intermediate calculation to get to the base cost)
+    pub region_base_cost: Option<rust_decimal::Decimal>,
+    /// The base cost of the constraint, before the regulation/contingency split
+    pub base_cost: Option<rust_decimal::Decimal>,
+    /// The adjusted cost of the constraint for this service, after the regulation/contingency split
+    pub adjusted_cost: Option<rust_decimal::Decimal>,
+    /// The adjusted marginal value of the constraint for FPP recovery (blank for constraints without REG terms)
+    pub p_regulation: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> P5minFcasReqConstraint1Row<'data> {
+    pub fn constraintid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.constraintid.clone())
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+    pub fn bidtype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.bidtype.clone())
+    }
+}
+impl mmsdm_core::GetTable for P5minFcasReqConstraint1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "P5MIN";
+    const TABLE_NAME: &'static str = "FCAS_REQ_CONSTRAINT";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minFcasReqConstraint1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "RUNNO",
+        "INTERVAL_DATETIME",
+        "CONSTRAINTID",
+        "REGIONID",
+        "BIDTYPE",
+        "LHS",
+        "RHS",
+        "MARGINALVALUE",
+        "RRP",
+        "REGIONAL_ENABLEMENT",
+        "CONSTRAINT_ENABLEMENT",
+        "REGION_BASE_COST",
+        "BASE_COST",
+        "ADJUSTED_COST",
+        "P_REGULATION",
+    ];
+    type Row<'row> = P5minFcasReqConstraint1Row<'row>;
+    type FieldMapping = P5minFcasReqConstraint1Mapping;
+    type PrimaryKey = P5minFcasReqConstraint1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(P5minFcasReqConstraint1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            runno: row.get_parsed_at_idx("runno", field_mapping.0[1])?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            constraintid: row.get_range("constraintid", field_mapping.0[3])?,
+            regionid: row.get_range("regionid", field_mapping.0[4])?,
+            bidtype: row.get_range("bidtype", field_mapping.0[5])?,
+            lhs: row
+                .get_opt_custom_parsed_at_idx(
+                    "lhs",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            rhs: row
+                .get_opt_custom_parsed_at_idx(
+                    "rhs",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            marginalvalue: row
+                .get_opt_custom_parsed_at_idx(
+                    "marginalvalue",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            rrp: row
+                .get_opt_custom_parsed_at_idx(
+                    "rrp",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            regional_enablement: row
+                .get_opt_custom_parsed_at_idx(
+                    "regional_enablement",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            constraint_enablement: row
+                .get_opt_custom_parsed_at_idx(
+                    "constraint_enablement",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            region_base_cost: row
+                .get_opt_custom_parsed_at_idx(
+                    "region_base_cost",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            base_cost: row
+                .get_opt_custom_parsed_at_idx(
+                    "base_cost",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            adjusted_cost: row
+                .get_opt_custom_parsed_at_idx(
+                    "adjusted_cost",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            p_regulation: row
+                .get_opt_custom_parsed_at_idx(
+                    "p_regulation",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(P5minFcasReqConstraint1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> P5minFcasReqConstraint1PrimaryKey {
+        P5minFcasReqConstraint1PrimaryKey {
+            bidtype: row.bidtype().to_string(),
+            constraintid: row.constraintid().to_string(),
+            interval_datetime: row.interval_datetime,
+            regionid: row.regionid().to_string(),
+            run_datetime: row.run_datetime,
+            runno: row.runno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_fcas_req_constraint_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        P5minFcasReqConstraint1Row {
+            run_datetime: row.run_datetime.clone(),
+            runno: row.runno.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            constraintid: row.constraintid.clone(),
+            regionid: row.regionid.clone(),
+            bidtype: row.bidtype.clone(),
+            lhs: row.lhs.clone(),
+            rhs: row.rhs.clone(),
+            marginalvalue: row.marginalvalue.clone(),
+            rrp: row.rrp.clone(),
+            regional_enablement: row.regional_enablement.clone(),
+            constraint_enablement: row.constraint_enablement.clone(),
+            region_base_cost: row.region_base_cost.clone(),
+            base_cost: row.base_cost.clone(),
+            adjusted_cost: row.adjusted_cost.clone(),
+            p_regulation: row.p_regulation.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct P5minFcasReqConstraint1PrimaryKey {
+    pub bidtype: alloc::string::String,
+    pub constraintid: alloc::string::String,
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub regionid: alloc::string::String,
+    pub run_datetime: chrono::NaiveDateTime,
+    pub runno: i64,
+}
+impl mmsdm_core::PrimaryKey for P5minFcasReqConstraint1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for P5minFcasReqConstraint1Row<'data> {
+    type Row<'other> = P5minFcasReqConstraint1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.bidtype() == row.bidtype() && self.constraintid() == row.constraintid()
+            && self.interval_datetime == row.interval_datetime
+            && self.regionid() == row.regionid() && self.run_datetime == row.run_datetime
+            && self.runno == row.runno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for P5minFcasReqConstraint1Row<'data> {
+    type PrimaryKey = P5minFcasReqConstraint1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype() == key.bidtype && self.constraintid() == key.constraintid
+            && self.interval_datetime == key.interval_datetime
+            && self.regionid() == key.regionid && self.run_datetime == key.run_datetime
+            && self.runno == key.runno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for P5minFcasReqConstraint1PrimaryKey {
+    type Row<'other> = P5minFcasReqConstraint1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.bidtype == row.bidtype() && self.constraintid == row.constraintid()
+            && self.interval_datetime == row.interval_datetime
+            && self.regionid == row.regionid() && self.run_datetime == row.run_datetime
+            && self.runno == row.runno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for P5minFcasReqConstraint1PrimaryKey {
+    type PrimaryKey = P5minFcasReqConstraint1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.bidtype == key.bidtype && self.constraintid == key.constraintid
+            && self.interval_datetime == key.interval_datetime
+            && self.regionid == key.regionid && self.run_datetime == key.run_datetime
+            && self.runno == key.runno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for P5minFcasReqConstraint1 {
+    type Builder = P5minFcasReqConstraint1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "constraintid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "bidtype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lhs",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "rhs",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "marginalvalue",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "rrp",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "regional_enablement",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "constraint_enablement",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "region_base_cost",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "base_cost",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "adjusted_cost",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "p_regulation",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        P5minFcasReqConstraint1Builder {
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            runno_array: arrow::array::builder::Int64Builder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            lhs_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            rhs_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            marginalvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            rrp_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            regional_enablement_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            constraint_enablement_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            region_base_cost_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            base_cost_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            adjusted_cost_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            p_regulation_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder.runno_array.append_value(row.runno);
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.constraintid_array.append_value(row.constraintid());
+        builder.regionid_array.append_value(row.regionid());
+        builder.bidtype_array.append_value(row.bidtype());
+        builder
+            .lhs_array
+            .append_option({
+                row.lhs
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .rhs_array
+            .append_option({
+                row.rhs
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .marginalvalue_array
+            .append_option({
+                row.marginalvalue
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .rrp_array
+            .append_option({
+                row.rrp
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .regional_enablement_array
+            .append_option({
+                row.regional_enablement
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .constraint_enablement_array
+            .append_option({
+                row.constraint_enablement
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .region_base_cost_array
+            .append_option({
+                row.region_base_cost
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .base_cost_array
+            .append_option({
+                row.base_cost
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .adjusted_cost_array
+            .append_option({
+                row.adjusted_cost
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .p_regulation_array
+            .append_option({
+                row.p_regulation
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.constraintid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bidtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lhs_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.rhs_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.marginalvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.rrp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regional_enablement_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.constraint_enablement_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.region_base_cost_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.base_cost_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.adjusted_cost_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.p_regulation_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct P5minFcasReqConstraint1Builder {
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    runno_array: arrow::array::builder::Int64Builder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    constraintid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    bidtype_array: arrow::array::builder::StringBuilder,
+    lhs_array: arrow::array::builder::Decimal128Builder,
+    rhs_array: arrow::array::builder::Decimal128Builder,
+    marginalvalue_array: arrow::array::builder::Decimal128Builder,
+    rrp_array: arrow::array::builder::Decimal128Builder,
+    regional_enablement_array: arrow::array::builder::Decimal128Builder,
+    constraint_enablement_array: arrow::array::builder::Decimal128Builder,
+    region_base_cost_array: arrow::array::builder::Decimal128Builder,
+    base_cost_array: arrow::array::builder::Decimal128Builder,
+    adjusted_cost_array: arrow::array::builder::Decimal128Builder,
+    p_regulation_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct P5minFcasReqRun1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &P5minFcasReqRun1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl P5minFcasReqRun1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct P5minFcasReqRun1Mapping([usize; 3]);
+/// # Summary
+///
+/// ## P5MIN_FCAS_REQ_RUN
+///
+/// The constraint FCAS processor run details. This enhanced output table format is established for the constraint FCAS processor release required for the Frequency Performance Payments (FPP) release. This enhanced output is hierarchical in nature, with the parent *_FCAS_REQ_RUN table holding the details about the triggering case run and time, and the child *_FCAS_REQ_CONSTRAINT table holding the constraint level details of FCAS costs / prices.
+///
+/// * Data Set Name: P5min
+/// * File Name: Fcas Req Run
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * RUN_DATETIME
+/// * RUNNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct P5minFcasReqRun1Row<'data> {
+    /// The run date and time of the 5 minute predispatch case that triggers the constraint FCAS processor run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// The 5 minute predispatch case run number that has triggers the constraint FCAS processor run
+    pub runno: i64,
+    /// The last time the constraint FCAS processor was executed for this case run time.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: core::marker::PhantomData<&'data ()>,
+}
+impl<'data> P5minFcasReqRun1Row<'data> {}
+impl mmsdm_core::GetTable for P5minFcasReqRun1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "P5MIN";
+    const TABLE_NAME: &'static str = "FCAS_REQ_RUN";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minFcasReqRun1Mapping([4, 5, 6]);
+    const COLUMNS: &'static [&'static str] = &["RUN_DATETIME", "RUNNO", "LASTCHANGED"];
+    type Row<'row> = P5minFcasReqRun1Row<'row>;
+    type FieldMapping = P5minFcasReqRun1Mapping;
+    type PrimaryKey = P5minFcasReqRun1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(P5minFcasReqRun1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            runno: row.get_parsed_at_idx("runno", field_mapping.0[1])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: core::marker::PhantomData,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(P5minFcasReqRun1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> P5minFcasReqRun1PrimaryKey {
+        P5minFcasReqRun1PrimaryKey {
+            run_datetime: row.run_datetime,
+            runno: row.runno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("p5min_fcas_req_run_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        P5minFcasReqRun1Row {
+            run_datetime: row.run_datetime.clone(),
+            runno: row.runno.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: core::marker::PhantomData,
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct P5minFcasReqRun1PrimaryKey {
+    pub run_datetime: chrono::NaiveDateTime,
+    pub runno: i64,
+}
+impl mmsdm_core::PrimaryKey for P5minFcasReqRun1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for P5minFcasReqRun1Row<'data> {
+    type Row<'other> = P5minFcasReqRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.run_datetime == row.run_datetime && self.runno == row.runno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for P5minFcasReqRun1Row<'data> {
+    type PrimaryKey = P5minFcasReqRun1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.run_datetime == key.run_datetime && self.runno == key.runno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for P5minFcasReqRun1PrimaryKey {
+    type Row<'other> = P5minFcasReqRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.run_datetime == row.run_datetime && self.runno == row.runno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for P5minFcasReqRun1PrimaryKey {
+    type PrimaryKey = P5minFcasReqRun1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.run_datetime == key.run_datetime && self.runno == key.runno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for P5minFcasReqRun1 {
+    type Builder = P5minFcasReqRun1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "runno",
+                    arrow::datatypes::DataType::Int64,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        P5minFcasReqRun1Builder {
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            runno_array: arrow::array::builder::Int64Builder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder.runno_array.append_value(row.runno);
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.runno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct P5minFcasReqRun1Builder {
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    runno_array: arrow::array::builder::Int64Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct P5minFcasRequirment1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -1518,15 +2393,18 @@ pub struct P5minFcasRequirment1Mapping([usize; 16]);
 /// # Summary
 ///
 /// ## P5MIN_FCAS_REQUIREMENT
-///  _5-minute Predispatch constraint tracking for Regional FCAS recovery_
+///
+/// 5-minute Predispatch constraint tracking for Regional FCAS recovery
 ///
 /// * Data Set Name: P5min
 /// * File Name: Fcas Requirment
 /// * Data Version: 1
 ///
+/// # Description
+/// P5MIN_INTERCONNECTORSOLN is public data, so is available to all participants.SourceP5MIN_INTERCONNECTORSOLN updates every 5 minutes.VolumeRows per day: 1440Based on 200 interconnector/binding constraints per interval
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -1535,7 +2413,6 @@ pub struct P5minFcasRequirment1Mapping([usize; 16]);
 /// * INTERVAL_DATETIME
 /// * REGIONID
 /// * RUN_DATETIME
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct P5minFcasRequirment1Row<'data> {
     /// First interval of the 5-minute Predispatch case
@@ -2152,23 +3029,24 @@ pub struct P5minInterconnectorsoln4Mapping([usize; 22]);
 /// # Summary
 ///
 /// ## P5MIN_INTERCONNECTORSOLN
-///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_INTERCONNECTORSOLN sets out the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval._
+///
+/// The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.P5MIN_INTERCONNECTORSOLN sets out the results of the capacity evaluation for Interconnectors, including the calculated limits for the interval.
 ///
 /// * Data Set Name: P5min
 /// * File Name: Interconnectorsoln
 /// * Data Version: 4
 ///
 /// # Description
-///  P5MIN_INTERCONNECTORSOLN is public data, so is available to all participants. Source P5MIN_INTERCONNECTORSOLN updates every 5 minutes. Volume Rows per day: 1440 Based on 200 interconnector/binding constraints per interval
+/// P5MIN_INTERCONNECTORSOLN is public data, so is available to all participants.SourceP5MIN_INTERCONNECTORSOLN updates every 5 minutes.VolumeRows per day: 1440Based on 200 interconnector/binding constraints per interval
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
 /// * INTERCONNECTORID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct P5minInterconnectorsoln4Row<'data> {
     /// Unique Timestamp Identifier for this study
@@ -2205,11 +3083,11 @@ pub struct P5minInterconnectorsoln4Row<'data> {
     pub fcasimportlimit: Option<rust_decimal::Decimal>,
     /// Last changed date of this record
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Export (Factor &gt;= 0)
+    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Export (Factor >= 0)
     pub local_price_adjustment_export: Option<rust_decimal::Decimal>,
     /// Key for Local_Price_Adjustment_Export: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
     pub locally_constrained_export: Option<rust_decimal::Decimal>,
-    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Import (Factor &gt;= 0)
+    /// Aggregate Constraint contribution cost of this Interconnector: Sum(MarginalValue x Factor) for all relevant Constraints, for Import (Factor >= 0)
     pub local_price_adjustment_import: Option<rust_decimal::Decimal>,
     /// Key for Local_Price_Adjustment_Import: 2 = at least one Outage Constraint; 1 = at least 1 System Normal Constraint (and no Outage Constraint); 0 = No System Normal or Outage Constraints
     pub locally_constrained_import: Option<rust_decimal::Decimal>,
@@ -2987,22 +3865,24 @@ pub struct P5minIntersensitivities1Mapping([usize; 49]);
 /// # Summary
 ///
 /// ## P5MIN_INTERSENSITIVITIES
-///  _Price Sensitivies for 5MinPD solution. New solution every 5 minutes. Current Scenarios defined in P5MIN_SCENARIODEMANDTRK/P5MIN_SCENARIODEMAND_
+///
+/// Price Sensitivies for 5MinPD solution. New solution every 5 minutes. Current Scenarios defined in P5MIN_SCENARIODEMANDTRK/P5MIN_SCENARIODEMAND
 ///
 /// * Data Set Name: P5min
 /// * File Name: Intersensitivities
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
 /// * INTERCONNECTORID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct P5minIntersensitivities1Row<'data> {
     /// Definitive Run from which this solution derives
@@ -4631,15 +5511,18 @@ pub struct P5minLocalPrice1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## P5MIN_LOCAL_PRICE
-///  _Sets out local pricing offsets associated with each DUID connection point for each dispatch period_
+///
+/// Sets out local pricing offsets associated with each DUID connection point for each dispatch period
 ///
 /// * Data Set Name: P5min
 /// * File Name: Local Price
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -4947,22 +5830,24 @@ pub struct P5minPricesensitivities1Mapping([usize; 49]);
 /// # Summary
 ///
 /// ## P5MIN_PRICESENSITIVITIES
-///  _Price Sensitivies for 5MinPD solution. New solution every 5 minutes. Current Scenarios defined in P5MIN_SCENARIODEMANDTRK/P5MIN_SCENARIODEMAND_
+///
+/// Price Sensitivies for 5MinPD solution. New solution every 5 minutes. Current Scenarios defined in P5MIN_SCENARIODEMANDTRK/P5MIN_SCENARIODEMAND
 ///
 /// * Data Set Name: P5min
 /// * File Name: Pricesensitivities
 /// * Data Version: 1
 ///
+/// # Description
+/// P5MIN_REGIONSOLUTION is public data, so is available to all participants.SourceP5MIN_REGIONSOLUTION updates every 5 minutes.VolumeRows per day: 1440
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
 /// * INTERVAL_DATETIME
 /// * REGIONID
 /// * RUN_DATETIME
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct P5minPricesensitivities1Row<'data> {
     /// Definitive Run from which this solution derives
@@ -6584,23 +7469,24 @@ pub struct P5minRegionsolution9Mapping([usize; 117]);
 /// # Summary
 ///
 /// ## P5MIN_REGIONSOLUTION
-///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_REGIONSOLUTION shows the results of the regional capacity, maximum surplus reserve and maximum spare capacity evaluations for each period of the study._
+///
+/// The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.P5MIN_REGIONSOLUTION shows the results of the regional capacity, maximum surplus reserve and maximum spare capacity evaluations for each period of the study.
 ///
 /// * Data Set Name: P5min
 /// * File Name: Regionsolution
 /// * Data Version: 9
 ///
 /// # Description
-///  P5MIN_REGIONSOLUTION is public data, so is available to all participants. Source P5MIN_REGIONSOLUTION updates every 5 minutes. Volume Rows per day: 1440
+/// P5MIN_REGIONSOLUTION is public data, so is available to all participants.SourceP5MIN_REGIONSOLUTION updates every 5 minutes.VolumeRows per day: 1440
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
 /// * INTERVAL_DATETIME
 /// * REGIONID
 /// * RUN_DATETIME
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct P5minRegionsolution9Row<'data> {
     /// Unique Timestamp Identifier for this study
@@ -10266,15 +11152,18 @@ pub struct P5minScenariodemand1Mapping([usize; 5]);
 /// # Summary
 ///
 /// ## P5MIN_SCENARIODEMAND
-///  _The P5Min scenario MW offsets_
+///
+/// The P5Min scenario MW offsets
 ///
 /// * Data Set Name: P5min
 /// * File Name: Scenariodemand
 /// * Data Version: 1
 ///
+/// # Description
 ///
 ///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -10587,15 +11476,18 @@ pub struct P5minScenariodemandtrk1Mapping([usize; 4]);
 /// # Summary
 ///
 /// ## P5MIN_SCENARIODEMANDTRK
-///  _Tracks the 5Min scenario offset updates across time_
+///
+/// Tracks the 5Min scenario offset updates across time
 ///
 /// * Data Set Name: P5min
 /// * File Name: Scenariodemandtrk
 /// * Data Version: 1
 ///
+/// # Description
+/// P5MIN_UNITSOLUTION data is confidential, so shows own details for participant.SourceP5MIN_UNITSOLUTION updates every 5 minutes for all units, even zero targets.VolumeRows per day: 57600Based on 200 units per IntervalNoteA bitwise flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The SPD Formulation document details the logic determining whether a unit is "trapped"or "stranded". The flag is defined as follows:Flagged ConditionBitDescriptionField valueFCAS profile active0The bid profile for this service has been activated such that the unit is available to be cleared to provide this ancillary service type.1 or 3Trapped1The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market.3Stranded2The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service.4
 ///
-///
-///
+/// # Notes
+/// * (Visibility)  Public
 ///
 /// # Primary Key Columns
 ///
@@ -10874,23 +11766,24 @@ pub struct P5minUnitsolution6Mapping([usize; 42]);
 /// # Summary
 ///
 /// ## P5MIN_UNITSOLUTION
-///  _The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.<br>P5MIN_UNITSOLUTION shows the Unit results from the capacity evaluations for each period of the study._
+///
+/// The five-minute predispatch (P5Min) is a MMS system providing projected dispatch for 12 Dispatch cycles (one hour). The 5-minute Predispatch cycle runs every 5-minutes to produce a dispatch and pricing schedule to a 5-minute resolution covering the next hour, a total of twelve periods.P5MIN_UNITSOLUTION shows the Unit results from the capacity evaluations for each period of the study.
 ///
 /// * Data Set Name: P5min
 /// * File Name: Unitsolution
 /// * Data Version: 6
 ///
 /// # Description
-///  P5MIN_UNITSOLUTION data is confidential, so shows own details for participant. Source P5MIN_UNITSOLUTION updates every 5 minutes for all units, even zero targets. Volume Rows per day: 57600 Based on 200 units per Interval Note A bitwise flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The SPD Formulation document details the logic determining whether a unit is "trapped" or "stranded". The flag is defined as follows: Flagged Condition Bit Description Field value FCAS profile active 0 The bid profile for this service has been activated such that the unit is available to be cleared to provide this ancillary service type. 1 or 3 Trapped 1 The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market. 3 Stranded 2 The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service. 4
+/// P5MIN_UNITSOLUTION data is confidential, so shows own details for participant.SourceP5MIN_UNITSOLUTION updates every 5 minutes for all units, even zero targets.VolumeRows per day: 57600Based on 200 units per IntervalNoteA bitwise flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The SPD Formulation document details the logic determining whether a unit is "trapped"or "stranded". The flag is defined as follows:Flagged ConditionBitDescriptionField valueFCAS profile active0The bid profile for this service has been activated such that the unit is available to be cleared to provide this ancillary service type.1 or 3Trapped1The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market.3Stranded2The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service.4
 ///
-///
+/// # Notes
+/// * (Visibility)  Private
 ///
 /// # Primary Key Columns
 ///
 /// * DUID
 /// * INTERVAL_DATETIME
 /// * RUN_DATETIME
-/// * INTERVENTION
 #[derive(Debug, PartialEq, Eq)]
 pub struct P5minUnitsolution6Row<'data> {
     /// Unique Timestamp Identifier for this study

@@ -7,7 +7,7 @@ use core::{
     cmp::Ordering,
     fmt,
     hash::Hash,
-    num::{NonZeroU16, NonZeroU8},
+    num::{NonZeroU8, NonZeroU16},
     ops::{Add, Div, Index, Range, Sub},
     str::{self, FromStr},
 };
@@ -1025,7 +1025,7 @@ pub mod mms_decimal {
 pub mod mms_decimal_opt {
     use rust_decimal::Decimal;
 
-    use crate::{mms_decimal, Result};
+    use crate::{Result, mms_decimal};
 
     pub fn parse(input: &str) -> Result<Option<Decimal>> {
         if input.is_empty() {
@@ -1037,8 +1037,8 @@ pub mod mms_decimal_opt {
 }
 
 pub mod mms_datetime_opt {
-    use crate::mms_datetime;
     use crate::Result;
+    use crate::mms_datetime;
     use chrono::NaiveDateTime;
 
     pub fn parse(input: &str) -> Result<Option<NaiveDateTime>> {

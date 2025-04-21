@@ -108,31 +108,81 @@ impl fmt::Display for Error {
             Error::Decimal(e) => write!(f, "Decimal parsing error: {e}"),
             Error::MissingFooterRecord => f.write_str("aemo file is missing the final `c` record"),
             Error::MissingHeaderRecord => f.write_str("aemo file is missing the first `c` record"),
-            Error::MissingFile { data_set_name, table_name, version: None } => write!(f, "aemo file was missing any {data_set_name}.{table_name} section in the file"),
-            Error::MissingFile { data_set_name, table_name, version: Some(v) } => write!(f, "aemo file was missing {data_set_name}.{table_name}.v{v} section in the file"),
-            Error::MissingSubtableHeadings(k) => write!(f, "aemo file was missing headings for {}.{:?}.v{} section in the file", k.data_set_name(), k.table_name(), k.version),
+            Error::MissingFile {
+                data_set_name,
+                table_name,
+                version: None,
+            } => write!(
+                f,
+                "aemo file was missing any {data_set_name}.{table_name} section in the file"
+            ),
+            Error::MissingFile {
+                data_set_name,
+                table_name,
+                version: Some(v),
+            } => write!(
+                f,
+                "aemo file was missing {data_set_name}.{table_name}.v{v} section in the file"
+            ),
+            Error::MissingSubtableHeadings(k) => write!(
+                f,
+                "aemo file was missing headings for {}.{:?}.v{} section in the file",
+                k.data_set_name(),
+                k.table_name(),
+                k.version
+            ),
             Error::EmptyRow => f.write_str("aemo file row is empty"),
             Error::EmptyFile(k) => write!(f, "Empty AEMO file: {k:?}"),
             Error::UnexpectedRowType(s) => write!(f, "unexpeted row type of {s}"),
             Error::ParseRow(s) => write!(f, "issue while parsing a CSV row: {s}"),
             Error::TooShortRow(x) => write!(f, "aemo file data row of length {x} is too short"),
-            Error::IncorrectLineCount { got, expected } => write!(f, "aemo file was supposed to be {expected} lines long but was instead {got} lines long"),
+            Error::IncorrectLineCount { got, expected } => write!(
+                f,
+                "aemo file was supposed to be {expected} lines long but was instead {got} lines long"
+            ),
             Error::UnhandledFileKey(x) => write!(f, "Recieved unexpected file of type {x}"),
             Error::ParseInt(x) => write!(f, "ParseInt error: {x}"),
-            Error::ParseIntDetailed(x, input) => write!(f, "ParseInt error: {x}, from input: {input}"),
-            Error::ParseDate { source, input, format }=> write!(f, "Failed to parse {input} with format {format} due to error: {source}"),
-            Error::ParseDateInternal { message, input, format }=> write!(f, "Failed to parse {input} with format {format} due to error: {message}"),
+            Error::ParseIntDetailed(x, input) => {
+                write!(f, "ParseInt error: {x}, from input: {input}")
+            }
+            Error::ParseDate {
+                source,
+                input,
+                format,
+            } => write!(
+                f,
+                "Failed to parse {input} with format {format} due to error: {source}"
+            ),
+            Error::ParseDateInternal {
+                message,
+                input,
+                format,
+            } => write!(
+                f,
+                "Failed to parse {input} with format {format} due to error: {message}"
+            ),
             Error::CreateFileLogError => f.write_str("Error creating file log"),
             Error::InvalidDispatchPeriod(x) => write!(f, "Invalid dispatch period: {x}"),
             Error::InvalidTradingPeriod(x) => write!(f, "Invalid trading period: {x}"),
             Error::ConvertFromInt(x) => write!(f, "TryFromIntError: {x}"),
-            Error::CannotFindFieldInRow { name, row, idx } => write!(f, "Unable to find field {name} at index {idx} in row {row:?}"),
-            Error::CannotParseField { name, data, source, raw_row } => write!(f, "Unable to parse field {name} from {data} due to {source} in row {raw_row:?}"),
-            #[cfg(feature = "std")]    
+            Error::CannotFindFieldInRow { name, row, idx } => write!(
+                f,
+                "Unable to find field {name} at index {idx} in row {row:?}"
+            ),
+            Error::CannotParseField {
+                name,
+                data,
+                source,
+                raw_row,
+            } => write!(
+                f,
+                "Unable to parse field {name} from {data} due to {source} in row {raw_row:?}"
+            ),
+            #[cfg(feature = "std")]
             Error::Io(e) => write!(f, "Io error: {e:?}"),
-            #[cfg(feature = "arrow")]    
+            #[cfg(feature = "arrow")]
             Error::Arrow(e) => write!(f, "Arrow error: {e:?}"),
-            #[cfg(feature = "std")]    
+            #[cfg(feature = "std")]
             Error::Zip(e) => write!(f, "Zip error: {e:?}"),
         }
     }
