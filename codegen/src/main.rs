@@ -1,14 +1,14 @@
 use structopt::StructOpt;
 
 mod analyse;
-mod json;
 mod download;
+mod html_tree;
+mod json;
 mod mms;
 mod pdr;
 mod python;
 mod rust;
 mod sql_server_tables;
-mod html_tree;
 
 pub const VERSION: &str = "5.4";
 
@@ -30,7 +30,9 @@ fn main() {
 
 #[tokio::main]
 async fn run() -> Result<(), anyhow::Error> {
-    env_logger::Builder::new().filter_level(log::LevelFilter::Info).init();
+    env_logger::Builder::new()
+        .filter_level(log::LevelFilter::Info)
+        .init();
     match AemoCodegen::from_args() {
         AemoCodegen::SqlServerTables => {
             sql_server_tables::run()?;

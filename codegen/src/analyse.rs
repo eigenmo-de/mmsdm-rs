@@ -1,6 +1,6 @@
 use std::fs;
 
-use crate::{mms, rust::TableMapping, VERSION};
+use crate::{VERSION, mms, rust::TableMapping};
 
 pub fn run() -> anyhow::Result<()> {
     let rdr = fs::File::open(format!("mmsdm_v{VERSION}.json"))?;

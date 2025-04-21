@@ -352,11 +352,16 @@ impl Element {
             filter: Box::new(|_| true),
         }
     }
-    pub fn iter_dfs_content<'a>(&'a self) -> ElementDecendantsFilteredContentOnlyIterDfs<'a> {
+    // should direct users to use concat DFS content
+    fn iter_dfs_content<'a>(&'a self) -> ElementDecendantsFilteredContentOnlyIterDfs<'a> {
         ElementDecendantsFilteredContentOnlyIterDfs {
             iter: self.iter_dfs(),
             filter: Box::new(|_| true),
         }
+    }
+
+    pub fn concat_dfs_content(&self) -> String {
+        self.iter_dfs_content().map(|c| c.as_str()).collect()
     }
 
     pub fn iter_dfs_elements_of_tag<'a, 'b>(
@@ -396,11 +401,10 @@ impl Element {
     //     }
     // }
 
-    pub fn iter_child_elements<'a, 'b>(
-        &'a self,
-    ) -> impl Iterator<Item = &'b Element> 
-    where 'a: 'b {
-
+    pub fn iter_child_elements<'a, 'b>(&'a self) -> impl Iterator<Item = &'b Element>
+    where
+        'a: 'b,
+    {
         self.children.iter().filter_map(|n| match n {
             ElementOrContent::Content(_) => None,
             ElementOrContent::Element(element) => Some(element),

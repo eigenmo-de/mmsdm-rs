@@ -6,7 +6,7 @@ use crate::{
 };
 use anyhow::{Context, anyhow, bail, ensure};
 use html5ever::tokenizer::Token::EOFToken;
-use log::{error, info};
+use log::{error, info, warn};
 
 const PACKAGES_TO_SKIP: &[&str] = &["CONFIGURATION", "HISTORICAL_TABLES", "VOLTAGE_INSTRUCTIONS"];
 
@@ -39,33 +39,15 @@ struct PackageTable {
     comment: String,
 }
 
-fn parse_package(parsed: &Element) -> anyhow::Result<(String, Package)> {
-    let form = parsed
-        .iter_dfs_elements_of_tag("table")
-        .filter(|e| e.attributes.get("class").map(|x| x.as_str()) == Some("Form"))
-        .next()
-        .ok_or_else(|| anyhow!("Missing Form table"))?;
-
-    let [title, description] = form
-        .iter_dfs_elements_of_tag("tr")
-        .filter_map(|tr| Some(tr.children.get(1)?.element()?.iter_dfs_content().next()?))
-        .collect::<Vec<_>>()[..]
-    else {
-        bail!("no `tr` with package name/comment available")
-    };
-
-    info!("Found package: {title}: {description}");
-
-    let tables_grid = parsed
-        .iter_dfs_elements_of_tag("table")
-        .filter(|e| e.attributes.get("class").map(|x| x.as_str()) == Some("Grid"))
-        .next()
-        .ok_or_else(|| anyhow!("Missing Grid table"))?;
-
+fn parse_package_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, PackageTable>> {
     let mut tables = BTreeMap::new();
 
-    for tr in tables_grid.iter_dfs_elements_of_tag("tr") {
-        let [name, comment, visibility] = tr.iter_dfs_content().collect::<Vec<_>>()[..] else {
+    for tr in parsed.iter_dfs_elements_of_tag("tr") {
+        let Ok([name, comment, visibility]) = <[String; 3]>::try_from(
+            tr.iter_dfs_elements_of_tag("td")
+                .map(|el| el.concat_dfs_content())
+                .collect::<Vec<_>>(),
+        ) else {
             bail!("unable to extract three columns from row: {tr:?}")
         };
 
@@ -90,6 +72,36 @@ fn parse_package(parsed: &Element) -> anyhow::Result<(String, Package)> {
         );
     }
 
+    ensure!(!tables.is_empty(), "Unable to parse any package tables");
+
+    Ok(tables)
+}
+
+fn parse_package(parsed: &Element) -> anyhow::Result<(String, Package)> {
+    let form = parsed
+        .iter_dfs_elements_of_tag("table")
+        .filter(|e| e.attributes.get("class").map(|x| x.as_str()) == Some("Form"))
+        .next()
+        .ok_or_else(|| anyhow!("Missing Form table"))?;
+
+    let Ok([title, description]) = <[String; 2]>::try_from(
+        form.iter_dfs_elements_of_tag("tr")
+            .filter_map(|tr| Some(tr.children.get(1)?.element()?.concat_dfs_content()))
+            .collect::<Vec<_>>(),
+    ) else {
+        bail!("no `tr` with package name/comment available")
+    };
+
+    info!("Found package: {title}: {description}");
+
+    let tables_grid = parsed
+        .iter_dfs_elements_of_tag("table")
+        .filter(|e| e.attributes.get("class").map(|x| x.as_str()) == Some("Grid"))
+        .next()
+        .ok_or_else(|| anyhow!("Missing Grid table"))?;
+
+    let tables = parse_package_tables(tables_grid)?;
+
     Ok((
         title.clone(),
         Package {
@@ -107,7 +119,7 @@ struct Table {
     // preserve ordering
     primary_key_columns: Vec<String>,
     // preserve ordering
-    index_columns: (Vec<String>, Vec<String>),
+    index_columns: (Vec<String>, Vec<String>, Vec<String>),
     // preserve ordering
     content: Vec<TableColumn>,
 }
@@ -133,7 +145,7 @@ fn parse_name_and_comment(table: &Element) -> anyhow::Result<(String, String)> {
             if el.attributes.get("width")? != "75%" {
                 return None;
             };
-            el.iter_dfs_content().next().cloned()
+            Some(el.concat_dfs_content())
         })
         .collect::<Vec<_>>();
 
@@ -145,10 +157,7 @@ fn parse_name_and_comment(table: &Element) -> anyhow::Result<(String, String)> {
 }
 
 fn parse_description(table: &Element) -> String {
-    table
-        .iter_dfs_content()
-        .map(|s| s.as_str())
-        .collect::<String>()
+    table.concat_dfs_content()
 }
 
 fn parse_notes(table: &Element) -> anyhow::Result<BTreeMap<String, TableNote>> {
@@ -163,25 +172,19 @@ fn parse_notes(table: &Element) -> anyhow::Result<BTreeMap<String, TableNote>> {
                 .iter_dfs_elements_of_tag("td")
                 .nth(0)
                 .ok_or_else(|| anyhow!("Missing td at index [0] in table note"))?
-                .iter_dfs_content()
-                .map(|s| s.as_str())
-                .collect::<String>();
+                .concat_dfs_content();
 
             let comment = row
                 .iter_dfs_elements_of_tag("td")
                 .nth(1)
                 .ok_or_else(|| anyhow!("Missing td at index [1] in table note"))?
-                .iter_dfs_content()
-                .map(|s| s.as_str())
-                .collect::<String>();
+                .concat_dfs_content();
 
             let value = row
                 .iter_dfs_elements_of_tag("td")
                 .nth(2)
                 .ok_or_else(|| anyhow!("Missing td at index [2] in table note"))?
-                .iter_dfs_content()
-                .map(|s| s.as_str())
-                .collect::<String>();
+                .concat_dfs_content();
 
             Ok((name, TableNote { comment, value }))
         })
@@ -192,14 +195,72 @@ fn parse_column_names(table: &Element) -> Vec<String> {
     table
         .iter_dfs_elements_of_tag("tr")
         .skip(1)
-        .filter_map(|el| el.iter_dfs_content().next())
-        .cloned()
+        .map(|el| el.concat_dfs_content())
         .collect::<Vec<_>>()
 }
 
 fn parse_content(table: &Element) -> anyhow::Result<Vec<TableColumn>> {
-    let mut columns = Vec::new();
-    Ok(columns)
+    let mut items = Vec::new();
+
+    for row in table.iter_dfs_elements_of_tag("tr").skip(1) {
+        let mut parts = Vec::with_capacity(4);
+
+        for column in row.iter_dfs_elements_of_tag("td") {
+            parts.push(column.concat_dfs_content());
+        }
+
+        match <[String; 4]>::try_from(parts) {
+            Ok([name, data_type, mandatory, comment]) => items.push(TableColumn {
+                name,
+                data_type: data_type.parse()?,
+                mandatory: mandatory.contains("X"),
+                comment,
+            }),
+            Err(e) => {
+                bail!("Unexpected content row, should have four items: {e:?}",);
+            }
+        }
+    }
+    Ok(items)
+}
+
+fn parse_package_continued(parsed: &Element) -> anyhow::Result<BTreeMap<String, PackageTable>> {
+    ensure!(
+        parsed
+            .iter_dfs_elements_of_tag("h3")
+            .map(|el| el.concat_dfs_content())
+            .next()
+            .unwrap_or_default()
+            .starts_with("List of tables"),
+        "Unable to find 'List of tables' heading in package-continued page"
+    );
+
+    let tables_grid = parsed
+        .iter_dfs_elements_of_tag("table")
+        .filter(|e| e.attributes.get("class").map(|x| x.as_str()) == Some("Grid"))
+        .next()
+        .ok_or_else(|| anyhow!("Missing Grid table"))?;
+
+    parse_package_tables(tables_grid)
+}
+
+fn parse_content_continued(parsed: &Element) -> anyhow::Result<Vec<TableColumn>> {
+    ensure!(
+        parsed
+            .iter_dfs_elements_of_tag("h3")
+            .next()
+            .map(|e| e.concat_dfs_content())
+            .unwrap_or_default()
+            .contains("Content"),
+        "Missing `Content` header"
+    );
+
+    let table_el = parsed
+        .iter_dfs_elements_of_tag("table")
+        .next()
+        .ok_or_else(|| anyhow!("No table element available"))?;
+
+    parse_content(table_el)
 }
 
 fn parse_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, Table>> {
@@ -214,13 +275,7 @@ fn parse_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, Table>> {
         .iter_child_elements()
         .enumerate()
         .filter_map(|(idx, el)| {
-            if el.name == "h2"
-                && el
-                    .iter_dfs_content()
-                    .next()
-                    .map(|c| c.starts_with("Table:"))
-                    .unwrap_or(false)
-            {
+            if el.name == "h2" && el.concat_dfs_content().starts_with("Table:") {
                 Some(idx)
             } else {
                 None
@@ -235,19 +290,15 @@ fn parse_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, Table>> {
             .iter_child_elements()
             .skip(table)
             .filter(|el| el.name == "h3")
-            .map(|el| {
-                el.iter_dfs_content()
-                    .map(|s| s.as_str())
-                    .collect::<String>()
-            })
-            .take(7)
+            .map(|el| el.concat_dfs_content())
+            .take(8)
             .collect::<Vec<_>>();
 
         let tables = body_el
             .iter_child_elements()
             .skip(table)
             .filter(|el| el.name == "table")
-            .take(7)
+            .take(8)
             .collect::<Vec<_>>();
 
         // item[0] => comment
@@ -278,6 +329,7 @@ fn parse_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, Table>> {
         let primary_key_columns_index = find_heading("Primary Key Columns", 0)?;
         let index_columns_index_1st = find_heading("Index Columns", 0).ok();
         let index_columns_index_2nd = find_heading("Index Columns", 1).ok();
+        let index_columns_index_3rd = find_heading("Index Columns", 2).ok();
         let content_index = find_heading("Content", 0)?;
 
         let description = match description_index {
@@ -295,6 +347,10 @@ fn parse_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, Table>> {
             Some(idx) => parse_column_names(tables[idx]),
             None => Vec::new(),
         };
+        let index_3rd = match index_columns_index_3rd {
+            Some(idx) => parse_column_names(tables[idx]),
+            None => Vec::new(),
+        };
         let content = parse_content(tables[content_index])?;
 
         parsed_tables.insert(
@@ -304,11 +360,13 @@ fn parse_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, Table>> {
                 description,
                 notes,
                 primary_key_columns,
-                index_columns: (index_1st, index_2nd),
+                index_columns: (index_1st, index_2nd, index_3rd),
                 content,
             },
         );
     }
+
+    ensure!(!parsed_tables.is_empty(), "Unable to parse any tables");
 
     Ok(parsed_tables)
 }
@@ -320,9 +378,9 @@ fn parse_tables(parsed: &Element) -> anyhow::Result<BTreeMap<String, Table>> {
 // d) table... continued
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-struct FileNameParts {
-    number: u16,
-    extra: Option<u16>,
+pub struct FileNameParts {
+    pub number: u16,
+    pub extra: Option<u16>,
 }
 
 impl FromStr for FileNameParts {
@@ -375,7 +433,7 @@ pub async fn run() -> anyhow::Result<()> {
 
     let mut packages = BTreeMap::<String, Package>::new();
 
-    for (_, file) in files.iter().take(10) {
+    for (_, file) in files.iter() {
         // go through all cached files
         // and try to parse a package from each file.
 
@@ -386,6 +444,17 @@ pub async fn run() -> anyhow::Result<()> {
 
         // the title
 
+        if parsed
+            .iter_dfs_elements_of_tag("h2")
+            .next()
+            .map(|e| e.concat_dfs_content())
+            .unwrap_or_default()
+            .starts_with("Diagram: Entities:")
+        {
+            info!("Diagram only page in file {}, skipping", file.display());
+            continue;
+        }
+
         match parse_package(&parsed) {
             Ok((name, package)) if PACKAGES_TO_SKIP.contains(&name.as_str()) => {
                 info!(
@@ -394,20 +463,85 @@ pub async fn run() -> anyhow::Result<()> {
                 );
                 continue;
             }
-            Ok((name, package)) => match packages.get_mut(&name) {
-                Some(existing) => {
-                    existing.merge(package)?;
-                }
-                None => {
-                    packages.insert(name, package);
-                }
-            },
+            Ok((name, package)) => {
+                let len = package.tables.len();
+                match packages.get_mut(&name) {
+                    Some(existing) => {
+                        existing.merge(package)?;
+                    }
+                    None => {
+                        packages.insert(name, package);
+                    }
+                };
+                info!(
+                    "Successfully parsed page {} as package with {len} tables headings",
+                    file.display()
+                );
+                continue;
+            }
             Err(e) => {
-                let t = parse_tables(&parsed)?;
-                dbg!(t);
-                // bail!("Path: `{}`, Error parsing package: {e:?}", file.display());
+                warn!(
+                    "Issue parsing page {} as package, trying to parse as tables. Error: {e:?}",
+                    file.display()
+                );
             }
         }
+
+        match parse_package_continued(&parsed) {
+            Ok(continued) => {
+                info!(
+                    "Successfully parsed page {} as package-continued with {} tables headings",
+                    file.display(),
+                    continued.len()
+                );
+
+                continue;
+            }
+            Err(e) => {
+                warn!(
+                    "Issue parsing page {} as package-continued, trying to parse as tables. Error: {e:?}",
+                    file.display()
+                );
+            }
+        }
+
+        match parse_tables(&parsed) {
+            Ok(tables) => {
+                info!(
+                    "Successfully parsed page {} as tables with {} tables schemas",
+                    file.display(),
+                    tables.len()
+                );
+
+                continue;
+            }
+            Err(e) => {
+                warn!(
+                    "Issue parsing page {} as tables, trying to parse as content-continued. Error: {e:?}",
+                    file.display()
+                );
+            }
+        }
+
+        match parse_content_continued(&parsed) {
+            Ok(continued) => {
+                info!(
+                    "Successfully parsed page {} as content-continued with {} columns",
+                    file.display(),
+                    continued.len()
+                );
+
+                continue;
+            }
+            Err(e) => {
+                warn!(
+                    "Issue parsing page {} as content-continued, giving up. Error: {e:?}",
+                    file.display()
+                );
+            }
+        }
+
+        bail!("Unable to parse page {}", file.display());
     }
 
     // dbg!(packages);

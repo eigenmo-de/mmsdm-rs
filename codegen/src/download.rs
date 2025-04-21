@@ -1,14 +1,16 @@
+use anyhow::Context;
 use anyhow::anyhow;
 use anyhow::bail;
-use anyhow::Context;
 use log::info;
 use reqwest::StatusCode;
 use reqwest::Url;
 
 use crate::html_tree::ElementParser;
+use crate::json::FileNameParts;
 
 use std::collections::BTreeMap;
 
+use std::path::PathBuf;
 use std::time::Duration;
 
 fn add_path(url: &Url, path: &str) -> Url {
@@ -18,6 +20,19 @@ fn add_path(url: &Url, path: &str) -> Url {
 }
 
 pub async fn run() -> anyhow::Result<()> {
+    let mut files = Vec::<FileNameParts>::new();
+    let mut readdir = tokio::fs::read_dir("./cache").await?;
+
+    while let Some(item) = readdir.next_entry().await? {
+        let path = item.path();
+        files.push(
+            path.file_name()
+                .and_then(|n| n.to_str())
+                .ok_or_else(|| anyhow!("Unexpected file name {}", path.display()))?
+                .parse()?,
+        );
+    }
+
     let base = "https://nemweb.com.au/Reports/Current/MMSDataModelReport/Electricity/Electricity%20Data%20Model%20Report_files";
     let base_url = base.parse::<Url>()?;
     let url = {
@@ -80,6 +95,16 @@ pub async fn run() -> anyhow::Result<()> {
     }
 
     for (current_idx, (_, _)) in package_with_table_urls.iter() {
+        info!("Proposing to download file with index: {current_idx}");
+
+        if files
+            .iter()
+            .find(|fnp| usize::from(fnp.number) == *current_idx)
+            .is_some()
+        {
+            continue;
+        }
+
         // this finds the baseline URL
         // we then need iterate by 1 to find the data url
         // then we need to iterate with _1, _2, etc, then iterate the top level by 1, continuing until we reach the next url.
@@ -96,6 +121,10 @@ pub async fn run() -> anyhow::Result<()> {
             .unwrap_or_else(|| current_idx + 5);
 
         for detail_idx in *current_idx..next_idx {
+            if detail_idx > 78 {
+                break;
+            }
+
             for underscore_idx in 0..=5 {
                 // try to get the detail page
 
