@@ -29,3 +29,4 @@ prettyplease = "0.2.9"
 syn = "2.0.17"
 itertools = "0.12.1"
 indexmap = { version = "2.9.0", features = ["serde"] }
+rc-zip = { version = "5.3.1", features = ["deflate"]}

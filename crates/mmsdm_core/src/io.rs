@@ -10,17 +10,17 @@ use std::{
     io::{BufRead, BufReader, Read, Seek},
     marker::PhantomData,
 };
-use zip::{ZipArchive, read::ZipFile};
+use rc_zip_sync::{ArchiveHandle, HasCursor};
 
-pub struct FileReader<'a, R: Read + Seek> {
-    reader: &'a mut ZipArchive<R>,
+pub struct FileReader<'a, R: HasCursor> {
+    reader: ArchiveHandle<'a, R>,
     header: AemoHeader,
     file_headings: BTreeMap<FileKey<'static>, usize>,
 }
 
 impl<'reader, R> FileReader<'reader, R>
 where
-    R: Read + Seek,
+    R: HasCursor,
 {
     pub fn new(reader: &'reader mut ZipArchive<R>) -> Result<FileReader<'reader, R>> {
         // defensively reset to the start

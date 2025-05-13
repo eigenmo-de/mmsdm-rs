@@ -28,10 +28,8 @@ features = []
 workspace = true
 default-features = false
 
-[dependencies.zip]
+[dependencies.rc-zip-sync]
 workspace = true
-default-features = false
-features = ["deflate"]
 optional = true
 
 [dependencies.arrow]
@@ -44,4 +42,4 @@ workspace = true
 [features]
 arrow = ["dep:arrow", "std"]
 default = ["std"]
-std = ["dep:zip", "rust_decimal/std", "chrono/std", "chrono/now", "csv-core/libc"]
+std = ["dep:rc-zip-sync", "rust_decimal/std", "chrono/std", "chrono/now", "csv-core/libc"]
