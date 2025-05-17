@@ -5,6 +5,7 @@ use std::io::{Read, Seek};
 
 use alloc::sync::Arc;
 pub use arrow::{array::RecordBatch, datatypes::Schema};
+use rc_zip_sync::HasCursor;
 
 use crate::{FileReader, GetTable, PartitionValue};
 
@@ -16,7 +17,7 @@ pub trait ArrowSchema: GetTable {
     fn finalize_builder(builder: &mut Self::Builder) -> crate::Result<arrow::array::RecordBatch>;
 }
 
-pub fn accumulate_batch<'a, R: Read + Seek, T: ArrowSchema, F>(
+pub fn accumulate_batch<'a, R: HasCursor, T: ArrowSchema, F>(
     reader: &mut FileReader<'a, R>,
     mut filter: F,
     manager: Arc<T>,
@@ -40,7 +41,7 @@ where
     T::finalize_builder(&mut builder)
 }
 
-pub fn partition_to_batch<'a, R: Read + Seek, T: ArrowSchema>(
+pub fn partition_to_batch<'a, R: HasCursor, T: ArrowSchema>(
     reader: &mut FileReader<'a, R>,
     partition: PartitionValue,
     manager: Arc<T>,

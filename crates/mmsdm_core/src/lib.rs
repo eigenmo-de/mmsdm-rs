@@ -1265,13 +1265,11 @@ pub mod mms_time {
 
 #[cfg(test)]
 mod tests {
-    use zip::ZipArchive;
+    use rc_zip_sync::ReadZip;
 
     use super::*;
 
     extern crate std;
-
-    use std::io::Cursor;
 
     static OLD_FORMAT: &'static [u8] =
         include_bytes!("../../../PUBLIC_DVD_DAYTRACK_202407010000.zip");
@@ -1280,9 +1278,10 @@ mod tests {
 
     #[test]
     fn test_full_parse_old() {
-        let mut archive = ZipArchive::new(Cursor::new(OLD_FORMAT)).unwrap();
+        let archive = OLD_FORMAT.read_zip().unwrap();
+        let handle = archive.entries().next().unwrap();
 
-        let fr = FileReader::new(&mut archive).unwrap();
+        let fr = FileReader::from_entry(handle).unwrap();
 
         assert_eq!(fr.sub_files().len(), 1);
 
@@ -1296,9 +1295,10 @@ mod tests {
 
     #[test]
     fn test_full_parse_new() {
-        let mut archive = ZipArchive::new(Cursor::new(NEW_FORMAT)).unwrap();
+        let archive = NEW_FORMAT.read_zip().unwrap();
+        let handle = archive.entries().next().unwrap();
 
-        let fr = FileReader::new(&mut archive).unwrap();
+        let fr = FileReader::from_entry(handle).unwrap();
 
         assert_eq!(fr.sub_files().len(), 1);
 

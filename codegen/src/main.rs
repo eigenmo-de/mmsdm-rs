@@ -1,8 +1,9 @@
-use core::arch;
-use std::{io::{BufRead, Read, Seek}, iter};
+use std::{
+    io::{Read, Seek},
+    iter,
+};
 
 use anyhow::Context;
-use futures::io::BufReader;
 use log::info;
 use rc_zip::fsm::{ArchiveFsm, DecompressOutcome, EntryFsm, FsmResult};
 use structopt::StructOpt;
@@ -17,7 +18,7 @@ mod pdr;
 mod rust;
 mod sql_server_tables;
 
-pub const VERSION: &str = "5.4";
+pub const VERSION: &str = "5.5";
 
 #[derive(structopt::StructOpt)]
 #[structopt(about = "Code generation on the MMS Data Model")]
@@ -38,7 +39,7 @@ fn main() {
 #[tokio::main]
 async fn run() -> Result<(), anyhow::Error> {
     env_logger::Builder::new()
-        // .filter_level/(log::LevelFilter::Info)
+        .filter_level(log::LevelFilter::Info)
         .init();
 
     let file_name = format!("mmsdm_v{VERSION}.json");
@@ -189,7 +190,7 @@ fn unzip() -> anyhow::Result<()> {
 
     let mut total_read = 0;
     let mut total_decompress = 0;
-    loop  {
+    loop {
         if entry_fsm.wants_read() {
             //  let len_read = f.read(&mut buf[..]).context("read from file")?;
             // total_read += len_read;
@@ -204,20 +205,16 @@ fn unzip() -> anyhow::Result<()> {
             //             // do nothing
             //         }
             //      }
-     
 
             //  }
 
-             let len_read = f.read(entry_fsm.space())?;
-             total_read += len_read;
-             entry_fsm.fill(len_read);
+            let len_read = f.read(entry_fsm.space())?;
+            total_read += len_read;
+            entry_fsm.fill(len_read);
         }
 
-
-        entry_fsm = match entry_fsm.process( &mut out_buf[..]).context("process")? {
+        entry_fsm = match entry_fsm.process(&mut out_buf[..]).context("process")? {
             FsmResult::Continue((fsm, x)) => {
-                
-
                 // dbg!(outcome, first.compressed_size, first.uncompressed_size);
 
                 outcome = x;
@@ -227,7 +224,6 @@ fn unzip() -> anyhow::Result<()> {
                 break;
             }
         }
-
     }
 
     dbg!(outcome, total_read);
