@@ -8,25 +8,92 @@ use core::ops::AddAssign;
 use rc_zip_sync::{EntryHandle, EntryReader, HasCursor};
 use std::{
     collections::BTreeMap,
-    io::{BufRead, BufReader, Read},
+    io::{BufRead, BufReader},
     marker::PhantomData,
 };
 
-
-pub trait GetBufReader {
-    type 
-    fn reader() -> 
+// TODO: maybe this can have less lifetimes ??!
+pub trait GetBufReader<'a> {
+    type BufReader<'b>: BufRead
+    where
+        Self: 'a,
+        'a: 'b;
+    fn buf_reader<'b>(&'b self) -> Self::BufReader<'b>
+    where
+        'a: 'b;
 }
 
-pub struct FileReader<'reader, F> {
-    handle: EntryHandle<'reader, F>,
+impl<'a> GetBufReader<'a> for &'a str {
+    type BufReader<'b>
+        = BufReader<&'b [u8]>
+    where
+        Self: 'a,
+        'a: 'b;
+
+    fn buf_reader<'b>(&'b self) -> Self::BufReader<'b>
+    where
+        'a: 'b,
+    {
+        BufReader::new(self.as_bytes())
+    }
+}
+
+impl<'a, F> GetBufReader<'a> for EntryHandle<'a, F>
+where
+    F: HasCursor,
+{
+    type BufReader<'b>
+        = BufReader<EntryReader<<F as HasCursor>::Cursor<'a>>>
+    where
+        Self: 'a,
+        'a: 'b;
+
+    fn buf_reader<'b>(&'b self) -> Self::BufReader<'b>
+    where
+        'a: 'b,
+    {
+        BufReader::new(self.reader())
+    }
+}
+
+pub struct FileReader<F> {
+    handle: F,
     header: AemoHeader,
     file_headings: BTreeMap<FileKey<'static>, usize>,
 }
 
-impl<'reader, F> FileReader<'reader, F>
+impl<'reader> FileReader<&'reader str> {
+    pub fn from_uncompressed(data: &'reader str) -> Result<FileReader<&'reader str>> {
+        Self::from_get_buf_reader(data)
+    }
+}
+
+impl<'reader, F> FileReader<EntryHandle<'reader, F>>
 where
     F: HasCursor,
+{
+    pub fn from_entry(
+        handle: EntryHandle<'reader, F>,
+    ) -> Result<FileReader<EntryHandle<'reader, F>>> {
+        Self::from_get_buf_reader(handle)
+    }
+}
+
+impl<R> FileReader<R> {
+    pub fn sub_files(&self) -> &BTreeMap<FileKey<'static>, usize> {
+        &self.file_headings
+    }
+
+    pub fn header(&self) -> &AemoHeader {
+        &self.header
+    }
+}
+
+impl<'reader, R> FileReader<R>
+where
+    R: GetBufReader<'reader> + 'reader,
+    // <R as GetBufReader<'reader>>::BufReader: Read,
+    // R: 'reader,
 {
     /// Create a new file reader
     /// this reads a whole, regular MMSDM file, including `C`, `I` and `D` rows
@@ -34,13 +101,14 @@ where
     /// in a BufReader. If it was to take any `R: Read` (and wrap interally),
     /// users of the API may not realise that it internally buffers and
     /// provide something already wrapped in `BufReader`
-    pub fn from_entry(handle: EntryHandle<'reader, F>) -> Result<FileReader<'reader, F>> {
+    ///
+    fn from_get_buf_reader(handle: R) -> Result<FileReader<R>> {
         // defensively reset to the start
         let mut header = None;
         let mut file_headings = BTreeMap::new();
 
         {
-            let mut file_reader = BufReader::new(handle.reader());
+            let mut file_reader = BufReader::new(handle.buf_reader());
 
             let mut count = 0;
 
@@ -103,22 +171,14 @@ where
             file_headings,
         })
     }
-
-    pub fn sub_files(&self) -> &BTreeMap<FileKey<'static>, usize> {
-        &self.file_headings
-    }
-
-    pub fn header(&self) -> &AemoHeader {
-        &self.header
-    }
-
     pub fn iter_closest<'sub_reader, T>(
         &'sub_reader mut self,
         manager: Arc<T>,
-    ) -> Result<IterTyped<<F as HasCursor>::Cursor<'sub_reader>, T>>
+    ) -> Result<IterTyped<'reader, 'sub_reader, R, T>>
     where
         T: GetTable,
-        // 'reader: 'sub_reader,
+        // <R as GetBufReader<'reader>>::BufReader<'sub_reader>: 'sub_reader,
+        'reader: 'sub_reader,
     {
         let closest_key = self
             .file_headings
@@ -137,14 +197,14 @@ where
             manager,
             &closest_key,
             field_mapping,
-            BufReader::new(self.handle.reader()),
+            self.handle.buf_reader(),
         ))
     }
 
     pub fn iter_exact<'sub_reader, T>(
         &'sub_reader mut self,
         manager: Arc<T>,
-    ) -> Result<IterTyped<<F as HasCursor>::Cursor<'sub_reader>, T>>
+    ) -> Result<IterTyped<'reader, 'sub_reader, R, T>>
     where
         T: GetTable,
         'reader: 'sub_reader,
@@ -168,17 +228,19 @@ where
             manager,
             &key,
             field_mapping,
-            BufReader::new(self.handle.reader()),
+            self.handle.buf_reader(),
         ))
     }
 }
 
-pub struct IterTyped<F, T>
+pub struct IterTyped<'a, 'b, F, T>
 where
-    F: Read,
+    F: GetBufReader<'a>,
     T: GetTable,
+    'a: 'b,
+    F: 'a,
 {
-    inner: BufReader<EntryReader<F>>,
+    inner: <F as GetBufReader<'a>>::BufReader<'b>,
     ty: PhantomData<T>,
     version: i32,
     indexes_backing: Vec<usize>,
@@ -189,17 +251,17 @@ where
     manager: Arc<T>,
 }
 
-impl<F, T> IterTyped<F, T>
+impl<'a, 'b, F, T> IterTyped<'a, 'b, F, T>
 where
-    F: Read,
+    F: GetBufReader<'a>,
     T: GetTable,
 {
     pub fn new(
         manager: Arc<T>,
         key: &FileKey<'_>,
         mapping: T::FieldMapping,
-        reader: BufReader<EntryReader<F>>,
-    ) -> IterTyped<F, T> {
+        reader: <F as GetBufReader<'a>>::BufReader<'b>,
+    ) -> IterTyped<'a, 'b, F, T> {
         IterTyped {
             inner: reader,
             ty: PhantomData,
