@@ -73,12 +73,7 @@ impl mmsdm_core::GetTable for OperationalDemandActual3 {
     const DATA_SET_NAME: &'static str = "OPERATIONAL_DEMAND";
     const TABLE_NAME: &'static str = "ACTUAL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OperationalDemandActual3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -407,13 +402,7 @@ impl mmsdm_core::GetTable for OperationalDemandForecast1 {
     const DATA_SET_NAME: &'static str = "OPERATIONAL_DEMAND";
     const TABLE_NAME: &'static str = "FORECAST";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OperationalDemandForecast1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -787,13 +776,7 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvail2 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_CLUSTER_AVAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentClusterAvail2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -1159,10 +1142,7 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvailDay1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_CLUSTER_AVAIL_DAY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentClusterAvailDay1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -1461,16 +1441,7 @@ impl mmsdm_core::GetTable for DemandIntermittentDsPred1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_DS_PRED";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentDsPred1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1980,19 +1951,7 @@ impl mmsdm_core::GetTable for DemandIntermittentDsRun1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_DS_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentDsRun1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2454,12 +2413,7 @@ impl mmsdm_core::GetTable for ForecastIntermittentGen1 {
     const DATA_SET_NAME: &'static str = "FORECAST";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForecastIntermittentGen1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2775,9 +2729,9 @@ pub struct ForecastIntermittentGenData1Row<'data> {
     pub powermean: Option<rust_decimal::Decimal>,
     /// 50% probability of exceedance forecast value in MW at the interval end
     pub powerpoe50: Option<rust_decimal::Decimal>,
-    /// 10% probability of exceedance forecast value in MW at the interval end
-    pub powerpoelow: Option<rust_decimal::Decimal>,
     /// 90% probability of exceedance forecast value in MW at the interval end
+    pub powerpoelow: Option<rust_decimal::Decimal>,
+    /// 10% probability of exceedance forecast value in MW at the interval end
     pub powerpoehigh: Option<rust_decimal::Decimal>,
     /// Date Time record was created
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -2793,14 +2747,7 @@ impl mmsdm_core::GetTable for ForecastIntermittentGenData1 {
     const DATA_SET_NAME: &'static str = "FORECAST";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_DATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForecastIntermittentGenData1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -3194,11 +3141,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimit1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_LIMIT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenLimit1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -3539,13 +3482,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimitDay1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_LIMIT_DAY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenLimitDay1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -3892,12 +3829,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_SCADA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenScada1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -4219,13 +4151,7 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentAvail2 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "MTPASA_INTERMITTENT_AVAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandMtpasaIntermittentAvail2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -4613,13 +4539,7 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentLimit1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "MTPASA_INTERMITTENT_LIMIT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandMtpasaIntermittentLimit1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -4963,17 +4883,7 @@ impl mmsdm_core::GetTable for DemandPeriod1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "PERIOD";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandPeriod1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -5478,14 +5388,7 @@ impl mmsdm_core::GetTable for DemandTrk1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -5850,12 +5753,7 @@ impl mmsdm_core::GetTable for RooftopActual2 {
     const DATA_SET_NAME: &'static str = "ROOFTOP";
     const TABLE_NAME: &'static str = "ACTUAL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = RooftopActual2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -6171,9 +6069,9 @@ pub struct RooftopForecast1Row<'data> {
     pub powermean: Option<rust_decimal::Decimal>,
     /// 50% probability of exceedance forecast value in MW at the interval end
     pub powerpoe50: Option<rust_decimal::Decimal>,
-    /// 10% probability of exceedance forecast value in MW at the interval end
-    pub powerpoelow: Option<rust_decimal::Decimal>,
     /// 90% probability of exceedance forecast value in MW at the interval end
+    pub powerpoelow: Option<rust_decimal::Decimal>,
+    /// 10% probability of exceedance forecast value in MW at the interval end
     pub powerpoehigh: Option<rust_decimal::Decimal>,
     /// Last date and time record changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -6189,14 +6087,7 @@ impl mmsdm_core::GetTable for RooftopForecast1 {
     const DATA_SET_NAME: &'static str = "ROOFTOP";
     const TABLE_NAME: &'static str = "FORECAST";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = RooftopForecast1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "VERSION_DATETIME",

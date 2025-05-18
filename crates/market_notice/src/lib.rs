@@ -119,13 +119,7 @@ impl mmsdm_core::GetTable for MarketNoticeMarketnoticedata1 {
     const DATA_SET_NAME: &'static str = "MARKET_NOTICE";
     const TABLE_NAME: &'static str = "MARKETNOTICEDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketNoticeMarketnoticedata1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "NOTICEID",
@@ -466,10 +460,7 @@ impl mmsdm_core::GetTable for MarketNoticeMarketnoticetype1 {
     const DATA_SET_NAME: &'static str = "MARKET_NOTICE";
     const TABLE_NAME: &'static str = "MARKETNOTICETYPE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketNoticeMarketnoticetype1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TYPEID",
@@ -721,9 +712,7 @@ impl mmsdm_core::GetTable for MarketNoticeParticipantnoticetrk1 {
     const DATA_SET_NAME: &'static str = "MARKET_NOTICE";
     const TABLE_NAME: &'static str = "PARTICIPANTNOTICETRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketNoticeParticipantnoticetrk1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",

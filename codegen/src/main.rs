@@ -32,7 +32,7 @@ enum AemoCodegen {
 }
 fn main() {
     if let Err(e) = run() {
-        eprintln!("{e:#?}");
+        eprintln!("\n=====\nError running command:\n=====\n    {e:#?}");
     }
 }
 

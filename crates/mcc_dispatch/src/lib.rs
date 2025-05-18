@@ -268,10 +268,7 @@ impl mmsdm_core::GetTable for MccConstraintsolution1 {
     const DATA_SET_NAME: &'static str = "MCC";
     const TABLE_NAME: &'static str = "CONSTRAINTSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MccConstraintsolution1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",

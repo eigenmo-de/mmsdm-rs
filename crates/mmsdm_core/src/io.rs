@@ -12,6 +12,12 @@ use std::{
     marker::PhantomData,
 };
 
+
+pub trait GetBufReader {
+    type 
+    fn reader() -> 
+}
+
 pub struct FileReader<'reader, F> {
     handle: EntryHandle<'reader, F>,
     header: AemoHeader,

@@ -2,7 +2,7 @@
 name = "xtask"
 version = "0.0.0"
 authors = ["Eric Sheppard <eric@eigenmo.de>", "Nayika Sheppard <nayika@eigenmo.de>"]
-edition = "2021"
+edition = "2024"
 license = "MIT"
 repository = "https://github.com/esheppa/aemo-rs"
 description = "Build tasks"

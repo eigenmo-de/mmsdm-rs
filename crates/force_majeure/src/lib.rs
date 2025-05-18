@@ -109,15 +109,7 @@ impl mmsdm_core::GetTable for ApApevent1 {
     const DATA_SET_NAME: &'static str = "AP";
     const TABLE_NAME: &'static str = "APEVENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ApApevent1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "APEVENTID",
@@ -516,20 +508,7 @@ impl mmsdm_core::GetTable for ApApeventregion2 {
     const DATA_SET_NAME: &'static str = "AP";
     const TABLE_NAME: &'static str = "APEVENTREGION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ApApeventregion2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "APEVENTID",
@@ -1101,14 +1080,7 @@ impl mmsdm_core::GetTable for ForceMajeureIrfmamount1 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "IRFMAMOUNT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureIrfmamount1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "IRFMID",
@@ -1480,12 +1452,7 @@ impl mmsdm_core::GetTable for ForceMajeureIrfmevents1 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "IRFMEVENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureIrfmevents1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "IRFMID",
@@ -1832,12 +1799,7 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendRegimeSum1 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "MARKET_SUSPEND_REGIME_SUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureMarketSuspendRegimeSum1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SUSPENSION_ID",
@@ -2159,12 +2121,7 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendRegionSum1 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "MARKET_SUSPEND_REGION_SUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureMarketSuspendRegionSum1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SUSPENSION_ID",
@@ -2518,22 +2475,7 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendSchedule2 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "MARKET_SUSPEND_SCHEDULE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureMarketSuspendSchedule2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -3143,12 +3085,7 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendScheduleTrk1 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "MARKET_SUSPEND_SCHEDULE_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureMarketSuspendScheduleTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -3530,16 +3467,7 @@ impl mmsdm_core::GetTable for ForceMajeureOverriderrp1 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "OVERRIDERRP";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureOverriderrp1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -3953,12 +3881,7 @@ impl mmsdm_core::GetTable for ApRegionapc1 {
     const DATA_SET_NAME: &'static str = "AP";
     const TABLE_NAME: &'static str = "REGIONAPC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ApRegionapc1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -4291,15 +4214,7 @@ impl mmsdm_core::GetTable for ApRegionapcintervals1 {
     const DATA_SET_NAME: &'static str = "AP";
     const TABLE_NAME: &'static str = "REGIONAPCINTERVALS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ApRegionapcintervals1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",

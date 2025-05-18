@@ -143,25 +143,7 @@ impl mmsdm_core::GetTable for PdpasaCasesolution3 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "CASESOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaCasesolution3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -831,15 +813,7 @@ impl mmsdm_core::GetTable for PdpasaConstraintsolution1 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "CONSTRAINTSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaConstraintsolution1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1175,6 +1149,465 @@ pub struct PdpasaConstraintsolution1Builder {
     runtype_array: arrow::array::builder::StringBuilder,
     studyregionid_array: arrow::array::builder::StringBuilder,
 }
+pub struct PdpasaDuidavailability1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PdpasaDuidavailability1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PdpasaDuidavailability1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PdpasaDuidavailability1Mapping([usize; 10]);
+/// # Summary
+///
+/// ## PDPASA_DUIDAVAILABILITY
+///
+/// This report delivers available capacity, PASA availability and given recall period for all scheduled resources. Note that for an MNSP, DUID = LINKID in the MNSP_INTERCONNECTOR table
+///
+/// * Data Set Name: Pdpasa
+/// * File Name: Duidavailability
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * DUID
+/// * INTERVAL_DATETIME
+/// * RUN_DATETIME
+#[derive(Debug, PartialEq, Eq)]
+pub struct PdpasaDuidavailability1Row<'data> {
+    /// First half hour ended interval of the run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Half hour ended interval
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// NEM Dispatchable Unit Identifier
+    pub duid: core::ops::Range<usize>,
+    /// Available Capacity for a scheduled generating unit, semi-scheduled generating unit, BDU (Gen side), WDR or MNSP.
+    pub generation_max_availability: Option<rust_decimal::Decimal>,
+    /// PASA Availability for a scheduled generating unit, BDU (Gen side), WDR or MNSP. Null for a semi-scheduled generating unit.
+    pub generation_pasa_availability: Option<rust_decimal::Decimal>,
+    /// Recall Period associated with the PASA Availability for a scheduled generating unit, BDU (Gen side), WDR or MNSP. Null for a semi-scheduled generating unit.
+    pub generation_recall_period: Option<rust_decimal::Decimal>,
+    /// Available Capacity for a scheduled load or BDU(Load side).
+    pub load_max_availability: Option<rust_decimal::Decimal>,
+    /// PASA Availability for a scheduled load or BDU(Load side).
+    pub load_pasa_availability: Option<rust_decimal::Decimal>,
+    /// Recall Period associated with the PASA Availability for a scheduled load or BDU(Load side).
+    pub load_recall_period: Option<rust_decimal::Decimal>,
+    /// The Last changed Date time of the record
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PdpasaDuidavailability1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+}
+impl mmsdm_core::GetTable for PdpasaDuidavailability1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PDPASA";
+    const TABLE_NAME: &'static str = "DUIDAVAILABILITY";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaDuidavailability1Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "INTERVAL_DATETIME",
+        "DUID",
+        "GENERATION_MAX_AVAILABILITY",
+        "GENERATION_PASA_AVAILABILITY",
+        "GENERATION_RECALL_PERIOD",
+        "LOAD_MAX_AVAILABILITY",
+        "LOAD_PASA_AVAILABILITY",
+        "LOAD_RECALL_PERIOD",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PdpasaDuidavailability1Row<'row>;
+    type FieldMapping = PdpasaDuidavailability1Mapping;
+    type PrimaryKey = PdpasaDuidavailability1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PdpasaDuidavailability1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[2])?,
+            generation_max_availability: row
+                .get_opt_custom_parsed_at_idx(
+                    "generation_max_availability",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            generation_pasa_availability: row
+                .get_opt_custom_parsed_at_idx(
+                    "generation_pasa_availability",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            generation_recall_period: row
+                .get_opt_custom_parsed_at_idx(
+                    "generation_recall_period",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            load_max_availability: row
+                .get_opt_custom_parsed_at_idx(
+                    "load_max_availability",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            load_pasa_availability: row
+                .get_opt_custom_parsed_at_idx(
+                    "load_pasa_availability",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            load_recall_period: row
+                .get_opt_custom_parsed_at_idx(
+                    "load_recall_period",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PdpasaDuidavailability1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PdpasaDuidavailability1PrimaryKey {
+        PdpasaDuidavailability1PrimaryKey {
+            duid: row.duid().to_string(),
+            interval_datetime: row.interval_datetime,
+            run_datetime: row.run_datetime,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("pdpasa_duidavailability_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PdpasaDuidavailability1Row {
+            run_datetime: row.run_datetime.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            duid: row.duid.clone(),
+            generation_max_availability: row.generation_max_availability.clone(),
+            generation_pasa_availability: row.generation_pasa_availability.clone(),
+            generation_recall_period: row.generation_recall_period.clone(),
+            load_max_availability: row.load_max_availability.clone(),
+            load_pasa_availability: row.load_pasa_availability.clone(),
+            load_recall_period: row.load_recall_period.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PdpasaDuidavailability1PrimaryKey {
+    pub duid: alloc::string::String,
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub run_datetime: chrono::NaiveDateTime,
+}
+impl mmsdm_core::PrimaryKey for PdpasaDuidavailability1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaDuidavailability1Row<'data> {
+    type Row<'other> = PdpasaDuidavailability1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.interval_datetime == row.interval_datetime
+            && self.run_datetime == row.run_datetime
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PdpasaDuidavailability1Row<'data> {
+    type PrimaryKey = PdpasaDuidavailability1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid() == key.duid && self.interval_datetime == key.interval_datetime
+            && self.run_datetime == key.run_datetime
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaDuidavailability1PrimaryKey {
+    type Row<'other> = PdpasaDuidavailability1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.interval_datetime == row.interval_datetime
+            && self.run_datetime == row.run_datetime
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PdpasaDuidavailability1PrimaryKey {
+    type PrimaryKey = PdpasaDuidavailability1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid == key.duid && self.interval_datetime == key.interval_datetime
+            && self.run_datetime == key.run_datetime
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PdpasaDuidavailability1 {
+    type Builder = PdpasaDuidavailability1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "generation_max_availability",
+                    arrow::datatypes::DataType::Decimal128(12, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "generation_pasa_availability",
+                    arrow::datatypes::DataType::Decimal128(12, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "generation_recall_period",
+                    arrow::datatypes::DataType::Decimal128(8, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "load_max_availability",
+                    arrow::datatypes::DataType::Decimal128(12, 6),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "load_pasa_availability",
+                    arrow::datatypes::DataType::Decimal128(12, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "load_recall_period",
+                    arrow::datatypes::DataType::Decimal128(8, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PdpasaDuidavailability1Builder {
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            generation_max_availability_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 6)),
+            generation_pasa_availability_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 0)),
+            generation_recall_period_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(8, 3)),
+            load_max_availability_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 6)),
+            load_pasa_availability_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 0)),
+            load_recall_period_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(8, 3)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.duid_array.append_value(row.duid());
+        builder
+            .generation_max_availability_array
+            .append_option({
+                row.generation_max_availability
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .generation_pasa_availability_array
+            .append_option({
+                row.generation_pasa_availability
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .generation_recall_period_array
+            .append_option({
+                row.generation_recall_period
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .load_max_availability_array
+            .append_option({
+                row.load_max_availability
+                    .map(|mut val| {
+                        val.rescale(6);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .load_pasa_availability_array
+            .append_option({
+                row.load_pasa_availability
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .load_recall_period_array
+            .append_option({
+                row.load_recall_period
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.generation_max_availability_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.generation_pasa_availability_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.generation_recall_period_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.load_max_availability_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.load_pasa_availability_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.load_recall_period_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PdpasaDuidavailability1Builder {
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    generation_max_availability_array: arrow::array::builder::Decimal128Builder,
+    generation_pasa_availability_array: arrow::array::builder::Decimal128Builder,
+    generation_recall_period_array: arrow::array::builder::Decimal128Builder,
+    load_max_availability_array: arrow::array::builder::Decimal128Builder,
+    load_pasa_availability_array: arrow::array::builder::Decimal128Builder,
+    load_recall_period_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct PdpasaInterconnectorsoln1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -1293,19 +1726,7 @@ impl mmsdm_core::GetTable for PdpasaInterconnectorsoln1 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "INTERCONNECTORSOLN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaInterconnectorsoln1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1815,9 +2236,9 @@ pub struct PdpasaRegionsolution7Row<'data> {
     pub aggregatescheduledload: Option<rust_decimal::Decimal>,
     /// Date time the record was created or modified changed
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Sum of PASAAVAILABILITY for all scheduled generating units and the Unconstrained Intermittent Generation Forecasts (UIGF) for all semi-scheduled generating units in a given Region for a given PERIODID.For the RELIABILITY_LRC and OUTAGE_LRC runs, UIGF is the POE90 forecast. For the LOR run, UIGF is the POE50 forecast.
+    /// Sum of PASAAVAILABILITY for all scheduled generating units and scheduled bidirectional units (Gen side) with a Recall_Period of null or <= 24 hours plus the sum of Unconstrained Intermittent Generation Forecasts (UIGF) for all semi-scheduled generating units. For the OUTAGE_LRC run, UIGF is the POE90 forecast. For the LOR Run, UIGF is the POE50 forecast. Note that the OUTAGE_LRC Run Type is discontinued from 31 July 2025.
     pub aggregatepasaavailability: Option<rust_decimal::Decimal>,
-    /// Type of run. Values are RELIABILITY_LRC, OUTAGE_LRC and LOR.
+    /// Type of run. Values are RELIABILITY_LRC, OUTAGE_LRC and LOR. Note that the PDPASA OUTAGE_LRC Run Type is discontinued from 31 July 2025, with only the LOR Run Type reported.
     pub runtype: core::ops::Range<usize>,
     /// Energy (GWh) required for this energy block based on the 10% probability of exceedance demand. Listed in the first interval of the energy block
     pub energyreqdemand10: Option<rust_decimal::Decimal>,
@@ -1878,51 +2299,9 @@ impl mmsdm_core::GetTable for PdpasaRegionsolution7 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "REGIONSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaRegionsolution7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",

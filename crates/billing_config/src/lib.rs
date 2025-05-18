@@ -77,16 +77,7 @@ impl mmsdm_core::GetTable for BillingConfigBillingcalendar2 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "BILLINGCALENDAR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigBillingcalendar2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -532,9 +523,7 @@ impl mmsdm_core::GetTable for BillingConfigGstBasClass1 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "GST_BAS_CLASS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigGstBasClass1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "BAS_CLASS",
@@ -777,11 +766,7 @@ impl mmsdm_core::GetTable for BillingConfigGstRate1 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "GST_RATE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigGstRate1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -1101,11 +1086,7 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionClass1 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "GST_TRANSACTION_CLASS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigGstTransactionClass1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -1448,11 +1429,7 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionType1 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "GST_TRANSACTION_TYPE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigGstTransactionType1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRANSACTION_TYPE",
@@ -1725,10 +1702,7 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositInterestRate1 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "SECDEPOSIT_INTEREST_RATE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigSecdepositInterestRate1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTEREST_ACCT_ID",
@@ -2065,15 +2039,7 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositProvision1 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "SECDEPOSIT_PROVISION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigSecdepositProvision1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SECURITY_DEPOSIT_ID",

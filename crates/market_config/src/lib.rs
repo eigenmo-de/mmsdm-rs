@@ -116,15 +116,7 @@ impl mmsdm_core::GetTable for MarketConfigBidtypes1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "BIDTYPES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigBidtypes1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "BIDTYPE",
@@ -511,11 +503,7 @@ impl mmsdm_core::GetTable for MarketConfigBidtypestrk1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "BIDTYPESTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigBidtypestrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -829,13 +817,7 @@ impl mmsdm_core::GetTable for MarketConfigFcasregusefactors1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "FCASREGUSEFACTORS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigFcasregusefactors1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -1190,10 +1172,7 @@ impl mmsdm_core::GetTable for MarketConfigFcasregusefactorsTrk1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "FCASREGUSEFACTORS_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigFcasregusefactorsTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -1536,12 +1515,7 @@ impl mmsdm_core::GetTable for MarketConfigInterconnector1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "INTERCONNECTOR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigInterconnector1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERCONNECTORID",
@@ -1838,13 +1812,7 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectoralloc1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "INTERCONNECTORALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigInterconnectoralloc1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -2283,28 +2251,7 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectorconstraint1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "INTERCONNECTORCONSTRAINT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigInterconnectorconstraint1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RESERVEOVERALLLOADFACTOR",
@@ -3037,12 +2984,7 @@ impl mmsdm_core::GetTable for MarketConfigIntraregionalloc1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "INTRAREGIONALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigIntraregionalloc1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -3384,12 +3326,7 @@ impl mmsdm_core::GetTable for MarketConfigLossfactormodel1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "LOSSFACTORMODEL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigLossfactormodel1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -3744,14 +3681,7 @@ impl mmsdm_core::GetTable for MarketConfigLossmodel1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "LOSSMODEL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigLossmodel1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -4149,14 +4079,7 @@ impl mmsdm_core::GetTable for MarketConfigMarketPriceThresholds1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "MARKET_PRICE_THRESHOLDS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigMarketPriceThresholds1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -4566,10 +4489,7 @@ impl mmsdm_core::GetTable for MarketConfigRegion1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "REGION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigRegion1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -4868,16 +4788,7 @@ impl mmsdm_core::GetTable for MarketConfigRegionstandingdata1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "REGIONSTANDINGDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigRegionstandingdata1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -5307,13 +5218,7 @@ impl mmsdm_core::GetTable for MarketConfigTransmissionlossfactor2 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "TRANSMISSIONLOSSFACTOR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigTransmissionlossfactor2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRANSMISSIONLOSSFACTOR",

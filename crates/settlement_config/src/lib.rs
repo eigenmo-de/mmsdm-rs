@@ -80,13 +80,7 @@ impl mmsdm_core::GetTable for SettlementConfigAncillaryRecoverySplit2 {
     const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
     const TABLE_NAME: &'static str = "ANCILLARY_RECOVERY_SPLIT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigAncillaryRecoverySplit2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -455,10 +449,7 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExcl1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
     const TABLE_NAME: &'static str = "MARKET_FEE_CAT_EXCL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketFeeCatExcl1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MARKETFEEID",
@@ -741,10 +732,7 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeCatExclTrk1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
     const TABLE_NAME: &'static str = "MARKET_FEE_CAT_EXCL_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketFeeCatExclTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MARKETFEEID",
@@ -1041,11 +1029,7 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusion1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
     const TABLE_NAME: &'static str = "MARKET_FEE_EXCLUSION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketFeeExclusion1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -1372,12 +1356,7 @@ impl mmsdm_core::GetTable for SettlementConfigMarketFeeExclusionTrk1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
     const TABLE_NAME: &'static str = "MARKET_FEE_EXCLUSION_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketFeeExclusionTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -1813,16 +1792,7 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfee2 {
     const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
     const TABLE_NAME: &'static str = "MARKETFEE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketfee2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MARKETFEEID",
@@ -2156,11 +2126,7 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfeedata1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
     const TABLE_NAME: &'static str = "MARKETFEEDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketfeedata1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MARKETFEEID",
@@ -2485,11 +2451,7 @@ impl mmsdm_core::GetTable for SettlementConfigMarketfeetrk1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
     const TABLE_NAME: &'static str = "MARKETFEETRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigMarketfeetrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MARKETFEEVERSIONNO",
@@ -2814,13 +2776,7 @@ impl mmsdm_core::GetTable for SettlementConfigParticipantBandfeeAlloc1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
     const TABLE_NAME: &'static str = "PARTICIPANT_BANDFEE_ALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigParticipantBandfeeAlloc1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -3322,21 +3278,7 @@ impl mmsdm_core::GetTable for SetcfgReallocation2 {
     const DATA_SET_NAME: &'static str = "SETCFG";
     const TABLE_NAME: &'static str = "REALLOCATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SetcfgReallocation2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REALLOCATIONID",
@@ -3774,11 +3716,7 @@ impl mmsdm_core::GetTable for SetcfgReallocationinterval1 {
     const DATA_SET_NAME: &'static str = "SETCFG";
     const TABLE_NAME: &'static str = "REALLOCATIONINTERVAL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SetcfgReallocationinterval1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REALLOCATIONID",
@@ -4095,13 +4033,7 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpf1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
     const TABLE_NAME: &'static str = "SETCFG_PARTICIPANT_MPF";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigSetcfgParticipantMpf1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -4478,12 +4410,7 @@ impl mmsdm_core::GetTable for SettlementConfigSetcfgParticipantMpftrk1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
     const TABLE_NAME: &'static str = "SETCFG_PARTICIPANT_MPFTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigSetcfgParticipantMpftrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -4824,13 +4751,7 @@ impl mmsdm_core::GetTable for SetcfgSapsSettPrice1 {
     const DATA_SET_NAME: &'static str = "SETCFG";
     const TABLE_NAME: &'static str = "SAPS_SETT_PRICE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SetcfgSapsSettPrice1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "FROMDATE",
@@ -5194,12 +5115,7 @@ impl mmsdm_core::GetTable for SettlementsConfigWdrReimburseRate1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS_CONFIG";
     const TABLE_NAME: &'static str = "WDR_REIMBURSE_RATE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsConfigWdrReimburseRate1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "WDRRRPERIOD",
@@ -5536,12 +5452,7 @@ impl mmsdm_core::GetTable for SettlementsConfigWdrrrCalendar1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS_CONFIG";
     const TABLE_NAME: &'static str = "WDRRR_CALENDAR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsConfigWdrrrCalendar1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "WDRRRPERIOD",

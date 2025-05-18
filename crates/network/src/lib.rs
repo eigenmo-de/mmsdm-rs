@@ -112,15 +112,7 @@ impl mmsdm_core::GetTable for NetworkEquipmentdetail2 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "EQUIPMENTDETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkEquipmentdetail2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SUBSTATIONID",
@@ -485,10 +477,7 @@ impl mmsdm_core::GetTable for NetworkOutageconstraintset1 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "OUTAGECONSTRAINTSET";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkOutageconstraintset1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "OUTAGEID",
@@ -855,25 +844,7 @@ impl mmsdm_core::GetTable for NetworkOutagedetail4 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "OUTAGEDETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkOutagedetail4Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "OUTAGEID",
@@ -1486,9 +1457,7 @@ impl mmsdm_core::GetTable for NetworkOutagestatuscode1 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "OUTAGESTATUSCODE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkOutagestatuscode1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "OUTAGESTATUSCODE",
@@ -1800,16 +1769,7 @@ impl mmsdm_core::GetTable for NetworkRating1 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "RATING";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkRating1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SPD_ID",
@@ -2172,9 +2132,7 @@ impl mmsdm_core::GetTable for NetworkRealtimerating1 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "REALTIMERATING";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkRealtimerating1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -2454,15 +2412,7 @@ impl mmsdm_core::GetTable for NetworkStaticrating1 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "STATICRATING";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkStaticrating1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SUBSTATIONID",
@@ -2880,13 +2830,7 @@ impl mmsdm_core::GetTable for NetworkSubstationdetail2 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "SUBSTATIONDETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkSubstationdetail2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SUBSTATIONID",

@@ -78,10 +78,7 @@ impl mmsdm_core::GetTable for MtpasaCaseresult1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "CASERESULT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaCaseresult1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -381,21 +378,7 @@ impl mmsdm_core::GetTable for MtpasaConstraintresult1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "CONSTRAINTRESULT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaConstraintresult1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -975,17 +958,7 @@ impl mmsdm_core::GetTable for MtpasaConstraintsummary1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "CONSTRAINTSUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaConstraintsummary1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1444,16 +1417,7 @@ impl mmsdm_core::GetTable for MtpasaDuidavailability3 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "DUIDAVAILABILITY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaDuidavailability3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PUBLISH_DATETIME",
@@ -1895,21 +1859,7 @@ impl mmsdm_core::GetTable for MtpasaInterconnectorresult1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "INTERCONNECTORRESULT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaInterconnectorresult1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2493,18 +2443,7 @@ impl mmsdm_core::GetTable for MtpasaLolpresult1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "LOLPRESULT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaLolpresult1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2961,10 +2900,7 @@ impl mmsdm_core::GetTable for MtpasaRegionavailtrk1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "REGIONAVAILTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaRegionavailtrk1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PUBLISH_DATETIME",
@@ -3278,24 +3214,7 @@ impl mmsdm_core::GetTable for MtpasaRegionavailability4 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "REGIONAVAILABILITY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaRegionavailability4Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PUBLISH_DATETIME",
@@ -3988,17 +3907,7 @@ impl mmsdm_core::GetTable for MtpasaRegioniteration1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "REGIONITERATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaRegioniteration1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -4504,42 +4413,8 @@ impl mmsdm_core::GetTable for MtpasaRegionresult2 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "REGIONRESULT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaRegionresult2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -5726,36 +5601,8 @@ impl mmsdm_core::GetTable for MtpasaRegionsummary1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "REGIONSUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaRegionsummary1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",

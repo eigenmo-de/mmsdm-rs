@@ -509,8 +509,8 @@ impl<'a> CsvRow<'a> {
         'a: 'b,
     {
         CsvRow {
-            data: Cow::Borrowed(&self.data.as_ref()),
-            indexes: Cow::Borrowed(&self.indexes.as_ref()), // IndexOptions::MutSlice(self.indexes.as_mut_slice()),
+            data: Cow::Borrowed(self.data.as_ref()),
+            indexes: Cow::Borrowed(self.indexes.as_ref()), // IndexOptions::MutSlice(self.indexes.as_mut_slice()),
             // offset: self.offset,
             record_type: self.record_type,
         }
@@ -526,7 +526,7 @@ impl<'a> CsvRow<'a> {
         }
     }
 
-    pub fn iter_fields<'b>(&'b self) -> impl Iterator<Item = &'b str> + 'b {
+    pub fn iter_fields(&self) -> impl Iterator<Item = &str> + '_ {
         (0..self.count_fields()).flat_map(|idx| self.get(idx))
     }
     pub fn to_owned(&'a self) -> CsvRow<'static> {
@@ -676,7 +676,7 @@ pub trait PrimaryKey: PartialOrd + Ord + PartialEq + Eq {}
 
 pub trait CompareWithRow {
     type Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool;
+    fn compare_with_row(&self, row: &Self::Row<'_>) -> bool;
 }
 
 pub trait CompareWithPrimaryKey {
@@ -890,7 +890,7 @@ pub mod mms_datetime {
     pub fn parse(input: &str) -> Result<NaiveDateTime> {
         if !input.is_ascii() {
             return Err(Error::ParseDateInternal {
-                message: alloc::format!("Non ASCII values in input when parsing NaiveDateTime"),
+                message: "Non ASCII values in input when parsing NaiveDateTime".to_string(),
                 input: input.to_string(),
                 format: "%Y/%m/%d %H:%M:%S",
             });
@@ -1031,7 +1031,7 @@ pub mod mms_decimal_opt {
         if input.is_empty() {
             Ok(None)
         } else {
-            Ok(Some(mms_decimal::parse(&input)?))
+            Ok(Some(mms_decimal::parse(input)?))
         }
     }
 }
@@ -1058,7 +1058,7 @@ pub mod mms_date {
     pub fn parse(input: &str) -> Result<NaiveDate> {
         if !input.is_ascii() {
             return Err(Error::ParseDateInternal {
-                message: alloc::format!("Non ASCII values in input when parsing NaiveDate"),
+                message: "Non ASCII values in input when parsing NaiveDate".to_string(),
                 input: input.to_string(),
                 format: "%Y/%m/%d",
             });
@@ -1130,7 +1130,7 @@ pub mod mms_period_datepart {
     pub fn parse(input: &str) -> Result<NaiveDate> {
         if !input.is_ascii() {
             return Err(Error::ParseDateInternal {
-                message: alloc::format!("Non ASCII values in input when parsing NaiveDate"),
+                message: "Non ASCII values in input when parsing NaiveDate".to_string(),
                 input: input.to_string(),
                 format: "%Y/%m/%d",
             });
@@ -1202,7 +1202,7 @@ pub mod mms_time {
     pub fn parse(input: &str) -> Result<NaiveTime> {
         if !input.is_ascii() {
             return Err(Error::ParseDateInternal {
-                message: alloc::format!("Non ASCII values in input when parsing NaiveTime"),
+                message: "Non ASCII values in input when parsing NaiveTime".to_string(),
                 input: input.to_string(),
                 format: "%H:%M:%S",
             });
@@ -1316,7 +1316,7 @@ mod tests {
         let mut indexes = Vec::from([0; 10_000]);
         let mut output = Vec::from([0; 10_000]);
         let mut reader = CsvReader::new();
-        let row = reader.read_row(&data, &mut output, &mut indexes).unwrap();
+        let row = reader.read_row(data, &mut output, &mut indexes).unwrap();
 
         AemoHeader::from_row(row).unwrap();
     }
@@ -1327,7 +1327,7 @@ mod tests {
         let mut indexes = Vec::from([0; 10_000]);
         let mut output = Vec::from([0; 10_000]);
         let mut reader = CsvReader::new();
-        let row = reader.read_row(&data, &mut output, &mut indexes).unwrap();
+        let row = reader.read_row(data, &mut output, &mut indexes).unwrap();
 
         assert_eq!(row.iter_fields().count(), 61);
 
@@ -1367,10 +1367,10 @@ mod tests {
 
     #[test]
     fn dispatch_period() {
-        assert!(matches!("20211101000".parse::<DispatchPeriod>(), Err(_)));
-        assert!(matches!("20211101289".parse::<DispatchPeriod>(), Err(_)));
-        assert!(matches!("20211501288".parse::<DispatchPeriod>(), Err(_)));
-        assert!(matches!("20211132288".parse::<DispatchPeriod>(), Err(_)));
+        assert!("20211101000".parse::<DispatchPeriod>().is_err());
+        assert!("20211101289".parse::<DispatchPeriod>().is_err());
+        assert!("20211501288".parse::<DispatchPeriod>().is_err());
+        assert!("20211132288".parse::<DispatchPeriod>().is_err());
 
         assert_eq!(
             "20211101001".parse::<DispatchPeriod>().unwrap().start(),
@@ -1407,10 +1407,10 @@ mod tests {
 
     #[test]
     fn trading_period() {
-        assert!(matches!("2021110100".parse::<TradingPeriod>(), Err(_)));
-        assert!(matches!("2021110149".parse::<TradingPeriod>(), Err(_)));
-        assert!(matches!("2021150148".parse::<TradingPeriod>(), Err(_)));
-        assert!(matches!("2021113248".parse::<TradingPeriod>(), Err(_)));
+        assert!("2021110100".parse::<TradingPeriod>().is_err());
+        assert!("2021110149".parse::<TradingPeriod>().is_err());
+        assert!("2021150148".parse::<TradingPeriod>().is_err());
+        assert!("2021113248".parse::<TradingPeriod>().is_err());
 
         assert_eq!(
             "2021110101".parse::<TradingPeriod>().unwrap().start(),

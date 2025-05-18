@@ -621,7 +621,7 @@ pub async fn run() -> anyhow::Result<DataModel> {
                 for (n, pt) in continued {
                     let name = n.clone();
                     if let Some(_) = last_package.tables.insert(n, pt) {
-                        bail!("Duplicate table {name}");
+                        bail!("package {}: Duplicate table {name}", last_package.comment);
                     }
                 }
 
@@ -644,8 +644,10 @@ pub async fn run() -> anyhow::Result<DataModel> {
                 );
 
                 for (key, new) in new_tables {
-                    if let Some(_) = tables.insert(key.clone(), new) {
-                        bail!("Duplicate table {key}");
+                    if tables.contains_key(&key) {
+                        warn!("Found duplicate table: {key}")
+                    } else {
+                        tables.insert(key.clone(), new);
                     }
                 }
 

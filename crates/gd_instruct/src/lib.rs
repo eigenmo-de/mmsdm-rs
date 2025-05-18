@@ -192,21 +192,7 @@ impl mmsdm_core::GetTable for GdInstructGdinstruct1 {
     const DATA_SET_NAME: &'static str = "GD_INSTRUCT";
     const TABLE_NAME: &'static str = "GDINSTRUCT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GdInstructGdinstruct1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -684,10 +670,7 @@ impl mmsdm_core::GetTable for GdInstructInstructionsubtype1 {
     const DATA_SET_NAME: &'static str = "GD_INSTRUCT";
     const TABLE_NAME: &'static str = "INSTRUCTIONSUBTYPE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GdInstructInstructionsubtype1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INSTRUCTIONTYPEID",
@@ -974,10 +957,7 @@ impl mmsdm_core::GetTable for GdInstructInstructiontype1 {
     const DATA_SET_NAME: &'static str = "GD_INSTRUCT";
     const TABLE_NAME: &'static str = "INSTRUCTIONTYPE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GdInstructInstructiontype1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INSTRUCTIONTYPEID",
