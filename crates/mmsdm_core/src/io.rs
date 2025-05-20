@@ -118,7 +118,7 @@ where
 
             let mut last_heading = None;
 
-            let mut csv_reader = CsvReader::new();
+            let mut csv_reader = CsvReader::default();
 
             loop {
                 row_holder.clear();
@@ -135,9 +135,7 @@ where
                         if header.is_none() {
                             header = Some(h);
                         } else {
-                            return Err(
-                                Error::UnexpectedRowType(format!("Extra header: {h:?}")).into()
-                            );
+                            return Err(Error::UnexpectedRowType(format!("Extra header: {h:?}")));
                         }
                     }
                     Some(RowValidation::Footer(f)) => {
@@ -145,8 +143,7 @@ where
                             return Err(Error::IncorrectLineCount {
                                 got: count,
                                 expected: f.line_count_inclusive,
-                            }
-                            .into());
+                            });
                         }
                         break;
                     }
@@ -183,7 +180,7 @@ where
         let closest_key = self
             .file_headings
             .keys()
-            .filter(|k| T::matches_file_key(*k, k.version))
+            .filter(|k| T::matches_file_key(k, k.version))
             .max_by_key(|k| k.version)
             .ok_or_else(|| Error::MissingFile {
                 data_set_name: T::DATA_SET_NAME,
@@ -195,7 +192,7 @@ where
 
         Ok(IterTyped::new(
             manager,
-            &closest_key,
+            closest_key,
             field_mapping,
             self.handle.buf_reader(),
         ))
@@ -218,15 +215,14 @@ where
                 data_set_name: T::DATA_SET_NAME,
                 table_name: T::TABLE_NAME,
                 version: Some(T::VERSION),
-            }
-            .into());
+            });
         };
 
         let field_mapping = T::field_mapping_from_row(key.backing_data().to_owned())?;
 
         Ok(IterTyped::new(
             manager,
-            &key,
+            key,
             field_mapping,
             self.handle.buf_reader(),
         ))
@@ -272,7 +268,7 @@ where
             output: Vec::from([0; 100_000]),
             buf: String::new(),
             field_mapping: mapping,
-            reader: CsvReader::new(),
+            reader: CsvReader::default(),
             manager,
         }
     }

@@ -153,7 +153,7 @@ impl<'a> Ord for FileKey<'a> {
 
 impl<'a> PartialOrd for FileKey<'a> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        self.cmp(other).into()
+        Some(self.cmp(other))
     }
 }
 
@@ -235,7 +235,7 @@ pub struct PartitionKey(pub &'static str);
 
 impl core::fmt::Display for PartitionKey {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str(&self.0)
+        f.write_str(self.0)
     }
 }
 
@@ -310,7 +310,7 @@ where
     T: GetTable,
 {
     match csv.record_type {
-        Some(RecordType::C) | Some(RecordType::I) => return Ok(None),
+        Some(RecordType::C) | Some(RecordType::I) => Ok(None),
         Some(RecordType::D) => {
             if T::matches_file_key(&FileKey::from_row(csv.borrow())?, version) {
                 Ok(Some(T::from_row(csv, field_mapping)?))
@@ -358,8 +358,8 @@ pub struct CsvReader {
     inner: Reader,
 }
 
-impl CsvReader {
-    pub fn new() -> CsvReader {
+impl Default for CsvReader {
+    fn default() -> CsvReader {
         CsvReader {
             inner: ReaderBuilder::new()
                 .delimiter(b',')
@@ -368,7 +368,9 @@ impl CsvReader {
                 .build(),
         }
     }
+}
 
+impl CsvReader {
     // TODO: verify that column orders are correct!
     pub fn validate_row(
         &mut self,
@@ -1315,7 +1317,7 @@ mod tests {
         let data = "C,NEMP.WORLD,NEXT_DAY_DISPATCH,AEMO,PUBLIC,2023/01/06,04:10:01,0000000378281515,NEXT_DAY_DISPATCH,0000000378281511\n";
         let mut indexes = Vec::from([0; 10_000]);
         let mut output = Vec::from([0; 10_000]);
-        let mut reader = CsvReader::new();
+        let mut reader = CsvReader::default();
         let row = reader.read_row(data, &mut output, &mut indexes).unwrap();
 
         AemoHeader::from_row(row).unwrap();
@@ -1326,7 +1328,7 @@ mod tests {
         let data = "I,DISPATCH,UNIT_SOLUTION,3,SETTLEMENTDATE,RUNNO,DUID,TRADETYPE,DISPATCHINTERVAL,INTERVENTION,CONNECTIONPOINTID,DISPATCHMODE,AGCSTATUS,INITIALMW,TOTALCLEARED,RAMPDOWNRATE,RAMPUPRATE,LOWER5MIN,LOWER60SEC,LOWER6SEC,RAISE5MIN,RAISE60SEC,RAISE6SEC,DOWNEPF,UPEPF,MARGINAL5MINVALUE,MARGINAL60SECVALUE,MARGINAL6SECVALUE,MARGINALVALUE,VIOLATION5MINDEGREE,VIOLATION60SECDEGREE,VIOLATION6SECDEGREE,VIOLATIONDEGREE,LASTCHANGED,LOWERREG,RAISEREG,AVAILABILITY,RAISE6SECFLAGS,RAISE60SECFLAGS,RAISE5MINFLAGS,RAISEREGFLAGS,LOWER6SECFLAGS,LOWER60SECFLAGS,LOWER5MINFLAGS,LOWERREGFLAGS,RAISEREGAVAILABILITY,RAISEREGENABLEMENTMAX,RAISEREGENABLEMENTMIN,LOWERREGAVAILABILITY,LOWERREGENABLEMENTMAX,LOWERREGENABLEMENTMIN,RAISE6SECACTUALAVAILABILITY,RAISE60SECACTUALAVAILABILITY,RAISE5MINACTUALAVAILABILITY,RAISEREGACTUALAVAILABILITY,LOWER6SECACTUALAVAILABILITY,LOWER60SECACTUALAVAILABILITY,LOWER5MINACTUALAVAILABILITY,LOWERREGACTUALAVAILABILITY,SEMIDISPATCHCAP,DISPATCHMODETIME\n";
         let mut indexes = Vec::from([0; 10_000]);
         let mut output = Vec::from([0; 10_000]);
-        let mut reader = CsvReader::new();
+        let mut reader = CsvReader::default();
         let row = reader.read_row(data, &mut output, &mut indexes).unwrap();
 
         assert_eq!(row.iter_fields().count(), 61);

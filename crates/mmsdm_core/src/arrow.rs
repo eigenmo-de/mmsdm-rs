@@ -54,7 +54,7 @@ where
 {
     accumulate_batch::<_, T, _>(
         reader,
-        |row| manager.partition_value(&row) == partition,
+        |row| manager.partition_value(row) == partition,
         manager.clone(),
     )
 }
