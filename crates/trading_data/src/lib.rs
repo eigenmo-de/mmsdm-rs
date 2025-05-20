@@ -764,7 +764,7 @@ impl TradingPrice3 {
         }
     }
 }
-pub struct TradingPrice3Mapping([usize; 40]);
+pub struct TradingPrice3Mapping([usize; 30]);
 /// # Summary
 ///
 /// ## TRADINGPRICE
@@ -849,26 +849,6 @@ pub struct TradingPrice3Row<'data> {
     pub lower1secrrp: Option<rust_decimal::Decimal>,
     /// Lower1Sec Regional Original Price - uncapped/unfloored and unscaled
     pub lower1secrop: Option<rust_decimal::Decimal>,
-    /// New MDA text field
-    pub new_mda_text: core::ops::Range<usize>,
-    /// New ROLR text field
-    pub new_rolr_text: core::ops::Range<usize>,
-    /// New RP text field
-    pub new_rp_text: core::ops::Range<usize>,
-    /// Last changed date.
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Class of National Metering Identifier to allow for different business rules to apply
-    pub nmi_class: core::ops::Range<usize>,
-    /// Type of metering installation (e.g. BASIC, MRIM, COMMS)
-    pub metering_type: core::ops::Range<usize>,
-    /// Area; for application of rules
-    pub jurisdiction: core::ops::Range<usize>,
-    /// Set by the system with today's date when the change record is created.
-    pub create_date: Option<chrono::NaiveDateTime>,
-    /// Set by the system (and cannot be changed).
-    pub expiry_date: Option<chrono::NaiveDateTime>,
-    /// Date of meter reading
-    pub meter_read_date: Option<chrono::NaiveDateTime>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
 impl<'data> TradingPrice3Row<'data> {
@@ -899,78 +879,6 @@ impl<'data> TradingPrice3Row<'data> {
             )
         }
     }
-    pub fn new_mda_text(&self) -> Option<&str> {
-        if self.new_mda_text.is_empty() {
-            None
-        } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.new_mda_text.clone(),
-                ),
-            )
-        }
-    }
-    pub fn new_rolr_text(&self) -> Option<&str> {
-        if self.new_rolr_text.is_empty() {
-            None
-        } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.new_rolr_text.clone(),
-                ),
-            )
-        }
-    }
-    pub fn new_rp_text(&self) -> Option<&str> {
-        if self.new_rp_text.is_empty() {
-            None
-        } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.new_rp_text.clone(),
-                ),
-            )
-        }
-    }
-    pub fn nmi_class(&self) -> Option<&str> {
-        if self.nmi_class.is_empty() {
-            None
-        } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.nmi_class.clone(),
-                ),
-            )
-        }
-    }
-    pub fn metering_type(&self) -> Option<&str> {
-        if self.metering_type.is_empty() {
-            None
-        } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.metering_type.clone(),
-                ),
-            )
-        }
-    }
-    pub fn jurisdiction(&self) -> Option<&str> {
-        if self.jurisdiction.is_empty() {
-            None
-        } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.jurisdiction.clone(),
-                ),
-            )
-        }
-    }
 }
 impl mmsdm_core::GetTable for TradingPrice3 {
     const VERSION: i32 = 3;
@@ -978,7 +886,7 @@ impl mmsdm_core::GetTable for TradingPrice3 {
     const TABLE_NAME: &'static str = "PRICE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = TradingPrice3Mapping([
         4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
+        26, 27, 28, 29, 30, 31, 32, 33,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -1011,16 +919,6 @@ impl mmsdm_core::GetTable for TradingPrice3 {
         "RAISE1SECROP",
         "LOWER1SECRRP",
         "LOWER1SECROP",
-        "NEW_MDA_TEXT",
-        "NEW_ROLR_TEXT",
-        "NEW_RP_TEXT",
-        "LASTCHANGED",
-        "NMI_CLASS",
-        "METERING_TYPE",
-        "JURISDICTION",
-        "CREATE_DATE",
-        "EXPIRY_DATE",
-        "METER_READ_DATE",
     ];
     type Row<'row> = TradingPrice3Row<'row>;
     type FieldMapping = TradingPrice3Mapping;
@@ -1195,36 +1093,6 @@ impl mmsdm_core::GetTable for TradingPrice3 {
                     field_mapping.0[29],
                     mmsdm_core::mms_decimal::parse,
                 )?,
-            new_mda_text: row.get_opt_range("new_mda_text", field_mapping.0[30])?,
-            new_rolr_text: row.get_opt_range("new_rolr_text", field_mapping.0[31])?,
-            new_rp_text: row.get_opt_range("new_rp_text", field_mapping.0[32])?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[33],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            nmi_class: row.get_opt_range("nmi_class", field_mapping.0[34])?,
-            metering_type: row.get_opt_range("metering_type", field_mapping.0[35])?,
-            jurisdiction: row.get_opt_range("jurisdiction", field_mapping.0[36])?,
-            create_date: row
-                .get_opt_custom_parsed_at_idx(
-                    "create_date",
-                    field_mapping.0[37],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            expiry_date: row
-                .get_opt_custom_parsed_at_idx(
-                    "expiry_date",
-                    field_mapping.0[38],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            meter_read_date: row
-                .get_opt_custom_parsed_at_idx(
-                    "meter_read_date",
-                    field_mapping.0[39],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
             backing_data: row,
         })
     }
@@ -1311,16 +1179,6 @@ impl mmsdm_core::GetTable for TradingPrice3 {
             raise1secrop: row.raise1secrop.clone(),
             lower1secrrp: row.lower1secrrp.clone(),
             lower1secrop: row.lower1secrop.clone(),
-            new_mda_text: row.new_mda_text.clone(),
-            new_rolr_text: row.new_rolr_text.clone(),
-            new_rp_text: row.new_rp_text.clone(),
-            lastchanged: row.lastchanged.clone(),
-            nmi_class: row.nmi_class.clone(),
-            metering_type: row.metering_type.clone(),
-            jurisdiction: row.jurisdiction.clone(),
-            create_date: row.create_date.clone(),
-            expiry_date: row.expiry_date.clone(),
-            meter_read_date: row.meter_read_date.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
@@ -1523,68 +1381,6 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
                     arrow::datatypes::DataType::Decimal128(15, 5),
                     true,
                 ),
-                arrow::datatypes::Field::new(
-                    "new_mda_text",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "new_rolr_text",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "new_rp_text",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "nmi_class",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "metering_type",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "jurisdiction",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "create_date",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "expiry_date",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "meter_read_date",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
             ]),
         )
     }
@@ -1645,16 +1441,6 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lower1secrop_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            new_mda_text_array: arrow::array::builder::StringBuilder::new(),
-            new_rolr_text_array: arrow::array::builder::StringBuilder::new(),
-            new_rp_text_array: arrow::array::builder::StringBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            nmi_class_array: arrow::array::builder::StringBuilder::new(),
-            metering_type_array: arrow::array::builder::StringBuilder::new(),
-            jurisdiction_array: arrow::array::builder::StringBuilder::new(),
-            create_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            expiry_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            meter_read_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1888,26 +1674,6 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
                         val.mantissa()
                     })
             });
-        builder.new_mda_text_array.append_option(row.new_mda_text());
-        builder.new_rolr_text_array.append_option(row.new_rolr_text());
-        builder.new_rp_text_array.append_option(row.new_rp_text());
-        builder
-            .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
-        builder.nmi_class_array.append_option(row.nmi_class());
-        builder.metering_type_array.append_option(row.metering_type());
-        builder.jurisdiction_array.append_option(row.jurisdiction());
-        builder
-            .create_date_array
-            .append_option(row.create_date.map(|val| val.and_utc().timestamp_millis()));
-        builder
-            .expiry_date_array
-            .append_option(row.expiry_date.map(|val| val.and_utc().timestamp_millis()));
-        builder
-            .meter_read_date_array
-            .append_option(
-                row.meter_read_date.map(|val| val.and_utc().timestamp_millis()),
-            );
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1975,26 +1741,6 @@ impl mmsdm_core::ArrowSchema for TradingPrice3 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.lower1secrop_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.new_mda_text_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.new_rolr_text_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.new_rp_text_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.nmi_class_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.metering_type_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.jurisdiction_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.create_date_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.expiry_date_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.meter_read_date_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
@@ -2032,16 +1778,6 @@ pub struct TradingPrice3Builder {
     raise1secrop_array: arrow::array::builder::Decimal128Builder,
     lower1secrrp_array: arrow::array::builder::Decimal128Builder,
     lower1secrop_array: arrow::array::builder::Decimal128Builder,
-    new_mda_text_array: arrow::array::builder::StringBuilder,
-    new_rolr_text_array: arrow::array::builder::StringBuilder,
-    new_rp_text_array: arrow::array::builder::StringBuilder,
-    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    nmi_class_array: arrow::array::builder::StringBuilder,
-    metering_type_array: arrow::array::builder::StringBuilder,
-    jurisdiction_array: arrow::array::builder::StringBuilder,
-    create_date_array: arrow::array::builder::TimestampMillisecondBuilder,
-    expiry_date_array: arrow::array::builder::TimestampMillisecondBuilder,
-    meter_read_date_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MeterDataCustomer1 {
     extract_row_partition: alloc::boxed::Box<

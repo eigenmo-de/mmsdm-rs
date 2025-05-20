@@ -1,4 +1,4 @@
-use std::{collections::BTreeMap, path::PathBuf, str::FromStr};
+use std::{collections::BTreeMap, ffi::OsStr, path::PathBuf, str::FromStr};
 
 use crate::{
     html_tree::{Element, ElementParser},
@@ -551,6 +551,10 @@ pub async fn run() -> anyhow::Result<DataModel> {
     for (_, file) in files.iter() {
         // go through all cached files
         // and try to parse a package from each file.
+
+        if file.file_name() == Some(&OsStr::new("Elec63_1.htm")) {
+            continue;
+        }
 
         info!("attempting to parse package from: {}", file.display());
         let package_file = tokio::fs::read_to_string(file).await?;

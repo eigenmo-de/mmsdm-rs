@@ -16,7 +16,6 @@ mod json;
 mod mms;
 mod pdr;
 mod rust;
-mod sql_server_tables;
 
 pub const VERSION: &str = "5.5";
 
@@ -25,7 +24,6 @@ pub const VERSION: &str = "5.5";
 enum AemoCodegen {
     Json,
     Rust,
-    SqlServerTables,
     Analyse,
     Download,
     Unzip,
@@ -44,19 +42,6 @@ async fn run() -> Result<(), anyhow::Error> {
 
     let file_name = format!("mmsdm_v{VERSION}.json");
     match AemoCodegen::from_args() {
-        AemoCodegen::SqlServerTables => {
-            let mut data = String::new();
-            let mut f = tokio::fs::OpenOptions::new()
-                .read(true)
-                .open(&file_name)
-                .await
-                .with_context(|| format!("Opening file: `{file_name}`"))?;
-
-            f.read_to_string(&mut data).await?;
-            let de = serde_json::from_str(&data)?;
-
-            sql_server_tables::run(de)?;
-        }
         AemoCodegen::Rust => {
             let mut data = String::new();
             let mut f = tokio::fs::OpenOptions::new()
