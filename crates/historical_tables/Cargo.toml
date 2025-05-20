@@ -1,16 +1,11 @@
 [package]
-name = "mmsdm_core"
-version = "0.3.0"
-authors = ["Eric Sheppard <eric@sheppard.cloud>", "Nayika Sheppard <nayika@eigenmo.de>"]
+name = "mmsdm_historical_tables"
+version = "0.1.0"
 edition = "2024"
 license = "MIT"
 repository = "https://github.com/eigenmo-de/mmsdm-rs"
 description = "Parse and Transform MMSDM data"
 resolver = "2"
-
-[[example]]
-path = "../../examples/core_parse.rs"
-name = "core_parse"
 
 [dependencies.tracing]
 workspace = true
@@ -28,18 +23,15 @@ features = []
 workspace = true
 default-features = false
 
-[dependencies.rc-zip-sync]
-workspace = true
-optional = true
-
 [dependencies.arrow]
 workspace = true
 optional = true
 
-[dependencies.csv-core]
-workspace = true
+[dependencies.mmsdm_core]
+# version = "0.3.0"
+path = "../mmsdm_core"
+default-features = false
 
 [features]
-arrow = ["dep:arrow", "std"]
-default = ["std"]
-std = ["dep:rc-zip-sync", "rust_decimal/std", "chrono/std", "chrono/now", "csv-core/libc"]
+arrow = ["dep:arrow", "mmsdm_core/arrow", "mmsdm_core/std"]
+default = []

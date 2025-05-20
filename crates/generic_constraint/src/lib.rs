@@ -98,11 +98,7 @@ impl mmsdm_core::GetTable for GenericConstraintEmsmaster1 {
     const DATA_SET_NAME: &'static str = "GENERIC_CONSTRAINT";
     const TABLE_NAME: &'static str = "EMSMASTER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GenericConstraintEmsmaster1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SPD_ID",
@@ -609,32 +605,8 @@ impl mmsdm_core::GetTable for GencondataNull6 {
     const DATA_SET_NAME: &'static str = "GENCONDATA";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GencondataNull6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -1283,13 +1255,7 @@ impl mmsdm_core::GetTable for GenconsetNull1 {
     const DATA_SET_NAME: &'static str = "GENCONSET";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GenconsetNull1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GENCONSETID",
@@ -1709,20 +1675,7 @@ impl mmsdm_core::GetTable for GenconsetinvokeNull2 {
     const DATA_SET_NAME: &'static str = "GENCONSETINVOKE";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GenconsetinvokeNull2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INVOCATION_ID",
@@ -2266,17 +2219,7 @@ impl mmsdm_core::GetTable for GenconsettrkNull2 {
     const DATA_SET_NAME: &'static str = "GENCONSETTRK";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GenconsettrkNull2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GENCONSETID",
@@ -2760,21 +2703,7 @@ impl mmsdm_core::GetTable for GcrhsNull1 {
     const DATA_SET_NAME: &'static str = "GCRHS";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GcrhsNull1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GENCONID",
@@ -3355,15 +3284,7 @@ impl mmsdm_core::GetTable for GeqdescNull2 {
     const DATA_SET_NAME: &'static str = "GEQDESC";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GeqdescNull2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EQUATIONID",
@@ -3773,20 +3694,7 @@ impl mmsdm_core::GetTable for GeqrhsNull1 {
     const DATA_SET_NAME: &'static str = "GEQRHS";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GeqrhsNull1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EQUATIONID",
@@ -4271,13 +4179,7 @@ impl mmsdm_core::GetTable for SpdcpcNull2 {
     const DATA_SET_NAME: &'static str = "SPDCPC";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SpdcpcNull2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONNECTIONPOINTID",
@@ -4634,12 +4536,7 @@ impl mmsdm_core::GetTable for SpdiccNull1 {
     const DATA_SET_NAME: &'static str = "SPDICC";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SpdiccNull1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERCONNECTORID",
@@ -4981,13 +4878,7 @@ impl mmsdm_core::GetTable for SpdrcNull2 {
     const DATA_SET_NAME: &'static str = "SPDRC";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SpdrcNull2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",

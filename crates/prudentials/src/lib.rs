@@ -100,25 +100,7 @@ impl mmsdm_core::GetTable for PrudentialCompanyPosition1 {
     const DATA_SET_NAME: &'static str = "PRUDENTIAL";
     const TABLE_NAME: &'static str = "COMPANY_POSITION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PrudentialCompanyPosition1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PRUDENTIAL_DATE",
@@ -807,11 +789,7 @@ impl mmsdm_core::GetTable for PrudentialRuntrk1 {
     const DATA_SET_NAME: &'static str = "PRUDENTIAL";
     const TABLE_NAME: &'static str = "RUNTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PrudentialRuntrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PRUDENTIAL_DATE",

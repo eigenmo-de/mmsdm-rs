@@ -153,7 +153,7 @@ impl<'a> Ord for FileKey<'a> {
 
 impl<'a> PartialOrd for FileKey<'a> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        self.cmp(other).into()
+        Some(self.cmp(other))
     }
 }
 
@@ -235,7 +235,7 @@ pub struct PartitionKey(pub &'static str);
 
 impl core::fmt::Display for PartitionKey {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str(&self.0)
+        f.write_str(self.0)
     }
 }
 
@@ -310,7 +310,7 @@ where
     T: GetTable,
 {
     match csv.record_type {
-        Some(RecordType::C) | Some(RecordType::I) => return Ok(None),
+        Some(RecordType::C) | Some(RecordType::I) => Ok(None),
         Some(RecordType::D) => {
             if T::matches_file_key(&FileKey::from_row(csv.borrow())?, version) {
                 Ok(Some(T::from_row(csv, field_mapping)?))
@@ -358,8 +358,8 @@ pub struct CsvReader {
     inner: Reader,
 }
 
-impl CsvReader {
-    pub fn new() -> CsvReader {
+impl Default for CsvReader {
+    fn default() -> CsvReader {
         CsvReader {
             inner: ReaderBuilder::new()
                 .delimiter(b',')
@@ -368,7 +368,9 @@ impl CsvReader {
                 .build(),
         }
     }
+}
 
+impl CsvReader {
     // TODO: verify that column orders are correct!
     pub fn validate_row(
         &mut self,
@@ -509,8 +511,8 @@ impl<'a> CsvRow<'a> {
         'a: 'b,
     {
         CsvRow {
-            data: Cow::Borrowed(&self.data.as_ref()),
-            indexes: Cow::Borrowed(&self.indexes.as_ref()), // IndexOptions::MutSlice(self.indexes.as_mut_slice()),
+            data: Cow::Borrowed(self.data.as_ref()),
+            indexes: Cow::Borrowed(self.indexes.as_ref()), // IndexOptions::MutSlice(self.indexes.as_mut_slice()),
             // offset: self.offset,
             record_type: self.record_type,
         }
@@ -526,7 +528,7 @@ impl<'a> CsvRow<'a> {
         }
     }
 
-    pub fn iter_fields<'b>(&'b self) -> impl Iterator<Item = &'b str> + 'b {
+    pub fn iter_fields(&self) -> impl Iterator<Item = &str> + '_ {
         (0..self.count_fields()).flat_map(|idx| self.get(idx))
     }
     pub fn to_owned(&'a self) -> CsvRow<'static> {
@@ -676,7 +678,7 @@ pub trait PrimaryKey: PartialOrd + Ord + PartialEq + Eq {}
 
 pub trait CompareWithRow {
     type Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool;
+    fn compare_with_row(&self, row: &Self::Row<'_>) -> bool;
 }
 
 pub trait CompareWithPrimaryKey {
@@ -890,7 +892,7 @@ pub mod mms_datetime {
     pub fn parse(input: &str) -> Result<NaiveDateTime> {
         if !input.is_ascii() {
             return Err(Error::ParseDateInternal {
-                message: alloc::format!("Non ASCII values in input when parsing NaiveDateTime"),
+                message: "Non ASCII values in input when parsing NaiveDateTime".to_string(),
                 input: input.to_string(),
                 format: "%Y/%m/%d %H:%M:%S",
             });
@@ -1031,7 +1033,7 @@ pub mod mms_decimal_opt {
         if input.is_empty() {
             Ok(None)
         } else {
-            Ok(Some(mms_decimal::parse(&input)?))
+            Ok(Some(mms_decimal::parse(input)?))
         }
     }
 }
@@ -1058,7 +1060,7 @@ pub mod mms_date {
     pub fn parse(input: &str) -> Result<NaiveDate> {
         if !input.is_ascii() {
             return Err(Error::ParseDateInternal {
-                message: alloc::format!("Non ASCII values in input when parsing NaiveDate"),
+                message: "Non ASCII values in input when parsing NaiveDate".to_string(),
                 input: input.to_string(),
                 format: "%Y/%m/%d",
             });
@@ -1130,7 +1132,7 @@ pub mod mms_period_datepart {
     pub fn parse(input: &str) -> Result<NaiveDate> {
         if !input.is_ascii() {
             return Err(Error::ParseDateInternal {
-                message: alloc::format!("Non ASCII values in input when parsing NaiveDate"),
+                message: "Non ASCII values in input when parsing NaiveDate".to_string(),
                 input: input.to_string(),
                 format: "%Y/%m/%d",
             });
@@ -1202,7 +1204,7 @@ pub mod mms_time {
     pub fn parse(input: &str) -> Result<NaiveTime> {
         if !input.is_ascii() {
             return Err(Error::ParseDateInternal {
-                message: alloc::format!("Non ASCII values in input when parsing NaiveTime"),
+                message: "Non ASCII values in input when parsing NaiveTime".to_string(),
                 input: input.to_string(),
                 format: "%H:%M:%S",
             });
@@ -1265,13 +1267,11 @@ pub mod mms_time {
 
 #[cfg(test)]
 mod tests {
-    use zip::ZipArchive;
+    use rc_zip_sync::ReadZip;
 
     use super::*;
 
     extern crate std;
-
-    use std::io::Cursor;
 
     static OLD_FORMAT: &'static [u8] =
         include_bytes!("../../../PUBLIC_DVD_DAYTRACK_202407010000.zip");
@@ -1280,9 +1280,10 @@ mod tests {
 
     #[test]
     fn test_full_parse_old() {
-        let mut archive = ZipArchive::new(Cursor::new(OLD_FORMAT)).unwrap();
+        let archive = OLD_FORMAT.read_zip().unwrap();
+        let handle = archive.entries().next().unwrap();
 
-        let fr = FileReader::new(&mut archive).unwrap();
+        let fr = FileReader::from_entry(handle).unwrap();
 
         assert_eq!(fr.sub_files().len(), 1);
 
@@ -1296,9 +1297,10 @@ mod tests {
 
     #[test]
     fn test_full_parse_new() {
-        let mut archive = ZipArchive::new(Cursor::new(NEW_FORMAT)).unwrap();
+        let archive = NEW_FORMAT.read_zip().unwrap();
+        let handle = archive.entries().next().unwrap();
 
-        let fr = FileReader::new(&mut archive).unwrap();
+        let fr = FileReader::from_entry(handle).unwrap();
 
         assert_eq!(fr.sub_files().len(), 1);
 
@@ -1315,8 +1317,8 @@ mod tests {
         let data = "C,NEMP.WORLD,NEXT_DAY_DISPATCH,AEMO,PUBLIC,2023/01/06,04:10:01,0000000378281515,NEXT_DAY_DISPATCH,0000000378281511\n";
         let mut indexes = Vec::from([0; 10_000]);
         let mut output = Vec::from([0; 10_000]);
-        let mut reader = CsvReader::new();
-        let row = reader.read_row(&data, &mut output, &mut indexes).unwrap();
+        let mut reader = CsvReader::default();
+        let row = reader.read_row(data, &mut output, &mut indexes).unwrap();
 
         AemoHeader::from_row(row).unwrap();
     }
@@ -1326,8 +1328,8 @@ mod tests {
         let data = "I,DISPATCH,UNIT_SOLUTION,3,SETTLEMENTDATE,RUNNO,DUID,TRADETYPE,DISPATCHINTERVAL,INTERVENTION,CONNECTIONPOINTID,DISPATCHMODE,AGCSTATUS,INITIALMW,TOTALCLEARED,RAMPDOWNRATE,RAMPUPRATE,LOWER5MIN,LOWER60SEC,LOWER6SEC,RAISE5MIN,RAISE60SEC,RAISE6SEC,DOWNEPF,UPEPF,MARGINAL5MINVALUE,MARGINAL60SECVALUE,MARGINAL6SECVALUE,MARGINALVALUE,VIOLATION5MINDEGREE,VIOLATION60SECDEGREE,VIOLATION6SECDEGREE,VIOLATIONDEGREE,LASTCHANGED,LOWERREG,RAISEREG,AVAILABILITY,RAISE6SECFLAGS,RAISE60SECFLAGS,RAISE5MINFLAGS,RAISEREGFLAGS,LOWER6SECFLAGS,LOWER60SECFLAGS,LOWER5MINFLAGS,LOWERREGFLAGS,RAISEREGAVAILABILITY,RAISEREGENABLEMENTMAX,RAISEREGENABLEMENTMIN,LOWERREGAVAILABILITY,LOWERREGENABLEMENTMAX,LOWERREGENABLEMENTMIN,RAISE6SECACTUALAVAILABILITY,RAISE60SECACTUALAVAILABILITY,RAISE5MINACTUALAVAILABILITY,RAISEREGACTUALAVAILABILITY,LOWER6SECACTUALAVAILABILITY,LOWER60SECACTUALAVAILABILITY,LOWER5MINACTUALAVAILABILITY,LOWERREGACTUALAVAILABILITY,SEMIDISPATCHCAP,DISPATCHMODETIME\n";
         let mut indexes = Vec::from([0; 10_000]);
         let mut output = Vec::from([0; 10_000]);
-        let mut reader = CsvReader::new();
-        let row = reader.read_row(&data, &mut output, &mut indexes).unwrap();
+        let mut reader = CsvReader::default();
+        let row = reader.read_row(data, &mut output, &mut indexes).unwrap();
 
         assert_eq!(row.iter_fields().count(), 61);
 
@@ -1367,10 +1369,10 @@ mod tests {
 
     #[test]
     fn dispatch_period() {
-        assert!(matches!("20211101000".parse::<DispatchPeriod>(), Err(_)));
-        assert!(matches!("20211101289".parse::<DispatchPeriod>(), Err(_)));
-        assert!(matches!("20211501288".parse::<DispatchPeriod>(), Err(_)));
-        assert!(matches!("20211132288".parse::<DispatchPeriod>(), Err(_)));
+        assert!("20211101000".parse::<DispatchPeriod>().is_err());
+        assert!("20211101289".parse::<DispatchPeriod>().is_err());
+        assert!("20211501288".parse::<DispatchPeriod>().is_err());
+        assert!("20211132288".parse::<DispatchPeriod>().is_err());
 
         assert_eq!(
             "20211101001".parse::<DispatchPeriod>().unwrap().start(),
@@ -1407,10 +1409,10 @@ mod tests {
 
     #[test]
     fn trading_period() {
-        assert!(matches!("2021110100".parse::<TradingPeriod>(), Err(_)));
-        assert!(matches!("2021110149".parse::<TradingPeriod>(), Err(_)));
-        assert!(matches!("2021150148".parse::<TradingPeriod>(), Err(_)));
-        assert!(matches!("2021113248".parse::<TradingPeriod>(), Err(_)));
+        assert!("2021110100".parse::<TradingPeriod>().is_err());
+        assert!("2021110149".parse::<TradingPeriod>().is_err());
+        assert!("2021150148".parse::<TradingPeriod>().is_err());
+        assert!("2021113248".parse::<TradingPeriod>().is_err());
 
         assert_eq!(
             "2021110101".parse::<TradingPeriod>().unwrap().start(),

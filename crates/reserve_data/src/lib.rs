@@ -89,12 +89,7 @@ impl mmsdm_core::GetTable for MtpasaReservelimit1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "RESERVELIMIT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaReservelimit1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -431,12 +426,7 @@ impl mmsdm_core::GetTable for MtpasaReservelimitRegion1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "RESERVELIMIT_REGION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaReservelimitRegion1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -802,13 +792,7 @@ impl mmsdm_core::GetTable for MtpasaReservelimitSet1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "RESERVELIMIT_SET";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaReservelimitSet1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -1167,23 +1151,7 @@ impl mmsdm_core::GetTable for ReserveDataReserve1 {
     const DATA_SET_NAME: &'static str = "RESERVE_DATA";
     const TABLE_NAME: &'static str = "RESERVE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ReserveDataReserve1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",

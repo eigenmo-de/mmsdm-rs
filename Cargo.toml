@@ -11,10 +11,10 @@ version = "0.1.41"
 default-features = false
 features = ["log"]
 
-[workspace.dependencies.zip]
-version = "0.6.6"
+[workspace.dependencies.rc-zip-sync]
+version = "4.3.0"
 default-features = false
-features = ["deflate"]
+features = ["deflate","file"]
 
 [workspace.dependencies.rust_decimal]
 version = "1.35.0"

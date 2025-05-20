@@ -5,11 +5,11 @@ use mmsdm_dispatch::{
     DispatchConstraint5, DispatchLocalPrice1, DispatchMnspbidtrk1, DispatchOffertrk1,
     DispatchUnitSolution5,
 };
+use rc_zip_sync::ReadZip;
 use std::boxed::Box;
 use std::error::Error;
 use std::fs::File;
 use std::sync::Arc;
-use zip::ZipArchive;
 
 // PUBLIC_NEXT_DAY_DISPATCH_20230105_0000000378281515.zip 5.4mb zipped, 81mb unzipped, 1s raw, 3s parsed
 // PUBLIC_DVD_PREDISPATCH_FCAS_REQ_D_202312010000.zip 200mb zipped, 7.0g unzipped, 10s raw, 66s parsed;
@@ -18,33 +18,19 @@ use zip::ZipArchive;
 // PUBLIC_DVD_BIDPEROFFER1_202312010000.zip 2gb s raw, s parsed; --- BOH!
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let file = File::open("./PUBLIC_NEXT_DAY_DISPATCH_20230105_0000000378281515.zip")?;
+    let file = File::open("./PUBLIC_NEXT_DAY_DISPATCH_20240419_0000000416994293.zip")?;
+    let archive = file.read_zip().unwrap();
+    let handle = archive.entries().next().unwrap();
 
-    let mut archive = ZipArchive::new(file)?;
-
-    // let mut br = BufReader::new(archive.by_index(0).unwrap());
-
-    // let mut rh = String::with_capacity(500);
-
-    // let mut rows = 0;
-    // loop {
-    //     let bytes_read = br.read_line(&mut rh)?;
-
-    //     if bytes_read == 0 {
-    //         break
-    //     }
-    //     rows += 1
-    // }
-
-    // dbg!(rows);
-
-    let mut fr = FileReader::new(&mut archive).unwrap();
+    let mut fr = FileReader::from_entry(handle).unwrap();
 
     dbg!(fr.header(), fr.sub_files());
 
+    
+
     let batch = mmsdm_core::partition_to_batch::<_, DispatchOffertrk1>(
         &mut fr,
-        PartitionValue("2023-01-01".to_string()),
+        PartitionValue("2024-04-01".to_string()),
         Arc::new(DispatchOffertrk1::new(
             PartitionKey("settlementdate"),
             |row| PartitionValue(row.settlementdate.date().with_day(1).unwrap().to_string()),
@@ -53,7 +39,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     dbg!(batch.num_rows(), batch.num_columns());
     let batch = mmsdm_core::partition_to_batch::<_, DispatchUnitSolution5>(
         &mut fr,
-        PartitionValue("2023-01-01".to_string()),
+        PartitionValue("2024-04-01".to_string()),
         Arc::new(DispatchUnitSolution5::new(
             PartitionKey("settlementdate"),
             |row| PartitionValue(row.settlementdate.date().with_day(1).unwrap().to_string()),
@@ -62,7 +48,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     dbg!(batch.num_rows(), batch.num_columns());
     let batch = mmsdm_core::partition_to_batch::<_, DispatchConstraint5>(
         &mut fr,
-        PartitionValue("2023-01-01".to_string()),
+        PartitionValue("2024-04-01".to_string()),
         Arc::new(DispatchConstraint5::new(
             PartitionKey("settlementdate"),
             |row| PartitionValue(row.settlementdate.date().with_day(1).unwrap().to_string()),
@@ -71,7 +57,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     dbg!(batch.num_rows(), batch.num_columns());
     let batch = mmsdm_core::partition_to_batch::<_, DispatchMnspbidtrk1>(
         &mut fr,
-        PartitionValue("2023-01-01".to_string()),
+        PartitionValue("2024-04-01".to_string()),
         Arc::new(DispatchMnspbidtrk1::new(
             PartitionKey("settlementdate"),
             |row| PartitionValue(row.settlementdate.date().with_day(1).unwrap().to_string()),
@@ -80,7 +66,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     dbg!(batch.num_rows(), batch.num_columns());
     let batch = mmsdm_core::partition_to_batch::<_, DispatchLocalPrice1>(
         &mut fr,
-        PartitionValue("2023-01-01".to_string()),
+        PartitionValue("2024-04-01".to_string()),
         Arc::new(DispatchLocalPrice1::new(
             PartitionKey("settlementdate"),
             |row| PartitionValue(row.settlementdate.date().with_day(1).unwrap().to_string()),

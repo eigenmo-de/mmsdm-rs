@@ -5,8 +5,9 @@ use std::io::{Read, Seek};
 
 use alloc::sync::Arc;
 pub use arrow::{array::RecordBatch, datatypes::Schema};
+use rc_zip_sync::HasCursor;
 
-use crate::{FileReader, GetTable, PartitionValue};
+use crate::{FileReader, GetBufReader, GetTable, PartitionValue};
 
 pub trait ArrowSchema: GetTable {
     fn schema() -> arrow::datatypes::Schema;
@@ -16,13 +17,15 @@ pub trait ArrowSchema: GetTable {
     fn finalize_builder(builder: &mut Self::Builder) -> crate::Result<arrow::array::RecordBatch>;
 }
 
-pub fn accumulate_batch<'a, R: Read + Seek, T: ArrowSchema, F>(
-    reader: &mut FileReader<'a, R>,
+pub fn accumulate_batch<'a, R, T, F>(
+    reader: &mut FileReader<R>,
     mut filter: F,
     manager: Arc<T>,
 ) -> crate::Result<arrow::array::RecordBatch>
 where
     F: FnMut(&T::Row<'_>) -> bool,
+    R: GetBufReader<'a> + 'a,
+    T: ArrowSchema,
 {
     let mut builder = T::new_builder();
 
@@ -40,16 +43,18 @@ where
     T::finalize_builder(&mut builder)
 }
 
-pub fn partition_to_batch<'a, R: Read + Seek, T: ArrowSchema>(
-    reader: &mut FileReader<'a, R>,
+pub fn partition_to_batch<'a, R, T>(
+    reader: &mut FileReader<R>,
     partition: PartitionValue,
     manager: Arc<T>,
 ) -> crate::Result<arrow::array::RecordBatch>
 where
+    R: GetBufReader<'a> + 'a,
+    T: ArrowSchema,
 {
     accumulate_batch::<_, T, _>(
         reader,
-        |row| manager.partition_value(&row) == partition,
+        |row| manager.partition_value(row) == partition,
         manager.clone(),
     )
 }

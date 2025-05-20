@@ -244,39 +244,8 @@ impl mmsdm_core::GetTable for OfferBiddayoffer3 {
     const DATA_SET_NAME: &'static str = "OFFER";
     const TABLE_NAME: &'static str = "BIDDAYOFFER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OfferBiddayoffer3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -1301,35 +1270,8 @@ impl mmsdm_core::GetTable for BidBiddayofferD3 {
     const DATA_SET_NAME: &'static str = "BID";
     const TABLE_NAME: &'static str = "BIDDAYOFFER_D";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidBiddayofferD3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -2291,18 +2233,7 @@ impl mmsdm_core::GetTable for BidsBidofferfiletrk1 {
     const DATA_SET_NAME: &'static str = "BIDS";
     const TABLE_NAME: &'static str = "BIDOFFERFILETRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidsBidofferfiletrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -2628,15 +2559,15 @@ pub struct BidsBidofferfiletrk1Builder {
     comments_array: arrow::array::builder::StringBuilder,
     submission_method_array: arrow::array::builder::StringBuilder,
 }
-pub struct BidsBidofferperiod2 {
+pub struct BidsBidofferperiod3 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
-            &BidsBidofferperiod2Row<'_>,
+            &BidsBidofferperiod3Row<'_>,
         ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
-impl BidsBidofferperiod2 {
+impl BidsBidofferperiod3 {
     pub fn new(
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
@@ -2649,7 +2580,7 @@ impl BidsBidofferperiod2 {
         }
     }
 }
-pub struct BidsBidofferperiod2Mapping([usize; 27]);
+pub struct BidsBidofferperiod3Mapping([usize; 28]);
 /// # Summary
 ///
 /// ## BIDOFFERPERIOD
@@ -2658,7 +2589,7 @@ pub struct BidsBidofferperiod2Mapping([usize; 27]);
 ///
 /// * Data Set Name: Bids
 /// * File Name: Bidofferperiod
-/// * Data Version: 2
+/// * Data Version: 3
 ///
 /// # Description
 /// BIDPEROFFER_D is public data, so is available to all participants.SourceBIDPEROFFER_D updates daily shortly after 4am. See also BIDPEROFFER.
@@ -2675,7 +2606,7 @@ pub struct BidsBidofferperiod2Mapping([usize; 27]);
 /// * PERIODID
 /// * TRADINGDATE
 #[derive(Debug, PartialEq, Eq)]
-pub struct BidsBidofferperiod2Row<'data> {
+pub struct BidsBidofferperiod3Row<'data> {
     /// Dispatchable Unit ID
     pub duid: core::ops::Range<usize>,
     /// The type of bid, one-of ENERGY, RAISE6SEC, RAISE60SEC, RAISE5MIN, RAISEREG, LOWER6SEC, LOWER60SEC, LOWER5MIN, LOWERREG
@@ -2730,9 +2661,11 @@ pub struct BidsBidofferperiod2Row<'data> {
     pub energylimit: Option<rust_decimal::Decimal>,
     /// Period ID Ending
     pub periodidto: Option<rust_decimal::Decimal>,
+    /// The advance notice(in hours) that a Scheduled Resource requires to achieve the PASA Availability MW for this trading interval
+    pub recall_period: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> BidsBidofferperiod2Row<'data> {
+impl<'data> BidsBidofferperiod3Row<'data> {
     pub fn duid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
     }
@@ -2743,38 +2676,13 @@ impl<'data> BidsBidofferperiod2Row<'data> {
         core::ops::Index::index(self.backing_data.as_slice(), self.direction.clone())
     }
 }
-impl mmsdm_core::GetTable for BidsBidofferperiod2 {
-    const VERSION: i32 = 2;
+impl mmsdm_core::GetTable for BidsBidofferperiod3 {
+    const VERSION: i32 = 3;
     const DATA_SET_NAME: &'static str = "BIDS";
     const TABLE_NAME: &'static str = "BIDOFFERPERIOD";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidsBidofferperiod2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidsBidofferperiod3Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -2804,15 +2712,16 @@ impl mmsdm_core::GetTable for BidsBidofferperiod2 {
         "PASAAVAILABILITY",
         "ENERGYLIMIT",
         "PERIODIDTO",
+        "RECALL_PERIOD",
     ];
-    type Row<'row> = BidsBidofferperiod2Row<'row>;
-    type FieldMapping = BidsBidofferperiod2Mapping;
-    type PrimaryKey = BidsBidofferperiod2PrimaryKey;
+    type Row<'row> = BidsBidofferperiod3Row<'row>;
+    type FieldMapping = BidsBidofferperiod3Mapping;
+    type PrimaryKey = BidsBidofferperiod3PrimaryKey;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(BidsBidofferperiod2Row {
+        Ok(BidsBidofferperiod3Row {
             duid: row.get_range("duid", field_mapping.0[0])?,
             bidtype: row.get_range("bidtype", field_mapping.0[1])?,
             tradingdate: row
@@ -2950,6 +2859,12 @@ impl mmsdm_core::GetTable for BidsBidofferperiod2 {
                     field_mapping.0[26],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            recall_period: row
+                .get_opt_custom_parsed_at_idx(
+                    "recall_period",
+                    field_mapping.0[27],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -2981,14 +2896,14 @@ impl mmsdm_core::GetTable for BidsBidofferperiod2 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(BidsBidofferperiod2Mapping(base_mapping))
+        Ok(BidsBidofferperiod3Mapping(base_mapping))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> BidsBidofferperiod2PrimaryKey {
-        BidsBidofferperiod2PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> BidsBidofferperiod3PrimaryKey {
+        BidsBidofferperiod3PrimaryKey {
             bidtype: row.bidtype().to_string(),
             direction: row.direction().to_string(),
             duid: row.duid().to_string(),
@@ -3001,13 +2916,13 @@ impl mmsdm_core::GetTable for BidsBidofferperiod2 {
         (self.extract_row_partition)(row)
     }
     fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("bids_bidofferperiod_v2_{}", self.partition_value(row))
+        alloc::format!("bids_bidofferperiod_v3_{}", self.partition_value(row))
     }
     fn partition_key(&self) -> mmsdm_core::PartitionKey {
         self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        BidsBidofferperiod2Row {
+        BidsBidofferperiod3Row {
             duid: row.duid.clone(),
             bidtype: row.bidtype.clone(),
             tradingdate: row.tradingdate.clone(),
@@ -3035,12 +2950,13 @@ impl mmsdm_core::GetTable for BidsBidofferperiod2 {
             pasaavailability: row.pasaavailability.clone(),
             energylimit: row.energylimit.clone(),
             periodidto: row.periodidto.clone(),
+            recall_period: row.recall_period.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BidsBidofferperiod2PrimaryKey {
+pub struct BidsBidofferperiod3PrimaryKey {
     pub bidtype: alloc::string::String,
     pub direction: alloc::string::String,
     pub duid: alloc::string::String,
@@ -3048,33 +2964,33 @@ pub struct BidsBidofferperiod2PrimaryKey {
     pub periodid: rust_decimal::Decimal,
     pub tradingdate: chrono::NaiveDateTime,
 }
-impl mmsdm_core::PrimaryKey for BidsBidofferperiod2PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for BidsBidofferperiod2Row<'data> {
-    type Row<'other> = BidsBidofferperiod2Row<'other>;
+impl mmsdm_core::PrimaryKey for BidsBidofferperiod3PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BidsBidofferperiod3Row<'data> {
+    type Row<'other> = BidsBidofferperiod3Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.bidtype() == row.bidtype() && self.direction() == row.direction()
             && self.duid() == row.duid() && self.offerdatetime == row.offerdatetime
             && self.periodid == row.periodid && self.tradingdate == row.tradingdate
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for BidsBidofferperiod2Row<'data> {
-    type PrimaryKey = BidsBidofferperiod2PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BidsBidofferperiod3Row<'data> {
+    type PrimaryKey = BidsBidofferperiod3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.bidtype() == key.bidtype && self.direction() == key.direction
             && self.duid() == key.duid && self.offerdatetime == key.offerdatetime
             && self.periodid == key.periodid && self.tradingdate == key.tradingdate
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for BidsBidofferperiod2PrimaryKey {
-    type Row<'other> = BidsBidofferperiod2Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for BidsBidofferperiod3PrimaryKey {
+    type Row<'other> = BidsBidofferperiod3Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.bidtype == row.bidtype() && self.direction == row.direction()
             && self.duid == row.duid() && self.offerdatetime == row.offerdatetime
             && self.periodid == row.periodid && self.tradingdate == row.tradingdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BidsBidofferperiod2PrimaryKey {
-    type PrimaryKey = BidsBidofferperiod2PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BidsBidofferperiod3PrimaryKey {
+    type PrimaryKey = BidsBidofferperiod3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.bidtype == key.bidtype && self.direction == key.direction
             && self.duid == key.duid && self.offerdatetime == key.offerdatetime
@@ -3082,8 +2998,8 @@ impl mmsdm_core::CompareWithPrimaryKey for BidsBidofferperiod2PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BidsBidofferperiod2 {
-    type Builder = BidsBidofferperiod2Builder;
+impl mmsdm_core::ArrowSchema for BidsBidofferperiod3 {
+    type Builder = BidsBidofferperiod3Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -3228,11 +3144,16 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod2 {
                     arrow::datatypes::DataType::Decimal128(3, 0),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "recall_period",
+                    arrow::datatypes::DataType::Decimal128(8, 3),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        BidsBidofferperiod2Builder {
+        BidsBidofferperiod3Builder {
             duid_array: arrow::array::builder::StringBuilder::new(),
             bidtype_array: arrow::array::builder::StringBuilder::new(),
             tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -3280,6 +3201,8 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             periodidto_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            recall_period_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(8, 3)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -3472,6 +3395,15 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod2 {
                         val.mantissa()
                     })
             });
+        builder
+            .recall_period_array
+            .append_option({
+                row.recall_period
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -3533,13 +3465,15 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod2 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.periodidto_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.recall_period_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct BidsBidofferperiod2Builder {
+pub struct BidsBidofferperiod3Builder {
     duid_array: arrow::array::builder::StringBuilder,
     bidtype_array: arrow::array::builder::StringBuilder,
     tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -3567,6 +3501,7 @@ pub struct BidsBidofferperiod2Builder {
     pasaavailability_array: arrow::array::builder::Decimal128Builder,
     energylimit_array: arrow::array::builder::Decimal128Builder,
     periodidto_array: arrow::array::builder::Decimal128Builder,
+    recall_period_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BidBidperofferD3 {
     extract_row_partition: alloc::boxed::Box<
@@ -3695,37 +3630,8 @@ impl mmsdm_core::GetTable for BidBidperofferD3 {
     const DATA_SET_NAME: &'static str = "BID";
     const TABLE_NAME: &'static str = "BIDPEROFFER_D";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidBidperofferD3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -4646,15 +4552,15 @@ pub struct BidBidperofferD3Builder {
     mr_capacity_array: arrow::array::builder::Decimal128Builder,
     energylimit_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BidsMnspBidofferperiod1 {
+pub struct BidsMnspBidofferperiod2 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
-            &BidsMnspBidofferperiod1Row<'_>,
+            &BidsMnspBidofferperiod2Row<'_>,
         ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
-impl BidsMnspBidofferperiod1 {
+impl BidsMnspBidofferperiod2 {
     pub fn new(
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
@@ -4667,7 +4573,7 @@ impl BidsMnspBidofferperiod1 {
         }
     }
 }
-pub struct BidsMnspBidofferperiod1Mapping([usize; 18]);
+pub struct BidsMnspBidofferperiod2Mapping([usize; 19]);
 /// # Summary
 ///
 /// ## MNSP_BIDOFFERPERIOD
@@ -4676,7 +4582,7 @@ pub struct BidsMnspBidofferperiod1Mapping([usize; 18]);
 ///
 /// * Data Set Name: Bids
 /// * File Name: Mnsp Bidofferperiod
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 /// # Description
 /// MNSP_DAYOFFER shows own (confidential) data updates as bids are processed. All bids are available as part of next day market data.Volume4, 000 per year
@@ -4691,7 +4597,7 @@ pub struct BidsMnspBidofferperiod1Mapping([usize; 18]);
 /// * PERIODID
 /// * TRADINGDATE
 #[derive(Debug, PartialEq, Eq)]
-pub struct BidsMnspBidofferperiod1Row<'data> {
+pub struct BidsMnspBidofferperiod2Row<'data> {
     /// Identifier for each of the two MNSP Interconnector Links. Each link pertains to the direction from and to.
     pub linkid: core::ops::Range<usize>,
     /// The trading date this bid is for
@@ -4728,36 +4634,21 @@ pub struct BidsMnspBidofferperiod1Row<'data> {
     pub bandavail10: Option<rust_decimal::Decimal>,
     /// Allows for future use for Energy bids, being the physical plant capability including any capability potentially available within 24 hours
     pub pasaavailability: Option<rust_decimal::Decimal>,
+    /// The advance notice(in hours) that a Scheduled Resource requires to achieve the PASA Availability MW for this trading interval
+    pub recall_period: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> BidsMnspBidofferperiod1Row<'data> {
+impl<'data> BidsMnspBidofferperiod2Row<'data> {
     pub fn linkid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.linkid.clone())
     }
 }
-impl mmsdm_core::GetTable for BidsMnspBidofferperiod1 {
-    const VERSION: i32 = 1;
+impl mmsdm_core::GetTable for BidsMnspBidofferperiod2 {
+    const VERSION: i32 = 2;
     const DATA_SET_NAME: &'static str = "BIDS";
     const TABLE_NAME: &'static str = "MNSP_BIDOFFERPERIOD";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidsMnspBidofferperiod1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidsMnspBidofferperiod2Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "LINKID",
@@ -4778,15 +4669,16 @@ impl mmsdm_core::GetTable for BidsMnspBidofferperiod1 {
         "BANDAVAIL9",
         "BANDAVAIL10",
         "PASAAVAILABILITY",
+        "RECALL_PERIOD",
     ];
-    type Row<'row> = BidsMnspBidofferperiod1Row<'row>;
-    type FieldMapping = BidsMnspBidofferperiod1Mapping;
-    type PrimaryKey = BidsMnspBidofferperiod1PrimaryKey;
+    type Row<'row> = BidsMnspBidofferperiod2Row<'row>;
+    type FieldMapping = BidsMnspBidofferperiod2Mapping;
+    type PrimaryKey = BidsMnspBidofferperiod2PrimaryKey;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(BidsMnspBidofferperiod1Row {
+        Ok(BidsMnspBidofferperiod2Row {
             linkid: row.get_range("linkid", field_mapping.0[0])?,
             tradingdate: row
                 .get_custom_parsed_at_idx(
@@ -4885,6 +4777,12 @@ impl mmsdm_core::GetTable for BidsMnspBidofferperiod1 {
                     field_mapping.0[17],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            recall_period: row
+                .get_opt_custom_parsed_at_idx(
+                    "recall_period",
+                    field_mapping.0[18],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -4916,14 +4814,14 @@ impl mmsdm_core::GetTable for BidsMnspBidofferperiod1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(BidsMnspBidofferperiod1Mapping(base_mapping))
+        Ok(BidsMnspBidofferperiod2Mapping(base_mapping))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> BidsMnspBidofferperiod1PrimaryKey {
-        BidsMnspBidofferperiod1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> BidsMnspBidofferperiod2PrimaryKey {
+        BidsMnspBidofferperiod2PrimaryKey {
             linkid: row.linkid().to_string(),
             offerdatetime: row.offerdatetime,
             periodid: row.periodid,
@@ -4934,13 +4832,13 @@ impl mmsdm_core::GetTable for BidsMnspBidofferperiod1 {
         (self.extract_row_partition)(row)
     }
     fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("bids_mnsp_bidofferperiod_v1_{}", self.partition_value(row))
+        alloc::format!("bids_mnsp_bidofferperiod_v2_{}", self.partition_value(row))
     }
     fn partition_key(&self) -> mmsdm_core::PartitionKey {
         self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        BidsMnspBidofferperiod1Row {
+        BidsMnspBidofferperiod2Row {
             linkid: row.linkid.clone(),
             tradingdate: row.tradingdate.clone(),
             offerdatetime: row.offerdatetime.clone(),
@@ -4959,49 +4857,50 @@ impl mmsdm_core::GetTable for BidsMnspBidofferperiod1 {
             bandavail9: row.bandavail9.clone(),
             bandavail10: row.bandavail10.clone(),
             pasaavailability: row.pasaavailability.clone(),
+            recall_period: row.recall_period.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BidsMnspBidofferperiod1PrimaryKey {
+pub struct BidsMnspBidofferperiod2PrimaryKey {
     pub linkid: alloc::string::String,
     pub offerdatetime: chrono::NaiveDateTime,
     pub periodid: rust_decimal::Decimal,
     pub tradingdate: chrono::NaiveDateTime,
 }
-impl mmsdm_core::PrimaryKey for BidsMnspBidofferperiod1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for BidsMnspBidofferperiod1Row<'data> {
-    type Row<'other> = BidsMnspBidofferperiod1Row<'other>;
+impl mmsdm_core::PrimaryKey for BidsMnspBidofferperiod2PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BidsMnspBidofferperiod2Row<'data> {
+    type Row<'other> = BidsMnspBidofferperiod2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.linkid() == row.linkid() && self.offerdatetime == row.offerdatetime
             && self.periodid == row.periodid && self.tradingdate == row.tradingdate
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for BidsMnspBidofferperiod1Row<'data> {
-    type PrimaryKey = BidsMnspBidofferperiod1PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BidsMnspBidofferperiod2Row<'data> {
+    type PrimaryKey = BidsMnspBidofferperiod2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.linkid() == key.linkid && self.offerdatetime == key.offerdatetime
             && self.periodid == key.periodid && self.tradingdate == key.tradingdate
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for BidsMnspBidofferperiod1PrimaryKey {
-    type Row<'other> = BidsMnspBidofferperiod1Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for BidsMnspBidofferperiod2PrimaryKey {
+    type Row<'other> = BidsMnspBidofferperiod2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.linkid == row.linkid() && self.offerdatetime == row.offerdatetime
             && self.periodid == row.periodid && self.tradingdate == row.tradingdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BidsMnspBidofferperiod1PrimaryKey {
-    type PrimaryKey = BidsMnspBidofferperiod1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BidsMnspBidofferperiod2PrimaryKey {
+    type PrimaryKey = BidsMnspBidofferperiod2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.linkid == key.linkid && self.offerdatetime == key.offerdatetime
             && self.periodid == key.periodid && self.tradingdate == key.tradingdate
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod1 {
-    type Builder = BidsMnspBidofferperiod1Builder;
+impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod2 {
+    type Builder = BidsMnspBidofferperiod2Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -5101,11 +5000,16 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod1 {
                     arrow::datatypes::DataType::Decimal128(8, 3),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "recall_period",
+                    arrow::datatypes::DataType::Decimal128(8, 3),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        BidsMnspBidofferperiod1Builder {
+        BidsMnspBidofferperiod2Builder {
             linkid_array: arrow::array::builder::StringBuilder::new(),
             tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -5137,6 +5041,8 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod1 {
             bandavail10_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(8, 3)),
             pasaavailability_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(8, 3)),
+            recall_period_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(8, 3)),
         }
     }
@@ -5273,6 +5179,15 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod1 {
                         val.mantissa()
                     })
             });
+        builder
+            .recall_period_array
+            .append_option({
+                row.recall_period
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -5316,13 +5231,15 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod1 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.pasaavailability_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.recall_period_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct BidsMnspBidofferperiod1Builder {
+pub struct BidsMnspBidofferperiod2Builder {
     linkid_array: arrow::array::builder::StringBuilder,
     tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -5341,6 +5258,7 @@ pub struct BidsMnspBidofferperiod1Builder {
     bandavail9_array: arrow::array::builder::Decimal128Builder,
     bandavail10_array: arrow::array::builder::Decimal128Builder,
     pasaavailability_array: arrow::array::builder::Decimal128Builder,
+    recall_period_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BidMnspDayoffer2 {
     extract_row_partition: alloc::boxed::Box<
@@ -5536,30 +5454,8 @@ impl mmsdm_core::GetTable for BidMnspDayoffer2 {
     const DATA_SET_NAME: &'static str = "BID";
     const TABLE_NAME: &'static str = "MNSP_DAYOFFER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidMnspDayoffer2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -6414,33 +6310,8 @@ impl mmsdm_core::GetTable for OfferMtpasaOfferdata2 {
     const DATA_SET_NAME: &'static str = "OFFER";
     const TABLE_NAME: &'static str = "MTPASA_OFFERDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OfferMtpasaOfferdata2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -7037,9 +6908,7 @@ impl mmsdm_core::GetTable for OfferMtpasaOfferfiletrk1 {
     const DATA_SET_NAME: &'static str = "OFFER";
     const TABLE_NAME: &'static str = "MTPASA_OFFERFILETRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OfferMtpasaOfferfiletrk1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",

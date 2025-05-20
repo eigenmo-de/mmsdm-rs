@@ -22,10 +22,8 @@ required-features = [ "mmsdm"]
 # version = "0.3.0"
 path = "../mmsdm_core"
 
-[dependencies.zip]
+[dependencies.rc-zip-sync]
 workspace = true
-default-features = false
-features = ["deflate"]
 optional = true
 
 [dependencies.tracing]
@@ -259,4 +257,4 @@ mmsdm = [
     "trading_data",
 ]
 default = ["mmsdm", "arrow", "std"]
-std = ["dep:zip", "mmsdm_core/std"]
+std = ["dep:rc-zip-sync", "mmsdm_core/std"]

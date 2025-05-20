@@ -65,8 +65,7 @@ impl mmsdm_core::GetTable for P5minBlockedConstraints1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "BLOCKED_CONSTRAINTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minBlockedConstraints1Mapping([
-        4,
-        5,
+        4, 5,
     ]);
     const COLUMNS: &'static [&'static str] = &["RUN_DATETIME", "CONSTRAINTID"];
     type Row<'row> = P5minBlockedConstraints1Row<'row>;
@@ -331,25 +330,7 @@ impl mmsdm_core::GetTable for P5minCasesolution2 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "CASESOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minCasesolution2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1062,18 +1043,7 @@ impl mmsdm_core::GetTable for P5minConstraintsolution6 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "CONSTRAINTSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minConstraintsolution6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1596,22 +1566,7 @@ impl mmsdm_core::GetTable for P5minFcasReqConstraint1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "FCAS_REQ_CONSTRAINT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minFcasReqConstraint1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2161,7 +2116,7 @@ pub struct P5minFcasReqRun1Mapping([usize; 3]);
 /// * Data Version: 1
 ///
 /// # Description
-///
+/// P5MIN_INTERCONNECTORSOLN is public data, so is available to all participants.SourceP5MIN_INTERCONNECTORSOLN updates every 5 minutes.VolumeRows per day: 1440Based on 200 interconnector/binding constraints per interval
 ///
 /// # Notes
 /// * (Visibility)  Public
@@ -2368,642 +2323,6 @@ pub struct P5minFcasReqRun1Builder {
     runno_array: arrow::array::builder::Int64Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct P5minFcasRequirment1 {
-    extract_row_partition: alloc::boxed::Box<
-        dyn Fn(
-            &P5minFcasRequirment1Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    >,
-    row_partition_key: mmsdm_core::PartitionKey,
-}
-impl P5minFcasRequirment1 {
-    pub fn new(
-        row_partition_key: mmsdm_core::PartitionKey,
-        func: impl Fn(
-            &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    ) -> Self {
-        Self {
-            extract_row_partition: alloc::boxed::Box::new(func),
-            row_partition_key,
-        }
-    }
-}
-pub struct P5minFcasRequirment1Mapping([usize; 16]);
-/// # Summary
-///
-/// ## P5MIN_FCAS_REQUIREMENT
-///
-/// 5-minute Predispatch constraint tracking for Regional FCAS recovery
-///
-/// * Data Set Name: P5min
-/// * File Name: Fcas Requirment
-/// * Data Version: 1
-///
-/// # Description
-/// P5MIN_INTERCONNECTORSOLN is public data, so is available to all participants.SourceP5MIN_INTERCONNECTORSOLN updates every 5 minutes.VolumeRows per day: 1440Based on 200 interconnector/binding constraints per interval
-///
-/// # Notes
-/// * (Visibility)  Public
-///
-/// # Primary Key Columns
-///
-/// * BIDTYPE
-/// * CONSTRAINTID
-/// * INTERVAL_DATETIME
-/// * REGIONID
-/// * RUN_DATETIME
-#[derive(Debug, PartialEq, Eq)]
-pub struct P5minFcasRequirment1Row<'data> {
-    /// First interval of the 5-minute Predispatch case
-    pub run_datetime: chrono::NaiveDateTime,
-    /// Datetime of the 5-minute Predispatch interval
-    pub interval_datetime: chrono::NaiveDateTime,
-    /// ConstraintID Join to table GenConData
-    pub constraintid: core::ops::Range<usize>,
-    /// Region Identifier
-    pub regionid: core::ops::Range<usize>,
-    /// DUID offered type
-    pub bidtype: core::ops::Range<usize>,
-    /// Intervention flag
-    pub intervention: rust_decimal::Decimal,
-    /// Constraint EffectiveDate Join to table GenConData
-    pub constraint_effectivedate: Option<chrono::NaiveDateTime>,
-    /// Constraint Version number Join to table GenConData
-    pub constraint_versionno: Option<rust_decimal::Decimal>,
-    /// Marginal $ value for energy
-    pub marginalvalue: Option<rust_decimal::Decimal>,
-    /// The base cost of the constraint for this service, before the regulation/contingency split
-    pub base_cost: Option<rust_decimal::Decimal>,
-    /// The adjusted cost of the constraint for this service, after the regulation/contingency split
-    pub adjusted_cost: Option<rust_decimal::Decimal>,
-    /// An estimated value for the constraint CMPF, based on 5- minute Predispatch data
-    pub estimated_cmpf: Option<rust_decimal::Decimal>,
-    /// An estimated value for the constraint CRMPF, based on 5-minute Predispatch data
-    pub estimated_crmpf: Option<rust_decimal::Decimal>,
-    /// Estimated recovery factor for CMPF based recovery
-    pub recovery_factor_cmpf: Option<rust_decimal::Decimal>,
-    /// Estimated recovery for CRMPF based recovery
-    pub recovery_factor_crmpf: Option<rust_decimal::Decimal>,
-    /// Last changed date for the record
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    backing_data: mmsdm_core::CsvRow<'data>,
-}
-impl<'data> P5minFcasRequirment1Row<'data> {
-    pub fn constraintid(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.constraintid.clone())
-    }
-    pub fn regionid(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
-    }
-    pub fn bidtype(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.bidtype.clone())
-    }
-}
-impl mmsdm_core::GetTable for P5minFcasRequirment1 {
-    const VERSION: i32 = 1;
-    const DATA_SET_NAME: &'static str = "P5MIN";
-    const TABLE_NAME: &'static str = "FCAS_REQUIRMENT";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minFcasRequirment1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-    ]);
-    const COLUMNS: &'static [&'static str] = &[
-        "RUN_DATETIME",
-        "INTERVAL_DATETIME",
-        "CONSTRAINTID",
-        "REGIONID",
-        "BIDTYPE",
-        "INTERVENTION",
-        "CONSTRAINT_EFFECTIVEDATE",
-        "CONSTRAINT_VERSIONNO",
-        "MARGINALVALUE",
-        "BASE_COST",
-        "ADJUSTED_COST",
-        "ESTIMATED_CMPF",
-        "ESTIMATED_CRMPF",
-        "RECOVERY_FACTOR_CMPF",
-        "RECOVERY_FACTOR_CRMPF",
-        "LASTCHANGED",
-    ];
-    type Row<'row> = P5minFcasRequirment1Row<'row>;
-    type FieldMapping = P5minFcasRequirment1Mapping;
-    type PrimaryKey = P5minFcasRequirment1PrimaryKey;
-    fn from_row<'data>(
-        row: mmsdm_core::CsvRow<'data>,
-        field_mapping: &Self::FieldMapping,
-    ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(P5minFcasRequirment1Row {
-            run_datetime: row
-                .get_custom_parsed_at_idx(
-                    "run_datetime",
-                    field_mapping.0[0],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            interval_datetime: row
-                .get_custom_parsed_at_idx(
-                    "interval_datetime",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            constraintid: row.get_range("constraintid", field_mapping.0[2])?,
-            regionid: row.get_range("regionid", field_mapping.0[3])?,
-            bidtype: row.get_range("bidtype", field_mapping.0[4])?,
-            intervention: row
-                .get_custom_parsed_at_idx(
-                    "intervention",
-                    field_mapping.0[5],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            constraint_effectivedate: row
-                .get_opt_custom_parsed_at_idx(
-                    "constraint_effectivedate",
-                    field_mapping.0[6],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            constraint_versionno: row
-                .get_opt_custom_parsed_at_idx(
-                    "constraint_versionno",
-                    field_mapping.0[7],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            marginalvalue: row
-                .get_opt_custom_parsed_at_idx(
-                    "marginalvalue",
-                    field_mapping.0[8],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            base_cost: row
-                .get_opt_custom_parsed_at_idx(
-                    "base_cost",
-                    field_mapping.0[9],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            adjusted_cost: row
-                .get_opt_custom_parsed_at_idx(
-                    "adjusted_cost",
-                    field_mapping.0[10],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            estimated_cmpf: row
-                .get_opt_custom_parsed_at_idx(
-                    "estimated_cmpf",
-                    field_mapping.0[11],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            estimated_crmpf: row
-                .get_opt_custom_parsed_at_idx(
-                    "estimated_crmpf",
-                    field_mapping.0[12],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            recovery_factor_cmpf: row
-                .get_opt_custom_parsed_at_idx(
-                    "recovery_factor_cmpf",
-                    field_mapping.0[13],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            recovery_factor_crmpf: row
-                .get_opt_custom_parsed_at_idx(
-                    "recovery_factor_crmpf",
-                    field_mapping.0[14],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[15],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            backing_data: row,
-        })
-    }
-    fn field_mapping_from_row<'a>(
-        mut row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
-        }
-        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
-        if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
-        }
-        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
-        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
-            base_mapping[field_index] = row
-                .iter_fields()
-                .position(|f| f == *field)
-                .unwrap_or(usize::MAX);
-        }
-        Ok(P5minFcasRequirment1Mapping(base_mapping))
-    }
-    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
-            && Self::TABLE_NAME == key.table_name()
-    }
-    fn primary_key(row: &Self::Row<'_>) -> P5minFcasRequirment1PrimaryKey {
-        P5minFcasRequirment1PrimaryKey {
-            bidtype: row.bidtype().to_string(),
-            constraintid: row.constraintid().to_string(),
-            interval_datetime: row.interval_datetime,
-            regionid: row.regionid().to_string(),
-            run_datetime: row.run_datetime,
-            intervention: row.intervention,
-        }
-    }
-    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
-        (self.extract_row_partition)(row)
-    }
-    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("p5min_fcas_requirment_v1_{}", self.partition_value(row))
-    }
-    fn partition_key(&self) -> mmsdm_core::PartitionKey {
-        self.row_partition_key
-    }
-    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        P5minFcasRequirment1Row {
-            run_datetime: row.run_datetime.clone(),
-            interval_datetime: row.interval_datetime.clone(),
-            constraintid: row.constraintid.clone(),
-            regionid: row.regionid.clone(),
-            bidtype: row.bidtype.clone(),
-            intervention: row.intervention.clone(),
-            constraint_effectivedate: row.constraint_effectivedate.clone(),
-            constraint_versionno: row.constraint_versionno.clone(),
-            marginalvalue: row.marginalvalue.clone(),
-            base_cost: row.base_cost.clone(),
-            adjusted_cost: row.adjusted_cost.clone(),
-            estimated_cmpf: row.estimated_cmpf.clone(),
-            estimated_crmpf: row.estimated_crmpf.clone(),
-            recovery_factor_cmpf: row.recovery_factor_cmpf.clone(),
-            recovery_factor_crmpf: row.recovery_factor_crmpf.clone(),
-            lastchanged: row.lastchanged.clone(),
-            backing_data: row.backing_data.to_owned(),
-        }
-    }
-}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct P5minFcasRequirment1PrimaryKey {
-    pub bidtype: alloc::string::String,
-    pub constraintid: alloc::string::String,
-    pub interval_datetime: chrono::NaiveDateTime,
-    pub regionid: alloc::string::String,
-    pub run_datetime: chrono::NaiveDateTime,
-    pub intervention: rust_decimal::Decimal,
-}
-impl mmsdm_core::PrimaryKey for P5minFcasRequirment1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for P5minFcasRequirment1Row<'data> {
-    type Row<'other> = P5minFcasRequirment1Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.bidtype() == row.bidtype() && self.constraintid() == row.constraintid()
-            && self.interval_datetime == row.interval_datetime
-            && self.regionid() == row.regionid() && self.run_datetime == row.run_datetime
-            && self.intervention == row.intervention
-    }
-}
-impl<'data> mmsdm_core::CompareWithPrimaryKey for P5minFcasRequirment1Row<'data> {
-    type PrimaryKey = P5minFcasRequirment1PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.bidtype() == key.bidtype && self.constraintid() == key.constraintid
-            && self.interval_datetime == key.interval_datetime
-            && self.regionid() == key.regionid && self.run_datetime == key.run_datetime
-            && self.intervention == key.intervention
-    }
-}
-impl<'data> mmsdm_core::CompareWithRow for P5minFcasRequirment1PrimaryKey {
-    type Row<'other> = P5minFcasRequirment1Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.bidtype == row.bidtype() && self.constraintid == row.constraintid()
-            && self.interval_datetime == row.interval_datetime
-            && self.regionid == row.regionid() && self.run_datetime == row.run_datetime
-            && self.intervention == row.intervention
-    }
-}
-impl mmsdm_core::CompareWithPrimaryKey for P5minFcasRequirment1PrimaryKey {
-    type PrimaryKey = P5minFcasRequirment1PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.bidtype == key.bidtype && self.constraintid == key.constraintid
-            && self.interval_datetime == key.interval_datetime
-            && self.regionid == key.regionid && self.run_datetime == key.run_datetime
-            && self.intervention == key.intervention
-    }
-}
-#[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for P5minFcasRequirment1 {
-    type Builder = P5minFcasRequirment1Builder;
-    fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "run_datetime",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "interval_datetime",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "constraintid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "regionid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "bidtype",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "intervention",
-                    arrow::datatypes::DataType::Decimal128(2, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "constraint_effectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "constraint_versionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "marginalvalue",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "base_cost",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "adjusted_cost",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "estimated_cmpf",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "estimated_crmpf",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "recovery_factor_cmpf",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "recovery_factor_crmpf",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-            ]),
-        )
-    }
-    fn new_builder() -> Self::Builder {
-        P5minFcasRequirment1Builder {
-            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
-            intervention_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            constraint_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            constraint_versionno_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            marginalvalue_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            base_cost_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            adjusted_cost_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            estimated_cmpf_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            estimated_crmpf_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            recovery_factor_cmpf_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            recovery_factor_crmpf_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-        }
-    }
-    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder
-            .run_datetime_array
-            .append_value(row.run_datetime.and_utc().timestamp_millis());
-        builder
-            .interval_datetime_array
-            .append_value(row.interval_datetime.and_utc().timestamp_millis());
-        builder.constraintid_array.append_value(row.constraintid());
-        builder.regionid_array.append_value(row.regionid());
-        builder.bidtype_array.append_value(row.bidtype());
-        builder
-            .intervention_array
-            .append_value({
-                let mut val = row.intervention;
-                val.rescale(0);
-                val.mantissa()
-            });
-        builder
-            .constraint_effectivedate_array
-            .append_option(
-                row.constraint_effectivedate.map(|val| val.and_utc().timestamp_millis()),
-            );
-        builder
-            .constraint_versionno_array
-            .append_option({
-                row.constraint_versionno
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .marginalvalue_array
-            .append_option({
-                row.marginalvalue
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .base_cost_array
-            .append_option({
-                row.base_cost
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .adjusted_cost_array
-            .append_option({
-                row.adjusted_cost
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .estimated_cmpf_array
-            .append_option({
-                row.estimated_cmpf
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .estimated_crmpf_array
-            .append_option({
-                row.estimated_crmpf
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .recovery_factor_cmpf_array
-            .append_option({
-                row.recovery_factor_cmpf
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .recovery_factor_crmpf_array
-            .append_option({
-                row.recovery_factor_crmpf
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
-    }
-    fn finalize_builder(
-        builder: &mut Self::Builder,
-    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
-        arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.constraintid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.regionid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.bidtype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.intervention_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(
-                        builder.constraint_effectivedate_array.finish(),
-                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.constraint_versionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.marginalvalue_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.base_cost_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.adjusted_cost_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.estimated_cmpf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.estimated_crmpf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.recovery_factor_cmpf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.recovery_factor_crmpf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
-    }
-}
-#[cfg(feature = "arrow")]
-pub struct P5minFcasRequirment1Builder {
-    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
-    intervention_array: arrow::array::builder::Decimal128Builder,
-    constraint_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    constraint_versionno_array: arrow::array::builder::Decimal128Builder,
-    marginalvalue_array: arrow::array::builder::Decimal128Builder,
-    base_cost_array: arrow::array::builder::Decimal128Builder,
-    adjusted_cost_array: arrow::array::builder::Decimal128Builder,
-    estimated_cmpf_array: arrow::array::builder::Decimal128Builder,
-    estimated_crmpf_array: arrow::array::builder::Decimal128Builder,
-    recovery_factor_cmpf_array: arrow::array::builder::Decimal128Builder,
-    recovery_factor_crmpf_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-}
 pub struct P5minInterconnectorsoln4 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -3132,28 +2451,7 @@ impl mmsdm_core::GetTable for P5minInterconnectorsoln4 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "INTERCONNECTORSOLN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minInterconnectorsoln4Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -3998,55 +3296,9 @@ impl mmsdm_core::GetTable for P5minIntersensitivities1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "INTERSENSITIVITIES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minIntersensitivities1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -5553,11 +4805,7 @@ impl mmsdm_core::GetTable for P5minLocalPrice1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "LOCAL_PRICE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minLocalPrice1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -5960,55 +5208,9 @@ impl mmsdm_core::GetTable for P5minPricesensitivities1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "PRICESENSITIVITIES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minPricesensitivities1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -7444,15 +6646,15 @@ pub struct P5minPricesensitivities1Builder {
     rrp43_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct P5minRegionsolution9 {
+pub struct P5minRegionsolution10 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
-            &P5minRegionsolution9Row<'_>,
+            &P5minRegionsolution10Row<'_>,
         ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
-impl P5minRegionsolution9 {
+impl P5minRegionsolution10 {
     pub fn new(
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
@@ -7465,7 +6667,7 @@ impl P5minRegionsolution9 {
         }
     }
 }
-pub struct P5minRegionsolution9Mapping([usize; 117]);
+pub struct P5minRegionsolution10Mapping([usize; 119]);
 /// # Summary
 ///
 /// ## P5MIN_REGIONSOLUTION
@@ -7474,7 +6676,7 @@ pub struct P5minRegionsolution9Mapping([usize; 117]);
 ///
 /// * Data Set Name: P5min
 /// * File Name: Regionsolution
-/// * Data Version: 9
+/// * Data Version: 10
 ///
 /// # Description
 /// P5MIN_REGIONSOLUTION is public data, so is available to all participants.SourceP5MIN_REGIONSOLUTION updates every 5 minutes.VolumeRows per day: 1440
@@ -7488,7 +6690,7 @@ pub struct P5minRegionsolution9Mapping([usize; 117]);
 /// * REGIONID
 /// * RUN_DATETIME
 #[derive(Debug, PartialEq, Eq)]
-pub struct P5minRegionsolution9Row<'data> {
+pub struct P5minRegionsolution10Row<'data> {
     /// Unique Timestamp Identifier for this study
     pub run_datetime: chrono::NaiveDateTime,
     /// The unique identifier for the interval within this study
@@ -7723,135 +6925,29 @@ pub struct P5minRegionsolution9Row<'data> {
     pub bdu_clearedmw_gen: Option<rust_decimal::Decimal>,
     /// Regional aggregated cleared MW where the DUID type is BDU. Net of import (Load)
     pub bdu_clearedmw_load: Option<rust_decimal::Decimal>,
+    /// Energy Storage for BDU at the start of the interval(MWh) - Region Aggregated
+    pub bdu_initial_energy_storage: Option<rust_decimal::Decimal>,
+    /// Energy storage for Daily Energy Constrained Scheduled Generating Units at the start of the interval(MWh) - Region Aggregated
+    pub decgen_initial_energy_storage: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> P5minRegionsolution9Row<'data> {
+impl<'data> P5minRegionsolution10Row<'data> {
     pub fn regionid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
     }
 }
-impl mmsdm_core::GetTable for P5minRegionsolution9 {
-    const VERSION: i32 = 9;
+impl mmsdm_core::GetTable for P5minRegionsolution10 {
+    const VERSION: i32 = 10;
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "REGIONSOLUTION";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minRegionsolution9Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
-        68,
-        69,
-        70,
-        71,
-        72,
-        73,
-        74,
-        75,
-        76,
-        77,
-        78,
-        79,
-        80,
-        81,
-        82,
-        83,
-        84,
-        85,
-        86,
-        87,
-        88,
-        89,
-        90,
-        91,
-        92,
-        93,
-        94,
-        95,
-        96,
-        97,
-        98,
-        99,
-        100,
-        101,
-        102,
-        103,
-        104,
-        105,
-        106,
-        107,
-        108,
-        109,
-        110,
-        111,
-        112,
-        113,
-        114,
-        115,
-        116,
-        117,
-        118,
-        119,
-        120,
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minRegionsolution10Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85,
+        86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104,
+        105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
+        121, 122,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -7971,15 +7067,17 @@ impl mmsdm_core::GetTable for P5minRegionsolution9 {
         "BDU_MAX_AVAIL",
         "BDU_CLEAREDMW_GEN",
         "BDU_CLEAREDMW_LOAD",
+        "BDU_INITIAL_ENERGY_STORAGE",
+        "DECGEN_INITIAL_ENERGY_STORAGE",
     ];
-    type Row<'row> = P5minRegionsolution9Row<'row>;
-    type FieldMapping = P5minRegionsolution9Mapping;
-    type PrimaryKey = P5minRegionsolution9PrimaryKey;
+    type Row<'row> = P5minRegionsolution10Row<'row>;
+    type FieldMapping = P5minRegionsolution10Mapping;
+    type PrimaryKey = P5minRegionsolution10PrimaryKey;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(P5minRegionsolution9Row {
+        Ok(P5minRegionsolution10Row {
             run_datetime: row
                 .get_custom_parsed_at_idx(
                     "run_datetime",
@@ -8677,6 +7775,18 @@ impl mmsdm_core::GetTable for P5minRegionsolution9 {
                     field_mapping.0[116],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            bdu_initial_energy_storage: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_initial_energy_storage",
+                    field_mapping.0[117],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            decgen_initial_energy_storage: row
+                .get_opt_custom_parsed_at_idx(
+                    "decgen_initial_energy_storage",
+                    field_mapping.0[118],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -8708,14 +7818,14 @@ impl mmsdm_core::GetTable for P5minRegionsolution9 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(P5minRegionsolution9Mapping(base_mapping))
+        Ok(P5minRegionsolution10Mapping(base_mapping))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> P5minRegionsolution9PrimaryKey {
-        P5minRegionsolution9PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> P5minRegionsolution10PrimaryKey {
+        P5minRegionsolution10PrimaryKey {
             interval_datetime: row.interval_datetime,
             regionid: row.regionid().to_string(),
             run_datetime: row.run_datetime,
@@ -8726,13 +7836,13 @@ impl mmsdm_core::GetTable for P5minRegionsolution9 {
         (self.extract_row_partition)(row)
     }
     fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("p5min_regionsolution_v9_{}", self.partition_value(row))
+        alloc::format!("p5min_regionsolution_v10_{}", self.partition_value(row))
     }
     fn partition_key(&self) -> mmsdm_core::PartitionKey {
         self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        P5minRegionsolution9Row {
+        P5minRegionsolution10Row {
             run_datetime: row.run_datetime.clone(),
             interval_datetime: row.interval_datetime.clone(),
             regionid: row.regionid.clone(),
@@ -8850,44 +7960,46 @@ impl mmsdm_core::GetTable for P5minRegionsolution9 {
             bdu_max_avail: row.bdu_max_avail.clone(),
             bdu_clearedmw_gen: row.bdu_clearedmw_gen.clone(),
             bdu_clearedmw_load: row.bdu_clearedmw_load.clone(),
+            bdu_initial_energy_storage: row.bdu_initial_energy_storage.clone(),
+            decgen_initial_energy_storage: row.decgen_initial_energy_storage.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct P5minRegionsolution9PrimaryKey {
+pub struct P5minRegionsolution10PrimaryKey {
     pub interval_datetime: chrono::NaiveDateTime,
     pub regionid: alloc::string::String,
     pub run_datetime: chrono::NaiveDateTime,
     pub intervention: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for P5minRegionsolution9PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for P5minRegionsolution9Row<'data> {
-    type Row<'other> = P5minRegionsolution9Row<'other>;
+impl mmsdm_core::PrimaryKey for P5minRegionsolution10PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for P5minRegionsolution10Row<'data> {
+    type Row<'other> = P5minRegionsolution10Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.interval_datetime == row.interval_datetime
             && self.regionid() == row.regionid() && self.run_datetime == row.run_datetime
             && self.intervention == row.intervention
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution9Row<'data> {
-    type PrimaryKey = P5minRegionsolution9PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution10Row<'data> {
+    type PrimaryKey = P5minRegionsolution10PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime
             && self.regionid() == key.regionid && self.run_datetime == key.run_datetime
             && self.intervention == key.intervention
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for P5minRegionsolution9PrimaryKey {
-    type Row<'other> = P5minRegionsolution9Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for P5minRegionsolution10PrimaryKey {
+    type Row<'other> = P5minRegionsolution10Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.interval_datetime == row.interval_datetime
             && self.regionid == row.regionid() && self.run_datetime == row.run_datetime
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution9PrimaryKey {
-    type PrimaryKey = P5minRegionsolution9PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution10PrimaryKey {
+    type PrimaryKey = P5minRegionsolution10PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
             && self.run_datetime == key.run_datetime
@@ -8895,8 +8007,8 @@ impl mmsdm_core::CompareWithPrimaryKey for P5minRegionsolution9PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for P5minRegionsolution9 {
-    type Builder = P5minRegionsolution9Builder;
+impl mmsdm_core::ArrowSchema for P5minRegionsolution10 {
+    type Builder = P5minRegionsolution10Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -9494,11 +8606,21 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution9 {
                     arrow::datatypes::DataType::Decimal128(15, 5),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "bdu_initial_energy_storage",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "decgen_initial_energy_storage",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        P5minRegionsolution9Builder {
+        P5minRegionsolution10Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             regionid_array: arrow::array::builder::StringBuilder::new(),
@@ -9728,6 +8850,10 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution9 {
             bdu_clearedmw_gen_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             bdu_clearedmw_load_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            bdu_initial_energy_storage_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            decgen_initial_energy_storage_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
         }
     }
@@ -10757,6 +9883,24 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution9 {
                         val.mantissa()
                     })
             });
+        builder
+            .bdu_initial_energy_storage_array
+            .append_option({
+                row.bdu_initial_energy_storage
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .decgen_initial_energy_storage_array
+            .append_option({
+                row.decgen_initial_energy_storage
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -11002,13 +10146,19 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution9 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.bdu_clearedmw_load_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.bdu_initial_energy_storage_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.decgen_initial_energy_storage_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct P5minRegionsolution9Builder {
+pub struct P5minRegionsolution10Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     regionid_array: arrow::array::builder::StringBuilder,
@@ -11126,6 +10276,8 @@ pub struct P5minRegionsolution9Builder {
     bdu_max_avail_array: arrow::array::builder::Decimal128Builder,
     bdu_clearedmw_gen_array: arrow::array::builder::Decimal128Builder,
     bdu_clearedmw_load_array: arrow::array::builder::Decimal128Builder,
+    bdu_initial_energy_storage_array: arrow::array::builder::Decimal128Builder,
+    decgen_initial_energy_storage_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct P5minScenariodemand1 {
     extract_row_partition: alloc::boxed::Box<
@@ -11195,11 +10347,7 @@ impl mmsdm_core::GetTable for P5minScenariodemand1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "SCENARIODEMAND";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minScenariodemand1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -11511,10 +10659,7 @@ impl mmsdm_core::GetTable for P5minScenariodemandtrk1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "SCENARIODEMANDTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minScenariodemandtrk1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -11860,9 +11005,9 @@ pub struct P5minUnitsolution6Row<'data> {
     pub lower1sec: Option<rust_decimal::Decimal>,
     /// TraderSolution element L1Flags attribute
     pub lower1secflags: Option<rust_decimal::Decimal>,
-    /// BDU only. The energy storage at the start of this dispatch interval (MWh)
+    /// The energy storage at the start of this dispatch interval(MWh)
     pub initial_energy_storage: Option<rust_decimal::Decimal>,
-    /// BDU only. The projected energy storage based on cleared energy and regulation FCAS dispatch (MWh)
+    /// The projected energy storage based on cleared energy and regulation FCAS dispatch(MWh)
     pub energy_storage: Option<rust_decimal::Decimal>,
     /// BDU only - Minimum Energy Storage constraint limit (MWh)
     pub energy_storage_min: Option<rust_decimal::Decimal>,
@@ -11894,48 +11039,8 @@ impl mmsdm_core::GetTable for P5minUnitsolution6 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "UNITSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minUnitsolution6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",

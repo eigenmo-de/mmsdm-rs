@@ -14,6 +14,7 @@ use std::time::Duration;
 
 pub async fn run() -> anyhow::Result<()> {
     let mut files = Vec::<FileNameParts>::new();
+    tokio::fs::create_dir_all("./cache").await?;
     let mut readdir = tokio::fs::read_dir("./cache").await?;
 
     while let Some(item) = readdir.next_entry().await? {
@@ -59,8 +60,6 @@ pub async fn run() -> anyhow::Result<()> {
         .next()
         .ok_or_else(|| anyhow!("No table found"))?;
 
-    println!("{first_table}");
-
     for a in first_table.iter_dfs_elements_of_tag("a") {
         let content = a
             .children
@@ -72,8 +71,6 @@ pub async fn run() -> anyhow::Result<()> {
             .get("href")
             .ok_or_else(|| anyhow!("Missing href attr for {content}"))?
             .replace("#1", "");
-
-        dbg!(&url_str);
 
         let url_str_number = url_str
             .replace("Elec", "")

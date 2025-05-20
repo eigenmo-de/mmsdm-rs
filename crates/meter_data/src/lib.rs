@@ -98,16 +98,7 @@ impl mmsdm_core::GetTable for MeterdataAggregateReads1 {
     const DATA_SET_NAME: &'static str = "METERDATA";
     const TABLE_NAME: &'static str = "AGGREGATE_READS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataAggregateReads1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CASE_ID",
@@ -561,18 +552,7 @@ impl mmsdm_core::GetTable for MeterdataIndividualReads1 {
     const DATA_SET_NAME: &'static str = "METERDATA";
     const TABLE_NAME: &'static str = "INDIVIDUAL_READS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataIndividualReads1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CASE_ID",
@@ -1014,13 +994,7 @@ impl mmsdm_core::GetTable for MeterdataInterconnector1 {
     const DATA_SET_NAME: &'static str = "METERDATA";
     const TABLE_NAME: &'static str = "INTERCONNECTOR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataInterconnector1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CASE_ID",
@@ -1413,16 +1387,7 @@ impl mmsdm_core::GetTable for MeterdataMeterdataSaps1 {
     const DATA_SET_NAME: &'static str = "METERDATA";
     const TABLE_NAME: &'static str = "METERDATA_SAPS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataMeterdataSaps1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CASE_ID",
@@ -1917,20 +1882,7 @@ impl mmsdm_core::GetTable for MeterdataWdrReads1 {
     const DATA_SET_NAME: &'static str = "METERDATA";
     const TABLE_NAME: &'static str = "WDR_READS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataWdrReads1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MARKET_ID",

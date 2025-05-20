@@ -98,8 +98,6 @@ pub enum Error {
     Io(io::Error),
     #[cfg(feature = "arrow")]
     Arrow(arrow::error::ArrowError),
-    #[cfg(feature = "std")]
-    Zip(zip::result::ZipError),
 }
 
 impl fmt::Display for Error {
@@ -182,8 +180,6 @@ impl fmt::Display for Error {
             Error::Io(e) => write!(f, "Io error: {e:?}"),
             #[cfg(feature = "arrow")]
             Error::Arrow(e) => write!(f, "Arrow error: {e:?}"),
-            #[cfg(feature = "std")]
-            Error::Zip(e) => write!(f, "Zip error: {e:?}"),
         }
     }
 }
@@ -202,13 +198,6 @@ impl From<arrow::error::ArrowError> for Error {
 impl From<io::Error> for Error {
     fn from(value: io::Error) -> Self {
         Error::Io(value)
-    }
-}
-
-#[cfg(feature = "std")]
-impl From<zip::result::ZipError> for Error {
-    fn from(value: zip::result::ZipError) -> Self {
-        Error::Zip(value)
     }
 }
 

@@ -106,23 +106,7 @@ impl mmsdm_core::GetTable for PredispatchFcasReqConstraint1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "FCAS_REQ_CONSTRAINT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchFcasReqConstraint1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -700,7 +684,7 @@ pub struct PredispatchFcasReqRun1Mapping([usize; 4]);
 /// * Data Version: 1
 ///
 /// # Description
-/// SourcePREDISPATCH_FCAS_REQ updates with each pre-dispatch run (half hourly)VolumeApproximately 2,000 rows per day.NoteThe PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
+///
 ///
 /// # Notes
 /// * (Visibility)  Public
@@ -728,10 +712,7 @@ impl mmsdm_core::GetTable for PredispatchFcasReqRun1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "FCAS_REQ_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchFcasReqRun1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -944,682 +925,6 @@ pub struct PredispatchFcasReqRun1Builder {
     runno_array: arrow::array::builder::Int64Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct PredispatchRegionfcasrequirement2 {
-    extract_row_partition: alloc::boxed::Box<
-        dyn Fn(
-            &PredispatchRegionfcasrequirement2Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    >,
-    row_partition_key: mmsdm_core::PartitionKey,
-}
-impl PredispatchRegionfcasrequirement2 {
-    pub fn new(
-        row_partition_key: mmsdm_core::PartitionKey,
-        func: impl Fn(
-            &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    ) -> Self {
-        Self {
-            extract_row_partition: alloc::boxed::Box::new(func),
-            row_partition_key,
-        }
-    }
-}
-pub struct PredispatchRegionfcasrequirement2Mapping([usize; 18]);
-/// # Summary
-///
-/// ## PREDISPATCH_FCAS_REQ
-///
-/// PREDISPATCH_FCAS_REQ shows Predispatch Constraint tracking for Regional FCAS Requirements.
-///
-/// * Data Set Name: Predispatch
-/// * File Name: Regionfcasrequirement
-/// * Data Version: 2
-///
-/// # Description
-/// SourcePREDISPATCH_FCAS_REQ updates with each pre-dispatch run (half hourly)VolumeApproximately 2,000 rows per day.NoteThe PERIODID columns in tables PREDISPATCHCONSTRAINT and PREDISPATCH_FCAS_REQ have no consistent relationship with the other PERIODID values in the other tables in the PRE-DISPATCH package (such as PREDISPATCHPRICE). AEMO and many Participants appreciate the data model is inconsistent, but the cost of changing existing systems has been judged as being unjustifiable. An additional field DATETIME was added to allow joins between these data sets.
-///
-/// # Notes
-/// * (Visibility)  Public
-///
-/// # Primary Key Columns
-///
-/// * BIDTYPE
-/// * DATETIME
-/// * GENCONID
-/// * REGIONID
-#[derive(Debug, PartialEq, Eq)]
-pub struct PredispatchRegionfcasrequirement2Row<'data> {
-    /// PreDispatch Sequence number
-    pub predispatchseqno: mmsdm_core::TradingPeriod,
-    /// Case Run number
-    pub runno: Option<rust_decimal::Decimal>,
-    /// Intervention Flag
-    pub intervention: rust_decimal::Decimal,
-    /// Unique period identifier, in the format yyyymmddpp. The period (pp) is 01 to 48, with 01 corresponding to the half-hour ending at 04:30am.
-    pub periodid: mmsdm_core::TradingPeriod,
-    /// Generic Constraint ID - Join to table GenConData
-    pub genconid: core::ops::Range<usize>,
-    /// Region ID
-    pub regionid: core::ops::Range<usize>,
-    /// Bid Type Identifier
-    pub bidtype: core::ops::Range<usize>,
-    /// Generic Constraint EffectiveDate - Join to table GenConData
-    pub genconeffectivedate: Option<chrono::NaiveDateTime>,
-    /// Generic Constraint Version number - Join to table GenConData
-    pub genconversionno: Option<rust_decimal::Decimal>,
-    /// Marginal Value of generic constraint
-    pub marginalvalue: Option<rust_decimal::Decimal>,
-    /// Date and Time of trading interval
-    pub datetime: chrono::NaiveDateTime,
-    /// Last date and time record changed
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// The base cost of the constraint for this service, before the regulation/contingency split
-    pub base_cost: Option<rust_decimal::Decimal>,
-    /// The adjusted cost of the constraint for this service, before the regulation/contingency split
-    pub adjusted_cost: Option<rust_decimal::Decimal>,
-    /// An estimated value for the constraint CMPF, based on dispatched data
-    pub estimated_cmpf: Option<rust_decimal::Decimal>,
-    /// An estimated value for the constraint CRMPF, based on dispatched data
-    pub estimated_crmpf: Option<rust_decimal::Decimal>,
-    /// Estimated recovery factor for CMPF based recovery
-    pub recovery_factor_cmpf: Option<rust_decimal::Decimal>,
-    /// Estimated recovery factor for CRMPF based recovery
-    pub recovery_factor_crmpf: Option<rust_decimal::Decimal>,
-    backing_data: mmsdm_core::CsvRow<'data>,
-}
-impl<'data> PredispatchRegionfcasrequirement2Row<'data> {
-    pub fn genconid(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.genconid.clone())
-    }
-    pub fn regionid(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
-    }
-    pub fn bidtype(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.bidtype.clone())
-    }
-}
-impl mmsdm_core::GetTable for PredispatchRegionfcasrequirement2 {
-    const VERSION: i32 = 2;
-    const DATA_SET_NAME: &'static str = "PREDISPATCH";
-    const TABLE_NAME: &'static str = "REGIONFCASREQUIREMENT";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchRegionfcasrequirement2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-    ]);
-    const COLUMNS: &'static [&'static str] = &[
-        "PREDISPATCHSEQNO",
-        "RUNNO",
-        "INTERVENTION",
-        "PERIODID",
-        "GENCONID",
-        "REGIONID",
-        "BIDTYPE",
-        "GENCONEFFECTIVEDATE",
-        "GENCONVERSIONNO",
-        "MARGINALVALUE",
-        "DATETIME",
-        "LASTCHANGED",
-        "BASE_COST",
-        "ADJUSTED_COST",
-        "ESTIMATED_CMPF",
-        "ESTIMATED_CRMPF",
-        "RECOVERY_FACTOR_CMPF",
-        "RECOVERY_FACTOR_CRMPF",
-    ];
-    type Row<'row> = PredispatchRegionfcasrequirement2Row<'row>;
-    type FieldMapping = PredispatchRegionfcasrequirement2Mapping;
-    type PrimaryKey = PredispatchRegionfcasrequirement2PrimaryKey;
-    fn from_row<'data>(
-        row: mmsdm_core::CsvRow<'data>,
-        field_mapping: &Self::FieldMapping,
-    ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(PredispatchRegionfcasrequirement2Row {
-            predispatchseqno: row
-                .get_parsed_at_idx("predispatchseqno", field_mapping.0[0])?,
-            runno: row
-                .get_opt_custom_parsed_at_idx(
-                    "runno",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            intervention: row
-                .get_custom_parsed_at_idx(
-                    "intervention",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            periodid: row.get_parsed_at_idx("periodid", field_mapping.0[3])?,
-            genconid: row.get_range("genconid", field_mapping.0[4])?,
-            regionid: row.get_range("regionid", field_mapping.0[5])?,
-            bidtype: row.get_range("bidtype", field_mapping.0[6])?,
-            genconeffectivedate: row
-                .get_opt_custom_parsed_at_idx(
-                    "genconeffectivedate",
-                    field_mapping.0[7],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            genconversionno: row
-                .get_opt_custom_parsed_at_idx(
-                    "genconversionno",
-                    field_mapping.0[8],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            marginalvalue: row
-                .get_opt_custom_parsed_at_idx(
-                    "marginalvalue",
-                    field_mapping.0[9],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            datetime: row
-                .get_custom_parsed_at_idx(
-                    "datetime",
-                    field_mapping.0[10],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[11],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            base_cost: row
-                .get_opt_custom_parsed_at_idx(
-                    "base_cost",
-                    field_mapping.0[12],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            adjusted_cost: row
-                .get_opt_custom_parsed_at_idx(
-                    "adjusted_cost",
-                    field_mapping.0[13],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            estimated_cmpf: row
-                .get_opt_custom_parsed_at_idx(
-                    "estimated_cmpf",
-                    field_mapping.0[14],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            estimated_crmpf: row
-                .get_opt_custom_parsed_at_idx(
-                    "estimated_crmpf",
-                    field_mapping.0[15],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            recovery_factor_cmpf: row
-                .get_opt_custom_parsed_at_idx(
-                    "recovery_factor_cmpf",
-                    field_mapping.0[16],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            recovery_factor_crmpf: row
-                .get_opt_custom_parsed_at_idx(
-                    "recovery_factor_crmpf",
-                    field_mapping.0[17],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            backing_data: row,
-        })
-    }
-    fn field_mapping_from_row<'a>(
-        mut row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
-        }
-        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
-        if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
-        }
-        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
-        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
-            base_mapping[field_index] = row
-                .iter_fields()
-                .position(|f| f == *field)
-                .unwrap_or(usize::MAX);
-        }
-        Ok(PredispatchRegionfcasrequirement2Mapping(base_mapping))
-    }
-    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
-            && Self::TABLE_NAME == key.table_name()
-    }
-    fn primary_key(row: &Self::Row<'_>) -> PredispatchRegionfcasrequirement2PrimaryKey {
-        PredispatchRegionfcasrequirement2PrimaryKey {
-            bidtype: row.bidtype().to_string(),
-            datetime: row.datetime,
-            genconid: row.genconid().to_string(),
-            regionid: row.regionid().to_string(),
-            intervention: row.intervention,
-        }
-    }
-    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
-        (self.extract_row_partition)(row)
-    }
-    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!(
-            "predispatch_regionfcasrequirement_v2_{}", self.partition_value(row)
-        )
-    }
-    fn partition_key(&self) -> mmsdm_core::PartitionKey {
-        self.row_partition_key
-    }
-    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        PredispatchRegionfcasrequirement2Row {
-            predispatchseqno: row.predispatchseqno.clone(),
-            runno: row.runno.clone(),
-            intervention: row.intervention.clone(),
-            periodid: row.periodid.clone(),
-            genconid: row.genconid.clone(),
-            regionid: row.regionid.clone(),
-            bidtype: row.bidtype.clone(),
-            genconeffectivedate: row.genconeffectivedate.clone(),
-            genconversionno: row.genconversionno.clone(),
-            marginalvalue: row.marginalvalue.clone(),
-            datetime: row.datetime.clone(),
-            lastchanged: row.lastchanged.clone(),
-            base_cost: row.base_cost.clone(),
-            adjusted_cost: row.adjusted_cost.clone(),
-            estimated_cmpf: row.estimated_cmpf.clone(),
-            estimated_crmpf: row.estimated_crmpf.clone(),
-            recovery_factor_cmpf: row.recovery_factor_cmpf.clone(),
-            recovery_factor_crmpf: row.recovery_factor_crmpf.clone(),
-            backing_data: row.backing_data.to_owned(),
-        }
-    }
-}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PredispatchRegionfcasrequirement2PrimaryKey {
-    pub bidtype: alloc::string::String,
-    pub datetime: chrono::NaiveDateTime,
-    pub genconid: alloc::string::String,
-    pub regionid: alloc::string::String,
-    pub intervention: rust_decimal::Decimal,
-}
-impl mmsdm_core::PrimaryKey for PredispatchRegionfcasrequirement2PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionfcasrequirement2Row<'data> {
-    type Row<'other> = PredispatchRegionfcasrequirement2Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.bidtype() == row.bidtype() && self.datetime == row.datetime
-            && self.genconid() == row.genconid() && self.regionid() == row.regionid()
-            && self.intervention == row.intervention
-    }
-}
-impl<'data> mmsdm_core::CompareWithPrimaryKey
-for PredispatchRegionfcasrequirement2Row<'data> {
-    type PrimaryKey = PredispatchRegionfcasrequirement2PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.bidtype() == key.bidtype && self.datetime == key.datetime
-            && self.genconid() == key.genconid && self.regionid() == key.regionid
-            && self.intervention == key.intervention
-    }
-}
-impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionfcasrequirement2PrimaryKey {
-    type Row<'other> = PredispatchRegionfcasrequirement2Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.bidtype == row.bidtype() && self.datetime == row.datetime
-            && self.genconid == row.genconid() && self.regionid == row.regionid()
-            && self.intervention == row.intervention
-    }
-}
-impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionfcasrequirement2PrimaryKey {
-    type PrimaryKey = PredispatchRegionfcasrequirement2PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.bidtype == key.bidtype && self.datetime == key.datetime
-            && self.genconid == key.genconid && self.regionid == key.regionid
-            && self.intervention == key.intervention
-    }
-}
-#[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for PredispatchRegionfcasrequirement2 {
-    type Builder = PredispatchRegionfcasrequirement2Builder;
-    fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "predispatchseqno",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "runno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "intervention",
-                    arrow::datatypes::DataType::Decimal128(2, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "periodid",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "genconid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "regionid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "bidtype",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "genconeffectivedate",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "genconversionno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "marginalvalue",
-                    arrow::datatypes::DataType::Decimal128(16, 6),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "datetime",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "base_cost",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "adjusted_cost",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "estimated_cmpf",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "estimated_crmpf",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "recovery_factor_cmpf",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "recovery_factor_crmpf",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-            ]),
-        )
-    }
-    fn new_builder() -> Self::Builder {
-        PredispatchRegionfcasrequirement2Builder {
-            predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            runno_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            intervention_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            periodid_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            genconid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
-            genconeffectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            genconversionno_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            marginalvalue_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            base_cost_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            adjusted_cost_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            estimated_cmpf_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            estimated_crmpf_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            recovery_factor_cmpf_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            recovery_factor_crmpf_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-        }
-    }
-    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder
-            .predispatchseqno_array
-            .append_value(row.predispatchseqno.start().and_utc().timestamp_millis());
-        builder
-            .runno_array
-            .append_option({
-                row.runno
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .intervention_array
-            .append_value({
-                let mut val = row.intervention;
-                val.rescale(0);
-                val.mantissa()
-            });
-        builder
-            .periodid_array
-            .append_value(row.periodid.start().and_utc().timestamp_millis());
-        builder.genconid_array.append_value(row.genconid());
-        builder.regionid_array.append_value(row.regionid());
-        builder.bidtype_array.append_value(row.bidtype());
-        builder
-            .genconeffectivedate_array
-            .append_option(
-                row.genconeffectivedate.map(|val| val.and_utc().timestamp_millis()),
-            );
-        builder
-            .genconversionno_array
-            .append_option({
-                row.genconversionno
-                    .map(|mut val| {
-                        val.rescale(0);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .marginalvalue_array
-            .append_option({
-                row.marginalvalue
-                    .map(|mut val| {
-                        val.rescale(6);
-                        val.mantissa()
-                    })
-            });
-        builder.datetime_array.append_value(row.datetime.and_utc().timestamp_millis());
-        builder
-            .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
-        builder
-            .base_cost_array
-            .append_option({
-                row.base_cost
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .adjusted_cost_array
-            .append_option({
-                row.adjusted_cost
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .estimated_cmpf_array
-            .append_option({
-                row.estimated_cmpf
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .estimated_crmpf_array
-            .append_option({
-                row.estimated_crmpf
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .recovery_factor_cmpf_array
-            .append_option({
-                row.recovery_factor_cmpf
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .recovery_factor_crmpf_array
-            .append_option({
-                row.recovery_factor_crmpf
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-    }
-    fn finalize_builder(
-        builder: &mut Self::Builder,
-    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
-        arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.predispatchseqno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.runno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.intervention_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.periodid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.genconid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.regionid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.bidtype_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.genconeffectivedate_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.genconversionno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.marginalvalue_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.datetime_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.base_cost_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.adjusted_cost_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.estimated_cmpf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.estimated_crmpf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.recovery_factor_cmpf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.recovery_factor_crmpf_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
-    }
-}
-#[cfg(feature = "arrow")]
-pub struct PredispatchRegionfcasrequirement2Builder {
-    predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
-    runno_array: arrow::array::builder::Decimal128Builder,
-    intervention_array: arrow::array::builder::Decimal128Builder,
-    periodid_array: arrow::array::builder::TimestampMillisecondBuilder,
-    genconid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
-    genconeffectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    genconversionno_array: arrow::array::builder::Decimal128Builder,
-    marginalvalue_array: arrow::array::builder::Decimal128Builder,
-    datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    base_cost_array: arrow::array::builder::Decimal128Builder,
-    adjusted_cost_array: arrow::array::builder::Decimal128Builder,
-    estimated_cmpf_array: arrow::array::builder::Decimal128Builder,
-    estimated_crmpf_array: arrow::array::builder::Decimal128Builder,
-    recovery_factor_cmpf_array: arrow::array::builder::Decimal128Builder,
-    recovery_factor_crmpf_array: arrow::array::builder::Decimal128Builder,
-}
 pub struct PredispatchLocalPrice1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -1702,13 +1007,7 @@ impl mmsdm_core::GetTable for PredispatchLocalPrice1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "LOCAL_PRICE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchLocalPrice1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -2067,15 +1366,7 @@ impl mmsdm_core::GetTable for PredispatchMnspbidtrk1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "MNSPBIDTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchMnspbidtrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -2454,8 +1745,7 @@ impl mmsdm_core::GetTable for PredispatchBlockedConstraints1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "BLOCKED_CONSTRAINTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchBlockedConstraints1Mapping([
-        4,
-        5,
+        4, 5,
     ]);
     const COLUMNS: &'static [&'static str] = &["PREDISPATCHSEQNO", "CONSTRAINTID"];
     type Row<'row> = PredispatchBlockedConstraints1Row<'row>;
@@ -2725,26 +2015,7 @@ impl mmsdm_core::GetTable for PredispatchCaseSolution1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "CASE_SOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchCaseSolution1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -3486,20 +2757,7 @@ impl mmsdm_core::GetTable for PredispatchConstraintSolution5 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "CONSTRAINT_SOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchConstraintSolution5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -4097,28 +3355,7 @@ impl mmsdm_core::GetTable for PredispatchInterconnectorSoln3 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "INTERCONNECTOR_SOLN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchInterconnectorSoln3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
         26,
     ]);
     const COLUMNS: &'static [&'static str] = &[
@@ -4980,57 +4217,9 @@ impl mmsdm_core::GetTable for PredispatchInterconnectrSens1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "INTERCONNECTR_SENS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchInterconnectrSens1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -6658,9 +5847,9 @@ pub struct PredispatchUnitSolution4Row<'data> {
     pub raise1secactualavailability: Option<rust_decimal::Decimal>,
     /// Trapezium adjusted Lower 1Sec Availability
     pub lower1secactualavailability: Option<rust_decimal::Decimal>,
-    /// BDU only. The energy storage at the start of this dispatch interval (MWh)
+    /// The energy storage at the start of this dispatch interval(MWh)
     pub initial_energy_storage: Option<rust_decimal::Decimal>,
-    /// BDU only. The projected energy storage based on cleared energy and regulation FCAS dispatch (MWh).Participants may use negative values as an indicator of the relative “error” in profiling Max Availability to reflect energy limits
+    /// The projected energy storage based on cleared energy and regulation FCAS dispatch(MWh)
     pub energy_storage: Option<rust_decimal::Decimal>,
     /// BDU only - Minimum Energy Storage constraint limit (MWh)
     pub energy_storage_min: Option<rust_decimal::Decimal>,
@@ -6704,70 +5893,10 @@ impl mmsdm_core::GetTable for PredispatchUnitSolution4 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "UNIT_SOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchUnitSolution4Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        66, 67,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -8659,14 +7788,7 @@ impl mmsdm_core::GetTable for PredispatchOffertrk1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "OFFERTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchOffertrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -9097,41 +8219,8 @@ impl mmsdm_core::GetTable for PredispatchRegionPrices2 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "REGION_PRICES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchRegionPrices2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -10333,57 +9422,9 @@ impl mmsdm_core::GetTable for PredispatchPricesensitivities1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "PRICESENSITIVITIES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchPricesensitivities1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -11848,15 +10889,15 @@ pub struct PredispatchPricesensitivities1Builder {
     rrpeep42_array: arrow::array::builder::Decimal128Builder,
     rrpeep43_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct PredispatchRegionSolution8 {
+pub struct PredispatchRegionSolution9 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
-            &PredispatchRegionSolution8Row<'_>,
+            &PredispatchRegionSolution9Row<'_>,
         ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
-impl PredispatchRegionSolution8 {
+impl PredispatchRegionSolution9 {
     pub fn new(
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
@@ -11869,7 +10910,7 @@ impl PredispatchRegionSolution8 {
         }
     }
 }
-pub struct PredispatchRegionSolution8Mapping([usize; 125]);
+pub struct PredispatchRegionSolution9Mapping([usize; 127]);
 /// # Summary
 ///
 /// ## PREDISPATCHREGIONSUM
@@ -11878,7 +10919,7 @@ pub struct PredispatchRegionSolution8Mapping([usize; 125]);
 ///
 /// * Data Set Name: Predispatch
 /// * File Name: Region Solution
-/// * Data Version: 8
+/// * Data Version: 9
 ///
 /// # Description
 /// PREDISPATCHREGIONSUM includes the forecast demand (total demand) and Frequency Control Ancillary Services (FCAS) requirements (specifically, for the Raise Regulation and Lower Regulation Ancillary Services plus improvements to demand calculations). PREDISPATCHREGIONSUM updates each half-hour with the latest Pre-Dispatch details for the remaining period.Regional demand can be calculated as total demand plus dispatchable load (i.e. Regional demand = Total Demand + Dispatchable Load)SourcePREDISPATCHREGIONSUM updates every thirty minutes.Note*** "Actual FCAS availability"is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability"is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values.From 16 February 2006, the old reserve values are no longer populated (i.e. are null), being LORSurplus and LRCSurplus. For more details on the changes to Reporting of Reserve Condition Data, refer to AEMO Communication 2042. For the best available indicator of reserve condition in each of the regions of the NEM for each trading interval, refer to the latest run of the Pre-Dispatch PASA (see table PDPASA_REGIONSOLUTION).
@@ -11891,7 +10932,7 @@ pub struct PredispatchRegionSolution8Mapping([usize; 125]);
 /// * DATETIME
 /// * REGIONID
 #[derive(Debug, PartialEq, Eq)]
-pub struct PredispatchRegionSolution8Row<'data> {
+pub struct PredispatchRegionSolution9Row<'data> {
     /// Unique identifier of predispatch run in the form YYYYMMDDPP with 01 at 04:30
     pub predispatchseqno: mmsdm_core::TradingPeriod,
     /// LP Solver Pre-Dispatch run no, typically 1. It increments if the case is re-run.
@@ -12142,9 +11183,13 @@ pub struct PredispatchRegionSolution8Row<'data> {
     pub bdu_clearedmw_gen: Option<rust_decimal::Decimal>,
     /// Regional aggregated cleared MW where the DUID type is BDU. Net of import (Load)
     pub bdu_clearedmw_load: Option<rust_decimal::Decimal>,
+    /// Energy Storage for BDU at the start of the interval(MWh) - Region Aggregated
+    pub bdu_initial_energy_storage: Option<rust_decimal::Decimal>,
+    /// Energy storage for Daily Energy Constrained Scheduled Generating Units at the start of the interval(MWh) - Region Aggregated
+    pub decgen_initial_energy_storage: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> PredispatchRegionSolution8Row<'data> {
+impl<'data> PredispatchRegionSolution9Row<'data> {
     pub fn regionid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
     }
@@ -12161,136 +11206,18 @@ impl<'data> PredispatchRegionSolution8Row<'data> {
         }
     }
 }
-impl mmsdm_core::GetTable for PredispatchRegionSolution8 {
-    const VERSION: i32 = 8;
+impl mmsdm_core::GetTable for PredispatchRegionSolution9 {
+    const VERSION: i32 = 9;
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "REGION_SOLUTION";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchRegionSolution8Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
-        68,
-        69,
-        70,
-        71,
-        72,
-        73,
-        74,
-        75,
-        76,
-        77,
-        78,
-        79,
-        80,
-        81,
-        82,
-        83,
-        84,
-        85,
-        86,
-        87,
-        88,
-        89,
-        90,
-        91,
-        92,
-        93,
-        94,
-        95,
-        96,
-        97,
-        98,
-        99,
-        100,
-        101,
-        102,
-        103,
-        104,
-        105,
-        106,
-        107,
-        108,
-        109,
-        110,
-        111,
-        112,
-        113,
-        114,
-        115,
-        116,
-        117,
-        118,
-        119,
-        120,
-        121,
-        122,
-        123,
-        124,
-        125,
-        126,
-        127,
-        128,
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchRegionSolution9Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85,
+        86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104,
+        105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
+        121, 122, 123, 124, 125, 126, 127, 128, 129, 130,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -12418,15 +11345,17 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution8 {
         "BDU_MAX_AVAIL",
         "BDU_CLEAREDMW_GEN",
         "BDU_CLEAREDMW_LOAD",
+        "BDU_INITIAL_ENERGY_STORAGE",
+        "DECGEN_INITIAL_ENERGY_STORAGE",
     ];
-    type Row<'row> = PredispatchRegionSolution8Row<'row>;
-    type FieldMapping = PredispatchRegionSolution8Mapping;
-    type PrimaryKey = PredispatchRegionSolution8PrimaryKey;
+    type Row<'row> = PredispatchRegionSolution9Row<'row>;
+    type FieldMapping = PredispatchRegionSolution9Mapping;
+    type PrimaryKey = PredispatchRegionSolution9PrimaryKey;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(PredispatchRegionSolution8Row {
+        Ok(PredispatchRegionSolution9Row {
             predispatchseqno: row
                 .get_parsed_at_idx("predispatchseqno", field_mapping.0[0])?,
             runno: row
@@ -13163,6 +12092,18 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution8 {
                     field_mapping.0[124],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            bdu_initial_energy_storage: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_initial_energy_storage",
+                    field_mapping.0[125],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            decgen_initial_energy_storage: row
+                .get_opt_custom_parsed_at_idx(
+                    "decgen_initial_energy_storage",
+                    field_mapping.0[126],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -13194,14 +12135,14 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution8 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(PredispatchRegionSolution8Mapping(base_mapping))
+        Ok(PredispatchRegionSolution9Mapping(base_mapping))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> PredispatchRegionSolution8PrimaryKey {
-        PredispatchRegionSolution8PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> PredispatchRegionSolution9PrimaryKey {
+        PredispatchRegionSolution9PrimaryKey {
             datetime: row.datetime,
             regionid: row.regionid().to_string(),
             intervention: row.intervention,
@@ -13211,13 +12152,13 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution8 {
         (self.extract_row_partition)(row)
     }
     fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("predispatch_region_solution_v8_{}", self.partition_value(row))
+        alloc::format!("predispatch_region_solution_v9_{}", self.partition_value(row))
     }
     fn partition_key(&self) -> mmsdm_core::PartitionKey {
         self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        PredispatchRegionSolution8Row {
+        PredispatchRegionSolution9Row {
             predispatchseqno: row.predispatchseqno.clone(),
             runno: row.runno.clone(),
             regionid: row.regionid.clone(),
@@ -13343,48 +12284,50 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution8 {
             bdu_max_avail: row.bdu_max_avail.clone(),
             bdu_clearedmw_gen: row.bdu_clearedmw_gen.clone(),
             bdu_clearedmw_load: row.bdu_clearedmw_load.clone(),
+            bdu_initial_energy_storage: row.bdu_initial_energy_storage.clone(),
+            decgen_initial_energy_storage: row.decgen_initial_energy_storage.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PredispatchRegionSolution8PrimaryKey {
+pub struct PredispatchRegionSolution9PrimaryKey {
     pub datetime: chrono::NaiveDateTime,
     pub regionid: alloc::string::String,
     pub intervention: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for PredispatchRegionSolution8PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionSolution8Row<'data> {
-    type Row<'other> = PredispatchRegionSolution8Row<'other>;
+impl mmsdm_core::PrimaryKey for PredispatchRegionSolution9PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionSolution9Row<'data> {
+    type Row<'other> = PredispatchRegionSolution9Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.datetime == row.datetime && self.regionid() == row.regionid()
             && self.intervention == row.intervention
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution8Row<'data> {
-    type PrimaryKey = PredispatchRegionSolution8PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution9Row<'data> {
+    type PrimaryKey = PredispatchRegionSolution9PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid() == key.regionid
             && self.intervention == key.intervention
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionSolution8PrimaryKey {
-    type Row<'other> = PredispatchRegionSolution8Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for PredispatchRegionSolution9PrimaryKey {
+    type Row<'other> = PredispatchRegionSolution9Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.datetime == row.datetime && self.regionid == row.regionid()
             && self.intervention == row.intervention
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution8PrimaryKey {
-    type PrimaryKey = PredispatchRegionSolution8PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for PredispatchRegionSolution9PrimaryKey {
+    type PrimaryKey = PredispatchRegionSolution9PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.datetime == key.datetime && self.regionid == key.regionid
             && self.intervention == key.intervention
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for PredispatchRegionSolution8 {
-    type Builder = PredispatchRegionSolution8Builder;
+impl mmsdm_core::ArrowSchema for PredispatchRegionSolution9 {
+    type Builder = PredispatchRegionSolution9Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -14022,11 +12965,21 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution8 {
                     arrow::datatypes::DataType::Decimal128(15, 5),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "bdu_initial_energy_storage",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "decgen_initial_energy_storage",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        PredispatchRegionSolution8Builder {
+        PredispatchRegionSolution9Builder {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -14271,6 +13224,10 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution8 {
             bdu_clearedmw_gen_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             bdu_clearedmw_load_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            bdu_initial_energy_storage_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            decgen_initial_energy_storage_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
         }
     }
@@ -15362,6 +14319,24 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution8 {
                         val.mantissa()
                     })
             });
+        builder
+            .bdu_initial_energy_storage_array
+            .append_option({
+                row.bdu_initial_energy_storage
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .decgen_initial_energy_storage_array
+            .append_option({
+                row.decgen_initial_energy_storage
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -15633,13 +14608,19 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution8 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.bdu_clearedmw_load_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.bdu_initial_energy_storage_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.decgen_initial_energy_storage_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct PredispatchRegionSolution8Builder {
+pub struct PredispatchRegionSolution9Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     regionid_array: arrow::array::builder::StringBuilder,
@@ -15765,6 +14746,8 @@ pub struct PredispatchRegionSolution8Builder {
     bdu_max_avail_array: arrow::array::builder::Decimal128Builder,
     bdu_clearedmw_gen_array: arrow::array::builder::Decimal128Builder,
     bdu_clearedmw_load_array: arrow::array::builder::Decimal128Builder,
+    bdu_initial_energy_storage_array: arrow::array::builder::Decimal128Builder,
+    decgen_initial_energy_storage_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct PredispatchScenarioDemand1 {
     extract_row_partition: alloc::boxed::Box<
@@ -15834,11 +14817,7 @@ impl mmsdm_core::GetTable for PredispatchScenarioDemand1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "SCENARIO_DEMAND";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchScenarioDemand1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -16125,11 +15104,7 @@ impl mmsdm_core::GetTable for PredispatchScenarioDemandTrk1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "SCENARIO_DEMAND_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchScenarioDemandTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",

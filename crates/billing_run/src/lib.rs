@@ -117,16 +117,7 @@ impl mmsdm_core::GetTable for BillingApcCompensation2 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "APC_COMPENSATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingApcCompensation2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -518,21 +509,7 @@ impl mmsdm_core::GetTable for BillingApcRecovery3 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "APC_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingApcRecovery3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1060,14 +1037,7 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublication1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "BILLING_CO2E_PUBLICATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingBillingCo2ePublication1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1423,10 +1393,7 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublicationTrk1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "BILLING_CO2E_PUBLICATION_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingBillingCo2ePublicationTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1717,23 +1684,7 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary2 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DAILY_ENERGY_SUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDailyEnergySummary2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -2391,15 +2342,7 @@ impl mmsdm_core::GetTable for BillingDirFinalAmount1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_FINAL_AMOUNT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirFinalAmount1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -2823,15 +2766,7 @@ impl mmsdm_core::GetTable for BillingDirFinalRecovery1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_FINAL_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirFinalRecovery1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -3264,14 +3199,7 @@ impl mmsdm_core::GetTable for BillingDirProvAmount1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_PROV_AMOUNT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirProvAmount1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -3666,14 +3594,7 @@ impl mmsdm_core::GetTable for BillingDirProvRecovery1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_PROV_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirProvRecovery1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -4091,18 +4012,7 @@ impl mmsdm_core::GetTable for BillingDirRecoveryDetail1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_RECOVERY_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirRecoveryDetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -4656,27 +4566,7 @@ impl mmsdm_core::GetTable for BillingBillingDirectionReconOther2 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "BILLING_DIRECTION_RECON_OTHER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingBillingDirectionReconOther2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -5364,16 +5254,7 @@ impl mmsdm_core::GetTable for BillingEftshortfallAmount1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "EFTSHORTFALL_AMOUNT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEftshortfallAmount1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -5825,12 +5706,7 @@ impl mmsdm_core::GetTable for BillingEftshortfallDetail1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "EFTSHORTFALL_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEftshortfallDetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -6229,26 +6105,7 @@ impl mmsdm_core::GetTable for BillingEnergyGensetDetail1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ENERGY_GENSET_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEnergyGensetDetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -6944,17 +6801,7 @@ impl mmsdm_core::GetTable for BillingEnergyTranSaps1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ENERGY_TRAN_SAPS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEnergyTranSaps1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -7375,7 +7222,7 @@ pub struct BillingEnergyTransaction1Mapping([usize; 16]);
 /// * Data Version: 1
 ///
 /// # Description
-/// BILLING_GST_DETAIL data is confidential to NSP participants.SourcePopulated by the posting of a billing run.VolumeApproximately 20 records are inserted per billrunno, or about 220 records inserted per week.
+///
 ///
 /// # Notes
 /// * (Visibility)  Private
@@ -7443,22 +7290,7 @@ impl mmsdm_core::GetTable for BillingEnergyTransaction1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ENERGY_TRANSACTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEnergyTransaction1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -7991,6 +7823,1856 @@ pub struct BillingEnergyTransaction1Builder {
     dme_mwh_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
+pub struct BillingFcasRegAmt1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &BillingFcasRegAmt1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingFcasRegAmt1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct BillingFcasRegAmt1Mapping([usize; 13]);
+/// # Summary
+///
+/// ## BILLING_FCAS_REG_AMT
+///
+/// This report show the summary of the Billing run FCAS Regulation Amounts incl default amounts.
+///
+/// * Data Set Name: Billing
+/// * File Name: Fcas Reg Amt
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Private
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONNECTIONPOINTID
+/// * CONSTRAINTID
+/// * CONTRACTYEAR
+/// * PARTICIPANTID
+/// * REGIONID
+/// * UNITID
+/// * WEEKNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct BillingFcasRegAmt1Row<'data> {
+    /// The Billing Contract Year
+    pub contractyear: rust_decimal::Decimal,
+    /// The Billing WeekNo
+    pub weekno: rust_decimal::Decimal,
+    /// The Billing RunNo
+    pub billrunno: rust_decimal::Decimal,
+    /// The Participant Id Identifier
+    pub participantid: core::ops::Range<usize>,
+    /// The UnitId for which a FPP Factor is assigned
+    pub unitid: core::ops::Range<usize>,
+    /// The FCAS Reg Constraint Id
+    pub constraintid: core::ops::Range<usize>,
+    /// The ConnectionPointId from Settlement Results for the UnitId
+    pub connectionpointid: core::ops::Range<usize>,
+    /// The Region Id Identifier
+    pub regionid: core::ops::Range<usize>,
+    /// The BidType for the Constraint Id
+    pub bidtype: core::ops::Range<usize>,
+    /// The FPP Amount for the Participant and the Unit
+    pub fpp_amount: Option<rust_decimal::Decimal>,
+    /// The FCAS Regulation Used Amount for the Participant and the Unit
+    pub used_amount: Option<rust_decimal::Decimal>,
+    /// The FCAS Regulation Unused Amount for the Participant and the Unit
+    pub unused_amount: Option<rust_decimal::Decimal>,
+    /// The Lastchanged datetime of the record.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> BillingFcasRegAmt1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn unitid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.unitid.clone())
+    }
+    pub fn constraintid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.constraintid.clone())
+    }
+    pub fn connectionpointid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.connectionpointid.clone(),
+        )
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+    pub fn bidtype(&self) -> Option<&str> {
+        if self.bidtype.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.bidtype.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for BillingFcasRegAmt1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "BILLING";
+    const TABLE_NAME: &'static str = "FCAS_REG_AMT";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFcasRegAmt1Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "WEEKNO",
+        "BILLRUNNO",
+        "PARTICIPANTID",
+        "UNITID",
+        "CONSTRAINTID",
+        "CONNECTIONPOINTID",
+        "REGIONID",
+        "BIDTYPE",
+        "FPP_AMOUNT",
+        "USED_AMOUNT",
+        "UNUSED_AMOUNT",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = BillingFcasRegAmt1Row<'row>;
+    type FieldMapping = BillingFcasRegAmt1Mapping;
+    type PrimaryKey = BillingFcasRegAmt1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(BillingFcasRegAmt1Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            weekno: row
+                .get_custom_parsed_at_idx(
+                    "weekno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            billrunno: row
+                .get_custom_parsed_at_idx(
+                    "billrunno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participantid: row.get_range("participantid", field_mapping.0[3])?,
+            unitid: row.get_range("unitid", field_mapping.0[4])?,
+            constraintid: row.get_range("constraintid", field_mapping.0[5])?,
+            connectionpointid: row.get_range("connectionpointid", field_mapping.0[6])?,
+            regionid: row.get_range("regionid", field_mapping.0[7])?,
+            bidtype: row.get_opt_range("bidtype", field_mapping.0[8])?,
+            fpp_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "fpp_amount",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            used_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "used_amount",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            unused_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "unused_amount",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(BillingFcasRegAmt1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> BillingFcasRegAmt1PrimaryKey {
+        BillingFcasRegAmt1PrimaryKey {
+            billrunno: row.billrunno,
+            connectionpointid: row.connectionpointid().to_string(),
+            constraintid: row.constraintid().to_string(),
+            contractyear: row.contractyear,
+            participantid: row.participantid().to_string(),
+            regionid: row.regionid().to_string(),
+            unitid: row.unitid().to_string(),
+            weekno: row.weekno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_fcas_reg_amt_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        BillingFcasRegAmt1Row {
+            contractyear: row.contractyear.clone(),
+            weekno: row.weekno.clone(),
+            billrunno: row.billrunno.clone(),
+            participantid: row.participantid.clone(),
+            unitid: row.unitid.clone(),
+            constraintid: row.constraintid.clone(),
+            connectionpointid: row.connectionpointid.clone(),
+            regionid: row.regionid.clone(),
+            bidtype: row.bidtype.clone(),
+            fpp_amount: row.fpp_amount.clone(),
+            used_amount: row.used_amount.clone(),
+            unused_amount: row.unused_amount.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingFcasRegAmt1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub connectionpointid: alloc::string::String,
+    pub constraintid: alloc::string::String,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: alloc::string::String,
+    pub regionid: alloc::string::String,
+    pub unitid: alloc::string::String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for BillingFcasRegAmt1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingFcasRegAmt1Row<'data> {
+    type Row<'other> = BillingFcasRegAmt1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno
+            && self.connectionpointid() == row.connectionpointid()
+            && self.constraintid() == row.constraintid()
+            && self.contractyear == row.contractyear
+            && self.participantid() == row.participantid()
+            && self.regionid() == row.regionid() && self.unitid() == row.unitid()
+            && self.weekno == row.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingFcasRegAmt1Row<'data> {
+    type PrimaryKey = BillingFcasRegAmt1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.connectionpointid() == key.connectionpointid
+            && self.constraintid() == key.constraintid
+            && self.contractyear == key.contractyear
+            && self.participantid() == key.participantid
+            && self.regionid() == key.regionid && self.unitid() == key.unitid
+            && self.weekno == key.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for BillingFcasRegAmt1PrimaryKey {
+    type Row<'other> = BillingFcasRegAmt1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno
+            && self.connectionpointid == row.connectionpointid()
+            && self.constraintid == row.constraintid()
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid()
+            && self.regionid == row.regionid() && self.unitid == row.unitid()
+            && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingFcasRegAmt1PrimaryKey {
+    type PrimaryKey = BillingFcasRegAmt1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno
+            && self.connectionpointid == key.connectionpointid
+            && self.constraintid == key.constraintid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid && self.regionid == key.regionid
+            && self.unitid == key.unitid && self.weekno == key.weekno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for BillingFcasRegAmt1 {
+    type Builder = BillingFcasRegAmt1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "weekno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "billrunno",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "unitid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "constraintid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "connectionpointid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "bidtype",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "fpp_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "used_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "unused_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        BillingFcasRegAmt1Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            weekno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            billrunno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            unitid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            fpp_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            used_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            unused_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .weekno_array
+            .append_value({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .billrunno_array
+            .append_value({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.participantid_array.append_value(row.participantid());
+        builder.unitid_array.append_value(row.unitid());
+        builder.constraintid_array.append_value(row.constraintid());
+        builder.connectionpointid_array.append_value(row.connectionpointid());
+        builder.regionid_array.append_value(row.regionid());
+        builder.bidtype_array.append_option(row.bidtype());
+        builder
+            .fpp_amount_array
+            .append_option({
+                row.fpp_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .used_amount_array
+            .append_option({
+                row.used_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .unused_amount_array
+            .append_option({
+                row.unused_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.weekno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.billrunno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.unitid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.constraintid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.connectionpointid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bidtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fpp_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.used_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.unused_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct BillingFcasRegAmt1Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    weekno_array: arrow::array::builder::Decimal128Builder,
+    billrunno_array: arrow::array::builder::Decimal128Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    unitid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    bidtype_array: arrow::array::builder::StringBuilder,
+    fpp_amount_array: arrow::array::builder::Decimal128Builder,
+    used_amount_array: arrow::array::builder::Decimal128Builder,
+    unused_amount_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct BillingFcasRegResidamt1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &BillingFcasRegResidamt1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingFcasRegResidamt1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct BillingFcasRegResidamt1Mapping([usize; 20]);
+/// # Summary
+///
+/// ## BILLING_FCAS_REG_RESIDAMT
+///
+/// This report show the summary of the Billing run FCAS Regulation Residual Amounts incl default amounts
+///
+/// * Data Set Name: Billing
+/// * File Name: Fcas Reg Residamt
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Private
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONSTRAINTID
+/// * CONTRACTYEAR
+/// * PARTICIPANTID
+/// * REGIONID
+/// * WEEKNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct BillingFcasRegResidamt1Row<'data> {
+    /// The Billing Contract Year
+    pub contractyear: rust_decimal::Decimal,
+    /// The Billing WeekNo
+    pub weekno: rust_decimal::Decimal,
+    /// The Billing RunNo
+    pub billrunno: rust_decimal::Decimal,
+    /// The Participant Id Identifier
+    pub participantid: core::ops::Range<usize>,
+    /// The FCAS Reg Constraint Id
+    pub constraintid: core::ops::Range<usize>,
+    /// The Region Id Identifier
+    pub regionid: core::ops::Range<usize>,
+    /// The BidType for the Constraint Id
+    pub bidtype: core::ops::Range<usize>,
+    /// The ACE MWh used for the Residual Calculation for the Participant
+    pub ace_mwh: Option<rust_decimal::Decimal>,
+    /// The ASOE MWh used for the Residual Calculation of the Participant
+    pub asoe_mwh: Option<rust_decimal::Decimal>,
+    /// Sum of ACE_MWH + ASOE_MWH
+    pub residual_mwh: Option<rust_decimal::Decimal>,
+    /// The FPP ACE Portion Amount for the Billing Week
+    pub fpp_ace_amount: Option<rust_decimal::Decimal>,
+    /// The FPP ASOE Portion Amount for the Billing Week
+    pub fpp_asoe_amount: Option<rust_decimal::Decimal>,
+    /// The FPP Residual Amount for the Billing Week
+    pub fpp_residual_amount: Option<rust_decimal::Decimal>,
+    /// The Used ACE Portion Amount for the Billing Week
+    pub used_ace_amount: Option<rust_decimal::Decimal>,
+    /// The Used ASOE Portion Amount for the Billing Week
+    pub used_asoe_amount: Option<rust_decimal::Decimal>,
+    /// The Used Residual Amount for the Billing Week
+    pub used_residual_amount: Option<rust_decimal::Decimal>,
+    /// The Unused ACE Portion Amount for the Billing Week
+    pub unused_ace_amount: Option<rust_decimal::Decimal>,
+    /// The Unused ASOE Portion Amount for the Billing Week
+    pub unused_asoe_amount: Option<rust_decimal::Decimal>,
+    /// The Unused Residual Amount for the Billing Week
+    pub unused_residual_amount: Option<rust_decimal::Decimal>,
+    /// The Lastchanged datetime of the record.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> BillingFcasRegResidamt1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn constraintid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.constraintid.clone())
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+    pub fn bidtype(&self) -> Option<&str> {
+        if self.bidtype.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.bidtype.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for BillingFcasRegResidamt1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "BILLING";
+    const TABLE_NAME: &'static str = "FCAS_REG_RESIDAMT";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFcasRegResidamt1Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "WEEKNO",
+        "BILLRUNNO",
+        "PARTICIPANTID",
+        "CONSTRAINTID",
+        "REGIONID",
+        "BIDTYPE",
+        "ACE_MWH",
+        "ASOE_MWH",
+        "RESIDUAL_MWH",
+        "FPP_ACE_AMOUNT",
+        "FPP_ASOE_AMOUNT",
+        "FPP_RESIDUAL_AMOUNT",
+        "USED_ACE_AMOUNT",
+        "USED_ASOE_AMOUNT",
+        "USED_RESIDUAL_AMOUNT",
+        "UNUSED_ACE_AMOUNT",
+        "UNUSED_ASOE_AMOUNT",
+        "UNUSED_RESIDUAL_AMOUNT",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = BillingFcasRegResidamt1Row<'row>;
+    type FieldMapping = BillingFcasRegResidamt1Mapping;
+    type PrimaryKey = BillingFcasRegResidamt1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(BillingFcasRegResidamt1Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            weekno: row
+                .get_custom_parsed_at_idx(
+                    "weekno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            billrunno: row
+                .get_custom_parsed_at_idx(
+                    "billrunno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participantid: row.get_range("participantid", field_mapping.0[3])?,
+            constraintid: row.get_range("constraintid", field_mapping.0[4])?,
+            regionid: row.get_range("regionid", field_mapping.0[5])?,
+            bidtype: row.get_opt_range("bidtype", field_mapping.0[6])?,
+            ace_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "ace_mwh",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            asoe_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "asoe_mwh",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            residual_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "residual_mwh",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            fpp_ace_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "fpp_ace_amount",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            fpp_asoe_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "fpp_asoe_amount",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            fpp_residual_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "fpp_residual_amount",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            used_ace_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "used_ace_amount",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            used_asoe_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "used_asoe_amount",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            used_residual_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "used_residual_amount",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            unused_ace_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "unused_ace_amount",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            unused_asoe_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "unused_asoe_amount",
+                    field_mapping.0[17],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            unused_residual_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "unused_residual_amount",
+                    field_mapping.0[18],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[19],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(BillingFcasRegResidamt1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> BillingFcasRegResidamt1PrimaryKey {
+        BillingFcasRegResidamt1PrimaryKey {
+            billrunno: row.billrunno,
+            constraintid: row.constraintid().to_string(),
+            contractyear: row.contractyear,
+            participantid: row.participantid().to_string(),
+            regionid: row.regionid().to_string(),
+            weekno: row.weekno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_fcas_reg_residamt_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        BillingFcasRegResidamt1Row {
+            contractyear: row.contractyear.clone(),
+            weekno: row.weekno.clone(),
+            billrunno: row.billrunno.clone(),
+            participantid: row.participantid.clone(),
+            constraintid: row.constraintid.clone(),
+            regionid: row.regionid.clone(),
+            bidtype: row.bidtype.clone(),
+            ace_mwh: row.ace_mwh.clone(),
+            asoe_mwh: row.asoe_mwh.clone(),
+            residual_mwh: row.residual_mwh.clone(),
+            fpp_ace_amount: row.fpp_ace_amount.clone(),
+            fpp_asoe_amount: row.fpp_asoe_amount.clone(),
+            fpp_residual_amount: row.fpp_residual_amount.clone(),
+            used_ace_amount: row.used_ace_amount.clone(),
+            used_asoe_amount: row.used_asoe_amount.clone(),
+            used_residual_amount: row.used_residual_amount.clone(),
+            unused_ace_amount: row.unused_ace_amount.clone(),
+            unused_asoe_amount: row.unused_asoe_amount.clone(),
+            unused_residual_amount: row.unused_residual_amount.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingFcasRegResidamt1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub constraintid: alloc::string::String,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: alloc::string::String,
+    pub regionid: alloc::string::String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for BillingFcasRegResidamt1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingFcasRegResidamt1Row<'data> {
+    type Row<'other> = BillingFcasRegResidamt1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno && self.constraintid() == row.constraintid()
+            && self.contractyear == row.contractyear
+            && self.participantid() == row.participantid()
+            && self.regionid() == row.regionid() && self.weekno == row.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingFcasRegResidamt1Row<'data> {
+    type PrimaryKey = BillingFcasRegResidamt1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.constraintid() == key.constraintid
+            && self.contractyear == key.contractyear
+            && self.participantid() == key.participantid
+            && self.regionid() == key.regionid && self.weekno == key.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for BillingFcasRegResidamt1PrimaryKey {
+    type Row<'other> = BillingFcasRegResidamt1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno && self.constraintid == row.constraintid()
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid()
+            && self.regionid == row.regionid() && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingFcasRegResidamt1PrimaryKey {
+    type PrimaryKey = BillingFcasRegResidamt1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.constraintid == key.constraintid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for BillingFcasRegResidamt1 {
+    type Builder = BillingFcasRegResidamt1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "weekno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "billrunno",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "constraintid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "bidtype",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ace_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "asoe_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "residual_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "fpp_ace_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "fpp_asoe_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "fpp_residual_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "used_ace_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "used_asoe_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "used_residual_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "unused_ace_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "unused_asoe_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "unused_residual_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        BillingFcasRegResidamt1Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            weekno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            billrunno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            asoe_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            residual_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            fpp_ace_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            fpp_asoe_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            fpp_residual_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            used_ace_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            used_asoe_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            used_residual_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            unused_ace_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            unused_asoe_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            unused_residual_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .weekno_array
+            .append_value({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .billrunno_array
+            .append_value({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.participantid_array.append_value(row.participantid());
+        builder.constraintid_array.append_value(row.constraintid());
+        builder.regionid_array.append_value(row.regionid());
+        builder.bidtype_array.append_option(row.bidtype());
+        builder
+            .ace_mwh_array
+            .append_option({
+                row.ace_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .asoe_mwh_array
+            .append_option({
+                row.asoe_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .residual_mwh_array
+            .append_option({
+                row.residual_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .fpp_ace_amount_array
+            .append_option({
+                row.fpp_ace_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .fpp_asoe_amount_array
+            .append_option({
+                row.fpp_asoe_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .fpp_residual_amount_array
+            .append_option({
+                row.fpp_residual_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .used_ace_amount_array
+            .append_option({
+                row.used_ace_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .used_asoe_amount_array
+            .append_option({
+                row.used_asoe_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .used_residual_amount_array
+            .append_option({
+                row.used_residual_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .unused_ace_amount_array
+            .append_option({
+                row.unused_ace_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .unused_asoe_amount_array
+            .append_option({
+                row.unused_asoe_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .unused_residual_amount_array
+            .append_option({
+                row.unused_residual_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.weekno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.billrunno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.constraintid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bidtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ace_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.asoe_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.residual_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fpp_ace_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fpp_asoe_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fpp_residual_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.used_ace_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.used_asoe_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.used_residual_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.unused_ace_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.unused_asoe_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.unused_residual_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct BillingFcasRegResidamt1Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    weekno_array: arrow::array::builder::Decimal128Builder,
+    billrunno_array: arrow::array::builder::Decimal128Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    bidtype_array: arrow::array::builder::StringBuilder,
+    ace_mwh_array: arrow::array::builder::Decimal128Builder,
+    asoe_mwh_array: arrow::array::builder::Decimal128Builder,
+    residual_mwh_array: arrow::array::builder::Decimal128Builder,
+    fpp_ace_amount_array: arrow::array::builder::Decimal128Builder,
+    fpp_asoe_amount_array: arrow::array::builder::Decimal128Builder,
+    fpp_residual_amount_array: arrow::array::builder::Decimal128Builder,
+    used_ace_amount_array: arrow::array::builder::Decimal128Builder,
+    used_asoe_amount_array: arrow::array::builder::Decimal128Builder,
+    used_residual_amount_array: arrow::array::builder::Decimal128Builder,
+    unused_ace_amount_array: arrow::array::builder::Decimal128Builder,
+    unused_asoe_amount_array: arrow::array::builder::Decimal128Builder,
+    unused_residual_amount_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct BillingFpp1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(&BillingFpp1Row<'_>) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingFpp1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct BillingFpp1Mapping([usize; 14]);
+/// # Summary
+///
+/// ## BILLING_FPP
+///
+/// This report show the summary of the Billing run FPP Amounts for the week
+///
+/// * Data Set Name: Billing
+/// * File Name: Fpp
+/// * Data Version: 1
+///
+/// # Description
+/// BILLING_GST_DETAIL data is confidential to NSP participants.SourcePopulated by the posting of a billing run.VolumeApproximately 20 records are inserted per billrunno, or about 220 records inserted per week.
+///
+/// # Notes
+/// * (Visibility)  Private
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONTRACTYEAR
+/// * PARTICIPANTID
+/// * REGIONID
+/// * WEEKNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct BillingFpp1Row<'data> {
+    /// The Billing Contract Year
+    pub contractyear: rust_decimal::Decimal,
+    /// The Billing WeekNo
+    pub weekno: rust_decimal::Decimal,
+    /// The Billing RunNo
+    pub billrunno: rust_decimal::Decimal,
+    /// The Participant Id Identifier
+    pub participantid: core::ops::Range<usize>,
+    /// The Region Id Identifier
+    pub regionid: core::ops::Range<usize>,
+    /// The Lower Reg Service FPP Amount for the Participant and the Region for the Billing Week
+    pub lowerreg_amount: Option<rust_decimal::Decimal>,
+    /// The Lower Reg Service FPP ACE Residual Amount for the Participant and the Region for the Billing Week
+    pub lowerreg_ace_amount: Option<rust_decimal::Decimal>,
+    /// The Lower Reg Service FPP ASOE Residual Amount for the Participant and the Region for the Billing Week
+    pub lowerreg_asoe_amount: Option<rust_decimal::Decimal>,
+    /// Sum of LOWERREG_ACE_AMOUNT + LOWERREG_ASOE_AMOUNT
+    pub lowerreg_residual_amount: Option<rust_decimal::Decimal>,
+    /// The Raise Reg Service FPP Amount for the Participant and the Region for the Billing Week
+    pub raisereg_amount: Option<rust_decimal::Decimal>,
+    /// The Raise Reg Service FPP ACE Residual Amount for the Participant and the Region for the Billing Week
+    pub raisereg_ace_amount: Option<rust_decimal::Decimal>,
+    /// The Raise Reg Service FPP ASOE Residual Amount for the Participant and the Region for the Billing Week
+    pub raisereg_asoe_amount: Option<rust_decimal::Decimal>,
+    /// RAISEREG_ACE_AMOUNT + RAISEREG_ASOE_AMOUNT
+    pub raisereg_residual_amount: Option<rust_decimal::Decimal>,
+    /// The Lastchanged datetime of the record.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> BillingFpp1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+}
+impl mmsdm_core::GetTable for BillingFpp1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "BILLING";
+    const TABLE_NAME: &'static str = "FPP";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFpp1Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "WEEKNO",
+        "BILLRUNNO",
+        "PARTICIPANTID",
+        "REGIONID",
+        "LOWERREG_AMOUNT",
+        "LOWERREG_ACE_AMOUNT",
+        "LOWERREG_ASOE_AMOUNT",
+        "LOWERREG_RESIDUAL_AMOUNT",
+        "RAISEREG_AMOUNT",
+        "RAISEREG_ACE_AMOUNT",
+        "RAISEREG_ASOE_AMOUNT",
+        "RAISEREG_RESIDUAL_AMOUNT",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = BillingFpp1Row<'row>;
+    type FieldMapping = BillingFpp1Mapping;
+    type PrimaryKey = BillingFpp1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(BillingFpp1Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            weekno: row
+                .get_custom_parsed_at_idx(
+                    "weekno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            billrunno: row
+                .get_custom_parsed_at_idx(
+                    "billrunno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participantid: row.get_range("participantid", field_mapping.0[3])?,
+            regionid: row.get_range("regionid", field_mapping.0[4])?,
+            lowerreg_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg_amount",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lowerreg_ace_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg_ace_amount",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lowerreg_asoe_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg_asoe_amount",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lowerreg_residual_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg_residual_amount",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg_amount",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg_ace_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg_ace_amount",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg_asoe_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg_asoe_amount",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg_residual_amount: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg_residual_amount",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(BillingFpp1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> BillingFpp1PrimaryKey {
+        BillingFpp1PrimaryKey {
+            billrunno: row.billrunno,
+            contractyear: row.contractyear,
+            participantid: row.participantid().to_string(),
+            regionid: row.regionid().to_string(),
+            weekno: row.weekno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_fpp_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        BillingFpp1Row {
+            contractyear: row.contractyear.clone(),
+            weekno: row.weekno.clone(),
+            billrunno: row.billrunno.clone(),
+            participantid: row.participantid.clone(),
+            regionid: row.regionid.clone(),
+            lowerreg_amount: row.lowerreg_amount.clone(),
+            lowerreg_ace_amount: row.lowerreg_ace_amount.clone(),
+            lowerreg_asoe_amount: row.lowerreg_asoe_amount.clone(),
+            lowerreg_residual_amount: row.lowerreg_residual_amount.clone(),
+            raisereg_amount: row.raisereg_amount.clone(),
+            raisereg_ace_amount: row.raisereg_ace_amount.clone(),
+            raisereg_asoe_amount: row.raisereg_asoe_amount.clone(),
+            raisereg_residual_amount: row.raisereg_residual_amount.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingFpp1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: alloc::string::String,
+    pub regionid: alloc::string::String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for BillingFpp1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingFpp1Row<'data> {
+    type Row<'other> = BillingFpp1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno && self.contractyear == row.contractyear
+            && self.participantid() == row.participantid()
+            && self.regionid() == row.regionid() && self.weekno == row.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingFpp1Row<'data> {
+    type PrimaryKey = BillingFpp1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractyear == key.contractyear
+            && self.participantid() == key.participantid
+            && self.regionid() == key.regionid && self.weekno == key.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for BillingFpp1PrimaryKey {
+    type Row<'other> = BillingFpp1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno && self.contractyear == row.contractyear
+            && self.participantid == row.participantid()
+            && self.regionid == row.regionid() && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingFpp1PrimaryKey {
+    type PrimaryKey = BillingFpp1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractyear == key.contractyear
+            && self.participantid == key.participantid && self.regionid == key.regionid
+            && self.weekno == key.weekno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for BillingFpp1 {
+    type Builder = BillingFpp1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "weekno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "billrunno",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lowerreg_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lowerreg_ace_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lowerreg_asoe_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lowerreg_residual_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg_ace_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg_asoe_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg_residual_amount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        BillingFpp1Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            weekno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            billrunno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            lowerreg_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lowerreg_ace_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lowerreg_asoe_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lowerreg_residual_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raisereg_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raisereg_ace_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raisereg_asoe_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raisereg_residual_amount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .weekno_array
+            .append_value({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .billrunno_array
+            .append_value({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.participantid_array.append_value(row.participantid());
+        builder.regionid_array.append_value(row.regionid());
+        builder
+            .lowerreg_amount_array
+            .append_option({
+                row.lowerreg_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lowerreg_ace_amount_array
+            .append_option({
+                row.lowerreg_ace_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lowerreg_asoe_amount_array
+            .append_option({
+                row.lowerreg_asoe_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lowerreg_residual_amount_array
+            .append_option({
+                row.lowerreg_residual_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_amount_array
+            .append_option({
+                row.raisereg_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_ace_amount_array
+            .append_option({
+                row.raisereg_ace_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_asoe_amount_array
+            .append_option({
+                row.raisereg_asoe_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_residual_amount_array
+            .append_option({
+                row.raisereg_residual_amount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.weekno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.billrunno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lowerreg_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lowerreg_ace_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lowerreg_asoe_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.lowerreg_residual_amount_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raisereg_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raisereg_ace_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raisereg_asoe_amount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.raisereg_residual_amount_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct BillingFpp1Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    weekno_array: arrow::array::builder::Decimal128Builder,
+    billrunno_array: arrow::array::builder::Decimal128Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    lowerreg_amount_array: arrow::array::builder::Decimal128Builder,
+    lowerreg_ace_amount_array: arrow::array::builder::Decimal128Builder,
+    lowerreg_asoe_amount_array: arrow::array::builder::Decimal128Builder,
+    lowerreg_residual_amount_array: arrow::array::builder::Decimal128Builder,
+    raisereg_amount_array: arrow::array::builder::Decimal128Builder,
+    raisereg_ace_amount_array: arrow::array::builder::Decimal128Builder,
+    raisereg_asoe_amount_array: arrow::array::builder::Decimal128Builder,
+    raisereg_residual_amount_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct BillingGstDetail5 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -8078,15 +9760,7 @@ impl mmsdm_core::GetTable for BillingGstDetail5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "GST_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingGstDetail5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -8507,14 +10181,7 @@ impl mmsdm_core::GetTable for BillingGstSummary5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "GST_SUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingGstSummary5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -8861,7 +10528,7 @@ pub struct BillingNmasTstPayments1Mapping([usize; 7]);
 ///
 /// ## BILLING_NMAS_TST_PAYMENTS
 ///
-/// BILLING_NMAS_TEST_PAYMENTS publish the NSCAS/SRAS Testing Payments data for a posted billing week.
+/// BILLING_NMAS_TEST_PAYMENTS publish the NSCAS/SRAS Testing Payments data for a posted billing week. This Table may also be used for NSCAS and Type 1 transitional services procured by AEMO under the ISF framework during 2025 and prior to the implementation of all system changes. During this time descriptions in these tables may not be correct.
 ///
 /// * Data Set Name: Billing
 /// * File Name: Nmas Tst Payments
@@ -8915,13 +10582,7 @@ impl mmsdm_core::GetTable for BillingNmasTstPayments1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_TST_PAYMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstPayments1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -9237,7 +10898,7 @@ pub struct BillingNmasTstRecovery2Mapping([usize; 28]);
 ///
 /// ## BILLING_NMAS_TST_RECOVERY
 ///
-/// BILLING_NMAS_TEST_RECOVERY sets out the recovery of NMAS testing payments
+/// BILLING_NMAS_TEST_RECOVERY sets out the recovery of NMAS testing payments This Table may also be used for NSCAS and Type 1 transitional services procured by AEMO under the ISF framework during 2025 and prior to the implementation of all system changes. During this time descriptions in these tables may not be correct.
 ///
 /// * Data Set Name: Billing
 /// * File Name: Nmas Tst Recovery
@@ -9337,34 +10998,8 @@ impl mmsdm_core::GetTable for BillingNmasTstRecovery2 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_TST_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstRecovery2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -10290,16 +11925,7 @@ impl mmsdm_core::GetTable for BillingNmasTstRecvryRbf1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_TST_RECVRY_RBF";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstRecvryRbf1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -10688,7 +12314,7 @@ pub struct BillingNmasTstRecvryTrk1Mapping([usize; 6]);
 ///
 /// ## BILLING_NMAS_TST_RECVRY_TRK
 ///
-/// BILLING_NMAS_TEST_RECVRY_TRK tracks the energy data used to allocate the test payment recovery over the recovery period.
+/// BILLING_NMAS_TEST_RECVRY_TRK tracks the energy data used to allocate the test payment recovery over the recovery period. This Table may also be used for NSCAS and Type 1 transitional services procured by AEMO under the ISF framework during 2025 and prior to the implementation of all system changes. During this time descriptions in these tables may not be correct.
 ///
 /// * Data Set Name: Billing
 /// * File Name: Nmas Tst Recvry Trk
@@ -10730,12 +12356,7 @@ impl mmsdm_core::GetTable for BillingNmasTstRecvryTrk1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_TST_RECVRY_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstRecvryTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -11141,15 +12762,7 @@ impl mmsdm_core::GetTable for BillingSecdepInterestPay1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SECDEP_INTEREST_PAY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSecdepInterestPay1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -11553,12 +13166,7 @@ impl mmsdm_core::GetTable for BillingSecdepInterestRate1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SECDEP_INTEREST_RATE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSecdepInterestRate1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -11910,11 +13518,7 @@ impl mmsdm_core::GetTable for BillingSecdepositApplication1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SECDEPOSIT_APPLICATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSecdepositApplication1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -12258,14 +13862,7 @@ impl mmsdm_core::GetTable for BillingSubstDemand1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SUBST_DEMAND";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSubstDemand1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -12643,11 +14240,7 @@ impl mmsdm_core::GetTable for BillingSubstRunVersion1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SUBST_RUN_VERSION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSubstRunVersion1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -12986,12 +14579,7 @@ impl mmsdm_core::GetTable for BillingWdr1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "WDR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingWdr1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -13360,16 +14948,7 @@ impl mmsdm_core::GetTable for BillingWdrDetail1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "WDR_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingWdrDetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -13857,32 +15436,8 @@ impl mmsdm_core::GetTable for BillingAspayments7 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ASPAYMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingAspayments7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -14680,15 +16235,15 @@ pub struct BillingAspayments7Builder {
     raise1sec_array: arrow::array::builder::Decimal128Builder,
     lower1sec_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct BillingAsrecovery9 {
+pub struct BillingAsrecovery10 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
-            &BillingAsrecovery9Row<'_>,
+            &BillingAsrecovery10Row<'_>,
         ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
-impl BillingAsrecovery9 {
+impl BillingAsrecovery10 {
     pub fn new(
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
@@ -14701,7 +16256,7 @@ impl BillingAsrecovery9 {
         }
     }
 }
-pub struct BillingAsrecovery9Mapping([usize; 72]);
+pub struct BillingAsrecovery10Mapping([usize; 88]);
 /// # Summary
 ///
 /// ## BILLINGASRECOVERY
@@ -14710,7 +16265,7 @@ pub struct BillingAsrecovery9Mapping([usize; 72]);
 ///
 /// * Data Set Name: Billing
 /// * File Name: Asrecovery
-/// * Data Version: 9
+/// * Data Version: 10
 ///
 /// # Description
 /// BILLINGASRECOVERY data is confidential to relevant participant.SourceUpdated  with each billing run.VolumeApproximately 5 records are inserted per billrunno, or about 55 records inserted per week.
@@ -14726,7 +16281,7 @@ pub struct BillingAsrecovery9Mapping([usize; 72]);
 /// * REGIONID
 /// * WEEKNO
 #[derive(Debug, PartialEq, Eq)]
-pub struct BillingAsrecovery9Row<'data> {
+pub struct BillingAsrecovery10Row<'data> {
     /// Region Identifier
     pub regionid: core::ops::Range<usize>,
     /// Contract Year
@@ -14787,9 +16342,9 @@ pub struct BillingAsrecovery9Row<'data> {
     pub lower5min: Option<rust_decimal::Decimal>,
     /// Recovery amount for the Raise 5 Minute service attributable to customer connection points. NULL for Billing Week post the IESS rule effective date
     pub raise5min: Option<rust_decimal::Decimal>,
-    /// Pre-IESS - Recovery amount for the Lower Regulation service attributable to customer connection points(MPF + Residue). Post-IESS the amount in this column represent only the Lower Regulation FCAS MPF Recovery Amount from Customer and Generator Connection Point MPFs, no Residue Amounts are added to this column value.
+    /// Post-IESS the amount in this column represent only the Lower Regulation FCAS MPF Recovery Amount from Customer and Generator Connection Point MPFs, no Residue Amounts are added to this column value. For Billing Weeks past FPP Rule Effective Date this column is not used. Always show 0.
     pub lowerreg: Option<rust_decimal::Decimal>,
-    /// Pre-IESS - Recovery amount for the Raise Regulation service attributable to customer connection points(MPF + Residue). Post-IESS the amount in this column represent only the Raise Regulation FCAS MPF Recovery Amount from Customer and Generator Connection Point MPFs, no Residue Amounts are added to this column value.
+    /// Post-IESS the amount in this column represent only the Raise Regulation FCAS MPF Recovery Amount from Customer and Generator Connection Point MPFs, no Residue Amounts are added to this column value. For Billing Weeks past FPP Rule Effective Date this column is not used. Always show 0.
     pub raisereg: Option<rust_decimal::Decimal>,
     /// Recovery amount for the Lower 5 Minute service attributable to generator connection points. NULL for Billing Week post the IESS rule effective date
     pub lower5min_gen: Option<rust_decimal::Decimal>,
@@ -14871,9 +16426,41 @@ pub struct BillingAsrecovery9Row<'data> {
     pub availability_reactive_rbt_ace: Option<rust_decimal::Decimal>,
     /// The Reactive Power Ancillary Service Availability Rebate Payment Recovery Amount for the Participant and Region from ASOE MWh Portion. NULL for Billing Week prior to the IESS rule effective date
     pub availability_reactive_rbt_asoe: Option<rust_decimal::Decimal>,
+    /// The FCAS Lower Reg Service Used Amount for the Billing Week. This column will be NULL for Billing Week Prior to FPP Rule Effective Date
+    pub lowerreg_used: Option<rust_decimal::Decimal>,
+    /// The FCAS Lower Reg Service Unused Amount for the Billing Week. This column will be NULL for Billing Week Prior to FPP Rule Effective Date
+    pub lowerreg_unused: Option<rust_decimal::Decimal>,
+    /// The FCAS Raise Reg Service Used Amount for the Billing Week. This column will be NULL for Billing Week Prior to FPP Rule Effective Date
+    pub raisereg_used: Option<rust_decimal::Decimal>,
+    /// The FCAS Raise Reg Service Unused Amount for the Billing Week. This column will be NULL for Billing Week Prior to FPP Rule Effective Date
+    pub raisereg_unused: Option<rust_decimal::Decimal>,
+    /// The FCAS Lower Reg Service Used ACE Residual Amount for the Billing Week. This column will be NULL for Billing Week Prior to FPP Rule Effective Date
+    pub lowerreg_used_ace: Option<rust_decimal::Decimal>,
+    /// The FCAS Lower Reg Service Used ASOE Amount for the Billing Week. This column will be NULL for Billing Week Prior to FPP Rule Effective Date
+    pub lowerreg_used_asoe: Option<rust_decimal::Decimal>,
+    /// LOWERREG_USED_ACE + LOWERREG_USED_ASOE
+    pub lowerreg_used_residual: Option<rust_decimal::Decimal>,
+    /// The FCAS Raise Reg Service Used ACE Residual Amount for the Billing Week. This column will be NULL for Billing Week Prior to FPP Rule Effective Date
+    pub raisereg_used_ace: Option<rust_decimal::Decimal>,
+    /// The FCAS Raise Reg Service Used ASOE Residual Amount for the Billing Week. This column will be NULL for Billing Week Prior to FPP Rule Effective Date
+    pub raisereg_used_asoe: Option<rust_decimal::Decimal>,
+    /// RAISEREG_USED_ACE + RAISEREG_USED_ASOE
+    pub raisereg_used_residual: Option<rust_decimal::Decimal>,
+    /// The FCAS Lower Reg Service Unused ACE Residual Amount for the Billing Week. This column will be NULL for Billing Week Prior to FPP Rule Effective Date
+    pub lowerreg_unused_ace: Option<rust_decimal::Decimal>,
+    /// The FCAS Lower Reg Service Unused ASOE Residual Amount for the Billing Week. This column will be NULL for Billing Week Prior to FPP Rule Effective Date
+    pub lowerreg_unused_asoe: Option<rust_decimal::Decimal>,
+    /// LOWERREG_UNUSED_ACE + LOWERREG_UNUSED_ASOE
+    pub lowerreg_unused_residual: Option<rust_decimal::Decimal>,
+    /// The FCAS Raise Reg Service Unused ACE Residual Amount for the Billing Week. This column will be NULL for Billing Week Prior to FPP Rule Effective Date
+    pub raisereg_unused_ace: Option<rust_decimal::Decimal>,
+    /// The FCAS Raise Reg Service Unused ASOE Residual Amount for the Billing Week. This column will be NULL for Billing Week Prior to FPP Rule Effective Date
+    pub raisereg_unused_asoe: Option<rust_decimal::Decimal>,
+    /// RAISEREG_UNUSED_ACE + RAISEREG_UNUSED_ASOE
+    pub raisereg_unused_residual: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> BillingAsrecovery9Row<'data> {
+impl<'data> BillingAsrecovery10Row<'data> {
     pub fn regionid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
     }
@@ -14881,83 +16468,16 @@ impl<'data> BillingAsrecovery9Row<'data> {
         core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
     }
 }
-impl mmsdm_core::GetTable for BillingAsrecovery9 {
-    const VERSION: i32 = 9;
+impl mmsdm_core::GetTable for BillingAsrecovery10 {
+    const VERSION: i32 = 10;
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ASRECOVERY";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingAsrecovery9Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
-        68,
-        69,
-        70,
-        71,
-        72,
-        73,
-        74,
-        75,
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingAsrecovery10Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85,
+        86, 87, 88, 89, 90, 91,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -15032,15 +16552,31 @@ impl mmsdm_core::GetTable for BillingAsrecovery9 {
         "AVAILABILITY_REACTIVE_ASOE",
         "AVAILABILITY_REACTIVE_RBT_ACE",
         "AVAILABILITY_REACTIVE_RBT_ASOE",
+        "LOWERREG_USED",
+        "LOWERREG_UNUSED",
+        "RAISEREG_USED",
+        "RAISEREG_UNUSED",
+        "LOWERREG_USED_ACE",
+        "LOWERREG_USED_ASOE",
+        "LOWERREG_USED_RESIDUAL",
+        "RAISEREG_USED_ACE",
+        "RAISEREG_USED_ASOE",
+        "RAISEREG_USED_RESIDUAL",
+        "LOWERREG_UNUSED_ACE",
+        "LOWERREG_UNUSED_ASOE",
+        "LOWERREG_UNUSED_RESIDUAL",
+        "RAISEREG_UNUSED_ACE",
+        "RAISEREG_UNUSED_ASOE",
+        "RAISEREG_UNUSED_RESIDUAL",
     ];
-    type Row<'row> = BillingAsrecovery9Row<'row>;
-    type FieldMapping = BillingAsrecovery9Mapping;
-    type PrimaryKey = BillingAsrecovery9PrimaryKey;
+    type Row<'row> = BillingAsrecovery10Row<'row>;
+    type FieldMapping = BillingAsrecovery10Mapping;
+    type PrimaryKey = BillingAsrecovery10PrimaryKey;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(BillingAsrecovery9Row {
+        Ok(BillingAsrecovery10Row {
             regionid: row.get_range("regionid", field_mapping.0[0])?,
             contractyear: row
                 .get_custom_parsed_at_idx(
@@ -15463,6 +16999,102 @@ impl mmsdm_core::GetTable for BillingAsrecovery9 {
                     field_mapping.0[71],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            lowerreg_used: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg_used",
+                    field_mapping.0[72],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lowerreg_unused: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg_unused",
+                    field_mapping.0[73],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg_used: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg_used",
+                    field_mapping.0[74],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg_unused: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg_unused",
+                    field_mapping.0[75],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lowerreg_used_ace: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg_used_ace",
+                    field_mapping.0[76],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lowerreg_used_asoe: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg_used_asoe",
+                    field_mapping.0[77],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lowerreg_used_residual: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg_used_residual",
+                    field_mapping.0[78],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg_used_ace: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg_used_ace",
+                    field_mapping.0[79],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg_used_asoe: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg_used_asoe",
+                    field_mapping.0[80],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg_used_residual: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg_used_residual",
+                    field_mapping.0[81],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lowerreg_unused_ace: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg_unused_ace",
+                    field_mapping.0[82],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lowerreg_unused_asoe: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg_unused_asoe",
+                    field_mapping.0[83],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lowerreg_unused_residual: row
+                .get_opt_custom_parsed_at_idx(
+                    "lowerreg_unused_residual",
+                    field_mapping.0[84],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg_unused_ace: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg_unused_ace",
+                    field_mapping.0[85],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg_unused_asoe: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg_unused_asoe",
+                    field_mapping.0[86],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            raisereg_unused_residual: row
+                .get_opt_custom_parsed_at_idx(
+                    "raisereg_unused_residual",
+                    field_mapping.0[87],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -15494,14 +17126,14 @@ impl mmsdm_core::GetTable for BillingAsrecovery9 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(BillingAsrecovery9Mapping(base_mapping))
+        Ok(BillingAsrecovery10Mapping(base_mapping))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> BillingAsrecovery9PrimaryKey {
-        BillingAsrecovery9PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> BillingAsrecovery10PrimaryKey {
+        BillingAsrecovery10PrimaryKey {
             billrunno: row.billrunno,
             contractyear: row.contractyear,
             participantid: row.participantid().to_string(),
@@ -15513,13 +17145,13 @@ impl mmsdm_core::GetTable for BillingAsrecovery9 {
         (self.extract_row_partition)(row)
     }
     fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("billing_asrecovery_v9_{}", self.partition_value(row))
+        alloc::format!("billing_asrecovery_v10_{}", self.partition_value(row))
     }
     fn partition_key(&self) -> mmsdm_core::PartitionKey {
         self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        BillingAsrecovery9Row {
+        BillingAsrecovery10Row {
             regionid: row.regionid.clone(),
             contractyear: row.contractyear.clone(),
             weekno: row.weekno.clone(),
@@ -15592,45 +17224,61 @@ impl mmsdm_core::GetTable for BillingAsrecovery9 {
             availability_reactive_asoe: row.availability_reactive_asoe.clone(),
             availability_reactive_rbt_ace: row.availability_reactive_rbt_ace.clone(),
             availability_reactive_rbt_asoe: row.availability_reactive_rbt_asoe.clone(),
+            lowerreg_used: row.lowerreg_used.clone(),
+            lowerreg_unused: row.lowerreg_unused.clone(),
+            raisereg_used: row.raisereg_used.clone(),
+            raisereg_unused: row.raisereg_unused.clone(),
+            lowerreg_used_ace: row.lowerreg_used_ace.clone(),
+            lowerreg_used_asoe: row.lowerreg_used_asoe.clone(),
+            lowerreg_used_residual: row.lowerreg_used_residual.clone(),
+            raisereg_used_ace: row.raisereg_used_ace.clone(),
+            raisereg_used_asoe: row.raisereg_used_asoe.clone(),
+            raisereg_used_residual: row.raisereg_used_residual.clone(),
+            lowerreg_unused_ace: row.lowerreg_unused_ace.clone(),
+            lowerreg_unused_asoe: row.lowerreg_unused_asoe.clone(),
+            lowerreg_unused_residual: row.lowerreg_unused_residual.clone(),
+            raisereg_unused_ace: row.raisereg_unused_ace.clone(),
+            raisereg_unused_asoe: row.raisereg_unused_asoe.clone(),
+            raisereg_unused_residual: row.raisereg_unused_residual.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingAsrecovery9PrimaryKey {
+pub struct BillingAsrecovery10PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
     pub participantid: alloc::string::String,
     pub regionid: alloc::string::String,
     pub weekno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for BillingAsrecovery9PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for BillingAsrecovery9Row<'data> {
-    type Row<'other> = BillingAsrecovery9Row<'other>;
+impl mmsdm_core::PrimaryKey for BillingAsrecovery10PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingAsrecovery10Row<'data> {
+    type Row<'other> = BillingAsrecovery10Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.participantid() == row.participantid()
             && self.regionid() == row.regionid() && self.weekno == row.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery9Row<'data> {
-    type PrimaryKey = BillingAsrecovery9PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery10Row<'data> {
+    type PrimaryKey = BillingAsrecovery10PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.participantid() == key.participantid
             && self.regionid() == key.regionid && self.weekno == key.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for BillingAsrecovery9PrimaryKey {
-    type Row<'other> = BillingAsrecovery9Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for BillingAsrecovery10PrimaryKey {
+    type Row<'other> = BillingAsrecovery10Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.participantid == row.participantid()
             && self.regionid == row.regionid() && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery9PrimaryKey {
-    type PrimaryKey = BillingAsrecovery9PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery10PrimaryKey {
+    type PrimaryKey = BillingAsrecovery10PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.participantid == key.participantid && self.regionid == key.regionid
@@ -15638,8 +17286,8 @@ impl mmsdm_core::CompareWithPrimaryKey for BillingAsrecovery9PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingAsrecovery9 {
-    type Builder = BillingAsrecovery9Builder;
+impl mmsdm_core::ArrowSchema for BillingAsrecovery10 {
+    type Builder = BillingAsrecovery10Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -16006,11 +17654,91 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery9 {
                     arrow::datatypes::DataType::Decimal128(18, 8),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "lowerreg_used",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lowerreg_unused",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg_used",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg_unused",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lowerreg_used_ace",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lowerreg_used_asoe",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lowerreg_used_residual",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg_used_ace",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg_used_asoe",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg_used_residual",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lowerreg_unused_ace",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lowerreg_unused_asoe",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lowerreg_unused_residual",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg_unused_ace",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg_unused_asoe",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "raisereg_unused_residual",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        BillingAsrecovery9Builder {
+        BillingAsrecovery10Builder {
             regionid_array: arrow::array::builder::StringBuilder::new(),
             contractyear_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
@@ -16151,6 +17879,38 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery9 {
             availability_reactive_rbt_ace_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             availability_reactive_rbt_asoe_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lowerreg_used_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lowerreg_unused_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raisereg_used_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raisereg_unused_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lowerreg_used_ace_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lowerreg_used_asoe_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lowerreg_used_residual_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raisereg_used_ace_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raisereg_used_asoe_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raisereg_used_residual_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lowerreg_unused_ace_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lowerreg_unused_asoe_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lowerreg_unused_residual_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raisereg_unused_ace_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raisereg_unused_asoe_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            raisereg_unused_residual_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
     }
@@ -16775,6 +18535,150 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery9 {
                         val.mantissa()
                     })
             });
+        builder
+            .lowerreg_used_array
+            .append_option({
+                row.lowerreg_used
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lowerreg_unused_array
+            .append_option({
+                row.lowerreg_unused
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_used_array
+            .append_option({
+                row.raisereg_used
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_unused_array
+            .append_option({
+                row.raisereg_unused
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lowerreg_used_ace_array
+            .append_option({
+                row.lowerreg_used_ace
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lowerreg_used_asoe_array
+            .append_option({
+                row.lowerreg_used_asoe
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lowerreg_used_residual_array
+            .append_option({
+                row.lowerreg_used_residual
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_used_ace_array
+            .append_option({
+                row.raisereg_used_ace
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_used_asoe_array
+            .append_option({
+                row.raisereg_used_asoe
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_used_residual_array
+            .append_option({
+                row.raisereg_used_residual
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lowerreg_unused_ace_array
+            .append_option({
+                row.lowerreg_unused_ace
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lowerreg_unused_asoe_array
+            .append_option({
+                row.lowerreg_unused_asoe
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lowerreg_unused_residual_array
+            .append_option({
+                row.lowerreg_unused_residual
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_unused_ace_array
+            .append_option({
+                row.raisereg_unused_ace
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_unused_asoe_array
+            .append_option({
+                row.raisereg_unused_asoe
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .raisereg_unused_residual_array
+            .append_option({
+                row.raisereg_unused_residual
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -16933,13 +18837,47 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery9 {
                     alloc::sync::Arc::new(
                         builder.availability_reactive_rbt_asoe_array.finish(),
                     ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lowerreg_used_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lowerreg_unused_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raisereg_used_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raisereg_unused_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lowerreg_used_ace_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lowerreg_used_asoe_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lowerreg_used_residual_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raisereg_used_ace_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raisereg_used_asoe_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raisereg_used_residual_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lowerreg_unused_ace_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lowerreg_unused_asoe_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.lowerreg_unused_residual_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raisereg_unused_ace_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.raisereg_unused_asoe_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.raisereg_unused_residual_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct BillingAsrecovery9Builder {
+pub struct BillingAsrecovery10Builder {
     regionid_array: arrow::array::builder::StringBuilder,
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
@@ -17012,651 +18950,22 @@ pub struct BillingAsrecovery9Builder {
     availability_reactive_asoe_array: arrow::array::builder::Decimal128Builder,
     availability_reactive_rbt_ace_array: arrow::array::builder::Decimal128Builder,
     availability_reactive_rbt_asoe_array: arrow::array::builder::Decimal128Builder,
-}
-pub struct BillingCpdata7 {
-    extract_row_partition: alloc::boxed::Box<
-        dyn Fn(
-            &BillingCpdata7Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    >,
-    row_partition_key: mmsdm_core::PartitionKey,
-}
-impl BillingCpdata7 {
-    pub fn new(
-        row_partition_key: mmsdm_core::PartitionKey,
-        func: impl Fn(
-            &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    ) -> Self {
-        Self {
-            extract_row_partition: alloc::boxed::Box::new(func),
-            row_partition_key,
-        }
-    }
-}
-pub struct BillingCpdata7Mapping([usize; 16]);
-/// # Summary
-///
-/// ## BILLINGCPDATA
-///
-/// BILLINGCPDATA shows energy quantity and $ value purchased per participant connection point.
-///
-/// * Data Set Name: Billing
-/// * File Name: Cpdata
-/// * Data Version: 7
-///
-/// # Description
-/// BILLINGCPDATA data is confidential to relevant participant.SourcePopulated by the posting of a billing run, being several times each week.VolumeThe number of records depends on  the number of Transmission ConnectionPointIDs a participant may use to purchase energy. An indicative maximum is approximately 150 records per billrunno, or about 1,500 records inserted per week.
-///
-/// # Notes
-/// * (Visibility)  Private
-///
-/// # Primary Key Columns
-///
-/// * BILLRUNNO
-/// * CONNECTIONPOINTID
-/// * CONTRACTYEAR
-/// * MDA
-/// * PARTICIPANTID
-/// * WEEKNO
-#[derive(Debug, PartialEq, Eq)]
-pub struct BillingCpdata7Row<'data> {
-    /// AEMO Contract Year number starting in week containing 1st January
-    pub contractyear: rust_decimal::Decimal,
-    /// Week no within the contract year. Week no 1 is the week containing 1st January
-    pub weekno: rust_decimal::Decimal,
-    /// Unique run no within a given contract year and week no
-    pub billrunno: rust_decimal::Decimal,
-    /// Unique participant identifier
-    pub participantid: core::ops::Range<usize>,
-    /// Unique connection point identifier
-    pub connectionpointid: core::ops::Range<usize>,
-    /// Aggregate energy purchased/sold by customer, in MWh, plus UFEA. When GS commences, this includes the UFEA amount in the settlement runs.
-    pub aggregateenergy: Option<rust_decimal::Decimal>,
-    /// The Purchase column has the dollar value of the Energy Purchased rather than Aggregate Energy Dollar
-    pub purchases: Option<rust_decimal::Decimal>,
-    /// Last date and time record changed
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// relevant MDA for this connection point.
-    pub mda: core::ops::Range<usize>,
-    /// Adjusted Gross Energy for this Market Customer FRMP and TNI in the Billing run, excluding any UFEA component.
-    pub afe: Option<rust_decimal::Decimal>,
-    /// Sum of ME- for all NMIs at this Market Customer FRMP and TNI in the Billing run.
-    pub dme: Option<rust_decimal::Decimal>,
-    /// Share of UFE allocated to this FRMP and TNI in the Billing run.
-    pub ufea: Option<rust_decimal::Decimal>,
-    /// Adjusted Gross Energy for this Market Customer FRMP and TNI in the trading interval. This will include the UFEA value once financial settlement of UFE commences with GS.
-    pub age: Option<rust_decimal::Decimal>,
-    /// Energy sold at the connection point by the participant in this billing run
-    pub soldenergy: Option<rust_decimal::Decimal>,
-    /// The total cost of energy sold at the connection point by the participant in this billing run
-    pub sales: Option<rust_decimal::Decimal>,
-    /// The energy consumed at the connection point by the participant in this billing run
-    pub purchasedenergy: Option<rust_decimal::Decimal>,
-    backing_data: mmsdm_core::CsvRow<'data>,
-}
-impl<'data> BillingCpdata7Row<'data> {
-    pub fn participantid(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
-    }
-    pub fn connectionpointid(&self) -> &str {
-        core::ops::Index::index(
-            self.backing_data.as_slice(),
-            self.connectionpointid.clone(),
-        )
-    }
-    pub fn mda(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.mda.clone())
-    }
-}
-impl mmsdm_core::GetTable for BillingCpdata7 {
-    const VERSION: i32 = 7;
-    const DATA_SET_NAME: &'static str = "BILLING";
-    const TABLE_NAME: &'static str = "CPDATA";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingCpdata7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-    ]);
-    const COLUMNS: &'static [&'static str] = &[
-        "CONTRACTYEAR",
-        "WEEKNO",
-        "BILLRUNNO",
-        "PARTICIPANTID",
-        "CONNECTIONPOINTID",
-        "AGGREGATEENERGY",
-        "PURCHASES",
-        "LASTCHANGED",
-        "MDA",
-        "AFE",
-        "DME",
-        "UFEA",
-        "AGE",
-        "SOLDENERGY",
-        "SALES",
-        "PURCHASEDENERGY",
-    ];
-    type Row<'row> = BillingCpdata7Row<'row>;
-    type FieldMapping = BillingCpdata7Mapping;
-    type PrimaryKey = BillingCpdata7PrimaryKey;
-    fn from_row<'data>(
-        row: mmsdm_core::CsvRow<'data>,
-        field_mapping: &Self::FieldMapping,
-    ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(BillingCpdata7Row {
-            contractyear: row
-                .get_custom_parsed_at_idx(
-                    "contractyear",
-                    field_mapping.0[0],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            weekno: row
-                .get_custom_parsed_at_idx(
-                    "weekno",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            billrunno: row
-                .get_custom_parsed_at_idx(
-                    "billrunno",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            participantid: row.get_range("participantid", field_mapping.0[3])?,
-            connectionpointid: row.get_range("connectionpointid", field_mapping.0[4])?,
-            aggregateenergy: row
-                .get_opt_custom_parsed_at_idx(
-                    "aggregateenergy",
-                    field_mapping.0[5],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            purchases: row
-                .get_opt_custom_parsed_at_idx(
-                    "purchases",
-                    field_mapping.0[6],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[7],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            mda: row.get_range("mda", field_mapping.0[8])?,
-            afe: row
-                .get_opt_custom_parsed_at_idx(
-                    "afe",
-                    field_mapping.0[9],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            dme: row
-                .get_opt_custom_parsed_at_idx(
-                    "dme",
-                    field_mapping.0[10],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            ufea: row
-                .get_opt_custom_parsed_at_idx(
-                    "ufea",
-                    field_mapping.0[11],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            age: row
-                .get_opt_custom_parsed_at_idx(
-                    "age",
-                    field_mapping.0[12],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            soldenergy: row
-                .get_opt_custom_parsed_at_idx(
-                    "soldenergy",
-                    field_mapping.0[13],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            sales: row
-                .get_opt_custom_parsed_at_idx(
-                    "sales",
-                    field_mapping.0[14],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            purchasedenergy: row
-                .get_opt_custom_parsed_at_idx(
-                    "purchasedenergy",
-                    field_mapping.0[15],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            backing_data: row,
-        })
-    }
-    fn field_mapping_from_row<'a>(
-        mut row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
-        }
-        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
-        if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
-        }
-        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
-        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
-            base_mapping[field_index] = row
-                .iter_fields()
-                .position(|f| f == *field)
-                .unwrap_or(usize::MAX);
-        }
-        Ok(BillingCpdata7Mapping(base_mapping))
-    }
-    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
-            && Self::TABLE_NAME == key.table_name()
-    }
-    fn primary_key(row: &Self::Row<'_>) -> BillingCpdata7PrimaryKey {
-        BillingCpdata7PrimaryKey {
-            billrunno: row.billrunno,
-            connectionpointid: row.connectionpointid().to_string(),
-            contractyear: row.contractyear,
-            mda: row.mda().to_string(),
-            participantid: row.participantid().to_string(),
-            weekno: row.weekno,
-        }
-    }
-    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
-        (self.extract_row_partition)(row)
-    }
-    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("billing_cpdata_v7_{}", self.partition_value(row))
-    }
-    fn partition_key(&self) -> mmsdm_core::PartitionKey {
-        self.row_partition_key
-    }
-    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        BillingCpdata7Row {
-            contractyear: row.contractyear.clone(),
-            weekno: row.weekno.clone(),
-            billrunno: row.billrunno.clone(),
-            participantid: row.participantid.clone(),
-            connectionpointid: row.connectionpointid.clone(),
-            aggregateenergy: row.aggregateenergy.clone(),
-            purchases: row.purchases.clone(),
-            lastchanged: row.lastchanged.clone(),
-            mda: row.mda.clone(),
-            afe: row.afe.clone(),
-            dme: row.dme.clone(),
-            ufea: row.ufea.clone(),
-            age: row.age.clone(),
-            soldenergy: row.soldenergy.clone(),
-            sales: row.sales.clone(),
-            purchasedenergy: row.purchasedenergy.clone(),
-            backing_data: row.backing_data.to_owned(),
-        }
-    }
-}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingCpdata7PrimaryKey {
-    pub billrunno: rust_decimal::Decimal,
-    pub connectionpointid: alloc::string::String,
-    pub contractyear: rust_decimal::Decimal,
-    pub mda: alloc::string::String,
-    pub participantid: alloc::string::String,
-    pub weekno: rust_decimal::Decimal,
-}
-impl mmsdm_core::PrimaryKey for BillingCpdata7PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for BillingCpdata7Row<'data> {
-    type Row<'other> = BillingCpdata7Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.billrunno == row.billrunno
-            && self.connectionpointid() == row.connectionpointid()
-            && self.contractyear == row.contractyear && self.mda() == row.mda()
-            && self.participantid() == row.participantid() && self.weekno == row.weekno
-    }
-}
-impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingCpdata7Row<'data> {
-    type PrimaryKey = BillingCpdata7PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.billrunno == key.billrunno
-            && self.connectionpointid() == key.connectionpointid
-            && self.contractyear == key.contractyear && self.mda() == key.mda
-            && self.participantid() == key.participantid && self.weekno == key.weekno
-    }
-}
-impl<'data> mmsdm_core::CompareWithRow for BillingCpdata7PrimaryKey {
-    type Row<'other> = BillingCpdata7Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.billrunno == row.billrunno
-            && self.connectionpointid == row.connectionpointid()
-            && self.contractyear == row.contractyear && self.mda == row.mda()
-            && self.participantid == row.participantid() && self.weekno == row.weekno
-    }
-}
-impl mmsdm_core::CompareWithPrimaryKey for BillingCpdata7PrimaryKey {
-    type PrimaryKey = BillingCpdata7PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.billrunno == key.billrunno
-            && self.connectionpointid == key.connectionpointid
-            && self.contractyear == key.contractyear && self.mda == key.mda
-            && self.participantid == key.participantid && self.weekno == key.weekno
-    }
-}
-#[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingCpdata7 {
-    type Builder = BillingCpdata7Builder;
-    fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "contractyear",
-                    arrow::datatypes::DataType::Decimal128(4, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "weekno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "billrunno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "participantid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "aggregateenergy",
-                    arrow::datatypes::DataType::Decimal128(16, 6),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "purchases",
-                    arrow::datatypes::DataType::Decimal128(16, 6),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "mda",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "afe",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "dme",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "ufea",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "age",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "soldenergy",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "sales",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "purchasedenergy",
-                    arrow::datatypes::DataType::Decimal128(18, 8),
-                    true,
-                ),
-            ]),
-        )
-    }
-    fn new_builder() -> Self::Builder {
-        BillingCpdata7Builder {
-            contractyear_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
-            weekno_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            billrunno_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            aggregateenergy_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            purchases_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            mda_array: arrow::array::builder::StringBuilder::new(),
-            afe_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            dme_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            ufea_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            age_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            soldenergy_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            sales_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            purchasedenergy_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-        }
-    }
-    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder
-            .contractyear_array
-            .append_value({
-                let mut val = row.contractyear;
-                val.rescale(0);
-                val.mantissa()
-            });
-        builder
-            .weekno_array
-            .append_value({
-                let mut val = row.weekno;
-                val.rescale(0);
-                val.mantissa()
-            });
-        builder
-            .billrunno_array
-            .append_value({
-                let mut val = row.billrunno;
-                val.rescale(0);
-                val.mantissa()
-            });
-        builder.participantid_array.append_value(row.participantid());
-        builder.connectionpointid_array.append_value(row.connectionpointid());
-        builder
-            .aggregateenergy_array
-            .append_option({
-                row.aggregateenergy
-                    .map(|mut val| {
-                        val.rescale(6);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .purchases_array
-            .append_option({
-                row.purchases
-                    .map(|mut val| {
-                        val.rescale(6);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
-        builder.mda_array.append_value(row.mda());
-        builder
-            .afe_array
-            .append_option({
-                row.afe
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .dme_array
-            .append_option({
-                row.dme
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .ufea_array
-            .append_option({
-                row.ufea
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .age_array
-            .append_option({
-                row.age
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .soldenergy_array
-            .append_option({
-                row.soldenergy
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .sales_array
-            .append_option({
-                row.sales
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .purchasedenergy_array
-            .append_option({
-                row.purchasedenergy
-                    .map(|mut val| {
-                        val.rescale(8);
-                        val.mantissa()
-                    })
-            });
-    }
-    fn finalize_builder(
-        builder: &mut Self::Builder,
-    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
-        arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.contractyear_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.weekno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.billrunno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.participantid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.connectionpointid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.aggregateenergy_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.purchases_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.mda_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.afe_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.dme_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.ufea_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.age_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.soldenergy_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.sales_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.purchasedenergy_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
-    }
-}
-#[cfg(feature = "arrow")]
-pub struct BillingCpdata7Builder {
-    contractyear_array: arrow::array::builder::Decimal128Builder,
-    weekno_array: arrow::array::builder::Decimal128Builder,
-    billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
-    aggregateenergy_array: arrow::array::builder::Decimal128Builder,
-    purchases_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    mda_array: arrow::array::builder::StringBuilder,
-    afe_array: arrow::array::builder::Decimal128Builder,
-    dme_array: arrow::array::builder::Decimal128Builder,
-    ufea_array: arrow::array::builder::Decimal128Builder,
-    age_array: arrow::array::builder::Decimal128Builder,
-    soldenergy_array: arrow::array::builder::Decimal128Builder,
-    sales_array: arrow::array::builder::Decimal128Builder,
-    purchasedenergy_array: arrow::array::builder::Decimal128Builder,
+    lowerreg_used_array: arrow::array::builder::Decimal128Builder,
+    lowerreg_unused_array: arrow::array::builder::Decimal128Builder,
+    raisereg_used_array: arrow::array::builder::Decimal128Builder,
+    raisereg_unused_array: arrow::array::builder::Decimal128Builder,
+    lowerreg_used_ace_array: arrow::array::builder::Decimal128Builder,
+    lowerreg_used_asoe_array: arrow::array::builder::Decimal128Builder,
+    lowerreg_used_residual_array: arrow::array::builder::Decimal128Builder,
+    raisereg_used_ace_array: arrow::array::builder::Decimal128Builder,
+    raisereg_used_asoe_array: arrow::array::builder::Decimal128Builder,
+    raisereg_used_residual_array: arrow::array::builder::Decimal128Builder,
+    lowerreg_unused_ace_array: arrow::array::builder::Decimal128Builder,
+    lowerreg_unused_asoe_array: arrow::array::builder::Decimal128Builder,
+    lowerreg_unused_residual_array: arrow::array::builder::Decimal128Builder,
+    raisereg_unused_ace_array: arrow::array::builder::Decimal128Builder,
+    raisereg_unused_asoe_array: arrow::array::builder::Decimal128Builder,
+    raisereg_unused_residual_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BillingDaytrk5 {
     extract_row_partition: alloc::boxed::Box<
@@ -17724,12 +19033,7 @@ impl mmsdm_core::GetTable for BillingDaytrk5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DAYTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDaytrk5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -18103,16 +19407,7 @@ impl mmsdm_core::GetTable for BillingFees5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "FEES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFees5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -18591,17 +19886,7 @@ impl mmsdm_core::GetTable for BillingFinancialadjustments5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "FINANCIALADJUSTMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFinancialadjustments5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -18976,555 +20261,6 @@ pub struct BillingFinancialadjustments5Builder {
     financialcode_array: arrow::array::builder::Decimal128Builder,
     bas_class_array: arrow::array::builder::StringBuilder,
 }
-pub struct BillingGendata5 {
-    extract_row_partition: alloc::boxed::Box<
-        dyn Fn(
-            &BillingGendata5Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    >,
-    row_partition_key: mmsdm_core::PartitionKey,
-}
-impl BillingGendata5 {
-    pub fn new(
-        row_partition_key: mmsdm_core::PartitionKey,
-        func: impl Fn(
-            &<Self as mmsdm_core::GetTable>::Row<'_>,
-        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
-    ) -> Self {
-        Self {
-            extract_row_partition: alloc::boxed::Box::new(func),
-            row_partition_key,
-        }
-    }
-}
-pub struct BillingGendata5Mapping([usize; 13]);
-/// # Summary
-///
-/// ## BILLINGGENDATA
-///
-/// BILLINGGENDATA shows the total energy sold and purchased per participant transmission connection point for a billing period.
-///
-/// * Data Set Name: Billing
-/// * File Name: Gendata
-/// * Data Version: 5
-///
-/// # Description
-/// BILLINGGENDATA data is confidential to the the relevant participant.SourceBILLINGGENDATA is populated by the posting of a billing run, being several times each week.VolumeThe number of records depends on the number of transmission ConnectionPointIDs a Participant may have sold energy from per billrunno.  An indicative maximum is approximately 15 records inserted per billrunno, or about 165 records inserted per week.BILLINGGENDATA is confidential to the the relevant participant.
-///
-/// # Notes
-/// * (Visibility)  Private
-///
-/// # Primary Key Columns
-///
-/// * BILLRUNNO
-/// * CONNECTIONPOINTID
-/// * CONTRACTYEAR
-/// * PARTICIPANTID
-/// * WEEKNO
-#[derive(Debug, PartialEq, Eq)]
-pub struct BillingGendata5Row<'data> {
-    /// AEMO Contract Year number starting in week containing 1st January
-    pub contractyear: rust_decimal::Decimal,
-    /// Week no within the contract year. Week no 1 is the week containing 1st January
-    pub weekno: rust_decimal::Decimal,
-    /// Unique run no within a given contract year and week no
-    pub billrunno: rust_decimal::Decimal,
-    /// Unique participant identifier
-    pub participantid: core::ops::Range<usize>,
-    /// Connection point identifier
-    pub connectionpointid: core::ops::Range<usize>,
-    /// not populated
-    pub stationid: core::ops::Range<usize>,
-    /// not populated
-    pub duid: core::ops::Range<usize>,
-    /// Aggregate energy sold, in MWh
-    pub aggregateenergy: Option<rust_decimal::Decimal>,
-    /// $ income
-    pub sales: Option<rust_decimal::Decimal>,
-    /// $ outgoing
-    pub purchases: Option<rust_decimal::Decimal>,
-    /// Last date and time record changed
-    pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Amount of energy purchased in MWh
-    pub purchasedenergy: Option<rust_decimal::Decimal>,
-    /// Metering Data Agent supplying data
-    pub mda: core::ops::Range<usize>,
-    backing_data: mmsdm_core::CsvRow<'data>,
-}
-impl<'data> BillingGendata5Row<'data> {
-    pub fn participantid(&self) -> &str {
-        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
-    }
-    pub fn connectionpointid(&self) -> &str {
-        core::ops::Index::index(
-            self.backing_data.as_slice(),
-            self.connectionpointid.clone(),
-        )
-    }
-    pub fn stationid(&self) -> Option<&str> {
-        if self.stationid.is_empty() {
-            None
-        } else {
-            Some(
-                core::ops::Index::index(
-                    self.backing_data.as_slice(),
-                    self.stationid.clone(),
-                ),
-            )
-        }
-    }
-    pub fn duid(&self) -> Option<&str> {
-        if self.duid.is_empty() {
-            None
-        } else {
-            Some(
-                core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone()),
-            )
-        }
-    }
-    pub fn mda(&self) -> Option<&str> {
-        if self.mda.is_empty() {
-            None
-        } else {
-            Some(core::ops::Index::index(self.backing_data.as_slice(), self.mda.clone()))
-        }
-    }
-}
-impl mmsdm_core::GetTable for BillingGendata5 {
-    const VERSION: i32 = 5;
-    const DATA_SET_NAME: &'static str = "BILLING";
-    const TABLE_NAME: &'static str = "GENDATA";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingGendata5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-    ]);
-    const COLUMNS: &'static [&'static str] = &[
-        "CONTRACTYEAR",
-        "WEEKNO",
-        "BILLRUNNO",
-        "PARTICIPANTID",
-        "CONNECTIONPOINTID",
-        "STATIONID",
-        "DUID",
-        "AGGREGATEENERGY",
-        "SALES",
-        "PURCHASES",
-        "LASTCHANGED",
-        "PURCHASEDENERGY",
-        "MDA",
-    ];
-    type Row<'row> = BillingGendata5Row<'row>;
-    type FieldMapping = BillingGendata5Mapping;
-    type PrimaryKey = BillingGendata5PrimaryKey;
-    fn from_row<'data>(
-        row: mmsdm_core::CsvRow<'data>,
-        field_mapping: &Self::FieldMapping,
-    ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(BillingGendata5Row {
-            contractyear: row
-                .get_custom_parsed_at_idx(
-                    "contractyear",
-                    field_mapping.0[0],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            weekno: row
-                .get_custom_parsed_at_idx(
-                    "weekno",
-                    field_mapping.0[1],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            billrunno: row
-                .get_custom_parsed_at_idx(
-                    "billrunno",
-                    field_mapping.0[2],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            participantid: row.get_range("participantid", field_mapping.0[3])?,
-            connectionpointid: row.get_range("connectionpointid", field_mapping.0[4])?,
-            stationid: row.get_opt_range("stationid", field_mapping.0[5])?,
-            duid: row.get_opt_range("duid", field_mapping.0[6])?,
-            aggregateenergy: row
-                .get_opt_custom_parsed_at_idx(
-                    "aggregateenergy",
-                    field_mapping.0[7],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            sales: row
-                .get_opt_custom_parsed_at_idx(
-                    "sales",
-                    field_mapping.0[8],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            purchases: row
-                .get_opt_custom_parsed_at_idx(
-                    "purchases",
-                    field_mapping.0[9],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            lastchanged: row
-                .get_opt_custom_parsed_at_idx(
-                    "lastchanged",
-                    field_mapping.0[10],
-                    mmsdm_core::mms_datetime::parse,
-                )?,
-            purchasedenergy: row
-                .get_opt_custom_parsed_at_idx(
-                    "purchasedenergy",
-                    field_mapping.0[11],
-                    mmsdm_core::mms_decimal::parse,
-                )?,
-            mda: row.get_opt_range("mda", field_mapping.0[12])?,
-            backing_data: row,
-        })
-    }
-    fn field_mapping_from_row<'a>(
-        mut row: mmsdm_core::CsvRow<'a>,
-    ) -> mmsdm_core::Result<Self::FieldMapping> {
-        if !row.is_heading() {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!("Expected an I row but got {row:?}"),
-                ),
-            );
-        }
-        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
-        if !Self::matches_file_key(&row_key, row_key.version) {
-            return Err(
-                mmsdm_core::Error::UnexpectedRowType(
-                    alloc::format!(
-                        "Expected a row matching {}.{}.v{} but got {row_key}",
-                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
-                    ),
-                ),
-            );
-        }
-        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
-        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
-            base_mapping[field_index] = row
-                .iter_fields()
-                .position(|f| f == *field)
-                .unwrap_or(usize::MAX);
-        }
-        Ok(BillingGendata5Mapping(base_mapping))
-    }
-    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
-        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
-            && Self::TABLE_NAME == key.table_name()
-    }
-    fn primary_key(row: &Self::Row<'_>) -> BillingGendata5PrimaryKey {
-        BillingGendata5PrimaryKey {
-            billrunno: row.billrunno,
-            connectionpointid: row.connectionpointid().to_string(),
-            contractyear: row.contractyear,
-            participantid: row.participantid().to_string(),
-            weekno: row.weekno,
-        }
-    }
-    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
-        (self.extract_row_partition)(row)
-    }
-    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("billing_gendata_v5_{}", self.partition_value(row))
-    }
-    fn partition_key(&self) -> mmsdm_core::PartitionKey {
-        self.row_partition_key
-    }
-    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        BillingGendata5Row {
-            contractyear: row.contractyear.clone(),
-            weekno: row.weekno.clone(),
-            billrunno: row.billrunno.clone(),
-            participantid: row.participantid.clone(),
-            connectionpointid: row.connectionpointid.clone(),
-            stationid: row.stationid.clone(),
-            duid: row.duid.clone(),
-            aggregateenergy: row.aggregateenergy.clone(),
-            sales: row.sales.clone(),
-            purchases: row.purchases.clone(),
-            lastchanged: row.lastchanged.clone(),
-            purchasedenergy: row.purchasedenergy.clone(),
-            mda: row.mda.clone(),
-            backing_data: row.backing_data.to_owned(),
-        }
-    }
-}
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingGendata5PrimaryKey {
-    pub billrunno: rust_decimal::Decimal,
-    pub connectionpointid: alloc::string::String,
-    pub contractyear: rust_decimal::Decimal,
-    pub participantid: alloc::string::String,
-    pub weekno: rust_decimal::Decimal,
-}
-impl mmsdm_core::PrimaryKey for BillingGendata5PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for BillingGendata5Row<'data> {
-    type Row<'other> = BillingGendata5Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.billrunno == row.billrunno
-            && self.connectionpointid() == row.connectionpointid()
-            && self.contractyear == row.contractyear
-            && self.participantid() == row.participantid() && self.weekno == row.weekno
-    }
-}
-impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingGendata5Row<'data> {
-    type PrimaryKey = BillingGendata5PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.billrunno == key.billrunno
-            && self.connectionpointid() == key.connectionpointid
-            && self.contractyear == key.contractyear
-            && self.participantid() == key.participantid && self.weekno == key.weekno
-    }
-}
-impl<'data> mmsdm_core::CompareWithRow for BillingGendata5PrimaryKey {
-    type Row<'other> = BillingGendata5Row<'other>;
-    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
-        self.billrunno == row.billrunno
-            && self.connectionpointid == row.connectionpointid()
-            && self.contractyear == row.contractyear
-            && self.participantid == row.participantid() && self.weekno == row.weekno
-    }
-}
-impl mmsdm_core::CompareWithPrimaryKey for BillingGendata5PrimaryKey {
-    type PrimaryKey = BillingGendata5PrimaryKey;
-    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
-        self.billrunno == key.billrunno
-            && self.connectionpointid == key.connectionpointid
-            && self.contractyear == key.contractyear
-            && self.participantid == key.participantid && self.weekno == key.weekno
-    }
-}
-#[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingGendata5 {
-    type Builder = BillingGendata5Builder;
-    fn schema() -> arrow::datatypes::Schema {
-        arrow::datatypes::Schema::new(
-            alloc::vec::Vec::from([
-                arrow::datatypes::Field::new(
-                    "contractyear",
-                    arrow::datatypes::DataType::Decimal128(4, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "weekno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "billrunno",
-                    arrow::datatypes::DataType::Decimal128(3, 0),
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "participantid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
-                    false,
-                ),
-                arrow::datatypes::Field::new(
-                    "stationid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "duid",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "aggregateenergy",
-                    arrow::datatypes::DataType::Decimal128(16, 6),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "sales",
-                    arrow::datatypes::DataType::Decimal128(16, 6),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "purchases",
-                    arrow::datatypes::DataType::Decimal128(16, 6),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "lastchanged",
-                    arrow::datatypes::DataType::Timestamp(
-                        arrow::datatypes::TimeUnit::Millisecond,
-                        None,
-                    ),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "purchasedenergy",
-                    arrow::datatypes::DataType::Decimal128(16, 6),
-                    true,
-                ),
-                arrow::datatypes::Field::new(
-                    "mda",
-                    arrow::datatypes::DataType::Utf8,
-                    true,
-                ),
-            ]),
-        )
-    }
-    fn new_builder() -> Self::Builder {
-        BillingGendata5Builder {
-            contractyear_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
-            weekno_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            billrunno_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            stationid_array: arrow::array::builder::StringBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            aggregateenergy_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            sales_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            purchases_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            purchasedenergy_array: arrow::array::builder::Decimal128Builder::new()
-                .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            mda_array: arrow::array::builder::StringBuilder::new(),
-        }
-    }
-    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
-        builder
-            .contractyear_array
-            .append_value({
-                let mut val = row.contractyear;
-                val.rescale(0);
-                val.mantissa()
-            });
-        builder
-            .weekno_array
-            .append_value({
-                let mut val = row.weekno;
-                val.rescale(0);
-                val.mantissa()
-            });
-        builder
-            .billrunno_array
-            .append_value({
-                let mut val = row.billrunno;
-                val.rescale(0);
-                val.mantissa()
-            });
-        builder.participantid_array.append_value(row.participantid());
-        builder.connectionpointid_array.append_value(row.connectionpointid());
-        builder.stationid_array.append_option(row.stationid());
-        builder.duid_array.append_option(row.duid());
-        builder
-            .aggregateenergy_array
-            .append_option({
-                row.aggregateenergy
-                    .map(|mut val| {
-                        val.rescale(6);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .sales_array
-            .append_option({
-                row.sales
-                    .map(|mut val| {
-                        val.rescale(6);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .purchases_array
-            .append_option({
-                row.purchases
-                    .map(|mut val| {
-                        val.rescale(6);
-                        val.mantissa()
-                    })
-            });
-        builder
-            .lastchanged_array
-            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
-        builder
-            .purchasedenergy_array
-            .append_option({
-                row.purchasedenergy
-                    .map(|mut val| {
-                        val.rescale(6);
-                        val.mantissa()
-                    })
-            });
-        builder.mda_array.append_option(row.mda());
-    }
-    fn finalize_builder(
-        builder: &mut Self::Builder,
-    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
-        arrow::array::RecordBatch::try_new(
-                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
-                alloc::vec::Vec::from([
-                    alloc::sync::Arc::new(builder.contractyear_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.weekno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.billrunno_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.participantid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.connectionpointid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.stationid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.duid_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.aggregateenergy_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.sales_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.purchases_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.purchasedenergy_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                    alloc::sync::Arc::new(builder.mda_array.finish())
-                        as alloc::sync::Arc<dyn arrow::array::Array>,
-                ]),
-            )
-            .map_err(Into::into)
-    }
-}
-#[cfg(feature = "arrow")]
-pub struct BillingGendata5Builder {
-    contractyear_array: arrow::array::builder::Decimal128Builder,
-    weekno_array: arrow::array::builder::Decimal128Builder,
-    billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
-    stationid_array: arrow::array::builder::StringBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    aggregateenergy_array: arrow::array::builder::Decimal128Builder,
-    sales_array: arrow::array::builder::Decimal128Builder,
-    purchases_array: arrow::array::builder::Decimal128Builder,
-    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    purchasedenergy_array: arrow::array::builder::Decimal128Builder,
-    mda_array: arrow::array::builder::StringBuilder,
-}
 pub struct BillingInterresidues5 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -19614,16 +20350,7 @@ impl mmsdm_core::GetTable for BillingInterresidues5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "INTERRESIDUES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingInterresidues5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "ALLOCATION",
@@ -20070,15 +20797,7 @@ impl mmsdm_core::GetTable for BillingIntraresidues5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "INTRARESIDUES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIntraresidues5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "ALLOCATION",
@@ -20523,18 +21242,7 @@ impl mmsdm_core::GetTable for BillingIraucsurplus5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRAUCSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIraucsurplus5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -21050,22 +21758,7 @@ impl mmsdm_core::GetTable for BillingIraucsurplussum7 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRAUCSURPLUSSUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIraucsurplussum7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -21695,18 +22388,7 @@ impl mmsdm_core::GetTable for BillingIrnspsurplus5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRNSPSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIrnspsurplus5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -22218,20 +22900,7 @@ impl mmsdm_core::GetTable for BillingIrnspsurplussum6 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRNSPSURPLUSSUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIrnspsurplussum6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -22809,19 +23478,7 @@ impl mmsdm_core::GetTable for BillingIrpartsurplus5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRPARTSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIrpartsurplus5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -23364,22 +24021,7 @@ impl mmsdm_core::GetTable for BillingIrpartsurplussum7 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRPARTSURPLUSSUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIrpartsurplussum7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -24006,22 +24648,7 @@ impl mmsdm_core::GetTable for BillingPrioradjustments5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "PRIORADJUSTMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingPrioradjustments5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -24654,13 +25281,7 @@ impl mmsdm_core::GetTable for BillingRealloc5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRealloc5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -25039,14 +25660,7 @@ impl mmsdm_core::GetTable for BillingReallocDetail5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REALLOC_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingReallocDetail5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -25441,16 +26055,7 @@ impl mmsdm_core::GetTable for BillingRegionexports5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REGIONEXPORTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRegionexports5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -25919,24 +26524,7 @@ impl mmsdm_core::GetTable for BillingRegionfigures6 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REGIONFIGURES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRegionfigures6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -26617,16 +27205,7 @@ impl mmsdm_core::GetTable for BillingRegionimports5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REGIONIMPORTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRegionimports5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -27159,22 +27738,7 @@ impl mmsdm_core::GetTable for BillingRuntrk5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "RUNTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRuntrk5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -27736,14 +28300,7 @@ impl mmsdm_core::GetTable for BillingReservetraderpayment1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "RESERVETRADERPAYMENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingReservetraderpayment1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -28155,22 +28712,7 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery3 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "RESERVETRADERRECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingReservetraderrecovery3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",

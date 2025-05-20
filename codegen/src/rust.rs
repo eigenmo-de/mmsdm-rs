@@ -1109,12 +1109,14 @@ pub struct TableMapping {
     destination_table: String, //	Table name as per the MMS Data Model documentation	DISPATCHPRICE
     transaction_type: String, //	PDR Loader report transaction type - data loading action	INSERT-UPDATE
     row_filter_type: String, //	PDR Loader report transaction type - row filter in data loading action	LASTCHANGED
+    is_active: u8, //	PDR Loader report transaction type - row filter in data loading action	LASTCHANGED
+    is_new: u8, //	PDR Loader report transaction type - row filter in data loading action	LASTCHANGED
 }
 
 impl TableMapping {
     pub fn read() -> anyhow::Result<HashMap<mms::Report, pdr::Report>> {
         let mut mapping = csv::ReaderBuilder::new()
-            .delimiter(b'\t')
+            .delimiter(b',')
             .from_path(format!("table_config_v{VERSION}.csv"))?;
 
         let mut map = collections::HashMap::<_, pdr::Report>::new();

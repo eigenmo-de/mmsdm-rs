@@ -5,30 +5,110 @@ use crate::{
 };
 use alloc::{collections::BTreeSet, format, string::String, sync::Arc, vec::Vec};
 use core::ops::AddAssign;
+use rc_zip_sync::{EntryHandle, EntryReader, HasCursor};
 use std::{
     collections::BTreeMap,
-    io::{BufRead, BufReader, Read, Seek},
+    io::{BufRead, BufReader},
     marker::PhantomData,
 };
-use zip::{ZipArchive, read::ZipFile};
 
-pub struct FileReader<'a, R: Read + Seek> {
-    reader: &'a mut ZipArchive<R>,
+// TODO: maybe this can have less lifetimes ??!
+pub trait GetBufReader<'a> {
+    type BufReader<'b>: BufRead
+    where
+        Self: 'a,
+        'a: 'b;
+    fn buf_reader<'b>(&'b self) -> Self::BufReader<'b>
+    where
+        'a: 'b;
+}
+
+impl<'a> GetBufReader<'a> for &'a str {
+    type BufReader<'b>
+        = BufReader<&'b [u8]>
+    where
+        Self: 'a,
+        'a: 'b;
+
+    fn buf_reader<'b>(&'b self) -> Self::BufReader<'b>
+    where
+        'a: 'b,
+    {
+        BufReader::new(self.as_bytes())
+    }
+}
+
+impl<'a, F> GetBufReader<'a> for EntryHandle<'a, F>
+where
+    F: HasCursor,
+{
+    type BufReader<'b>
+        = BufReader<EntryReader<<F as HasCursor>::Cursor<'a>>>
+    where
+        Self: 'a,
+        'a: 'b;
+
+    fn buf_reader<'b>(&'b self) -> Self::BufReader<'b>
+    where
+        'a: 'b,
+    {
+        BufReader::new(self.reader())
+    }
+}
+
+pub struct FileReader<F> {
+    handle: F,
     header: AemoHeader,
     file_headings: BTreeMap<FileKey<'static>, usize>,
 }
 
-impl<'reader, R> FileReader<'reader, R>
+impl<'reader> FileReader<&'reader str> {
+    pub fn from_uncompressed(data: &'reader str) -> Result<FileReader<&'reader str>> {
+        Self::from_get_buf_reader(data)
+    }
+}
+
+impl<'reader, F> FileReader<EntryHandle<'reader, F>>
 where
-    R: Read + Seek,
+    F: HasCursor,
 {
-    pub fn new(reader: &'reader mut ZipArchive<R>) -> Result<FileReader<'reader, R>> {
+    pub fn from_entry(
+        handle: EntryHandle<'reader, F>,
+    ) -> Result<FileReader<EntryHandle<'reader, F>>> {
+        Self::from_get_buf_reader(handle)
+    }
+}
+
+impl<R> FileReader<R> {
+    pub fn sub_files(&self) -> &BTreeMap<FileKey<'static>, usize> {
+        &self.file_headings
+    }
+
+    pub fn header(&self) -> &AemoHeader {
+        &self.header
+    }
+}
+
+impl<'reader, R> FileReader<R>
+where
+    R: GetBufReader<'reader> + 'reader,
+    // <R as GetBufReader<'reader>>::BufReader: Read,
+    // R: 'reader,
+{
+    /// Create a new file reader
+    /// this reads a whole, regular MMSDM file, including `C`, `I` and `D` rows
+    /// this takes a `BufReader<R>` rather than `R` to discourage double wrapping
+    /// in a BufReader. If it was to take any `R: Read` (and wrap interally),
+    /// users of the API may not realise that it internally buffers and
+    /// provide something already wrapped in `BufReader`
+    ///
+    fn from_get_buf_reader(handle: R) -> Result<FileReader<R>> {
         // defensively reset to the start
         let mut header = None;
         let mut file_headings = BTreeMap::new();
 
         {
-            let mut file_reader = BufReader::new(reader.by_index(0)?);
+            let mut file_reader = BufReader::new(handle.buf_reader());
 
             let mut count = 0;
 
@@ -38,7 +118,7 @@ where
 
             let mut last_heading = None;
 
-            let mut csv_reader = CsvReader::new();
+            let mut csv_reader = CsvReader::default();
 
             loop {
                 row_holder.clear();
@@ -55,9 +135,7 @@ where
                         if header.is_none() {
                             header = Some(h);
                         } else {
-                            return Err(
-                                Error::UnexpectedRowType(format!("Extra header: {h:?}")).into()
-                            );
+                            return Err(Error::UnexpectedRowType(format!("Extra header: {h:?}")));
                         }
                     }
                     Some(RowValidation::Footer(f)) => {
@@ -65,8 +143,7 @@ where
                             return Err(Error::IncorrectLineCount {
                                 got: count,
                                 expected: f.line_count_inclusive,
-                            }
-                            .into());
+                            });
                         }
                         break;
                     }
@@ -86,32 +163,24 @@ where
         }
 
         Ok(FileReader {
-            reader,
+            handle,
             header: header.ok_or_else(|| Error::MissingHeaderRecord)?,
             file_headings,
         })
     }
-
-    pub fn sub_files(&self) -> &BTreeMap<FileKey<'static>, usize> {
-        &self.file_headings
-    }
-
-    pub fn header(&self) -> &AemoHeader {
-        &self.header
-    }
-
     pub fn iter_closest<'sub_reader, T>(
         &'sub_reader mut self,
         manager: Arc<T>,
-    ) -> Result<IterTyped<'sub_reader, T>>
+    ) -> Result<IterTyped<'reader, 'sub_reader, R, T>>
     where
         T: GetTable,
+        // <R as GetBufReader<'reader>>::BufReader<'sub_reader>: 'sub_reader,
         'reader: 'sub_reader,
     {
         let closest_key = self
             .file_headings
             .keys()
-            .filter(|k| T::matches_file_key(*k, k.version))
+            .filter(|k| T::matches_file_key(k, k.version))
             .max_by_key(|k| k.version)
             .ok_or_else(|| Error::MissingFile {
                 data_set_name: T::DATA_SET_NAME,
@@ -123,16 +192,16 @@ where
 
         Ok(IterTyped::new(
             manager,
-            &closest_key,
+            closest_key,
             field_mapping,
-            BufReader::new(self.reader.by_index(0)?),
+            self.handle.buf_reader(),
         ))
     }
 
     pub fn iter_exact<'sub_reader, T>(
         &'sub_reader mut self,
         manager: Arc<T>,
-    ) -> Result<IterTyped<'sub_reader, T>>
+    ) -> Result<IterTyped<'reader, 'sub_reader, R, T>>
     where
         T: GetTable,
         'reader: 'sub_reader,
@@ -146,23 +215,28 @@ where
                 data_set_name: T::DATA_SET_NAME,
                 table_name: T::TABLE_NAME,
                 version: Some(T::VERSION),
-            }
-            .into());
+            });
         };
 
         let field_mapping = T::field_mapping_from_row(key.backing_data().to_owned())?;
 
         Ok(IterTyped::new(
             manager,
-            &key,
+            key,
             field_mapping,
-            BufReader::new(self.reader.by_index(0)?),
+            self.handle.buf_reader(),
         ))
     }
 }
 
-pub struct IterTyped<'reader, T: GetTable> {
-    inner: BufReader<ZipFile<'reader>>,
+pub struct IterTyped<'a, 'b, F, T>
+where
+    F: GetBufReader<'a>,
+    T: GetTable,
+    'a: 'b,
+    F: 'a,
+{
+    inner: <F as GetBufReader<'a>>::BufReader<'b>,
     ty: PhantomData<T>,
     version: i32,
     indexes_backing: Vec<usize>,
@@ -173,16 +247,17 @@ pub struct IterTyped<'reader, T: GetTable> {
     manager: Arc<T>,
 }
 
-impl<'reader, T> IterTyped<'reader, T>
+impl<'a, 'b, F, T> IterTyped<'a, 'b, F, T>
 where
+    F: GetBufReader<'a>,
     T: GetTable,
 {
     pub fn new(
         manager: Arc<T>,
         key: &FileKey<'_>,
         mapping: T::FieldMapping,
-        reader: BufReader<ZipFile<'reader>>,
-    ) -> IterTyped<'reader, T> {
+        reader: <F as GetBufReader<'a>>::BufReader<'b>,
+    ) -> IterTyped<'a, 'b, F, T> {
         IterTyped {
             inner: reader,
             ty: PhantomData,
@@ -193,7 +268,7 @@ where
             output: Vec::from([0; 100_000]),
             buf: String::new(),
             field_mapping: mapping,
-            reader: CsvReader::new(),
+            reader: CsvReader::default(),
             manager,
         }
     }
