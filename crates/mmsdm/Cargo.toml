@@ -32,7 +32,7 @@ features = []
 
 [dependencies.chrono]
 workspace = true 
-features = ["std", "now"]
+features = []
 default-features = false
 
 [dependencies.arrow]
