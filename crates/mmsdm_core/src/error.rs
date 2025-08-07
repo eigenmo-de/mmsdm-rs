@@ -98,6 +98,21 @@ pub enum Error {
     Io(io::Error),
     #[cfg(feature = "arrow")]
     Arrow(arrow::error::ArrowError),
+
+    UnzipLocalFileHeaderMissing,
+    UnzipHeaderExceedsMaxSize {
+        size: usize,
+        allowable: usize,
+    },
+    UnzipInvalidCompressionMethod(u16),
+    UnzipUncompressedTooLarge {
+        size: u32,
+        allowable: u32,
+    },
+    UnzipCompressedTooLarge {
+        size: u32,
+        allowable: u32,
+    },
 }
 
 impl fmt::Display for Error {
@@ -180,6 +195,25 @@ impl fmt::Display for Error {
             Error::Io(e) => write!(f, "Io error: {e:?}"),
             #[cfg(feature = "arrow")]
             Error::Arrow(e) => write!(f, "Arrow error: {e:?}"),
+
+            Error::UnzipLocalFileHeaderMissing => {
+                write!(f, "unzip: no local file header was found")
+            }
+            Error::UnzipHeaderExceedsMaxSize { size, allowable } => write!(
+                f,
+                "Unable to parse header of size {size}, exceeds maximum size of {allowable}"
+            ),
+            Error::UnzipInvalidCompressionMethod(x) => {
+                write!(f, "Invalid compression method, expected 8 but got {x}",)
+            }
+            Error::UnzipUncompressedTooLarge { size, allowable } => write!(
+                f,
+                "Uncompressed file of size {size} is too large relative to limits {allowable}",
+            ),
+            Error::UnzipCompressedTooLarge { size, allowable } => write!(
+                f,
+                "Uncompressed file of size {size} is too large relative to limits {allowable}",
+            ),
         }
     }
 }

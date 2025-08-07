@@ -22,10 +22,6 @@ required-features = [ "mmsdm"]
 # version = "0.3.0"
 path = "../mmsdm_core"
 
-[dependencies.rc-zip-sync]
-workspace = true
-optional = true
-
 [dependencies.tracing]
 workspace = true
 features = []
@@ -36,6 +32,14 @@ features = []
 default-features = false
 
 [dependencies.arrow]
+workspace = true
+optional = true
+
+[dependencies.rc-zip-sync]
+workspace = true
+optional = true
+
+[dependencies.flate2]
 workspace = true
 optional = true
 
@@ -257,4 +261,6 @@ mmsdm = [
     "trading_data",
 ]
 default = ["mmsdm", "arrow", "std"]
-std = ["dep:rc-zip-sync", "mmsdm_core/std"]
+std = ["mmsdm_core/std"]
+io_rc_zip = ["dep:rc-zip-sync","mmsdm_core/io_rc_zip"]
+io_unzip = ["dep:flate2","mmsdm_core/io_unzip"]

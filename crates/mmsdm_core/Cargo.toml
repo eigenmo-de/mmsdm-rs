@@ -32,6 +32,10 @@ default-features = false
 workspace = true
 optional = true
 
+[dependencies.flate2]
+workspace = true
+optional = true
+
 [dependencies.arrow]
 workspace = true
 optional = true
@@ -42,4 +46,6 @@ workspace = true
 [features]
 arrow = ["dep:arrow", "std"]
 default = ["std"]
-std = ["dep:rc-zip-sync", "rust_decimal/std", "chrono/std", "chrono/now", "csv-core/libc"]
+std = ["rust_decimal/std", "chrono/std", "chrono/now", "csv-core/libc"]
+io_rc_zip = ["dep:rc-zip-sync"]
+io_unzip = ["dep:flate2"]

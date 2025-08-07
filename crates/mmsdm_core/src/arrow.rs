@@ -5,7 +5,6 @@ use std::io::{Read, Seek};
 
 use alloc::sync::Arc;
 pub use arrow::{array::RecordBatch, datatypes::Schema};
-use rc_zip_sync::HasCursor;
 
 use crate::{FileReader, GetBufReader, GetTable, PartitionValue};
 
