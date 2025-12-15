@@ -167,6 +167,10 @@ optional = true
 path = "../trading_data"
 optional = true 
 
+[dependencies.mmsdm_historical_tables]
+# version = "0.1.0"
+path = "../historical_tables"
+optional = true 
 
 [features]
 arrow = [
@@ -198,6 +202,7 @@ arrow = [
     "mmsdm_settlement_data?/arrow",
     "mmsdm_stpasa_solution?/arrow",
     "mmsdm_trading_data?/arrow",
+    "mmsdm_historical_tables?/arrow",
     "std",
 ]
 asoffer = ["mmsdm_asoffer"]
@@ -226,6 +231,7 @@ settlement_config = ["mmsdm_settlement_config"]
 settlement_data = ["mmsdm_settlement_data"]
 stpasa_solution = ["mmsdm_stpasa_solution"]
 trading_data = ["mmsdm_trading_data"]
+historical_tables = ["mmsdm_historical_tables"]
 mmsdm = [
     "asoffer",
     "bids",
@@ -253,6 +259,7 @@ mmsdm = [
     "settlement_data",
     "stpasa_solution",
     "trading_data",
+    "historical_tables",
 ]
 default = ["mmsdm", "arrow", "std"]
 std = ["mmsdm_core/std"]
