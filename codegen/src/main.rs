@@ -1,7 +1,8 @@
 #![allow(unused)]
+use std::env;
+
 use anyhow::Context;
 use log::info;
-use structopt::StructOpt;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 mod analyse;
@@ -14,15 +15,6 @@ mod rust;
 
 pub const VERSION: &str = "5.6";
 
-#[derive(structopt::StructOpt)]
-#[structopt(about = "Code generation on the MMS Data Model")]
-enum AemoCodegen {
-    Json,
-    Rust,
-    Analyse,
-    Download,
-    Unzip,
-}
 fn main() {
     if let Err(e) = run() {
         eprintln!("\n=====\nError running command:\n=====\n{e:#?}");
@@ -36,8 +28,8 @@ async fn run() -> Result<(), anyhow::Error> {
         .init();
 
     let file_name = format!("mmsdm_v{VERSION}.json");
-    match AemoCodegen::from_args() {
-        AemoCodegen::Rust => {
+    match env::args().nth(1).as_deref() {
+        Some("rust") => {
             let mut data = String::new();
             let mut f = tokio::fs::OpenOptions::new()
                 .read(true)
@@ -51,7 +43,7 @@ async fn run() -> Result<(), anyhow::Error> {
             info!("Generating rust code");
             rust::run(de)?;
         }
-        AemoCodegen::Analyse => {
+        Some("analyse") => {
             let mut data = String::new();
             let mut f = tokio::fs::OpenOptions::new()
                 .read(true)
@@ -64,7 +56,7 @@ async fn run() -> Result<(), anyhow::Error> {
 
             analyse::run(de)?;
         }
-        AemoCodegen::Json => {
+        Some("json") => {
             let dm = json::run().await.context("generate json")?;
 
             let ser = serde_json::to_string_pretty(&dm)?;
@@ -80,10 +72,10 @@ async fn run() -> Result<(), anyhow::Error> {
 
             f.flush().await?;
         }
-        AemoCodegen::Download => {
+        Some("download") => {
             download::run().await?;
         }
-        AemoCodegen::Unzip => unimplemented!("not yet"),
+        _ => unimplemented!("not yet"),
     }
     Ok(())
 }
