@@ -7,16 +7,10 @@ repository = "https://github.com/eigenmo-de/mmsdm-rs"
 description = "Parse and Transform MMSDM data"
 resolver = "2"
 
-
 [[example]]
 path = "../../examples/parse_typed.rs"
 name = "parse_typed"
-required-features = [ "mmsdm", "arrow"]
-
-[[example]]
-path = "../../examples/parse.rs"
-name = "parse"
-required-features = [ "mmsdm"]
+required-features = [ "mmsdm", "arrow", "io_unzip" ]
 
 [dependencies.mmsdm_core]
 # version = "0.3.0"

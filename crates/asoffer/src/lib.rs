@@ -113,7 +113,19 @@ impl mmsdm_core::GetTable for AsofferOfferagcdata1 {
     const DATA_SET_NAME: &'static str = "ASOFFER";
     const TABLE_NAME: &'static str = "OFFERAGCDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = AsofferOfferagcdata1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -624,7 +636,11 @@ impl mmsdm_core::GetTable for AsofferOfferastrk1 {
     const DATA_SET_NAME: &'static str = "ASOFFER";
     const TABLE_NAME: &'static str = "OFFERASTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = AsofferOfferastrk1Mapping([
-        4, 5, 6, 7, 8,
+        4,
+        5,
+        6,
+        7,
+        8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -959,7 +975,15 @@ impl mmsdm_core::GetTable for AsofferOfferlsheddata1 {
     const DATA_SET_NAME: &'static str = "ASOFFER";
     const TABLE_NAME: &'static str = "OFFERLSHEDDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = AsofferOfferlsheddata1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -1395,7 +1419,15 @@ impl mmsdm_core::GetTable for AsofferOfferrestartdata1 {
     const DATA_SET_NAME: &'static str = "ASOFFER";
     const TABLE_NAME: &'static str = "OFFERRESTARTDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = AsofferOfferrestartdata1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -1807,7 +1839,17 @@ impl mmsdm_core::GetTable for AsofferOfferrpowerdata1 {
     const DATA_SET_NAME: &'static str = "ASOFFER";
     const TABLE_NAME: &'static str = "OFFERRPOWERDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = AsofferOfferrpowerdata1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",

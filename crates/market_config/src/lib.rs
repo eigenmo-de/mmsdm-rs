@@ -5,6 +5,349 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
+pub struct MarketConfigArea1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigArea1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigArea1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct MarketConfigArea1Mapping([usize; 6]);
+/// # Summary
+///
+/// ## AREA
+///
+/// Table containing static metadata for the Areas, which are sub-regions used in load forecasting and rooftop PV forecasting. The latest metadata can be obtained for each AreaID using the most recent EffectiveDate and then VersionNo. If an AreaID is not mapped to an active RegionID in the corresponding REGION_AREA table, then that AreaID can be considered inactive.
+///
+/// * Data Set Name: Market Config
+/// * File Name: Area
+/// * Data Version: 1
+///
+/// # Description
+/// BIDTYPES is public to participantsSourceBIDTYPES updates when the static data relating to an ancillary service type is modified.VolumeExpect modifications to be rare. Allow for approximately 20 records per year.
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * AREAID
+/// * EFFECTIVEDATE
+/// * VERSIONNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigArea1Row<'data> {
+    /// Area identifier
+    pub areaid: core::ops::Range<usize>,
+    /// Calendar date from when this record set is effective.
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version number for the same effectivedate.
+    pub versionno: rust_decimal::Decimal,
+    /// Area name
+    pub area_name: core::ops::Range<usize>,
+    /// Area description
+    pub area_description: core::ops::Range<usize>,
+    /// Last date and time record changed.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigArea1Row<'data> {
+    pub fn areaid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.areaid.clone())
+    }
+    pub fn area_name(&self) -> Option<&str> {
+        if self.area_name.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.area_name.clone(),
+                ),
+            )
+        }
+    }
+    pub fn area_description(&self) -> Option<&str> {
+        if self.area_description.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.area_description.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for MarketConfigArea1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "AREA";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigArea1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "AREAID",
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "AREA_NAME",
+        "AREA_DESCRIPTION",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MarketConfigArea1Row<'row>;
+    type FieldMapping = MarketConfigArea1Mapping;
+    type PrimaryKey = MarketConfigArea1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigArea1Row {
+            areaid: row.get_range("areaid", field_mapping.0[0])?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            area_name: row.get_opt_range("area_name", field_mapping.0[3])?,
+            area_description: row.get_opt_range("area_description", field_mapping.0[4])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigArea1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigArea1PrimaryKey {
+        MarketConfigArea1PrimaryKey {
+            areaid: row.areaid().to_string(),
+            effectivedate: row.effectivedate,
+            versionno: row.versionno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("market_config_area_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigArea1Row {
+            areaid: row.areaid.clone(),
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            area_name: row.area_name.clone(),
+            area_description: row.area_description.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigArea1PrimaryKey {
+    pub areaid: alloc::string::String,
+    pub effectivedate: chrono::NaiveDateTime,
+    pub versionno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for MarketConfigArea1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigArea1Row<'data> {
+    type Row<'other> = MarketConfigArea1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid() == row.areaid() && self.effectivedate == row.effectivedate
+            && self.versionno == row.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MarketConfigArea1Row<'data> {
+    type PrimaryKey = MarketConfigArea1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid() == key.areaid && self.effectivedate == key.effectivedate
+            && self.versionno == key.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigArea1PrimaryKey {
+    type Row<'other> = MarketConfigArea1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid == row.areaid() && self.effectivedate == row.effectivedate
+            && self.versionno == row.versionno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for MarketConfigArea1PrimaryKey {
+    type PrimaryKey = MarketConfigArea1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid == key.areaid && self.effectivedate == key.effectivedate
+            && self.versionno == key.versionno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for MarketConfigArea1 {
+    type Builder = MarketConfigArea1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "areaid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "area_name",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "area_description",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        MarketConfigArea1Builder {
+            areaid_array: arrow::array::builder::StringBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            area_name_array: arrow::array::builder::StringBuilder::new(),
+            area_description_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.areaid_array.append_value(row.areaid());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.area_name_array.append_option(row.area_name());
+        builder.area_description_array.append_option(row.area_description());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.areaid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.area_name_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.area_description_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct MarketConfigArea1Builder {
+    areaid_array: arrow::array::builder::StringBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    area_name_array: arrow::array::builder::StringBuilder,
+    area_description_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct MarketConfigBidtypes1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -116,7 +459,15 @@ impl mmsdm_core::GetTable for MarketConfigBidtypes1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "BIDTYPES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigBidtypes1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "BIDTYPE",
@@ -503,7 +854,11 @@ impl mmsdm_core::GetTable for MarketConfigBidtypestrk1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "BIDTYPESTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigBidtypestrk1Mapping([
-        4, 5, 6, 7, 8,
+        4,
+        5,
+        6,
+        7,
+        8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -817,7 +1172,13 @@ impl mmsdm_core::GetTable for MarketConfigFcasregusefactors1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "FCASREGUSEFACTORS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigFcasregusefactors1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -1172,7 +1533,10 @@ impl mmsdm_core::GetTable for MarketConfigFcasregusefactorsTrk1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "FCASREGUSEFACTORS_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigFcasregusefactorsTrk1Mapping([
-        4, 5, 6, 7,
+        4,
+        5,
+        6,
+        7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -1515,7 +1879,12 @@ impl mmsdm_core::GetTable for MarketConfigInterconnector1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "INTERCONNECTOR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigInterconnector1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERCONNECTORID",
@@ -1812,7 +2181,13 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectoralloc1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "INTERCONNECTORALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigInterconnectoralloc1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -2251,7 +2626,28 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectorconstraint1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "INTERCONNECTORCONSTRAINT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigInterconnectorconstraint1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RESERVEOVERALLLOADFACTOR",
@@ -2984,7 +3380,12 @@ impl mmsdm_core::GetTable for MarketConfigIntraregionalloc1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "INTRAREGIONALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigIntraregionalloc1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -3326,7 +3727,12 @@ impl mmsdm_core::GetTable for MarketConfigLossfactormodel1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "LOSSFACTORMODEL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigLossfactormodel1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -3681,7 +4087,14 @@ impl mmsdm_core::GetTable for MarketConfigLossmodel1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "LOSSMODEL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigLossmodel1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -4079,7 +4492,14 @@ impl mmsdm_core::GetTable for MarketConfigMarketPriceThresholds1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "MARKET_PRICE_THRESHOLDS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigMarketPriceThresholds1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -4489,7 +4909,10 @@ impl mmsdm_core::GetTable for MarketConfigRegion1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "REGION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigRegion1Mapping([
-        4, 5, 6, 7,
+        4,
+        5,
+        6,
+        7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -4678,6 +5101,315 @@ pub struct MarketConfigRegion1Builder {
     regionstatus_array: arrow::array::builder::StringBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
+pub struct MarketConfigRegionArea1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &MarketConfigRegionArea1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl MarketConfigRegionArea1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct MarketConfigRegionArea1Mapping([usize; 5]);
+/// # Summary
+///
+/// ## REGION_AREA
+///
+/// Table containing static metadata for mapping the Areas to Regions. The latest mapping can be obtained for each RegionID using the most recent EffectiveDate and then VersionNo.
+///
+/// * Data Set Name: Market Config
+/// * File Name: Region Area
+/// * Data Version: 1
+///
+/// # Description
+/// REGIONSTANDINGDATA data is public, so is available to all participants.SourceREGIONSTANDINGDATA only changes when a change is made to a region. This table changes infrequently.
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * AREAID
+/// * EFFECTIVEDATE
+/// * REGIONID
+/// * VERSIONNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct MarketConfigRegionArea1Row<'data> {
+    /// Region identifier
+    pub regionid: core::ops::Range<usize>,
+    /// Calendar date from when this record set is effective.
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version number for the same effectivedate.
+    pub versionno: rust_decimal::Decimal,
+    /// Area identifier
+    pub areaid: core::ops::Range<usize>,
+    /// Last date and time record changed.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> MarketConfigRegionArea1Row<'data> {
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+    pub fn areaid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.areaid.clone())
+    }
+}
+impl mmsdm_core::GetTable for MarketConfigRegionArea1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
+    const TABLE_NAME: &'static str = "REGION_AREA";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigRegionArea1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "REGIONID",
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "AREAID",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = MarketConfigRegionArea1Row<'row>;
+    type FieldMapping = MarketConfigRegionArea1Mapping;
+    type PrimaryKey = MarketConfigRegionArea1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(MarketConfigRegionArea1Row {
+            regionid: row.get_range("regionid", field_mapping.0[0])?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            areaid: row.get_range("areaid", field_mapping.0[3])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(MarketConfigRegionArea1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> MarketConfigRegionArea1PrimaryKey {
+        MarketConfigRegionArea1PrimaryKey {
+            areaid: row.areaid().to_string(),
+            effectivedate: row.effectivedate,
+            regionid: row.regionid().to_string(),
+            versionno: row.versionno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("market_config_region_area_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        MarketConfigRegionArea1Row {
+            regionid: row.regionid.clone(),
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            areaid: row.areaid.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MarketConfigRegionArea1PrimaryKey {
+    pub areaid: alloc::string::String,
+    pub effectivedate: chrono::NaiveDateTime,
+    pub regionid: alloc::string::String,
+    pub versionno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for MarketConfigRegionArea1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigRegionArea1Row<'data> {
+    type Row<'other> = MarketConfigRegionArea1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid() == row.areaid() && self.effectivedate == row.effectivedate
+            && self.regionid() == row.regionid() && self.versionno == row.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for MarketConfigRegionArea1Row<'data> {
+    type PrimaryKey = MarketConfigRegionArea1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid() == key.areaid && self.effectivedate == key.effectivedate
+            && self.regionid() == key.regionid && self.versionno == key.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for MarketConfigRegionArea1PrimaryKey {
+    type Row<'other> = MarketConfigRegionArea1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid == row.areaid() && self.effectivedate == row.effectivedate
+            && self.regionid == row.regionid() && self.versionno == row.versionno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for MarketConfigRegionArea1PrimaryKey {
+    type PrimaryKey = MarketConfigRegionArea1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid == key.areaid && self.effectivedate == key.effectivedate
+            && self.regionid == key.regionid && self.versionno == key.versionno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for MarketConfigRegionArea1 {
+    type Builder = MarketConfigRegionArea1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "areaid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        MarketConfigRegionArea1Builder {
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            areaid_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.regionid_array.append_value(row.regionid());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.areaid_array.append_value(row.areaid());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.areaid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct MarketConfigRegionArea1Builder {
+    regionid_array: arrow::array::builder::StringBuilder,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    areaid_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct MarketConfigRegionstandingdata1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -4788,7 +5520,16 @@ impl mmsdm_core::GetTable for MarketConfigRegionstandingdata1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "REGIONSTANDINGDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigRegionstandingdata1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -5218,7 +5959,13 @@ impl mmsdm_core::GetTable for MarketConfigTransmissionlossfactor2 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "TRANSMISSIONLOSSFACTOR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigTransmissionlossfactor2Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRANSMISSIONLOSSFACTOR",

@@ -11,6 +11,7 @@ resolver = "2"
 [[example]]
 path = "../../examples/core_parse.rs"
 name = "core_parse"
+required-features = [ "io_rc_zip" ]
 
 [dependencies.tracing]
 workspace = true

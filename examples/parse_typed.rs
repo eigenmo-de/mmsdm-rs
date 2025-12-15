@@ -3,7 +3,7 @@ use mmsdm::{PartitionKey, PartitionValue, UnzipFile};
 use mmsdm_core::FileReader;
 use mmsdm_dispatch::{
     DispatchConstraint5, DispatchLocalPrice1, DispatchMnspbidtrk1, DispatchOffertrk1,
-    DispatchUnitSolution5,
+    DispatchUnitSolution6,
 };
 use std::boxed::Box;
 use std::error::Error;
@@ -32,10 +32,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         )),
     )?;
     dbg!(batch.num_rows(), batch.num_columns());
-    let batch = mmsdm_core::partition_to_batch::<_, DispatchUnitSolution5>(
+    let batch = mmsdm_core::partition_to_batch::<_, DispatchUnitSolution6>(
         &mut fr,
         PartitionValue("2024-04-01".to_string()),
-        Arc::new(DispatchUnitSolution5::new(
+        Arc::new(DispatchUnitSolution6::new(
             PartitionKey("settlementdate"),
             |row| PartitionValue(row.settlementdate.date().with_day(1).unwrap().to_string()),
         )),

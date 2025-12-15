@@ -73,7 +73,12 @@ impl mmsdm_core::GetTable for OperationalDemandActual3 {
     const DATA_SET_NAME: &'static str = "OPERATIONAL_DEMAND";
     const TABLE_NAME: &'static str = "ACTUAL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OperationalDemandActual3Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -402,7 +407,13 @@ impl mmsdm_core::GetTable for OperationalDemandForecast1 {
     const DATA_SET_NAME: &'static str = "OPERATIONAL_DEMAND";
     const TABLE_NAME: &'static str = "FORECAST";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OperationalDemandForecast1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -776,7 +787,13 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvail2 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_CLUSTER_AVAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentClusterAvail2Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -1142,7 +1159,10 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvailDay1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_CLUSTER_AVAIL_DAY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentClusterAvailDay1Mapping([
-        4, 5, 6, 7,
+        4,
+        5,
+        6,
+        7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -1441,7 +1461,16 @@ impl mmsdm_core::GetTable for DemandIntermittentDsPred1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_DS_PRED";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentDsPred1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1951,7 +1980,19 @@ impl mmsdm_core::GetTable for DemandIntermittentDsRun1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_DS_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentDsRun1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2371,7 +2412,7 @@ pub struct ForecastIntermittentGen1Mapping([usize; 6]);
 ///
 /// ## INTERMITTENT_GEN_FCST
 ///
-/// Identifying record for a given forecast of an intermittent generation. This table is the version table for the INTERMITTENT_GEN_FCST_DATA table which stores the individual forecast values
+/// Identifying record for a given forecast of an intermittent generation. This table is the version table for the INTERMITTENT_GEN_FCST_DATA table which stores the individual forecast values. AEMO plans to remove this table in a Data Model version release after 5.6.
 ///
 /// * Data Set Name: Forecast
 /// * File Name: Intermittent Gen
@@ -2413,7 +2454,12 @@ impl mmsdm_core::GetTable for ForecastIntermittentGen1 {
     const DATA_SET_NAME: &'static str = "FORECAST";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForecastIntermittentGen1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2700,7 +2746,7 @@ pub struct ForecastIntermittentGenData1Mapping([usize; 8]);
 ///
 /// ## INTERMITTENT_GEN_FCST_DATA
 ///
-/// Stores the forecast generation (MW) for each interval within a given forecast of an intermittent generator.
+/// Stores the forecast generation (MW) for each interval within a given forecast of an intermittent generator. AEMO plans to remove this table in a Data Model version release after 5.6.
 ///
 /// * Data Set Name: Forecast
 /// * File Name: Intermittent Gen Data
@@ -2747,7 +2793,14 @@ impl mmsdm_core::GetTable for ForecastIntermittentGenData1 {
     const DATA_SET_NAME: &'static str = "FORECAST";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_DATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForecastIntermittentGenData1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -3073,6 +3126,1812 @@ pub struct ForecastIntermittentGenData1Builder {
     powerpoehigh_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
+pub struct DemandIntermittentGenFcstP5Pred1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &DemandIntermittentGenFcstP5Pred1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandIntermittentGenFcstP5Pred1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct DemandIntermittentGenFcstP5Pred1Mapping([usize; 8]);
+/// # Summary
+///
+/// ## INTERMITTENT_GEN_FCST_P5_PRED
+///
+/// Contains forecast predictions for intermittent wind and solar units, with a 5-minute resolution over the hour-ahead P5MIN timeframe. This is the child table of the parent table INTERMITTENT_GEN_FCST_P5_RUN, which contains the corresponding forecast runs.
+///
+/// * Data Set Name: Demand
+/// * File Name: Intermittent Gen Fcst P5 Pred
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
+///
+/// # Primary Key Columns
+///
+/// * DUID
+/// * FORECAST_PRIORITY
+/// * FORECAST_RUN_DATETIME
+/// * FORECAST_TYPE
+/// * INTERVAL_DATETIME
+/// * OFFERDATETIME
+/// * PROVIDERID
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandIntermittentGenFcstP5Pred1Row<'data> {
+    /// Datetime (interval ending) when this forecast run is valid. It aligns with run_datetime in downstream processes, unless a forecast run is missed, in this case the previous run is used.
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    /// Dispatchable unit identifier for which this forecast applies.
+    pub duid: core::ops::Range<usize>,
+    /// Datetime when this forecast submission was loaded.
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// Forecast provider identifier
+    pub providerid: core::ops::Range<usize>,
+    /// Priority of forecast run, higher number is used in preference to lower number for the same provider.
+    pub forecast_priority: rust_decimal::Decimal,
+    /// Datetime (interval-ending) for the period that this forecast applies to, within the current forecast_run_datetime.
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Type of forecast, for example, POE_10, POE_50, POE_90, MEAN and so on.
+    pub forecast_type: core::ops::Range<usize>,
+    /// Forecast value in MW.
+    pub forecast_value: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandIntermittentGenFcstP5Pred1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn providerid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.providerid.clone())
+    }
+    pub fn forecast_type(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.forecast_type.clone())
+    }
+}
+impl mmsdm_core::GetTable for DemandIntermittentGenFcstP5Pred1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "INTERMITTENT_GEN_FCST_P5_PRED";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenFcstP5Pred1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "FORECAST_RUN_DATETIME",
+        "DUID",
+        "OFFERDATETIME",
+        "PROVIDERID",
+        "FORECAST_PRIORITY",
+        "INTERVAL_DATETIME",
+        "FORECAST_TYPE",
+        "FORECAST_VALUE",
+    ];
+    type Row<'row> = DemandIntermittentGenFcstP5Pred1Row<'row>;
+    type FieldMapping = DemandIntermittentGenFcstP5Pred1Mapping;
+    type PrimaryKey = DemandIntermittentGenFcstP5Pred1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandIntermittentGenFcstP5Pred1Row {
+            forecast_run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "forecast_run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            providerid: row.get_range("providerid", field_mapping.0[3])?,
+            forecast_priority: row
+                .get_custom_parsed_at_idx(
+                    "forecast_priority",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            forecast_type: row.get_range("forecast_type", field_mapping.0[6])?,
+            forecast_value: row
+                .get_opt_custom_parsed_at_idx(
+                    "forecast_value",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandIntermittentGenFcstP5Pred1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandIntermittentGenFcstP5Pred1PrimaryKey {
+        DemandIntermittentGenFcstP5Pred1PrimaryKey {
+            duid: row.duid().to_string(),
+            forecast_priority: row.forecast_priority,
+            forecast_run_datetime: row.forecast_run_datetime,
+            forecast_type: row.forecast_type().to_string(),
+            interval_datetime: row.interval_datetime,
+            offerdatetime: row.offerdatetime,
+            providerid: row.providerid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_intermittent_gen_fcst_p5_pred_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandIntermittentGenFcstP5Pred1Row {
+            forecast_run_datetime: row.forecast_run_datetime.clone(),
+            duid: row.duid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            providerid: row.providerid.clone(),
+            forecast_priority: row.forecast_priority.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            forecast_type: row.forecast_type.clone(),
+            forecast_value: row.forecast_value.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DemandIntermittentGenFcstP5Pred1PrimaryKey {
+    pub duid: alloc::string::String,
+    pub forecast_priority: rust_decimal::Decimal,
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    pub forecast_type: alloc::string::String,
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub offerdatetime: chrono::NaiveDateTime,
+    pub providerid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for DemandIntermittentGenFcstP5Pred1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenFcstP5Pred1Row<'data> {
+    type Row<'other> = DemandIntermittentGenFcstP5Pred1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.forecast_type() == row.forecast_type()
+            && self.interval_datetime == row.interval_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid() == row.providerid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for DemandIntermittentGenFcstP5Pred1Row<'data> {
+    type PrimaryKey = DemandIntermittentGenFcstP5Pred1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid() == key.duid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.forecast_type() == key.forecast_type
+            && self.interval_datetime == key.interval_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid() == key.providerid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenFcstP5Pred1PrimaryKey {
+    type Row<'other> = DemandIntermittentGenFcstP5Pred1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.forecast_type == row.forecast_type()
+            && self.interval_datetime == row.interval_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid == row.providerid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentGenFcstP5Pred1PrimaryKey {
+    type PrimaryKey = DemandIntermittentGenFcstP5Pred1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid == key.duid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.forecast_type == key.forecast_type
+            && self.interval_datetime == key.interval_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid == key.providerid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstP5Pred1 {
+    type Builder = DemandIntermittentGenFcstP5Pred1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "forecast_run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "providerid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_priority",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_type",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_value",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        DemandIntermittentGenFcstP5Pred1Builder {
+            forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            providerid_array: arrow::array::builder::StringBuilder::new(),
+            forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            forecast_type_array: arrow::array::builder::StringBuilder::new(),
+            forecast_value_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .forecast_run_datetime_array
+            .append_value(row.forecast_run_datetime.and_utc().timestamp_millis());
+        builder.duid_array.append_value(row.duid());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
+        builder.providerid_array.append_value(row.providerid());
+        builder
+            .forecast_priority_array
+            .append_value({
+                let mut val = row.forecast_priority;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.forecast_type_array.append_value(row.forecast_type());
+        builder
+            .forecast_value_array
+            .append_option({
+                row.forecast_value
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.forecast_run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.providerid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_priority_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_type_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_value_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct DemandIntermittentGenFcstP5Pred1Builder {
+    forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    providerid_array: arrow::array::builder::StringBuilder,
+    forecast_priority_array: arrow::array::builder::Decimal128Builder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    forecast_type_array: arrow::array::builder::StringBuilder,
+    forecast_value_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct DemandIntermittentGenFcstP5Run1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &DemandIntermittentGenFcstP5Run1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandIntermittentGenFcstP5Run1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct DemandIntermittentGenFcstP5Run1Mapping([usize; 11]);
+/// # Summary
+///
+/// ## INTERMITTENT_GEN_FCST_P5_RUN
+///
+/// Contains forecast runs for intermittent wind and solar units, with a 5-minute resolution over the hour-ahead P5MIN timeframe. This is the parent table to the child table INTERMITTENT_GEN_FCST_P5_PRED, which contains the corresponding forecast predictions over the full horizon.
+///
+/// * Data Set Name: Demand
+/// * File Name: Intermittent Gen Fcst P5 Run
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
+///
+/// # Primary Key Columns
+///
+/// * DUID
+/// * FORECAST_PRIORITY
+/// * FORECAST_RUN_DATETIME
+/// * OFFERDATETIME
+/// * PROVIDERID
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandIntermittentGenFcstP5Run1Row<'data> {
+    /// Datetime (interval ending) when this forecast run is valid. It aligns with run_datetime in downstream processes, unless a forecast run is missed, in this case the previous run is used.
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    /// Dispatchable unit identifier for which this forecast applies.
+    pub duid: core::ops::Range<usize>,
+    /// Datetime when this forecast submission was loaded.
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// Forecast provider identifier
+    pub providerid: core::ops::Range<usize>,
+    /// Priority of forecast run, higher number is used in preference to lower number for the same provider.
+    pub forecast_priority: rust_decimal::Decimal,
+    /// Datetime when the provider created the forecast.
+    pub provider_timestamp: Option<chrono::NaiveDateTime>,
+    /// Comments relating to the forecast run. This column is not made available to the public.
+    pub remarks: core::ops::Range<usize>,
+    /// Metadata describing the model used to produce the forecast run. This column is not made available to the public.
+    pub model_used: core::ops::Range<usize>,
+    /// Flag indicating if the forecast run was suppressed by the provider when submitted. Suppressed forecasts are not used by downstream systems. Suppressed = 1, Unsuppressed = 0.
+    pub suppressed_provider: Option<rust_decimal::Decimal>,
+    /// Transaction identifier for receiving the forecast run.
+    pub transaction_id: core::ops::Range<usize>,
+    /// Datetime when the forecast run was written into AEMO database.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandIntermittentGenFcstP5Run1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn providerid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.providerid.clone())
+    }
+    pub fn remarks(&self) -> Option<&str> {
+        if self.remarks.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.remarks.clone(),
+                ),
+            )
+        }
+    }
+    pub fn model_used(&self) -> Option<&str> {
+        if self.model_used.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.model_used.clone(),
+                ),
+            )
+        }
+    }
+    pub fn transaction_id(&self) -> Option<&str> {
+        if self.transaction_id.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.transaction_id.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for DemandIntermittentGenFcstP5Run1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "INTERMITTENT_GEN_FCST_P5_RUN";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenFcstP5Run1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "FORECAST_RUN_DATETIME",
+        "DUID",
+        "OFFERDATETIME",
+        "PROVIDERID",
+        "FORECAST_PRIORITY",
+        "PROVIDER_TIMESTAMP",
+        "REMARKS",
+        "MODEL_USED",
+        "SUPPRESSED_PROVIDER",
+        "TRANSACTION_ID",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = DemandIntermittentGenFcstP5Run1Row<'row>;
+    type FieldMapping = DemandIntermittentGenFcstP5Run1Mapping;
+    type PrimaryKey = DemandIntermittentGenFcstP5Run1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandIntermittentGenFcstP5Run1Row {
+            forecast_run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "forecast_run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            providerid: row.get_range("providerid", field_mapping.0[3])?,
+            forecast_priority: row
+                .get_custom_parsed_at_idx(
+                    "forecast_priority",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            provider_timestamp: row
+                .get_opt_custom_parsed_at_idx(
+                    "provider_timestamp",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            remarks: row.get_opt_range("remarks", field_mapping.0[6])?,
+            model_used: row.get_opt_range("model_used", field_mapping.0[7])?,
+            suppressed_provider: row
+                .get_opt_custom_parsed_at_idx(
+                    "suppressed_provider",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            transaction_id: row.get_opt_range("transaction_id", field_mapping.0[9])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandIntermittentGenFcstP5Run1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandIntermittentGenFcstP5Run1PrimaryKey {
+        DemandIntermittentGenFcstP5Run1PrimaryKey {
+            duid: row.duid().to_string(),
+            forecast_priority: row.forecast_priority,
+            forecast_run_datetime: row.forecast_run_datetime,
+            offerdatetime: row.offerdatetime,
+            providerid: row.providerid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_intermittent_gen_fcst_p5_run_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandIntermittentGenFcstP5Run1Row {
+            forecast_run_datetime: row.forecast_run_datetime.clone(),
+            duid: row.duid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            providerid: row.providerid.clone(),
+            forecast_priority: row.forecast_priority.clone(),
+            provider_timestamp: row.provider_timestamp.clone(),
+            remarks: row.remarks.clone(),
+            model_used: row.model_used.clone(),
+            suppressed_provider: row.suppressed_provider.clone(),
+            transaction_id: row.transaction_id.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DemandIntermittentGenFcstP5Run1PrimaryKey {
+    pub duid: alloc::string::String,
+    pub forecast_priority: rust_decimal::Decimal,
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    pub offerdatetime: chrono::NaiveDateTime,
+    pub providerid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for DemandIntermittentGenFcstP5Run1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenFcstP5Run1Row<'data> {
+    type Row<'other> = DemandIntermittentGenFcstP5Run1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid() == row.providerid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for DemandIntermittentGenFcstP5Run1Row<'data> {
+    type PrimaryKey = DemandIntermittentGenFcstP5Run1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid() == key.duid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid() == key.providerid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenFcstP5Run1PrimaryKey {
+    type Row<'other> = DemandIntermittentGenFcstP5Run1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid == row.providerid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentGenFcstP5Run1PrimaryKey {
+    type PrimaryKey = DemandIntermittentGenFcstP5Run1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid == key.duid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid == key.providerid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstP5Run1 {
+    type Builder = DemandIntermittentGenFcstP5Run1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "forecast_run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "providerid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_priority",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "provider_timestamp",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "remarks",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "model_used",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "suppressed_provider",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "transaction_id",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        DemandIntermittentGenFcstP5Run1Builder {
+            forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            providerid_array: arrow::array::builder::StringBuilder::new(),
+            forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            remarks_array: arrow::array::builder::StringBuilder::new(),
+            model_used_array: arrow::array::builder::StringBuilder::new(),
+            suppressed_provider_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            transaction_id_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .forecast_run_datetime_array
+            .append_value(row.forecast_run_datetime.and_utc().timestamp_millis());
+        builder.duid_array.append_value(row.duid());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
+        builder.providerid_array.append_value(row.providerid());
+        builder
+            .forecast_priority_array
+            .append_value({
+                let mut val = row.forecast_priority;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .provider_timestamp_array
+            .append_option(
+                row.provider_timestamp.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder.remarks_array.append_option(row.remarks());
+        builder.model_used_array.append_option(row.model_used());
+        builder
+            .suppressed_provider_array
+            .append_option({
+                row.suppressed_provider
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder.transaction_id_array.append_option(row.transaction_id());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.forecast_run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.providerid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_priority_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.provider_timestamp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.remarks_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.model_used_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.suppressed_provider_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.transaction_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct DemandIntermittentGenFcstP5Run1Builder {
+    forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    providerid_array: arrow::array::builder::StringBuilder,
+    forecast_priority_array: arrow::array::builder::Decimal128Builder,
+    provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
+    remarks_array: arrow::array::builder::StringBuilder,
+    model_used_array: arrow::array::builder::StringBuilder,
+    suppressed_provider_array: arrow::array::builder::Decimal128Builder,
+    transaction_id_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct DemandIntermittentGenFcstPred1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &DemandIntermittentGenFcstPred1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandIntermittentGenFcstPred1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct DemandIntermittentGenFcstPred1Mapping([usize; 8]);
+/// # Summary
+///
+/// ## INTERMITTENT_GEN_FCST_PRED
+///
+/// Contains forecast predictions for intermittent wind and solar units, with a 30-minute resolution over the week-ahead PD/STPASA timeframe. This is the child table of the parent table INTERMITTENT_GEN_FCST_RUN, which contains the corresponding forecast runs.
+///
+/// * Data Set Name: Demand
+/// * File Name: Intermittent Gen Fcst Pred
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
+///
+/// # Primary Key Columns
+///
+/// * DUID
+/// * FORECAST_PRIORITY
+/// * FORECAST_RUN_DATETIME
+/// * FORECAST_TYPE
+/// * INTERVAL_DATETIME
+/// * OFFERDATETIME
+/// * PROVIDERID
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandIntermittentGenFcstPred1Row<'data> {
+    /// Datetime (interval ending) when this forecast run is valid. It aligns with run_datetime in downstream processes, unless a forecast run is missed, in this case the previous run is used.
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    /// Dispatchable unit identifier for which this forecast applies.
+    pub duid: core::ops::Range<usize>,
+    /// Datetime when this forecast submission was loaded.
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// Forecast provider identifier
+    pub providerid: core::ops::Range<usize>,
+    /// Priority of forecast run, higher number is used in preference to lower number for the same provider.
+    pub forecast_priority: rust_decimal::Decimal,
+    /// Datetime (interval-ending) for the period that this forecast applies to, within the current forecast_run_datetime.
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Type of forecast, for example, POE_10, POE_50, POE_90, MEAN and so on.
+    pub forecast_type: core::ops::Range<usize>,
+    /// Forecast value in MW.
+    pub forecast_value: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandIntermittentGenFcstPred1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn providerid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.providerid.clone())
+    }
+    pub fn forecast_type(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.forecast_type.clone())
+    }
+}
+impl mmsdm_core::GetTable for DemandIntermittentGenFcstPred1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "INTERMITTENT_GEN_FCST_PRED";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenFcstPred1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "FORECAST_RUN_DATETIME",
+        "DUID",
+        "OFFERDATETIME",
+        "PROVIDERID",
+        "FORECAST_PRIORITY",
+        "INTERVAL_DATETIME",
+        "FORECAST_TYPE",
+        "FORECAST_VALUE",
+    ];
+    type Row<'row> = DemandIntermittentGenFcstPred1Row<'row>;
+    type FieldMapping = DemandIntermittentGenFcstPred1Mapping;
+    type PrimaryKey = DemandIntermittentGenFcstPred1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandIntermittentGenFcstPred1Row {
+            forecast_run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "forecast_run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            providerid: row.get_range("providerid", field_mapping.0[3])?,
+            forecast_priority: row
+                .get_custom_parsed_at_idx(
+                    "forecast_priority",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            forecast_type: row.get_range("forecast_type", field_mapping.0[6])?,
+            forecast_value: row
+                .get_opt_custom_parsed_at_idx(
+                    "forecast_value",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandIntermittentGenFcstPred1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandIntermittentGenFcstPred1PrimaryKey {
+        DemandIntermittentGenFcstPred1PrimaryKey {
+            duid: row.duid().to_string(),
+            forecast_priority: row.forecast_priority,
+            forecast_run_datetime: row.forecast_run_datetime,
+            forecast_type: row.forecast_type().to_string(),
+            interval_datetime: row.interval_datetime,
+            offerdatetime: row.offerdatetime,
+            providerid: row.providerid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_intermittent_gen_fcst_pred_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandIntermittentGenFcstPred1Row {
+            forecast_run_datetime: row.forecast_run_datetime.clone(),
+            duid: row.duid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            providerid: row.providerid.clone(),
+            forecast_priority: row.forecast_priority.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            forecast_type: row.forecast_type.clone(),
+            forecast_value: row.forecast_value.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DemandIntermittentGenFcstPred1PrimaryKey {
+    pub duid: alloc::string::String,
+    pub forecast_priority: rust_decimal::Decimal,
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    pub forecast_type: alloc::string::String,
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub offerdatetime: chrono::NaiveDateTime,
+    pub providerid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for DemandIntermittentGenFcstPred1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenFcstPred1Row<'data> {
+    type Row<'other> = DemandIntermittentGenFcstPred1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.forecast_type() == row.forecast_type()
+            && self.interval_datetime == row.interval_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid() == row.providerid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for DemandIntermittentGenFcstPred1Row<'data> {
+    type PrimaryKey = DemandIntermittentGenFcstPred1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid() == key.duid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.forecast_type() == key.forecast_type
+            && self.interval_datetime == key.interval_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid() == key.providerid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenFcstPred1PrimaryKey {
+    type Row<'other> = DemandIntermittentGenFcstPred1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.forecast_type == row.forecast_type()
+            && self.interval_datetime == row.interval_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid == row.providerid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentGenFcstPred1PrimaryKey {
+    type PrimaryKey = DemandIntermittentGenFcstPred1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid == key.duid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.forecast_type == key.forecast_type
+            && self.interval_datetime == key.interval_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid == key.providerid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstPred1 {
+    type Builder = DemandIntermittentGenFcstPred1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "forecast_run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "providerid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_priority",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_type",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_value",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        DemandIntermittentGenFcstPred1Builder {
+            forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            providerid_array: arrow::array::builder::StringBuilder::new(),
+            forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            forecast_type_array: arrow::array::builder::StringBuilder::new(),
+            forecast_value_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .forecast_run_datetime_array
+            .append_value(row.forecast_run_datetime.and_utc().timestamp_millis());
+        builder.duid_array.append_value(row.duid());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
+        builder.providerid_array.append_value(row.providerid());
+        builder
+            .forecast_priority_array
+            .append_value({
+                let mut val = row.forecast_priority;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.forecast_type_array.append_value(row.forecast_type());
+        builder
+            .forecast_value_array
+            .append_option({
+                row.forecast_value
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.forecast_run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.providerid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_priority_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_type_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_value_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct DemandIntermittentGenFcstPred1Builder {
+    forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    providerid_array: arrow::array::builder::StringBuilder,
+    forecast_priority_array: arrow::array::builder::Decimal128Builder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    forecast_type_array: arrow::array::builder::StringBuilder,
+    forecast_value_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct DemandIntermittentGenFcstRun1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &DemandIntermittentGenFcstRun1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandIntermittentGenFcstRun1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct DemandIntermittentGenFcstRun1Mapping([usize; 11]);
+/// # Summary
+///
+/// ## INTERMITTENT_GEN_FCST_RUN
+///
+/// Contains forecast runs for intermittent wind and solar units, with a 30-minute resolution over the week-ahead PD/STPASA timeframe. This is the parent table to the child table INTERMITTENT_GEN_FCST_PRED, which contains the corresponding forecast predictions over the full horizon.
+///
+/// * Data Set Name: Demand
+/// * File Name: Intermittent Gen Fcst Run
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Private &Public Next-Day
+///
+/// # Primary Key Columns
+///
+/// * DUID
+/// * FORECAST_PRIORITY
+/// * FORECAST_RUN_DATETIME
+/// * OFFERDATETIME
+/// * PROVIDERID
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandIntermittentGenFcstRun1Row<'data> {
+    /// Datetime (interval ending) when this forecast run is valid. It aligns with run_datetime in downstream processes, unless a forecast run is missed, in this case the previous run is used.
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    /// Dispatchable unit identifier for which this forecast applies.
+    pub duid: core::ops::Range<usize>,
+    /// Datetime when this forecast submission was loaded.
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// Forecast provider identifier
+    pub providerid: core::ops::Range<usize>,
+    /// Priority of forecast run, higher number is used in preference to lower number for the same provider.
+    pub forecast_priority: rust_decimal::Decimal,
+    /// Datetime when the provider created the forecast.
+    pub provider_timestamp: Option<chrono::NaiveDateTime>,
+    /// Comments relating to the forecast run. This column is not made available to the public.
+    pub remarks: core::ops::Range<usize>,
+    /// Metadata describing the model used to produce the forecast run. This column is not made available to the public.
+    pub model_used: core::ops::Range<usize>,
+    /// Flag indicating if the forecast run was suppressed by the provider when submitted. Suppressed forecasts are not used by downstream systems. Suppressed = 1, Unsuppressed = 0.
+    pub suppressed_provider: Option<rust_decimal::Decimal>,
+    /// Transaction identifier for receiving the forecast run
+    pub transaction_id: core::ops::Range<usize>,
+    /// Datetime when the forecast run was written into AEMO database.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandIntermittentGenFcstRun1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn providerid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.providerid.clone())
+    }
+    pub fn remarks(&self) -> Option<&str> {
+        if self.remarks.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.remarks.clone(),
+                ),
+            )
+        }
+    }
+    pub fn model_used(&self) -> Option<&str> {
+        if self.model_used.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.model_used.clone(),
+                ),
+            )
+        }
+    }
+    pub fn transaction_id(&self) -> Option<&str> {
+        if self.transaction_id.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.transaction_id.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for DemandIntermittentGenFcstRun1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "INTERMITTENT_GEN_FCST_RUN";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenFcstRun1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "FORECAST_RUN_DATETIME",
+        "DUID",
+        "OFFERDATETIME",
+        "PROVIDERID",
+        "FORECAST_PRIORITY",
+        "PROVIDER_TIMESTAMP",
+        "REMARKS",
+        "MODEL_USED",
+        "SUPPRESSED_PROVIDER",
+        "TRANSACTION_ID",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = DemandIntermittentGenFcstRun1Row<'row>;
+    type FieldMapping = DemandIntermittentGenFcstRun1Mapping;
+    type PrimaryKey = DemandIntermittentGenFcstRun1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandIntermittentGenFcstRun1Row {
+            forecast_run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "forecast_run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            providerid: row.get_range("providerid", field_mapping.0[3])?,
+            forecast_priority: row
+                .get_custom_parsed_at_idx(
+                    "forecast_priority",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            provider_timestamp: row
+                .get_opt_custom_parsed_at_idx(
+                    "provider_timestamp",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            remarks: row.get_opt_range("remarks", field_mapping.0[6])?,
+            model_used: row.get_opt_range("model_used", field_mapping.0[7])?,
+            suppressed_provider: row
+                .get_opt_custom_parsed_at_idx(
+                    "suppressed_provider",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            transaction_id: row.get_opt_range("transaction_id", field_mapping.0[9])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandIntermittentGenFcstRun1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandIntermittentGenFcstRun1PrimaryKey {
+        DemandIntermittentGenFcstRun1PrimaryKey {
+            duid: row.duid().to_string(),
+            forecast_priority: row.forecast_priority,
+            forecast_run_datetime: row.forecast_run_datetime,
+            offerdatetime: row.offerdatetime,
+            providerid: row.providerid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "demand_intermittent_gen_fcst_run_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandIntermittentGenFcstRun1Row {
+            forecast_run_datetime: row.forecast_run_datetime.clone(),
+            duid: row.duid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            providerid: row.providerid.clone(),
+            forecast_priority: row.forecast_priority.clone(),
+            provider_timestamp: row.provider_timestamp.clone(),
+            remarks: row.remarks.clone(),
+            model_used: row.model_used.clone(),
+            suppressed_provider: row.suppressed_provider.clone(),
+            transaction_id: row.transaction_id.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DemandIntermittentGenFcstRun1PrimaryKey {
+    pub duid: alloc::string::String,
+    pub forecast_priority: rust_decimal::Decimal,
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    pub offerdatetime: chrono::NaiveDateTime,
+    pub providerid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for DemandIntermittentGenFcstRun1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenFcstRun1Row<'data> {
+    type Row<'other> = DemandIntermittentGenFcstRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid() == row.providerid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for DemandIntermittentGenFcstRun1Row<'data> {
+    type PrimaryKey = DemandIntermittentGenFcstRun1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid() == key.duid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid() == key.providerid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for DemandIntermittentGenFcstRun1PrimaryKey {
+    type Row<'other> = DemandIntermittentGenFcstRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid == row.providerid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DemandIntermittentGenFcstRun1PrimaryKey {
+    type PrimaryKey = DemandIntermittentGenFcstRun1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid == key.duid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid == key.providerid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstRun1 {
+    type Builder = DemandIntermittentGenFcstRun1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "forecast_run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "providerid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_priority",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "provider_timestamp",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "remarks",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "model_used",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "suppressed_provider",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "transaction_id",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        DemandIntermittentGenFcstRun1Builder {
+            forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            providerid_array: arrow::array::builder::StringBuilder::new(),
+            forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            remarks_array: arrow::array::builder::StringBuilder::new(),
+            model_used_array: arrow::array::builder::StringBuilder::new(),
+            suppressed_provider_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            transaction_id_array: arrow::array::builder::StringBuilder::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .forecast_run_datetime_array
+            .append_value(row.forecast_run_datetime.and_utc().timestamp_millis());
+        builder.duid_array.append_value(row.duid());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
+        builder.providerid_array.append_value(row.providerid());
+        builder
+            .forecast_priority_array
+            .append_value({
+                let mut val = row.forecast_priority;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .provider_timestamp_array
+            .append_option(
+                row.provider_timestamp.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder.remarks_array.append_option(row.remarks());
+        builder.model_used_array.append_option(row.model_used());
+        builder
+            .suppressed_provider_array
+            .append_option({
+                row.suppressed_provider
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder.transaction_id_array.append_option(row.transaction_id());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.forecast_run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.providerid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_priority_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.provider_timestamp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.remarks_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.model_used_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.suppressed_provider_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.transaction_id_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct DemandIntermittentGenFcstRun1Builder {
+    forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    providerid_array: arrow::array::builder::StringBuilder,
+    forecast_priority_array: arrow::array::builder::Decimal128Builder,
+    provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
+    remarks_array: arrow::array::builder::StringBuilder,
+    model_used_array: arrow::array::builder::StringBuilder,
+    suppressed_provider_array: arrow::array::builder::Decimal128Builder,
+    transaction_id_array: arrow::array::builder::StringBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct DemandIntermittentGenLimit1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -3141,7 +5000,11 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimit1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_LIMIT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenLimit1Mapping([
-        4, 5, 6, 7, 8,
+        4,
+        5,
+        6,
+        7,
+        8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -3482,7 +5345,13 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimitDay1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_LIMIT_DAY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenLimitDay1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -3829,7 +5698,12 @@ impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_SCADA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenScada1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -4151,7 +6025,13 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentAvail2 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "MTPASA_INTERMITTENT_AVAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandMtpasaIntermittentAvail2Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -4539,7 +6419,13 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentLimit1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "MTPASA_INTERMITTENT_LIMIT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandMtpasaIntermittentLimit1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -4883,7 +6769,17 @@ impl mmsdm_core::GetTable for DemandPeriod1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "PERIOD";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandPeriod1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -5388,7 +7284,14 @@ impl mmsdm_core::GetTable for DemandTrk1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandTrk1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -5707,7 +7610,7 @@ pub struct RooftopActual2Mapping([usize; 6]);
 ///
 /// ## ROOFTOP_PV_ACTUAL
 ///
-/// Estimate of regional Rooftop Solar actual generation for each half-hour interval in a day
+/// Estimate of regional Rooftop Solar actual generation for each half-hour interval in a day. AEMO plans to remove this table in a Data Model version release after 5.6.
 ///
 /// * Data Set Name: Rooftop
 /// * File Name: Actual
@@ -5753,7 +7656,12 @@ impl mmsdm_core::GetTable for RooftopActual2 {
     const DATA_SET_NAME: &'static str = "ROOFTOP";
     const TABLE_NAME: &'static str = "ACTUAL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = RooftopActual2Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -6014,6 +7922,2829 @@ pub struct RooftopActual2Builder {
     qi_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
+pub struct DemandRooftopPvActualPred1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &DemandRooftopPvActualPred1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandRooftopPvActualPred1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct DemandRooftopPvActualPred1Mapping([usize; 10]);
+/// # Summary
+///
+/// ## ROOFTOP_PV_ACTUAL_PRED
+///
+/// Contains predictions for rooftop PV area estimated actuals, with a 5-minute and 30-minute resolution for different estimate types. This is the child table of the parent table ROOFTOP_PV_ACTUAL_RUN, which contains the corresponding actual prediction runs.
+///
+/// * Data Set Name: Demand
+/// * File Name: Rooftop Pv Actual Pred
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * AREAID
+/// * ESTIMATE_TYPE
+/// * INTERVAL_DATETIME
+/// * INTERVAL_DURATION
+/// * OFFERDATETIME
+/// * PREDICTION_PRIORITY
+/// * PREDICTION_RUN_DATETIME
+/// * PROVIDERID
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandRooftopPvActualPred1Row<'data> {
+    /// Datetime (interval ending) from which this prediction run is valid.
+    pub prediction_run_datetime: chrono::NaiveDateTime,
+    /// Duration of each interval (in minutes) for this prediction, for example, 5 or 30.
+    pub interval_duration: rust_decimal::Decimal,
+    /// Area identifier, aligning with the load forecasting areas.
+    pub areaid: core::ops::Range<usize>,
+    /// Datetime when this prediction submission was loaded.
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// Type of Rooftop PV estimate, for example, MEASURED, SATELLITE and so on.
+    pub estimate_type: core::ops::Range<usize>,
+    /// Provider identifier, for example, AEMO, PROVIDER_A and so on.
+    pub providerid: core::ops::Range<usize>,
+    /// Priority of prediction run, higher number is used in preference to lower number for the same provider.
+    pub prediction_priority: rust_decimal::Decimal,
+    /// Date and Time the forecast applies (dispatch interval ending).
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Prediction value in MW.
+    pub prediction_value: Option<rust_decimal::Decimal>,
+    /// Prediction quality. Higher number represents better quality.
+    pub prediction_quality: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandRooftopPvActualPred1Row<'data> {
+    pub fn areaid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.areaid.clone())
+    }
+    pub fn estimate_type(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.estimate_type.clone())
+    }
+    pub fn providerid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.providerid.clone())
+    }
+}
+impl mmsdm_core::GetTable for DemandRooftopPvActualPred1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "ROOFTOP_PV_ACTUAL_PRED";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandRooftopPvActualPred1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PREDICTION_RUN_DATETIME",
+        "INTERVAL_DURATION",
+        "AREAID",
+        "OFFERDATETIME",
+        "ESTIMATE_TYPE",
+        "PROVIDERID",
+        "PREDICTION_PRIORITY",
+        "INTERVAL_DATETIME",
+        "PREDICTION_VALUE",
+        "PREDICTION_QUALITY",
+    ];
+    type Row<'row> = DemandRooftopPvActualPred1Row<'row>;
+    type FieldMapping = DemandRooftopPvActualPred1Mapping;
+    type PrimaryKey = DemandRooftopPvActualPred1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandRooftopPvActualPred1Row {
+            prediction_run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "prediction_run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            interval_duration: row
+                .get_custom_parsed_at_idx(
+                    "interval_duration",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            areaid: row.get_range("areaid", field_mapping.0[2])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            estimate_type: row.get_range("estimate_type", field_mapping.0[4])?,
+            providerid: row.get_range("providerid", field_mapping.0[5])?,
+            prediction_priority: row
+                .get_custom_parsed_at_idx(
+                    "prediction_priority",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            prediction_value: row
+                .get_opt_custom_parsed_at_idx(
+                    "prediction_value",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            prediction_quality: row
+                .get_opt_custom_parsed_at_idx(
+                    "prediction_quality",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandRooftopPvActualPred1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandRooftopPvActualPred1PrimaryKey {
+        DemandRooftopPvActualPred1PrimaryKey {
+            areaid: row.areaid().to_string(),
+            estimate_type: row.estimate_type().to_string(),
+            interval_datetime: row.interval_datetime,
+            interval_duration: row.interval_duration,
+            offerdatetime: row.offerdatetime,
+            prediction_priority: row.prediction_priority,
+            prediction_run_datetime: row.prediction_run_datetime,
+            providerid: row.providerid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("demand_rooftop_pv_actual_pred_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandRooftopPvActualPred1Row {
+            prediction_run_datetime: row.prediction_run_datetime.clone(),
+            interval_duration: row.interval_duration.clone(),
+            areaid: row.areaid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            estimate_type: row.estimate_type.clone(),
+            providerid: row.providerid.clone(),
+            prediction_priority: row.prediction_priority.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            prediction_value: row.prediction_value.clone(),
+            prediction_quality: row.prediction_quality.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DemandRooftopPvActualPred1PrimaryKey {
+    pub areaid: alloc::string::String,
+    pub estimate_type: alloc::string::String,
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub interval_duration: rust_decimal::Decimal,
+    pub offerdatetime: chrono::NaiveDateTime,
+    pub prediction_priority: rust_decimal::Decimal,
+    pub prediction_run_datetime: chrono::NaiveDateTime,
+    pub providerid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for DemandRooftopPvActualPred1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DemandRooftopPvActualPred1Row<'data> {
+    type Row<'other> = DemandRooftopPvActualPred1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid() == row.areaid() && self.estimate_type() == row.estimate_type()
+            && self.interval_datetime == row.interval_datetime
+            && self.interval_duration == row.interval_duration
+            && self.offerdatetime == row.offerdatetime
+            && self.prediction_priority == row.prediction_priority
+            && self.prediction_run_datetime == row.prediction_run_datetime
+            && self.providerid() == row.providerid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DemandRooftopPvActualPred1Row<'data> {
+    type PrimaryKey = DemandRooftopPvActualPred1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid() == key.areaid && self.estimate_type() == key.estimate_type
+            && self.interval_datetime == key.interval_datetime
+            && self.interval_duration == key.interval_duration
+            && self.offerdatetime == key.offerdatetime
+            && self.prediction_priority == key.prediction_priority
+            && self.prediction_run_datetime == key.prediction_run_datetime
+            && self.providerid() == key.providerid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for DemandRooftopPvActualPred1PrimaryKey {
+    type Row<'other> = DemandRooftopPvActualPred1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid == row.areaid() && self.estimate_type == row.estimate_type()
+            && self.interval_datetime == row.interval_datetime
+            && self.interval_duration == row.interval_duration
+            && self.offerdatetime == row.offerdatetime
+            && self.prediction_priority == row.prediction_priority
+            && self.prediction_run_datetime == row.prediction_run_datetime
+            && self.providerid == row.providerid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DemandRooftopPvActualPred1PrimaryKey {
+    type PrimaryKey = DemandRooftopPvActualPred1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid == key.areaid && self.estimate_type == key.estimate_type
+            && self.interval_datetime == key.interval_datetime
+            && self.interval_duration == key.interval_duration
+            && self.offerdatetime == key.offerdatetime
+            && self.prediction_priority == key.prediction_priority
+            && self.prediction_run_datetime == key.prediction_run_datetime
+            && self.providerid == key.providerid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for DemandRooftopPvActualPred1 {
+    type Builder = DemandRooftopPvActualPred1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "prediction_run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_duration",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "areaid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "estimate_type",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "providerid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "prediction_priority",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "prediction_value",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "prediction_quality",
+                    arrow::datatypes::DataType::Decimal128(2, 0),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        DemandRooftopPvActualPred1Builder {
+            prediction_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_duration_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            areaid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            estimate_type_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::builder::StringBuilder::new(),
+            prediction_priority_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            prediction_value_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            prediction_quality_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .prediction_run_datetime_array
+            .append_value(row.prediction_run_datetime.and_utc().timestamp_millis());
+        builder
+            .interval_duration_array
+            .append_value({
+                let mut val = row.interval_duration;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.areaid_array.append_value(row.areaid());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
+        builder.estimate_type_array.append_value(row.estimate_type());
+        builder.providerid_array.append_value(row.providerid());
+        builder
+            .prediction_priority_array
+            .append_value({
+                let mut val = row.prediction_priority;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder
+            .prediction_value_array
+            .append_option({
+                row.prediction_value
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .prediction_quality_array
+            .append_option({
+                row.prediction_quality
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.prediction_run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_duration_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.areaid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.estimate_type_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.providerid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.prediction_priority_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.prediction_value_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.prediction_quality_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct DemandRooftopPvActualPred1Builder {
+    prediction_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_duration_array: arrow::array::builder::Decimal128Builder,
+    areaid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    estimate_type_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::builder::StringBuilder,
+    prediction_priority_array: arrow::array::builder::Decimal128Builder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    prediction_value_array: arrow::array::builder::Decimal128Builder,
+    prediction_quality_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct DemandRooftopPvActualRun1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &DemandRooftopPvActualRun1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandRooftopPvActualRun1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct DemandRooftopPvActualRun1Mapping([usize; 13]);
+/// # Summary
+///
+/// ## ROOFTOP_PV_ACTUAL_RUN
+///
+/// Contains prediction runs for rooftop PV area estimated actuals, with a 5-minute and 30-minute resolution for different estimate types. This is the parent table to the child table ROOFTOP_PV_ACTUAL_PRED, which contains the corresponding actual predictions.
+///
+/// * Data Set Name: Demand
+/// * File Name: Rooftop Pv Actual Run
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * AREAID
+/// * ESTIMATE_TYPE
+/// * INTERVAL_DURATION
+/// * OFFERDATETIME
+/// * PREDICTION_PRIORITY
+/// * PREDICTION_RUN_DATETIME
+/// * PROVIDERID
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandRooftopPvActualRun1Row<'data> {
+    /// Datetime (interval ending) from which this prediction run is valid.
+    pub prediction_run_datetime: chrono::NaiveDateTime,
+    /// Duration of each interval (in minutes) for this prediction, for example, 5 or 30.
+    pub interval_duration: rust_decimal::Decimal,
+    /// Area identifier, aligning with the load forecasting areas.
+    pub areaid: core::ops::Range<usize>,
+    /// Datetime when this prediction submission was loaded.
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// Type of Rooftop PV estimate, for example, MEASURED, SATELLITE and so on.
+    pub estimate_type: core::ops::Range<usize>,
+    /// Provider identifier, for example, AEMO, PROVIDER_A and so on.
+    pub providerid: core::ops::Range<usize>,
+    /// Priority of prediction run, higher number is used in preference to lower number for the same provider.
+    pub prediction_priority: rust_decimal::Decimal,
+    /// Datetime when the provider created the forecast.
+    pub provider_timestamp: Option<chrono::NaiveDateTime>,
+    /// Comments relating to the prediction run.
+    pub remarks: core::ops::Range<usize>,
+    /// Metadata describing the model used to produce the prediction run.
+    pub model_used: core::ops::Range<usize>,
+    /// Flag indicating if the prediction run was suppressed by the provider when submitted. Suppressed predictions are not used by downstream forecasting systems. Suppressed = 1, Unsuppressed = 0.
+    pub suppressed_provider: Option<rust_decimal::Decimal>,
+    /// Installed rooftop PV capacity used for the prediction run, in MW.
+    pub installed_capacity: Option<rust_decimal::Decimal>,
+    /// Datetime when the prediction run was written into AEMO database.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandRooftopPvActualRun1Row<'data> {
+    pub fn areaid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.areaid.clone())
+    }
+    pub fn estimate_type(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.estimate_type.clone())
+    }
+    pub fn providerid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.providerid.clone())
+    }
+    pub fn remarks(&self) -> Option<&str> {
+        if self.remarks.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.remarks.clone(),
+                ),
+            )
+        }
+    }
+    pub fn model_used(&self) -> Option<&str> {
+        if self.model_used.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.model_used.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for DemandRooftopPvActualRun1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "ROOFTOP_PV_ACTUAL_RUN";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandRooftopPvActualRun1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "PREDICTION_RUN_DATETIME",
+        "INTERVAL_DURATION",
+        "AREAID",
+        "OFFERDATETIME",
+        "ESTIMATE_TYPE",
+        "PROVIDERID",
+        "PREDICTION_PRIORITY",
+        "PROVIDER_TIMESTAMP",
+        "REMARKS",
+        "MODEL_USED",
+        "SUPPRESSED_PROVIDER",
+        "INSTALLED_CAPACITY",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = DemandRooftopPvActualRun1Row<'row>;
+    type FieldMapping = DemandRooftopPvActualRun1Mapping;
+    type PrimaryKey = DemandRooftopPvActualRun1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandRooftopPvActualRun1Row {
+            prediction_run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "prediction_run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            interval_duration: row
+                .get_custom_parsed_at_idx(
+                    "interval_duration",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            areaid: row.get_range("areaid", field_mapping.0[2])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            estimate_type: row.get_range("estimate_type", field_mapping.0[4])?,
+            providerid: row.get_range("providerid", field_mapping.0[5])?,
+            prediction_priority: row
+                .get_custom_parsed_at_idx(
+                    "prediction_priority",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            provider_timestamp: row
+                .get_opt_custom_parsed_at_idx(
+                    "provider_timestamp",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            remarks: row.get_opt_range("remarks", field_mapping.0[8])?,
+            model_used: row.get_opt_range("model_used", field_mapping.0[9])?,
+            suppressed_provider: row
+                .get_opt_custom_parsed_at_idx(
+                    "suppressed_provider",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            installed_capacity: row
+                .get_opt_custom_parsed_at_idx(
+                    "installed_capacity",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandRooftopPvActualRun1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandRooftopPvActualRun1PrimaryKey {
+        DemandRooftopPvActualRun1PrimaryKey {
+            areaid: row.areaid().to_string(),
+            estimate_type: row.estimate_type().to_string(),
+            interval_duration: row.interval_duration,
+            offerdatetime: row.offerdatetime,
+            prediction_priority: row.prediction_priority,
+            prediction_run_datetime: row.prediction_run_datetime,
+            providerid: row.providerid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("demand_rooftop_pv_actual_run_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandRooftopPvActualRun1Row {
+            prediction_run_datetime: row.prediction_run_datetime.clone(),
+            interval_duration: row.interval_duration.clone(),
+            areaid: row.areaid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            estimate_type: row.estimate_type.clone(),
+            providerid: row.providerid.clone(),
+            prediction_priority: row.prediction_priority.clone(),
+            provider_timestamp: row.provider_timestamp.clone(),
+            remarks: row.remarks.clone(),
+            model_used: row.model_used.clone(),
+            suppressed_provider: row.suppressed_provider.clone(),
+            installed_capacity: row.installed_capacity.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DemandRooftopPvActualRun1PrimaryKey {
+    pub areaid: alloc::string::String,
+    pub estimate_type: alloc::string::String,
+    pub interval_duration: rust_decimal::Decimal,
+    pub offerdatetime: chrono::NaiveDateTime,
+    pub prediction_priority: rust_decimal::Decimal,
+    pub prediction_run_datetime: chrono::NaiveDateTime,
+    pub providerid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for DemandRooftopPvActualRun1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DemandRooftopPvActualRun1Row<'data> {
+    type Row<'other> = DemandRooftopPvActualRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid() == row.areaid() && self.estimate_type() == row.estimate_type()
+            && self.interval_duration == row.interval_duration
+            && self.offerdatetime == row.offerdatetime
+            && self.prediction_priority == row.prediction_priority
+            && self.prediction_run_datetime == row.prediction_run_datetime
+            && self.providerid() == row.providerid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DemandRooftopPvActualRun1Row<'data> {
+    type PrimaryKey = DemandRooftopPvActualRun1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid() == key.areaid && self.estimate_type() == key.estimate_type
+            && self.interval_duration == key.interval_duration
+            && self.offerdatetime == key.offerdatetime
+            && self.prediction_priority == key.prediction_priority
+            && self.prediction_run_datetime == key.prediction_run_datetime
+            && self.providerid() == key.providerid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for DemandRooftopPvActualRun1PrimaryKey {
+    type Row<'other> = DemandRooftopPvActualRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid == row.areaid() && self.estimate_type == row.estimate_type()
+            && self.interval_duration == row.interval_duration
+            && self.offerdatetime == row.offerdatetime
+            && self.prediction_priority == row.prediction_priority
+            && self.prediction_run_datetime == row.prediction_run_datetime
+            && self.providerid == row.providerid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DemandRooftopPvActualRun1PrimaryKey {
+    type PrimaryKey = DemandRooftopPvActualRun1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid == key.areaid && self.estimate_type == key.estimate_type
+            && self.interval_duration == key.interval_duration
+            && self.offerdatetime == key.offerdatetime
+            && self.prediction_priority == key.prediction_priority
+            && self.prediction_run_datetime == key.prediction_run_datetime
+            && self.providerid == key.providerid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for DemandRooftopPvActualRun1 {
+    type Builder = DemandRooftopPvActualRun1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "prediction_run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_duration",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "areaid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "estimate_type",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "providerid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "prediction_priority",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "provider_timestamp",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "remarks",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "model_used",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "suppressed_provider",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "installed_capacity",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        DemandRooftopPvActualRun1Builder {
+            prediction_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_duration_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            areaid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            estimate_type_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::builder::StringBuilder::new(),
+            prediction_priority_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            remarks_array: arrow::array::builder::StringBuilder::new(),
+            model_used_array: arrow::array::builder::StringBuilder::new(),
+            suppressed_provider_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            installed_capacity_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .prediction_run_datetime_array
+            .append_value(row.prediction_run_datetime.and_utc().timestamp_millis());
+        builder
+            .interval_duration_array
+            .append_value({
+                let mut val = row.interval_duration;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.areaid_array.append_value(row.areaid());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
+        builder.estimate_type_array.append_value(row.estimate_type());
+        builder.providerid_array.append_value(row.providerid());
+        builder
+            .prediction_priority_array
+            .append_value({
+                let mut val = row.prediction_priority;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .provider_timestamp_array
+            .append_option(
+                row.provider_timestamp.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder.remarks_array.append_option(row.remarks());
+        builder.model_used_array.append_option(row.model_used());
+        builder
+            .suppressed_provider_array
+            .append_option({
+                row.suppressed_provider
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .installed_capacity_array
+            .append_option({
+                row.installed_capacity
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.prediction_run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_duration_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.areaid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.estimate_type_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.providerid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.prediction_priority_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.provider_timestamp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.remarks_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.model_used_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.suppressed_provider_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.installed_capacity_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct DemandRooftopPvActualRun1Builder {
+    prediction_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_duration_array: arrow::array::builder::Decimal128Builder,
+    areaid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    estimate_type_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::builder::StringBuilder,
+    prediction_priority_array: arrow::array::builder::Decimal128Builder,
+    provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
+    remarks_array: arrow::array::builder::StringBuilder,
+    model_used_array: arrow::array::builder::StringBuilder,
+    suppressed_provider_array: arrow::array::builder::Decimal128Builder,
+    installed_capacity_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct DemandRooftopPvFcstP5Pred1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &DemandRooftopPvFcstP5Pred1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandRooftopPvFcstP5Pred1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct DemandRooftopPvFcstP5Pred1Mapping([usize; 8]);
+/// # Summary
+///
+/// ## ROOFTOP_PV_FCST_P5_PRED
+///
+/// Contains forecast predictions for rooftop PV areas, with a 5-minute resolution over the hour-ahead DS/P5MIN timeframe. This is the child table of the parent table ROOFTOP_PV_FCST_P5_RUN, which contains the corresponding forecast runs.
+///
+/// * Data Set Name: Demand
+/// * File Name: Rooftop Pv Fcst P5 Pred
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * AREAID
+/// * FORECAST_PRIORITY
+/// * FORECAST_RUN_DATETIME
+/// * FORECAST_TYPE
+/// * INTERVAL_DATETIME
+/// * OFFERDATETIME
+/// * PROVIDERID
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandRooftopPvFcstP5Pred1Row<'data> {
+    /// Datetime (interval ending) when this forecast run is valid. It aligns with run_datetime in downstream processes, unless a forecast run is missed in which case the previous run is used.
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    /// Area identifier, aligning with the load forecasting areas.
+    pub areaid: core::ops::Range<usize>,
+    /// Datetime when this forecast submission was loaded.
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// Forecast provider identifier, for example, AEMO, PROVIDER_A and so on.
+    pub providerid: core::ops::Range<usize>,
+    /// Priority of forecast run, higher number is used in preference to lower number for the same provider.
+    pub forecast_priority: rust_decimal::Decimal,
+    /// Datetime (interval-ending) for the period that this forecast applies to, within the current forecast_run_datetime.
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Type of forecast, for example, POE_10, POE_50, POE_90, MEAN and so on.
+    pub forecast_type: core::ops::Range<usize>,
+    /// Forecast value in MW.
+    pub forecast_value: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandRooftopPvFcstP5Pred1Row<'data> {
+    pub fn areaid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.areaid.clone())
+    }
+    pub fn providerid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.providerid.clone())
+    }
+    pub fn forecast_type(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.forecast_type.clone())
+    }
+}
+impl mmsdm_core::GetTable for DemandRooftopPvFcstP5Pred1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "ROOFTOP_PV_FCST_P5_PRED";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandRooftopPvFcstP5Pred1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "FORECAST_RUN_DATETIME",
+        "AREAID",
+        "OFFERDATETIME",
+        "PROVIDERID",
+        "FORECAST_PRIORITY",
+        "INTERVAL_DATETIME",
+        "FORECAST_TYPE",
+        "FORECAST_VALUE",
+    ];
+    type Row<'row> = DemandRooftopPvFcstP5Pred1Row<'row>;
+    type FieldMapping = DemandRooftopPvFcstP5Pred1Mapping;
+    type PrimaryKey = DemandRooftopPvFcstP5Pred1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandRooftopPvFcstP5Pred1Row {
+            forecast_run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "forecast_run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            areaid: row.get_range("areaid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            providerid: row.get_range("providerid", field_mapping.0[3])?,
+            forecast_priority: row
+                .get_custom_parsed_at_idx(
+                    "forecast_priority",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            forecast_type: row.get_range("forecast_type", field_mapping.0[6])?,
+            forecast_value: row
+                .get_opt_custom_parsed_at_idx(
+                    "forecast_value",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandRooftopPvFcstP5Pred1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandRooftopPvFcstP5Pred1PrimaryKey {
+        DemandRooftopPvFcstP5Pred1PrimaryKey {
+            areaid: row.areaid().to_string(),
+            forecast_priority: row.forecast_priority,
+            forecast_run_datetime: row.forecast_run_datetime,
+            forecast_type: row.forecast_type().to_string(),
+            interval_datetime: row.interval_datetime,
+            offerdatetime: row.offerdatetime,
+            providerid: row.providerid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("demand_rooftop_pv_fcst_p5_pred_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandRooftopPvFcstP5Pred1Row {
+            forecast_run_datetime: row.forecast_run_datetime.clone(),
+            areaid: row.areaid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            providerid: row.providerid.clone(),
+            forecast_priority: row.forecast_priority.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            forecast_type: row.forecast_type.clone(),
+            forecast_value: row.forecast_value.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DemandRooftopPvFcstP5Pred1PrimaryKey {
+    pub areaid: alloc::string::String,
+    pub forecast_priority: rust_decimal::Decimal,
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    pub forecast_type: alloc::string::String,
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub offerdatetime: chrono::NaiveDateTime,
+    pub providerid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for DemandRooftopPvFcstP5Pred1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DemandRooftopPvFcstP5Pred1Row<'data> {
+    type Row<'other> = DemandRooftopPvFcstP5Pred1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid() == row.areaid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.forecast_type() == row.forecast_type()
+            && self.interval_datetime == row.interval_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid() == row.providerid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DemandRooftopPvFcstP5Pred1Row<'data> {
+    type PrimaryKey = DemandRooftopPvFcstP5Pred1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid() == key.areaid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.forecast_type() == key.forecast_type
+            && self.interval_datetime == key.interval_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid() == key.providerid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for DemandRooftopPvFcstP5Pred1PrimaryKey {
+    type Row<'other> = DemandRooftopPvFcstP5Pred1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid == row.areaid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.forecast_type == row.forecast_type()
+            && self.interval_datetime == row.interval_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid == row.providerid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DemandRooftopPvFcstP5Pred1PrimaryKey {
+    type PrimaryKey = DemandRooftopPvFcstP5Pred1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid == key.areaid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.forecast_type == key.forecast_type
+            && self.interval_datetime == key.interval_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid == key.providerid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstP5Pred1 {
+    type Builder = DemandRooftopPvFcstP5Pred1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "forecast_run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "areaid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "providerid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_priority",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_type",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_value",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        DemandRooftopPvFcstP5Pred1Builder {
+            forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            areaid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            providerid_array: arrow::array::builder::StringBuilder::new(),
+            forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            forecast_type_array: arrow::array::builder::StringBuilder::new(),
+            forecast_value_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .forecast_run_datetime_array
+            .append_value(row.forecast_run_datetime.and_utc().timestamp_millis());
+        builder.areaid_array.append_value(row.areaid());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
+        builder.providerid_array.append_value(row.providerid());
+        builder
+            .forecast_priority_array
+            .append_value({
+                let mut val = row.forecast_priority;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.forecast_type_array.append_value(row.forecast_type());
+        builder
+            .forecast_value_array
+            .append_option({
+                row.forecast_value
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.forecast_run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.areaid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.providerid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_priority_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_type_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_value_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct DemandRooftopPvFcstP5Pred1Builder {
+    forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    areaid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    providerid_array: arrow::array::builder::StringBuilder,
+    forecast_priority_array: arrow::array::builder::Decimal128Builder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    forecast_type_array: arrow::array::builder::StringBuilder,
+    forecast_value_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct DemandRooftopPvFcstP5Run1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &DemandRooftopPvFcstP5Run1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandRooftopPvFcstP5Run1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct DemandRooftopPvFcstP5Run1Mapping([usize; 11]);
+/// # Summary
+///
+/// ## ROOFTOP_PV_FCST_P5_RUN
+///
+/// Contains forecast runs for rooftop PV areas, with a 5-minute resolution over the hour-ahead DS/P5MIN timeframe. This is the parent table to the child table ROOFTOP_PV_FCST_P5_PRED, which contains the corresponding forecast predictions over the full horizon.
+///
+/// * Data Set Name: Demand
+/// * File Name: Rooftop Pv Fcst P5 Run
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * AREAID
+/// * FORECAST_PRIORITY
+/// * FORECAST_RUN_DATETIME
+/// * OFFERDATETIME
+/// * PROVIDERID
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandRooftopPvFcstP5Run1Row<'data> {
+    /// Datetime (interval ending) when this forecast run is valid. It aligns with run_datetime in downstream processes, unless a forecast run is missed, in this case the previous run is used.
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    /// Area identifier, aligning with the load forecasting areas.
+    pub areaid: core::ops::Range<usize>,
+    /// Datetime when this forecast submission was loaded.
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// Forecast provider identifier, for example, AEMO, PROVIDER_A and so on.
+    pub providerid: core::ops::Range<usize>,
+    /// Priority of forecast run, higher number is used in preference to lower number for the same provider.
+    pub forecast_priority: rust_decimal::Decimal,
+    /// Datetime when the provider created the forecast.
+    pub provider_timestamp: Option<chrono::NaiveDateTime>,
+    /// Comments relating to the forecast run.
+    pub remarks: core::ops::Range<usize>,
+    /// Metadata describing the model used to produce the forecast run.
+    pub model_used: core::ops::Range<usize>,
+    /// Flag indicating if the forecast run was suppressed by the provider when submitted. Suppressed forecasts are not used by downstream systems. Suppressed = 1, Unsuppressed = 0.
+    pub suppressed_provider: Option<rust_decimal::Decimal>,
+    /// Installed rooftop PV capacity that was used for the forecast run, in MW.
+    pub installed_capacity: Option<rust_decimal::Decimal>,
+    /// Datetime when the forecast run was written into AEMO database.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandRooftopPvFcstP5Run1Row<'data> {
+    pub fn areaid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.areaid.clone())
+    }
+    pub fn providerid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.providerid.clone())
+    }
+    pub fn remarks(&self) -> Option<&str> {
+        if self.remarks.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.remarks.clone(),
+                ),
+            )
+        }
+    }
+    pub fn model_used(&self) -> Option<&str> {
+        if self.model_used.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.model_used.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for DemandRooftopPvFcstP5Run1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "ROOFTOP_PV_FCST_P5_RUN";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandRooftopPvFcstP5Run1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "FORECAST_RUN_DATETIME",
+        "AREAID",
+        "OFFERDATETIME",
+        "PROVIDERID",
+        "FORECAST_PRIORITY",
+        "PROVIDER_TIMESTAMP",
+        "REMARKS",
+        "MODEL_USED",
+        "SUPPRESSED_PROVIDER",
+        "INSTALLED_CAPACITY",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = DemandRooftopPvFcstP5Run1Row<'row>;
+    type FieldMapping = DemandRooftopPvFcstP5Run1Mapping;
+    type PrimaryKey = DemandRooftopPvFcstP5Run1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandRooftopPvFcstP5Run1Row {
+            forecast_run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "forecast_run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            areaid: row.get_range("areaid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            providerid: row.get_range("providerid", field_mapping.0[3])?,
+            forecast_priority: row
+                .get_custom_parsed_at_idx(
+                    "forecast_priority",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            provider_timestamp: row
+                .get_opt_custom_parsed_at_idx(
+                    "provider_timestamp",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            remarks: row.get_opt_range("remarks", field_mapping.0[6])?,
+            model_used: row.get_opt_range("model_used", field_mapping.0[7])?,
+            suppressed_provider: row
+                .get_opt_custom_parsed_at_idx(
+                    "suppressed_provider",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            installed_capacity: row
+                .get_opt_custom_parsed_at_idx(
+                    "installed_capacity",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandRooftopPvFcstP5Run1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandRooftopPvFcstP5Run1PrimaryKey {
+        DemandRooftopPvFcstP5Run1PrimaryKey {
+            areaid: row.areaid().to_string(),
+            forecast_priority: row.forecast_priority,
+            forecast_run_datetime: row.forecast_run_datetime,
+            offerdatetime: row.offerdatetime,
+            providerid: row.providerid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("demand_rooftop_pv_fcst_p5_run_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandRooftopPvFcstP5Run1Row {
+            forecast_run_datetime: row.forecast_run_datetime.clone(),
+            areaid: row.areaid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            providerid: row.providerid.clone(),
+            forecast_priority: row.forecast_priority.clone(),
+            provider_timestamp: row.provider_timestamp.clone(),
+            remarks: row.remarks.clone(),
+            model_used: row.model_used.clone(),
+            suppressed_provider: row.suppressed_provider.clone(),
+            installed_capacity: row.installed_capacity.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DemandRooftopPvFcstP5Run1PrimaryKey {
+    pub areaid: alloc::string::String,
+    pub forecast_priority: rust_decimal::Decimal,
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    pub offerdatetime: chrono::NaiveDateTime,
+    pub providerid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for DemandRooftopPvFcstP5Run1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DemandRooftopPvFcstP5Run1Row<'data> {
+    type Row<'other> = DemandRooftopPvFcstP5Run1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid() == row.areaid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid() == row.providerid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DemandRooftopPvFcstP5Run1Row<'data> {
+    type PrimaryKey = DemandRooftopPvFcstP5Run1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid() == key.areaid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid() == key.providerid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for DemandRooftopPvFcstP5Run1PrimaryKey {
+    type Row<'other> = DemandRooftopPvFcstP5Run1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid == row.areaid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid == row.providerid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DemandRooftopPvFcstP5Run1PrimaryKey {
+    type PrimaryKey = DemandRooftopPvFcstP5Run1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid == key.areaid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid == key.providerid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstP5Run1 {
+    type Builder = DemandRooftopPvFcstP5Run1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "forecast_run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "areaid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "providerid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_priority",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "provider_timestamp",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "remarks",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "model_used",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "suppressed_provider",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "installed_capacity",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        DemandRooftopPvFcstP5Run1Builder {
+            forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            areaid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            providerid_array: arrow::array::builder::StringBuilder::new(),
+            forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            remarks_array: arrow::array::builder::StringBuilder::new(),
+            model_used_array: arrow::array::builder::StringBuilder::new(),
+            suppressed_provider_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            installed_capacity_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .forecast_run_datetime_array
+            .append_value(row.forecast_run_datetime.and_utc().timestamp_millis());
+        builder.areaid_array.append_value(row.areaid());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
+        builder.providerid_array.append_value(row.providerid());
+        builder
+            .forecast_priority_array
+            .append_value({
+                let mut val = row.forecast_priority;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .provider_timestamp_array
+            .append_option(
+                row.provider_timestamp.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder.remarks_array.append_option(row.remarks());
+        builder.model_used_array.append_option(row.model_used());
+        builder
+            .suppressed_provider_array
+            .append_option({
+                row.suppressed_provider
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .installed_capacity_array
+            .append_option({
+                row.installed_capacity
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.forecast_run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.areaid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.providerid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_priority_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.provider_timestamp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.remarks_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.model_used_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.suppressed_provider_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.installed_capacity_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct DemandRooftopPvFcstP5Run1Builder {
+    forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    areaid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    providerid_array: arrow::array::builder::StringBuilder,
+    forecast_priority_array: arrow::array::builder::Decimal128Builder,
+    provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
+    remarks_array: arrow::array::builder::StringBuilder,
+    model_used_array: arrow::array::builder::StringBuilder,
+    suppressed_provider_array: arrow::array::builder::Decimal128Builder,
+    installed_capacity_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct DemandRooftopPvFcstPred1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &DemandRooftopPvFcstPred1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandRooftopPvFcstPred1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct DemandRooftopPvFcstPred1Mapping([usize; 8]);
+/// # Summary
+///
+/// ## ROOFTOP_PV_FCST_PRED
+///
+/// Contains forecast predictions for rooftop PV areas, with a 30-minute resolution over the week-ahead PD/STPASA timeframe. This is the child table of the parent table ROOFTOP_PV_FCST_RUN, which contains the corresponding forecast runs.
+///
+/// * Data Set Name: Demand
+/// * File Name: Rooftop Pv Fcst Pred
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * AREAID
+/// * FORECAST_PRIORITY
+/// * FORECAST_RUN_DATETIME
+/// * FORECAST_TYPE
+/// * INTERVAL_DATETIME
+/// * OFFERDATETIME
+/// * PROVIDERID
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandRooftopPvFcstPred1Row<'data> {
+    /// Datetime (interval ending) when this forecast run is valid. It aligns with run_datetime in downstream processes, unless a forecast run is missed, in this case the previous run is used.
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    /// Area identifier, aligning with the load forecasting areas.
+    pub areaid: core::ops::Range<usize>,
+    /// Datetime when this forecast submission was loaded.
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// Forecast provider identifier, for example, AEMO, PROVIDER_A and so on.
+    pub providerid: core::ops::Range<usize>,
+    /// Priority of forecast run, higher number is used in preference to lower number for the same provider.
+    pub forecast_priority: rust_decimal::Decimal,
+    /// Datetime (interval-ending) for the period that this forecast applies to, within the current forecast_run_datetime.
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Type of forecast, for example, POE_10, POE_50, POE_90, MEAN and so on.
+    pub forecast_type: core::ops::Range<usize>,
+    /// Forecast value in MW.
+    pub forecast_value: Option<rust_decimal::Decimal>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandRooftopPvFcstPred1Row<'data> {
+    pub fn areaid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.areaid.clone())
+    }
+    pub fn providerid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.providerid.clone())
+    }
+    pub fn forecast_type(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.forecast_type.clone())
+    }
+}
+impl mmsdm_core::GetTable for DemandRooftopPvFcstPred1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "ROOFTOP_PV_FCST_PRED";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandRooftopPvFcstPred1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "FORECAST_RUN_DATETIME",
+        "AREAID",
+        "OFFERDATETIME",
+        "PROVIDERID",
+        "FORECAST_PRIORITY",
+        "INTERVAL_DATETIME",
+        "FORECAST_TYPE",
+        "FORECAST_VALUE",
+    ];
+    type Row<'row> = DemandRooftopPvFcstPred1Row<'row>;
+    type FieldMapping = DemandRooftopPvFcstPred1Mapping;
+    type PrimaryKey = DemandRooftopPvFcstPred1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandRooftopPvFcstPred1Row {
+            forecast_run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "forecast_run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            areaid: row.get_range("areaid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            providerid: row.get_range("providerid", field_mapping.0[3])?,
+            forecast_priority: row
+                .get_custom_parsed_at_idx(
+                    "forecast_priority",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            forecast_type: row.get_range("forecast_type", field_mapping.0[6])?,
+            forecast_value: row
+                .get_opt_custom_parsed_at_idx(
+                    "forecast_value",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandRooftopPvFcstPred1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandRooftopPvFcstPred1PrimaryKey {
+        DemandRooftopPvFcstPred1PrimaryKey {
+            areaid: row.areaid().to_string(),
+            forecast_priority: row.forecast_priority,
+            forecast_run_datetime: row.forecast_run_datetime,
+            forecast_type: row.forecast_type().to_string(),
+            interval_datetime: row.interval_datetime,
+            offerdatetime: row.offerdatetime,
+            providerid: row.providerid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("demand_rooftop_pv_fcst_pred_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandRooftopPvFcstPred1Row {
+            forecast_run_datetime: row.forecast_run_datetime.clone(),
+            areaid: row.areaid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            providerid: row.providerid.clone(),
+            forecast_priority: row.forecast_priority.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            forecast_type: row.forecast_type.clone(),
+            forecast_value: row.forecast_value.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DemandRooftopPvFcstPred1PrimaryKey {
+    pub areaid: alloc::string::String,
+    pub forecast_priority: rust_decimal::Decimal,
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    pub forecast_type: alloc::string::String,
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub offerdatetime: chrono::NaiveDateTime,
+    pub providerid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for DemandRooftopPvFcstPred1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DemandRooftopPvFcstPred1Row<'data> {
+    type Row<'other> = DemandRooftopPvFcstPred1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid() == row.areaid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.forecast_type() == row.forecast_type()
+            && self.interval_datetime == row.interval_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid() == row.providerid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DemandRooftopPvFcstPred1Row<'data> {
+    type PrimaryKey = DemandRooftopPvFcstPred1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid() == key.areaid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.forecast_type() == key.forecast_type
+            && self.interval_datetime == key.interval_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid() == key.providerid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for DemandRooftopPvFcstPred1PrimaryKey {
+    type Row<'other> = DemandRooftopPvFcstPred1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid == row.areaid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.forecast_type == row.forecast_type()
+            && self.interval_datetime == row.interval_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid == row.providerid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DemandRooftopPvFcstPred1PrimaryKey {
+    type PrimaryKey = DemandRooftopPvFcstPred1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid == key.areaid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.forecast_type == key.forecast_type
+            && self.interval_datetime == key.interval_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid == key.providerid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstPred1 {
+    type Builder = DemandRooftopPvFcstPred1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "forecast_run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "areaid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "providerid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_priority",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_type",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_value",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        DemandRooftopPvFcstPred1Builder {
+            forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            areaid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            providerid_array: arrow::array::builder::StringBuilder::new(),
+            forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            forecast_type_array: arrow::array::builder::StringBuilder::new(),
+            forecast_value_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .forecast_run_datetime_array
+            .append_value(row.forecast_run_datetime.and_utc().timestamp_millis());
+        builder.areaid_array.append_value(row.areaid());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
+        builder.providerid_array.append_value(row.providerid());
+        builder
+            .forecast_priority_array
+            .append_value({
+                let mut val = row.forecast_priority;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.forecast_type_array.append_value(row.forecast_type());
+        builder
+            .forecast_value_array
+            .append_option({
+                row.forecast_value
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.forecast_run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.areaid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.providerid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_priority_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_type_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_value_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct DemandRooftopPvFcstPred1Builder {
+    forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    areaid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    providerid_array: arrow::array::builder::StringBuilder,
+    forecast_priority_array: arrow::array::builder::Decimal128Builder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    forecast_type_array: arrow::array::builder::StringBuilder,
+    forecast_value_array: arrow::array::builder::Decimal128Builder,
+}
+pub struct DemandRooftopPvFcstRun1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &DemandRooftopPvFcstRun1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DemandRooftopPvFcstRun1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct DemandRooftopPvFcstRun1Mapping([usize; 11]);
+/// # Summary
+///
+/// ## ROOFTOP_PV_FCST_RUN
+///
+/// Contains forecast runs for rooftop PV areas, with a 30-minute resolution over the week-ahead PD/STPASA timeframe. This is the parent table to the child table ROOFTOP_PV_FCST_PRED, which contains the corresponding forecast predictions over the full horizon.
+///
+/// * Data Set Name: Demand
+/// * File Name: Rooftop Pv Fcst Run
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * AREAID
+/// * FORECAST_PRIORITY
+/// * FORECAST_RUN_DATETIME
+/// * OFFERDATETIME
+/// * PROVIDERID
+#[derive(Debug, PartialEq, Eq)]
+pub struct DemandRooftopPvFcstRun1Row<'data> {
+    /// Datetime (interval ending) when this forecast run is valid. It aligns with run_datetime in downstream processes, unless a forecast run is missed, in this case the previous run is used.
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    /// Area identifier, aligning with the load forecasting areas.
+    pub areaid: core::ops::Range<usize>,
+    /// Datetime when this forecast submission was loaded.
+    pub offerdatetime: chrono::NaiveDateTime,
+    /// Forecast provider identifier, for example, AEMO, PROVIDER_A and so on.
+    pub providerid: core::ops::Range<usize>,
+    /// Priority of forecast run, higher number is used in preference to lower number for the same provider.
+    pub forecast_priority: rust_decimal::Decimal,
+    /// Datetime when the provider created the forecast.
+    pub provider_timestamp: Option<chrono::NaiveDateTime>,
+    /// Comments relating to the forecast run.
+    pub remarks: core::ops::Range<usize>,
+    /// Metadata describing the model used to produce the forecast run.
+    pub model_used: core::ops::Range<usize>,
+    /// Flag indicating if the forecast run was suppressed by the provider when submitted. Suppressed forecasts are not used by downstream systems. Suppressed = 1, Unsuppressed = 0.
+    pub suppressed_provider: Option<rust_decimal::Decimal>,
+    /// Installed rooftop PV capacity that was used for the forecast run, in MW.
+    pub installed_capacity: Option<rust_decimal::Decimal>,
+    /// Datetime when the forecast run was written into AEMO database.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DemandRooftopPvFcstRun1Row<'data> {
+    pub fn areaid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.areaid.clone())
+    }
+    pub fn providerid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.providerid.clone())
+    }
+    pub fn remarks(&self) -> Option<&str> {
+        if self.remarks.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.remarks.clone(),
+                ),
+            )
+        }
+    }
+    pub fn model_used(&self) -> Option<&str> {
+        if self.model_used.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.model_used.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for DemandRooftopPvFcstRun1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DEMAND";
+    const TABLE_NAME: &'static str = "ROOFTOP_PV_FCST_RUN";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandRooftopPvFcstRun1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "FORECAST_RUN_DATETIME",
+        "AREAID",
+        "OFFERDATETIME",
+        "PROVIDERID",
+        "FORECAST_PRIORITY",
+        "PROVIDER_TIMESTAMP",
+        "REMARKS",
+        "MODEL_USED",
+        "SUPPRESSED_PROVIDER",
+        "INSTALLED_CAPACITY",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = DemandRooftopPvFcstRun1Row<'row>;
+    type FieldMapping = DemandRooftopPvFcstRun1Mapping;
+    type PrimaryKey = DemandRooftopPvFcstRun1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DemandRooftopPvFcstRun1Row {
+            forecast_run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "forecast_run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            areaid: row.get_range("areaid", field_mapping.0[1])?,
+            offerdatetime: row
+                .get_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            providerid: row.get_range("providerid", field_mapping.0[3])?,
+            forecast_priority: row
+                .get_custom_parsed_at_idx(
+                    "forecast_priority",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            provider_timestamp: row
+                .get_opt_custom_parsed_at_idx(
+                    "provider_timestamp",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            remarks: row.get_opt_range("remarks", field_mapping.0[6])?,
+            model_used: row.get_opt_range("model_used", field_mapping.0[7])?,
+            suppressed_provider: row
+                .get_opt_custom_parsed_at_idx(
+                    "suppressed_provider",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            installed_capacity: row
+                .get_opt_custom_parsed_at_idx(
+                    "installed_capacity",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DemandRooftopPvFcstRun1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DemandRooftopPvFcstRun1PrimaryKey {
+        DemandRooftopPvFcstRun1PrimaryKey {
+            areaid: row.areaid().to_string(),
+            forecast_priority: row.forecast_priority,
+            forecast_run_datetime: row.forecast_run_datetime,
+            offerdatetime: row.offerdatetime,
+            providerid: row.providerid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("demand_rooftop_pv_fcst_run_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DemandRooftopPvFcstRun1Row {
+            forecast_run_datetime: row.forecast_run_datetime.clone(),
+            areaid: row.areaid.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            providerid: row.providerid.clone(),
+            forecast_priority: row.forecast_priority.clone(),
+            provider_timestamp: row.provider_timestamp.clone(),
+            remarks: row.remarks.clone(),
+            model_used: row.model_used.clone(),
+            suppressed_provider: row.suppressed_provider.clone(),
+            installed_capacity: row.installed_capacity.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DemandRooftopPvFcstRun1PrimaryKey {
+    pub areaid: alloc::string::String,
+    pub forecast_priority: rust_decimal::Decimal,
+    pub forecast_run_datetime: chrono::NaiveDateTime,
+    pub offerdatetime: chrono::NaiveDateTime,
+    pub providerid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for DemandRooftopPvFcstRun1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DemandRooftopPvFcstRun1Row<'data> {
+    type Row<'other> = DemandRooftopPvFcstRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid() == row.areaid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid() == row.providerid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DemandRooftopPvFcstRun1Row<'data> {
+    type PrimaryKey = DemandRooftopPvFcstRun1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid() == key.areaid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid() == key.providerid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for DemandRooftopPvFcstRun1PrimaryKey {
+    type Row<'other> = DemandRooftopPvFcstRun1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid == row.areaid() && self.forecast_priority == row.forecast_priority
+            && self.forecast_run_datetime == row.forecast_run_datetime
+            && self.offerdatetime == row.offerdatetime
+            && self.providerid == row.providerid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DemandRooftopPvFcstRun1PrimaryKey {
+    type PrimaryKey = DemandRooftopPvFcstRun1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid == key.areaid && self.forecast_priority == key.forecast_priority
+            && self.forecast_run_datetime == key.forecast_run_datetime
+            && self.offerdatetime == key.offerdatetime
+            && self.providerid == key.providerid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstRun1 {
+    type Builder = DemandRooftopPvFcstRun1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "forecast_run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "areaid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "providerid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_priority",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "provider_timestamp",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "remarks",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "model_used",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "suppressed_provider",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "installed_capacity",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        DemandRooftopPvFcstRun1Builder {
+            forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            areaid_array: arrow::array::builder::StringBuilder::new(),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            providerid_array: arrow::array::builder::StringBuilder::new(),
+            forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            remarks_array: arrow::array::builder::StringBuilder::new(),
+            model_used_array: arrow::array::builder::StringBuilder::new(),
+            suppressed_provider_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            installed_capacity_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .forecast_run_datetime_array
+            .append_value(row.forecast_run_datetime.and_utc().timestamp_millis());
+        builder.areaid_array.append_value(row.areaid());
+        builder
+            .offerdatetime_array
+            .append_value(row.offerdatetime.and_utc().timestamp_millis());
+        builder.providerid_array.append_value(row.providerid());
+        builder
+            .forecast_priority_array
+            .append_value({
+                let mut val = row.forecast_priority;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .provider_timestamp_array
+            .append_option(
+                row.provider_timestamp.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder.remarks_array.append_option(row.remarks());
+        builder.model_used_array.append_option(row.model_used());
+        builder
+            .suppressed_provider_array
+            .append_option({
+                row.suppressed_provider
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .installed_capacity_array
+            .append_option({
+                row.installed_capacity
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.forecast_run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.areaid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.providerid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_priority_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.provider_timestamp_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.remarks_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.model_used_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.suppressed_provider_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.installed_capacity_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct DemandRooftopPvFcstRun1Builder {
+    forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    areaid_array: arrow::array::builder::StringBuilder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    providerid_array: arrow::array::builder::StringBuilder,
+    forecast_priority_array: arrow::array::builder::Decimal128Builder,
+    provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
+    remarks_array: arrow::array::builder::StringBuilder,
+    model_used_array: arrow::array::builder::StringBuilder,
+    suppressed_provider_array: arrow::array::builder::Decimal128Builder,
+    installed_capacity_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct RooftopForecast1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -6040,7 +10771,7 @@ pub struct RooftopForecast1Mapping([usize; 8]);
 ///
 /// ## ROOFTOP_PV_FORECAST
 ///
-/// Regional forecasts of Rooftop Solar generation across the half-hour intervals over 8 days
+/// Regional forecasts of Rooftop Solar generation across the half-hour intervals over 8 days. AEMO plans to remove this table in a Data Model version release after 5.6.
 ///
 /// * Data Set Name: Rooftop
 /// * File Name: Forecast
@@ -6087,7 +10818,14 @@ impl mmsdm_core::GetTable for RooftopForecast1 {
     const DATA_SET_NAME: &'static str = "ROOFTOP";
     const TABLE_NAME: &'static str = "FORECAST";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = RooftopForecast1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "VERSION_DATETIME",

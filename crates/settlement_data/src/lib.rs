@@ -31,7 +31,7 @@ pub struct SettlementsDaytrack7Mapping([usize; 10]);
 ///
 /// ## DAYTRACK
 ///
-/// DAYTRACK identifies the actual settlement run processed for each settlement day. Settlement run is in the column EXPOSTRUNNO. Generally the number of the settlement run used in the latest statement is the maximum number.
+/// DAYTRACK identifies the actual settlement run processed for each settlement day. Settlement run is in the column EXPOSTRUNNO. Generally, the number of the settlement run used in the latest statement is the maximum number.
 ///
 /// * Data Set Name: Settlements
 /// * File Name: Daytrack
@@ -53,11 +53,11 @@ pub struct SettlementsDaytrack7Row<'data> {
     pub settlementdate: chrono::NaiveDateTime,
     /// Not Used
     pub regionid: core::ops::Range<usize>,
-    /// Not Used
+    /// This is to determine whether the Settlement Run is a valid run or not.
     pub exanterunstatus: core::ops::Range<usize>,
     /// Not Used
     pub exanterunno: Option<rust_decimal::Decimal>,
-    /// Not Used
+    /// Estimate for DAILY/INITIAL and Actual for PRELIM/FINAL and REVISE.
     pub expostrunstatus: core::ops::Range<usize>,
     /// Settlement Run No
     pub expostrunno: rust_decimal::Decimal,
@@ -126,7 +126,16 @@ impl mmsdm_core::GetTable for SettlementsDaytrack7 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "DAYTRACK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsDaytrack7Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -542,7 +551,14 @@ impl mmsdm_core::GetTable for SettlementsAncillarySummary5 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "ANCILLARY_SUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsAncillarySummary5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -1012,7 +1028,28 @@ impl mmsdm_core::GetTable for SettlementsEnergyGensetDetail1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "ENERGY_GENSET_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsEnergyGensetDetail1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -1729,7 +1766,19 @@ impl mmsdm_core::GetTable for SettlementsEnergyRegionSummary1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "ENERGY_REGION_SUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsEnergyRegionSummary1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -2296,7 +2345,18 @@ impl mmsdm_core::GetTable for SettlementsEnergyTranSaps1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "ENERGY_TRAN_SAPS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsEnergyTranSaps1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -2834,7 +2894,28 @@ impl mmsdm_core::GetTable for SettlementsEnergyTransaction1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "ENERGY_TRANSACTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsEnergyTransaction1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -3613,7 +3694,23 @@ impl mmsdm_core::GetTable for SettlementsFcasClawbackReq1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_CLAWBACK_REQ";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasClawbackReq1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -4244,7 +4341,13 @@ impl mmsdm_core::GetTable for SettlementsFcasClawbackRunTrk1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_CLAWBACK_RUN_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasClawbackRunTrk1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -4630,7 +4733,20 @@ impl mmsdm_core::GetTable for SettlementsFcasClawbackUnitsol1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_CLAWBACK_UNITSOL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasClawbackUnitsol1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -5238,7 +5354,23 @@ impl mmsdm_core::GetTable for SettlementsFcasPayment6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_PAYMENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasPayment6Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -5973,9 +6105,68 @@ impl mmsdm_core::GetTable for SettlementsFcasRecovery9 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasRecovery9Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
-        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -7853,7 +8044,17 @@ impl mmsdm_core::GetTable for SettlementsFcasRegAmt1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_REG_AMT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasRegAmt1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -8329,7 +8530,15 @@ impl mmsdm_core::GetTable for SettlementsFcasRegDefAmt1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_REG_DEF_AMT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasRegDefAmt1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -8673,7 +8882,7 @@ pub struct SettlementsFcasRegDefResidamt1Mapping([usize; 14]);
 ///
 /// ## SET_FCAS_REG_DEF_RESIDAMT
 ///
-/// This report contains the the FCAS Regulation Residue Amounts that include FPP Residual Amounts, Used Residual Amounts and Unused Residual Amounts calculated using the Energy Ratio for each Requirement Region and the Default Residual CF
+/// This report contains the FCAS Regulation Residue Amounts that include FPP Residual Amounts, Used Residual Amounts and Unused Residual Amounts calculated using the Energy Ratio for each Requirement Region and the Default Residual CF.
 ///
 /// * Data Set Name: Settlements
 /// * File Name: Fcas Reg Def Residamt
@@ -8713,13 +8922,13 @@ pub struct SettlementsFcasRegDefResidamt1Row<'data> {
     pub ace_mwh: Option<rust_decimal::Decimal>,
     /// The ASOE MWh value that is used for the Residual Calculation.(Excluding CPID with CF)
     pub asoe_mwh: Option<rust_decimal::Decimal>,
-    /// Sum of ABS(ACE_MWh) + ASOE_MWh. The MWh is not netted for residual calculation. This is not used in calculation at the moment. This is only used for FPP Residual
+    /// Sum of ABS(ACE_MWh) + ASOE_MWh. The MWh is not netted for residual calculation.
     pub residual_mwh: Option<rust_decimal::Decimal>,
     /// The Unused Recovery ACE Amount calculated using the ACE MWh value of the requirement regions.
     pub unused_ace_amount: Option<rust_decimal::Decimal>,
-    /// The Unused Recovery ASOE Amount is always 0 as FCAS Reg Residual is recovered from ACE MWh Only
+    /// The Unused Recovery ASOE Amount calculated using the ASOE MWh value of the requirement regions.
     pub unused_asoe_amount: Option<rust_decimal::Decimal>,
-    /// The Unused Residual Amount is same as Unused ACE Amount.
+    /// Sum of UNUSED_ACE_AMOUNT + UNUSED_ASOE_AMOUNT.
     pub unused_residual_amount: Option<rust_decimal::Decimal>,
     /// The Last Changed Date time of the record.
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -8753,7 +8962,20 @@ impl mmsdm_core::GetTable for SettlementsFcasRegDefResidamt1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_REG_DEF_RESIDAMT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasRegDefResidamt1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -9244,7 +9466,7 @@ pub struct SettlementsFcasRegResidamt1Mapping([usize; 20]);
 ///
 /// ## SET_FCAS_REG_RESIDAMT
 ///
-/// This report contains the the FCAS Regulation Residue Amounts that include FPP Residual Amounts, Used Residual Amounts and Unused Residual Amounts calculated using the Energy Ratio for each Requirement Region
+/// This report contains the FCAS Regulation Residue Amounts that include FPP Residual Amounts, Used Residual Amounts and Unused Residual Amounts calculated using the Energy Ratio for each Requirement Region.
 ///
 /// * Data Set Name: Settlements
 /// * File Name: Fcas Reg Residamt
@@ -9282,9 +9504,9 @@ pub struct SettlementsFcasRegResidamt1Row<'data> {
     pub bidtype: core::ops::Range<usize>,
     /// The ACE MWh value that is used for the Residual Calculation.(Excluding CPID with CF)
     pub ace_mwh: Option<rust_decimal::Decimal>,
-    /// The ASOE MWh value that is used for the Residual Calculation.(Excluding CPID with CF). ASOE MWh is only used for FPP Residual.
+    /// The ASOE MWh value that is used for the FCAS Residual Calculation.(Excluding CPID with CF).
     pub asoe_mwh: Option<rust_decimal::Decimal>,
-    /// Sum of ABS(ACE_MWh) + ASOE_MWh. The MWh is not netted for residual calculation. This is only used for FPP Residual
+    /// Sum of ABS(ACE_MWh) + ASOE_MWh. The MWh is not netted for residual calculation.
     pub residual_mwh: Option<rust_decimal::Decimal>,
     /// The FPP ACE Amount calculated using the portion of ACE MWh value against the Total residual MWh of the requirement regions.
     pub fpp_ace_amount: Option<rust_decimal::Decimal>,
@@ -9294,15 +9516,15 @@ pub struct SettlementsFcasRegResidamt1Row<'data> {
     pub fpp_residual_amount: Option<rust_decimal::Decimal>,
     /// The Used Recovery ACE Amount calculated using the ACE MWh value of the requirement regions.
     pub used_ace_amount: Option<rust_decimal::Decimal>,
-    /// The Used Recovery ASOE Amount is always 0 as FCAS Regulation Residual is calculated using ACE MWh values only.
+    /// The Used Recovery ASOE Amount calculated using the portion of ASOE MWh value against the Total residual MWh of the requirement regions.
     pub used_asoe_amount: Option<rust_decimal::Decimal>,
-    /// The Used Residual Amount is Same as Used_ACE_Amount
+    /// Sum of USED_ACE_AMOUNT + USED_ASOE_AMOUNT.
     pub used_residual_amount: Option<rust_decimal::Decimal>,
     /// The Unused Recovery ACE Amount calculated using the portion of ACE MWh value against the Total residual MWh of the requirement regions.
     pub unused_ace_amount: Option<rust_decimal::Decimal>,
-    /// The Unused Recovery ASOE Amount is always 0 as as FCAS Regulation Residual is calculated using ACE MWh values only.
+    /// The Unused Recovery ASOE Amount calculated using the portion of ASOE MWh value against the Total residual MWh of the requirement regions.
     pub unused_asoe_amount: Option<rust_decimal::Decimal>,
-    /// The Unused Residual Amount is Same as Unused_ACE_Amount
+    /// Sum of UNUSED_ACE_AMOUNT + UNUSED_ASOE_AMOUNT.
     pub unused_residual_amount: Option<rust_decimal::Decimal>,
     /// The Last Changed Date time of the record.
     pub lastchanged: Option<chrono::NaiveDateTime>,
@@ -9336,7 +9558,26 @@ impl mmsdm_core::GetTable for SettlementsFcasRegResidamt1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_REG_RESIDAMT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasRegResidamt1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -10068,8 +10309,31 @@ impl mmsdm_core::GetTable for SettlementsSetFcasRegulationTrk3 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "SET_FCAS_REGULATION_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsSetFcasRegulationTrk3Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -10954,7 +11218,20 @@ impl mmsdm_core::GetTable for SettlementsFpp1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FPP";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFpp1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -11440,6 +11717,489 @@ pub struct SettlementsFpp1Builder {
     raisereg_residual_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
+pub struct SettlementsNmasManualPayment1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &SettlementsNmasManualPayment1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl SettlementsNmasManualPayment1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct SettlementsNmasManualPayment1Mapping([usize; 11]);
+/// # Summary
+///
+/// ## SET_NMAS_MANUAL_PAYMENT
+///
+/// This report contains the NMAS Manual TI Payments that are uploaded by the Settlement Business Team. Amounts in this table are not calculated by the Settlement System.
+///
+/// * Data Set Name: Settlements
+/// * File Name: Nmas Manual Payment
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Private
+///
+/// # Primary Key Columns
+///
+/// * CONTRACTID
+/// * DUID
+/// * PARTICIPANTID
+/// * PAYMENTTYPE
+/// * PERIODID
+/// * SERVICETYPE
+/// * SETTLEMENTDATE
+/// * VERSIONNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct SettlementsNmasManualPayment1Row<'data> {
+    /// The Settlement Date of the Billing Week.
+    pub settlementdate: chrono::NaiveDateTime,
+    /// The Settlement Run No.
+    pub versionno: rust_decimal::Decimal,
+    /// The Contract Participant Id.
+    pub participantid: core::ops::Range<usize>,
+    /// The NMAS System Security Contract ID.
+    pub contractid: core::ops::Range<usize>,
+    /// The DUID associated with the Contract Payment.
+    pub duid: core::ops::Range<usize>,
+    /// The NMAS System Security Service Types (INERTIA, SYSTEM STRENGTH, TYPE1, TYPE2 and so on).
+    pub servicetype: core::ops::Range<usize>,
+    /// The Payment Type associated with the Service like Availability, Usage, Enablement, Energy Revenue, Test, ADHOC and so on.
+    pub paymenttype: core::ops::Range<usize>,
+    /// The Settlement Period Id (1-288).
+    pub periodid: rust_decimal::Decimal,
+    /// The Contract Region Id.
+    pub regionid: core::ops::Range<usize>,
+    /// The NMAS Contract Manual Payment for the Payment Type.
+    pub paymentamount: Option<rust_decimal::Decimal>,
+    /// The last changed date time of the record.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> SettlementsNmasManualPayment1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn contractid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.contractid.clone())
+    }
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn servicetype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.servicetype.clone())
+    }
+    pub fn paymenttype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.paymenttype.clone())
+    }
+    pub fn regionid(&self) -> Option<&str> {
+        if self.regionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.regionid.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for SettlementsNmasManualPayment1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "SETTLEMENTS";
+    const TABLE_NAME: &'static str = "NMAS_MANUAL_PAYMENT";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsNmasManualPayment1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "SETTLEMENTDATE",
+        "VERSIONNO",
+        "PARTICIPANTID",
+        "CONTRACTID",
+        "DUID",
+        "SERVICETYPE",
+        "PAYMENTTYPE",
+        "PERIODID",
+        "REGIONID",
+        "PAYMENTAMOUNT",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = SettlementsNmasManualPayment1Row<'row>;
+    type FieldMapping = SettlementsNmasManualPayment1Mapping;
+    type PrimaryKey = SettlementsNmasManualPayment1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(SettlementsNmasManualPayment1Row {
+            settlementdate: row
+                .get_custom_parsed_at_idx(
+                    "settlementdate",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participantid: row.get_range("participantid", field_mapping.0[2])?,
+            contractid: row.get_range("contractid", field_mapping.0[3])?,
+            duid: row.get_range("duid", field_mapping.0[4])?,
+            servicetype: row.get_range("servicetype", field_mapping.0[5])?,
+            paymenttype: row.get_range("paymenttype", field_mapping.0[6])?,
+            periodid: row
+                .get_custom_parsed_at_idx(
+                    "periodid",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            regionid: row.get_opt_range("regionid", field_mapping.0[8])?,
+            paymentamount: row
+                .get_opt_custom_parsed_at_idx(
+                    "paymentamount",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(SettlementsNmasManualPayment1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> SettlementsNmasManualPayment1PrimaryKey {
+        SettlementsNmasManualPayment1PrimaryKey {
+            contractid: row.contractid().to_string(),
+            duid: row.duid().to_string(),
+            participantid: row.participantid().to_string(),
+            paymenttype: row.paymenttype().to_string(),
+            periodid: row.periodid,
+            servicetype: row.servicetype().to_string(),
+            settlementdate: row.settlementdate,
+            versionno: row.versionno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "settlements_nmas_manual_payment_v1_{}", self.partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        SettlementsNmasManualPayment1Row {
+            settlementdate: row.settlementdate.clone(),
+            versionno: row.versionno.clone(),
+            participantid: row.participantid.clone(),
+            contractid: row.contractid.clone(),
+            duid: row.duid.clone(),
+            servicetype: row.servicetype.clone(),
+            paymenttype: row.paymenttype.clone(),
+            periodid: row.periodid.clone(),
+            regionid: row.regionid.clone(),
+            paymentamount: row.paymentamount.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct SettlementsNmasManualPayment1PrimaryKey {
+    pub contractid: alloc::string::String,
+    pub duid: alloc::string::String,
+    pub participantid: alloc::string::String,
+    pub paymenttype: alloc::string::String,
+    pub periodid: rust_decimal::Decimal,
+    pub servicetype: alloc::string::String,
+    pub settlementdate: chrono::NaiveDateTime,
+    pub versionno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for SettlementsNmasManualPayment1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for SettlementsNmasManualPayment1Row<'data> {
+    type Row<'other> = SettlementsNmasManualPayment1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid() == row.contractid() && self.duid() == row.duid()
+            && self.participantid() == row.participantid()
+            && self.paymenttype() == row.paymenttype() && self.periodid == row.periodid
+            && self.servicetype() == row.servicetype()
+            && self.settlementdate == row.settlementdate
+            && self.versionno == row.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for SettlementsNmasManualPayment1Row<'data> {
+    type PrimaryKey = SettlementsNmasManualPayment1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.contractid() == key.contractid && self.duid() == key.duid
+            && self.participantid() == key.participantid
+            && self.paymenttype() == key.paymenttype && self.periodid == key.periodid
+            && self.servicetype() == key.servicetype
+            && self.settlementdate == key.settlementdate
+            && self.versionno == key.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for SettlementsNmasManualPayment1PrimaryKey {
+    type Row<'other> = SettlementsNmasManualPayment1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contractid == row.contractid() && self.duid == row.duid()
+            && self.participantid == row.participantid()
+            && self.paymenttype == row.paymenttype() && self.periodid == row.periodid
+            && self.servicetype == row.servicetype()
+            && self.settlementdate == row.settlementdate
+            && self.versionno == row.versionno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for SettlementsNmasManualPayment1PrimaryKey {
+    type PrimaryKey = SettlementsNmasManualPayment1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.contractid == key.contractid && self.duid == key.duid
+            && self.participantid == key.participantid
+            && self.paymenttype == key.paymenttype && self.periodid == key.periodid
+            && self.servicetype == key.servicetype
+            && self.settlementdate == key.settlementdate
+            && self.versionno == key.versionno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for SettlementsNmasManualPayment1 {
+    type Builder = SettlementsNmasManualPayment1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "settlementdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "servicetype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "paymenttype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "periodid",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "paymentamount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        SettlementsNmasManualPayment1Builder {
+            settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            servicetype_array: arrow::array::builder::StringBuilder::new(),
+            paymenttype_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            paymentamount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .settlementdate_array
+            .append_value(row.settlementdate.and_utc().timestamp_millis());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.participantid_array.append_value(row.participantid());
+        builder.contractid_array.append_value(row.contractid());
+        builder.duid_array.append_value(row.duid());
+        builder.servicetype_array.append_value(row.servicetype());
+        builder.paymenttype_array.append_value(row.paymenttype());
+        builder
+            .periodid_array
+            .append_value({
+                let mut val = row.periodid;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.regionid_array.append_option(row.regionid());
+        builder
+            .paymentamount_array
+            .append_option({
+                row.paymentamount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.settlementdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.servicetype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.paymenttype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.periodid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.paymentamount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct SettlementsNmasManualPayment1Builder {
+    settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    servicetype_array: arrow::array::builder::StringBuilder,
+    paymenttype_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::builder::Decimal128Builder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    paymentamount_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct SettlementsNmasRecovery3 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -11562,8 +12322,30 @@ impl mmsdm_core::GetTable for SettlementsNmasRecovery3 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "NMAS_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsNmasRecovery3Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -12381,7 +13163,17 @@ impl mmsdm_core::GetTable for SettlementsNmasRecoveryRbf1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "NMAS_RECOVERY_RBF";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsNmasRecoveryRbf1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -12795,7 +13587,7 @@ pub struct SettlementsRecoveryEnergy2Mapping([usize; 25]);
 /// * Data Version: 2
 ///
 /// # Description
-/// Change History19 August 2005 for 4.5.0:Changed index name again to have suffix of _LCXNote: primary key shows PK_ as prefix in Oracle SQL script, even though name of key has _PK as suffix - but cannot change since would not improve participant systems .17 August 2005 for v4.5.0Added tablespace (02) for recently added index, and gave index a better name
+///
 ///
 /// # Notes
 /// * (Visibility)  Private
@@ -12874,8 +13666,31 @@ impl mmsdm_core::GetTable for SettlementsRecoveryEnergy2 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "RECOVERY_ENERGY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsRecoveryEnergy2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -13730,7 +14545,10 @@ impl mmsdm_core::GetTable for SettlementsSubstRunVersion1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "SUBST_RUN_VERSION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsSubstRunVersion1Mapping([
-        4, 5, 6, 7,
+        4,
+        5,
+        6,
+        7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -14057,7 +14875,12 @@ impl mmsdm_core::GetTable for SettlementsSubstDemand1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "SUBST_DEMAND";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsSubstDemand1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -14473,7 +15296,27 @@ impl mmsdm_core::GetTable for SettlementsWdrReconDetail1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "WDR_RECON_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsWdrReconDetail1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -15168,7 +16011,14 @@ impl mmsdm_core::GetTable for SettlementsWdrTransact1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "WDR_TRANSACT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsWdrTransact1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -15573,7 +16423,20 @@ impl mmsdm_core::GetTable for SettlementsFcasregionrecovery6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCASREGIONRECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasregionrecovery6Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -16142,7 +17005,18 @@ impl mmsdm_core::GetTable for SettlementsIntraregionresidues6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "INTRAREGIONRESIDUES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsIntraregionresidues6Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -16655,7 +17529,19 @@ impl mmsdm_core::GetTable for SettlementsIraucsurplus6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "IRAUCSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsIraucsurplus6Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -17193,7 +18079,19 @@ impl mmsdm_core::GetTable for SettlementsIrnspsurplus6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "IRNSPSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsIrnspsurplus6Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -17731,7 +18629,19 @@ impl mmsdm_core::GetTable for SettlementsIrpartsurplus6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "IRPARTSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsIrpartsurplus6Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -18257,7 +19167,17 @@ impl mmsdm_core::GetTable for SettlementsIrsurplus6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "IRSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsIrsurplus6Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -18738,7 +19658,16 @@ impl mmsdm_core::GetTable for SettlementsLocalareaenergy1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "LOCALAREAENERGY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsLocalareaenergy1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -19194,7 +20123,11 @@ impl mmsdm_core::GetTable for SettlementsLocalareatni1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "LOCALAREATNI";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsLocalareatni1Mapping([
-        4, 5, 6, 7, 8,
+        4,
+        5,
+        6,
+        7,
+        8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -19562,8 +20495,30 @@ impl mmsdm_core::GetTable for SettlementsLshedpayment5 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "LSHEDPAYMENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsLshedpayment5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -20402,7 +21357,19 @@ impl mmsdm_core::GetTable for SettlementsMarketfees7 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "MARKETFEES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsMarketfees7Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -20905,7 +21872,15 @@ impl mmsdm_core::GetTable for SettlementsReallocations5 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "REALLOCATIONS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsReallocations5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -21357,7 +22332,22 @@ impl mmsdm_core::GetTable for SettlementsRestartpayment6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "RESTARTPAYMENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsRestartpayment6Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -22016,8 +23006,35 @@ impl mmsdm_core::GetTable for SettlementsRpowerpayment6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "RPOWERPAYMENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsRpowerpayment6Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29, 30, 31, 32,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
