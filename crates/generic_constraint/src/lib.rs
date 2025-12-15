@@ -98,11 +98,7 @@ impl mmsdm_core::GetTable for GenericConstraintEmsmaster1 {
     const DATA_SET_NAME: &'static str = "GENERIC_CONSTRAINT";
     const TABLE_NAME: &'static str = "EMSMASTER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GenericConstraintEmsmaster1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SPD_ID",
@@ -230,22 +226,34 @@ impl mmsdm_core::ArrowSchema for GenericConstraintEmsmaster1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "spd_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "spd_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "grouping_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -261,10 +269,18 @@ impl mmsdm_core::ArrowSchema for GenericConstraintEmsmaster1 {
     }
     fn new_builder() -> Self::Builder {
         GenericConstraintEmsmaster1Builder {
-            spd_id_array: arrow::array::builder::StringBuilder::new(),
-            spd_type_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
-            grouping_id_array: arrow::array::builder::StringBuilder::new(),
+            spd_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            spd_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            grouping_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -300,10 +316,16 @@ impl mmsdm_core::ArrowSchema for GenericConstraintEmsmaster1 {
 }
 #[cfg(feature = "arrow")]
 pub struct GenericConstraintEmsmaster1Builder {
-    spd_id_array: arrow::array::builder::StringBuilder,
-    spd_type_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
-    grouping_id_array: arrow::array::builder::StringBuilder,
+    spd_id_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    spd_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
+    grouping_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct GencondataNull6 {
@@ -609,32 +631,8 @@ impl mmsdm_core::GetTable for GencondataNull6 {
     const DATA_SET_NAME: &'static str = "GENCONDATA";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GencondataNull6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -880,12 +878,18 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
                 ),
                 arrow::datatypes::Field::new(
                     "genconid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "constrainttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -895,12 +899,18 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "status",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -918,7 +928,10 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -936,67 +949,106 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
                 ),
                 arrow::datatypes::Field::new(
                     "dispatch",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "predispatch",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "stpasa",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "mtpasa",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "impact",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "source",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "limittype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "reason",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "modifications",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "additionalnotes",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "p5min_scope_override",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "lrc",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "lor",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1012,32 +1064,68 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            genconid_array: arrow::array::builder::StringBuilder::new(),
-            constrainttype_array: arrow::array::builder::StringBuilder::new(),
+            genconid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            constrainttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             constraintvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            description_array: arrow::array::builder::StringBuilder::new(),
-            status_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            status_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             genericconstraintweight_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             dynamicrhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            dispatch_array: arrow::array::builder::StringBuilder::new(),
-            predispatch_array: arrow::array::builder::StringBuilder::new(),
-            stpasa_array: arrow::array::builder::StringBuilder::new(),
-            mtpasa_array: arrow::array::builder::StringBuilder::new(),
-            impact_array: arrow::array::builder::StringBuilder::new(),
-            source_array: arrow::array::builder::StringBuilder::new(),
-            limittype_array: arrow::array::builder::StringBuilder::new(),
-            reason_array: arrow::array::builder::StringBuilder::new(),
-            modifications_array: arrow::array::builder::StringBuilder::new(),
-            additionalnotes_array: arrow::array::builder::StringBuilder::new(),
-            p5min_scope_override_array: arrow::array::builder::StringBuilder::new(),
-            lrc_array: arrow::array::builder::StringBuilder::new(),
-            lor_array: arrow::array::builder::StringBuilder::new(),
+            dispatch_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            predispatch_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            stpasa_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            mtpasa_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            impact_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            source_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            limittype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            reason_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            modifications_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            additionalnotes_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            p5min_scope_override_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            lrc_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            lor_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             force_scada_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
         }
@@ -1183,29 +1271,49 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
 pub struct GencondataNull6Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    genconid_array: arrow::array::builder::StringBuilder,
-    constrainttype_array: arrow::array::builder::StringBuilder,
+    genconid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    constrainttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     constraintvalue_array: arrow::array::builder::Decimal128Builder,
-    description_array: arrow::array::builder::StringBuilder,
-    status_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
+    status_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     genericconstraintweight_array: arrow::array::builder::Decimal128Builder,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     dynamicrhs_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    dispatch_array: arrow::array::builder::StringBuilder,
-    predispatch_array: arrow::array::builder::StringBuilder,
-    stpasa_array: arrow::array::builder::StringBuilder,
-    mtpasa_array: arrow::array::builder::StringBuilder,
-    impact_array: arrow::array::builder::StringBuilder,
-    source_array: arrow::array::builder::StringBuilder,
-    limittype_array: arrow::array::builder::StringBuilder,
-    reason_array: arrow::array::builder::StringBuilder,
-    modifications_array: arrow::array::builder::StringBuilder,
-    additionalnotes_array: arrow::array::builder::StringBuilder,
-    p5min_scope_override_array: arrow::array::builder::StringBuilder,
-    lrc_array: arrow::array::builder::StringBuilder,
-    lor_array: arrow::array::builder::StringBuilder,
+    dispatch_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    predispatch_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    stpasa_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    mtpasa_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    impact_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    source_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int64Type>,
+    limittype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    reason_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int64Type>,
+    modifications_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
+    additionalnotes_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
+    p5min_scope_override_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    lrc_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    lor_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     force_scada_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct GenconsetNull1 {
@@ -1283,13 +1391,7 @@ impl mmsdm_core::GetTable for GenconsetNull1 {
     const DATA_SET_NAME: &'static str = "GENCONSET";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GenconsetNull1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GENCONSETID",
@@ -1451,7 +1553,10 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "genconsetid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1469,7 +1574,10 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
                 ),
                 arrow::datatypes::Field::new(
                     "genconid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1498,11 +1606,15 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
     }
     fn new_builder() -> Self::Builder {
         GenconsetNull1Builder {
-            genconsetid_array: arrow::array::builder::StringBuilder::new(),
+            genconsetid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            genconid_array: arrow::array::builder::StringBuilder::new(),
+            genconid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             genconeffdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             genconversionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -1567,10 +1679,14 @@ impl mmsdm_core::ArrowSchema for GenconsetNull1 {
 }
 #[cfg(feature = "arrow")]
 pub struct GenconsetNull1Builder {
-    genconsetid_array: arrow::array::builder::StringBuilder,
+    genconsetid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    genconid_array: arrow::array::builder::StringBuilder,
+    genconid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     genconeffdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     genconversionno_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -1709,20 +1825,7 @@ impl mmsdm_core::GetTable for GenconsetinvokeNull2 {
     const DATA_SET_NAME: &'static str = "GENCONSETINVOKE";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GenconsetinvokeNull2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INVOCATION_ID",
@@ -1929,7 +2032,10 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
                 ),
                 arrow::datatypes::Field::new(
                     "genconsetid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1947,22 +2053,34 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
                 ),
                 arrow::datatypes::Field::new(
                     "startauthorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "endauthorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "intervention",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "asconstrainttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1991,7 +2109,10 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
                 ),
                 arrow::datatypes::Field::new(
                     "systemnormal",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -2003,18 +2124,30 @@ impl mmsdm_core::ArrowSchema for GenconsetinvokeNull2 {
             startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             startperiod_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            genconsetid_array: arrow::array::builder::StringBuilder::new(),
+            genconsetid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             endperiod_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            startauthorisedby_array: arrow::array::builder::StringBuilder::new(),
-            endauthorisedby_array: arrow::array::builder::StringBuilder::new(),
-            intervention_array: arrow::array::builder::StringBuilder::new(),
-            asconstrainttype_array: arrow::array::builder::StringBuilder::new(),
+            startauthorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            endauthorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            intervention_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            asconstrainttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             startintervaldatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             endintervaldatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            systemnormal_array: arrow::array::builder::StringBuilder::new(),
+            systemnormal_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2103,17 +2236,29 @@ pub struct GenconsetinvokeNull2Builder {
     invocation_id_array: arrow::array::builder::Int64Builder,
     startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     startperiod_array: arrow::array::builder::Decimal128Builder,
-    genconsetid_array: arrow::array::builder::StringBuilder,
+    genconsetid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     endperiod_array: arrow::array::builder::Decimal128Builder,
-    startauthorisedby_array: arrow::array::builder::StringBuilder,
-    endauthorisedby_array: arrow::array::builder::StringBuilder,
-    intervention_array: arrow::array::builder::StringBuilder,
-    asconstrainttype_array: arrow::array::builder::StringBuilder,
+    startauthorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    endauthorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    intervention_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    asconstrainttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     startintervaldatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     endintervaldatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    systemnormal_array: arrow::array::builder::StringBuilder,
+    systemnormal_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
 }
 pub struct GenconsettrkNull2 {
     extract_row_partition: alloc::boxed::Box<
@@ -2266,17 +2411,7 @@ impl mmsdm_core::GetTable for GenconsettrkNull2 {
     const DATA_SET_NAME: &'static str = "GENCONSETTRK";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GenconsettrkNull2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GENCONSETID",
@@ -2443,7 +2578,10 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "genconsetid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2461,12 +2599,18 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2487,22 +2631,34 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
                 ),
                 arrow::datatypes::Field::new(
                     "coverage",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "modifications",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "systemnormal",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "outage",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -2510,18 +2666,32 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
     }
     fn new_builder() -> Self::Builder {
         GenconsettrkNull2Builder {
-            genconsetid_array: arrow::array::builder::StringBuilder::new(),
+            genconsetid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            description_array: arrow::array::builder::StringBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            coverage_array: arrow::array::builder::StringBuilder::new(),
-            modifications_array: arrow::array::builder::StringBuilder::new(),
-            systemnormal_array: arrow::array::builder::StringBuilder::new(),
-            outage_array: arrow::array::builder::StringBuilder::new(),
+            coverage_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            modifications_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            systemnormal_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            outage_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2586,17 +2756,29 @@ impl mmsdm_core::ArrowSchema for GenconsettrkNull2 {
 }
 #[cfg(feature = "arrow")]
 pub struct GenconsettrkNull2Builder {
-    genconsetid_array: arrow::array::builder::StringBuilder,
+    genconsetid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    description_array: arrow::array::builder::StringBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    coverage_array: arrow::array::builder::StringBuilder,
-    modifications_array: arrow::array::builder::StringBuilder,
-    systemnormal_array: arrow::array::builder::StringBuilder,
-    outage_array: arrow::array::builder::StringBuilder,
+    coverage_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    modifications_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
+    systemnormal_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    outage_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int64Type>,
 }
 pub struct GcrhsNull1 {
     extract_row_partition: alloc::boxed::Box<
@@ -2760,21 +2942,7 @@ impl mmsdm_core::GetTable for GcrhsNull1 {
     const DATA_SET_NAME: &'static str = "GCRHS";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GcrhsNull1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GENCONID",
@@ -2976,7 +3144,10 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "genconid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2994,7 +3165,10 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
                 ),
                 arrow::datatypes::Field::new(
                     "scope",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3009,12 +3183,18 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
                 ),
                 arrow::datatypes::Field::new(
                     "spd_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "spd_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3024,7 +3204,10 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
                 ),
                 arrow::datatypes::Field::new(
                     "operation",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3034,17 +3217,26 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
                 ),
                 arrow::datatypes::Field::new(
                     "parameterterm1",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "parameterterm2",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "parameterterm3",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3060,25 +3252,41 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
     }
     fn new_builder() -> Self::Builder {
         GcrhsNull1Builder {
-            genconid_array: arrow::array::builder::StringBuilder::new(),
+            genconid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
-            scope_array: arrow::array::builder::StringBuilder::new(),
+            scope_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             termid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             groupid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            spd_id_array: arrow::array::builder::StringBuilder::new(),
-            spd_type_array: arrow::array::builder::StringBuilder::new(),
+            spd_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            spd_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            operation_array: arrow::array::builder::StringBuilder::new(),
+            operation_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             defaultvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            parameterterm1_array: arrow::array::builder::StringBuilder::new(),
-            parameterterm2_array: arrow::array::builder::StringBuilder::new(),
-            parameterterm3_array: arrow::array::builder::StringBuilder::new(),
+            parameterterm1_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            parameterterm2_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            parameterterm3_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -3182,20 +3390,32 @@ impl mmsdm_core::ArrowSchema for GcrhsNull1 {
 }
 #[cfg(feature = "arrow")]
 pub struct GcrhsNull1Builder {
-    genconid_array: arrow::array::builder::StringBuilder,
+    genconid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    scope_array: arrow::array::builder::StringBuilder,
+    scope_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     termid_array: arrow::array::builder::Decimal128Builder,
     groupid_array: arrow::array::builder::Decimal128Builder,
-    spd_id_array: arrow::array::builder::StringBuilder,
-    spd_type_array: arrow::array::builder::StringBuilder,
+    spd_id_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    spd_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     factor_array: arrow::array::builder::Decimal128Builder,
-    operation_array: arrow::array::builder::StringBuilder,
+    operation_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     defaultvalue_array: arrow::array::builder::Decimal128Builder,
-    parameterterm1_array: arrow::array::builder::StringBuilder,
-    parameterterm2_array: arrow::array::builder::StringBuilder,
-    parameterterm3_array: arrow::array::builder::StringBuilder,
+    parameterterm1_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    parameterterm2_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    parameterterm3_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct GeqdescNull2 {
@@ -3355,15 +3575,7 @@ impl mmsdm_core::GetTable for GeqdescNull2 {
     const DATA_SET_NAME: &'static str = "GEQDESC";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GeqdescNull2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EQUATIONID",
@@ -3501,12 +3713,18 @@ impl mmsdm_core::ArrowSchema for GeqdescNull2 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "equationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3519,32 +3737,50 @@ impl mmsdm_core::ArrowSchema for GeqdescNull2 {
                 ),
                 arrow::datatypes::Field::new(
                     "impact",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "source",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "limittype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "reason",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "modifications",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "additionalnotes",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -3552,15 +3788,31 @@ impl mmsdm_core::ArrowSchema for GeqdescNull2 {
     }
     fn new_builder() -> Self::Builder {
         GeqdescNull2Builder {
-            equationid_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            equationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            impact_array: arrow::array::builder::StringBuilder::new(),
-            source_array: arrow::array::builder::StringBuilder::new(),
-            limittype_array: arrow::array::builder::StringBuilder::new(),
-            reason_array: arrow::array::builder::StringBuilder::new(),
-            modifications_array: arrow::array::builder::StringBuilder::new(),
-            additionalnotes_array: arrow::array::builder::StringBuilder::new(),
+            impact_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            source_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            limittype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            reason_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            modifications_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            additionalnotes_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -3607,15 +3859,25 @@ impl mmsdm_core::ArrowSchema for GeqdescNull2 {
 }
 #[cfg(feature = "arrow")]
 pub struct GeqdescNull2Builder {
-    equationid_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
+    equationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    impact_array: arrow::array::builder::StringBuilder,
-    source_array: arrow::array::builder::StringBuilder,
-    limittype_array: arrow::array::builder::StringBuilder,
-    reason_array: arrow::array::builder::StringBuilder,
-    modifications_array: arrow::array::builder::StringBuilder,
-    additionalnotes_array: arrow::array::builder::StringBuilder,
+    impact_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    source_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int64Type>,
+    limittype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    reason_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int64Type>,
+    modifications_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
+    additionalnotes_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
 }
 pub struct GeqrhsNull1 {
     extract_row_partition: alloc::boxed::Box<
@@ -3773,20 +4035,7 @@ impl mmsdm_core::GetTable for GeqrhsNull1 {
     const DATA_SET_NAME: &'static str = "GEQRHS";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GeqrhsNull1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EQUATIONID",
@@ -3979,7 +4228,10 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "equationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4007,12 +4259,18 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
                 ),
                 arrow::datatypes::Field::new(
                     "spd_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "spd_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4022,7 +4280,10 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
                 ),
                 arrow::datatypes::Field::new(
                     "operation",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4032,17 +4293,26 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
                 ),
                 arrow::datatypes::Field::new(
                     "parameterterm1",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "parameterterm2",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "parameterterm3",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4058,7 +4328,9 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
     }
     fn new_builder() -> Self::Builder {
         GeqrhsNull1Builder {
-            equationid_array: arrow::array::builder::StringBuilder::new(),
+            equationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -4066,16 +4338,28 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             groupid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            spd_id_array: arrow::array::builder::StringBuilder::new(),
-            spd_type_array: arrow::array::builder::StringBuilder::new(),
+            spd_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            spd_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            operation_array: arrow::array::builder::StringBuilder::new(),
+            operation_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             defaultvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            parameterterm1_array: arrow::array::builder::StringBuilder::new(),
-            parameterterm2_array: arrow::array::builder::StringBuilder::new(),
-            parameterterm3_array: arrow::array::builder::StringBuilder::new(),
+            parameterterm1_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            parameterterm2_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            parameterterm3_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -4176,19 +4460,31 @@ impl mmsdm_core::ArrowSchema for GeqrhsNull1 {
 }
 #[cfg(feature = "arrow")]
 pub struct GeqrhsNull1Builder {
-    equationid_array: arrow::array::builder::StringBuilder,
+    equationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     termid_array: arrow::array::builder::Decimal128Builder,
     groupid_array: arrow::array::builder::Decimal128Builder,
-    spd_id_array: arrow::array::builder::StringBuilder,
-    spd_type_array: arrow::array::builder::StringBuilder,
+    spd_id_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    spd_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     factor_array: arrow::array::builder::Decimal128Builder,
-    operation_array: arrow::array::builder::StringBuilder,
+    operation_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     defaultvalue_array: arrow::array::builder::Decimal128Builder,
-    parameterterm1_array: arrow::array::builder::StringBuilder,
-    parameterterm2_array: arrow::array::builder::StringBuilder,
-    parameterterm3_array: arrow::array::builder::StringBuilder,
+    parameterterm1_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    parameterterm2_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    parameterterm3_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SpdcpcNull2 {
@@ -4271,13 +4567,7 @@ impl mmsdm_core::GetTable for SpdcpcNull2 {
     const DATA_SET_NAME: &'static str = "SPDCPC";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SpdcpcNull2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONNECTIONPOINTID",
@@ -4443,7 +4733,10 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4461,7 +4754,10 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
                 ),
                 arrow::datatypes::Field::new(
                     "genconid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4479,7 +4775,10 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -4487,15 +4786,21 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
     }
     fn new_builder() -> Self::Builder {
         SpdcpcNull2Builder {
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            genconid_array: arrow::array::builder::StringBuilder::new(),
+            genconid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -4552,13 +4857,17 @@ impl mmsdm_core::ArrowSchema for SpdcpcNull2 {
 }
 #[cfg(feature = "arrow")]
 pub struct SpdcpcNull2Builder {
-    connectionpointid_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    genconid_array: arrow::array::builder::StringBuilder,
+    genconid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     factor_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
 }
 pub struct SpdiccNull1 {
     extract_row_partition: alloc::boxed::Box<
@@ -4634,12 +4943,7 @@ impl mmsdm_core::GetTable for SpdiccNull1 {
     const DATA_SET_NAME: &'static str = "SPDICC";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SpdiccNull1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERCONNECTORID",
@@ -4797,7 +5101,10 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4815,7 +5122,10 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
                 ),
                 arrow::datatypes::Field::new(
                     "genconid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4836,11 +5146,15 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
     }
     fn new_builder() -> Self::Builder {
         SpdiccNull1Builder {
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            genconid_array: arrow::array::builder::StringBuilder::new(),
+            genconid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -4897,10 +5211,14 @@ impl mmsdm_core::ArrowSchema for SpdiccNull1 {
 }
 #[cfg(feature = "arrow")]
 pub struct SpdiccNull1Builder {
-    interconnectorid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    genconid_array: arrow::array::builder::StringBuilder,
+    genconid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     factor_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -4981,13 +5299,7 @@ impl mmsdm_core::GetTable for SpdrcNull2 {
     const DATA_SET_NAME: &'static str = "SPDRC";
     const TABLE_NAME: &'static str = "NULL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SpdrcNull2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -5150,7 +5462,10 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5168,7 +5483,10 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
                 ),
                 arrow::datatypes::Field::new(
                     "genconid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5186,7 +5504,10 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -5194,15 +5515,21 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
     }
     fn new_builder() -> Self::Builder {
         SpdrcNull2Builder {
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            genconid_array: arrow::array::builder::StringBuilder::new(),
+            genconid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -5259,11 +5586,15 @@ impl mmsdm_core::ArrowSchema for SpdrcNull2 {
 }
 #[cfg(feature = "arrow")]
 pub struct SpdrcNull2Builder {
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    genconid_array: arrow::array::builder::StringBuilder,
+    genconid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     factor_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
 }

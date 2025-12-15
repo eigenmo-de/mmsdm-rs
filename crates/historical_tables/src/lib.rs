@@ -121,33 +121,8 @@ impl mmsdm_core::GetTable for OfferBidperoffer1 {
     const DATA_SET_NAME: &'static str = "OFFER";
     const TABLE_NAME: &'static str = "BIDPEROFFER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OfferBidperoffer1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -475,12 +450,18 @@ impl mmsdm_core::ArrowSchema for OfferBidperoffer1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -622,8 +603,12 @@ impl mmsdm_core::ArrowSchema for OfferBidperoffer1 {
     }
     fn new_builder() -> Self::Builder {
         OfferBidperoffer1Builder {
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
@@ -947,8 +932,8 @@ impl mmsdm_core::ArrowSchema for OfferBidperoffer1 {
 }
 #[cfg(feature = "arrow")]
 pub struct OfferBidperoffer1Builder {
-    duid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
@@ -1076,22 +1061,7 @@ impl mmsdm_core::GetTable for BillingCpdata7 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "CPDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingCpdata7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1347,12 +1317,18 @@ impl mmsdm_core::ArrowSchema for BillingCpdata7 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1375,7 +1351,10 @@ impl mmsdm_core::ArrowSchema for BillingCpdata7 {
                 ),
                 arrow::datatypes::Field::new(
                     "mda",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1424,14 +1403,20 @@ impl mmsdm_core::ArrowSchema for BillingCpdata7 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             aggregateenergy_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             purchases_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            mda_array: arrow::array::builder::StringBuilder::new(),
+            mda_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             afe_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             dme_array: arrow::array::builder::Decimal128Builder::new()
@@ -1606,12 +1591,16 @@ pub struct BillingCpdata7Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     aggregateenergy_array: arrow::array::builder::Decimal128Builder,
     purchases_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    mda_array: arrow::array::builder::StringBuilder,
+    mda_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     afe_array: arrow::array::builder::Decimal128Builder,
     dme_array: arrow::array::builder::Decimal128Builder,
     ufea_array: arrow::array::builder::Decimal128Builder,
@@ -1739,19 +1728,7 @@ impl mmsdm_core::GetTable for BillingGendata5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "GENDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingGendata5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1971,22 +1948,34 @@ impl mmsdm_core::ArrowSchema for BillingGendata5 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "stationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2019,7 +2008,10 @@ impl mmsdm_core::ArrowSchema for BillingGendata5 {
                 ),
                 arrow::datatypes::Field::new(
                     "mda",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -2033,10 +2025,18 @@ impl mmsdm_core::ArrowSchema for BillingGendata5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            stationid_array: arrow::array::builder::StringBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            stationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             aggregateenergy_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             sales_array: arrow::array::builder::Decimal128Builder::new()
@@ -2046,7 +2046,9 @@ impl mmsdm_core::ArrowSchema for BillingGendata5 {
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             purchasedenergy_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            mda_array: arrow::array::builder::StringBuilder::new(),
+            mda_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2158,16 +2160,22 @@ pub struct BillingGendata5Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
-    stationid_array: arrow::array::builder::StringBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    stationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     aggregateenergy_array: arrow::array::builder::Decimal128Builder,
     sales_array: arrow::array::builder::Decimal128Builder,
     purchases_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     purchasedenergy_array: arrow::array::builder::Decimal128Builder,
-    mda_array: arrow::array::builder::StringBuilder,
+    mda_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
 }
 pub struct DispatchocdCase1 {
     extract_row_partition: alloc::boxed::Box<
@@ -2532,28 +2540,7 @@ impl mmsdm_core::GetTable for DispatchbncCasesolution1 {
     const DATA_SET_NAME: &'static str = "DISPATCHBNC";
     const TABLE_NAME: &'static str = "CASESOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchbncCasesolution1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
         26,
     ]);
     const COLUMNS: &'static [&'static str] = &[
@@ -2860,7 +2847,10 @@ impl mmsdm_core::ArrowSchema for DispatchbncCasesolution1 {
                 ),
                 arrow::datatypes::Field::new(
                     "casesubtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2974,7 +2964,9 @@ impl mmsdm_core::ArrowSchema for DispatchbncCasesolution1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            casesubtype_array: arrow::array::builder::StringBuilder::new(),
+            casesubtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             solutionstatus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             spdversion_array: arrow::array::builder::Decimal128Builder::new()
@@ -3258,7 +3250,9 @@ pub struct DispatchbncCasesolution1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     intervention_array: arrow::array::builder::Decimal128Builder,
-    casesubtype_array: arrow::array::builder::StringBuilder,
+    casesubtype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     solutionstatus_array: arrow::array::builder::Decimal128Builder,
     spdversion_array: arrow::array::builder::Decimal128Builder,
     startperiod_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -3397,30 +3391,8 @@ impl mmsdm_core::GetTable for DispatchbncUnitsolution1 {
     const DATA_SET_NAME: &'static str = "DISPATCHBNC";
     const TABLE_NAME: &'static str = "UNITSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchbncUnitsolution1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -3732,7 +3704,10 @@ impl mmsdm_core::ArrowSchema for DispatchbncUnitsolution1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3742,7 +3717,10 @@ impl mmsdm_core::ArrowSchema for DispatchbncUnitsolution1 {
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3851,10 +3829,14 @@ impl mmsdm_core::ArrowSchema for DispatchbncUnitsolution1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             dispatchmode_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             totalcleared_array: arrow::array::builder::Decimal128Builder::new()
@@ -4143,9 +4125,11 @@ impl mmsdm_core::ArrowSchema for DispatchbncUnitsolution1 {
 pub struct DispatchbncUnitsolution1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     intervention_array: arrow::array::builder::Decimal128Builder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     dispatchmode_array: arrow::array::builder::Decimal128Builder,
     totalcleared_array: arrow::array::builder::Decimal128Builder,
     raisereg_array: arrow::array::builder::Decimal128Builder,
@@ -4266,18 +4250,7 @@ impl mmsdm_core::GetTable for MeterDataCustomer1 {
     const DATA_SET_NAME: &'static str = "METER_DATA";
     const TABLE_NAME: &'static str = "CUSTOMER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterDataCustomer1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -4487,7 +4460,10 @@ impl mmsdm_core::ArrowSchema for MeterDataCustomer1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4510,7 +4486,10 @@ impl mmsdm_core::ArrowSchema for MeterDataCustomer1 {
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4535,7 +4514,10 @@ impl mmsdm_core::ArrowSchema for MeterDataCustomer1 {
                 ),
                 arrow::datatypes::Field::new(
                     "hostdistributor",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4548,7 +4530,10 @@ impl mmsdm_core::ArrowSchema for MeterDataCustomer1 {
                 ),
                 arrow::datatypes::Field::new(
                     "mda",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -4556,13 +4541,17 @@ impl mmsdm_core::ArrowSchema for MeterDataCustomer1 {
     }
     fn new_builder() -> Self::Builder {
         MeterDataCustomer1Builder {
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             meterrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             importenergyvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 6)),
             exportenergyvalue_array: arrow::array::builder::Decimal128Builder::new()
@@ -4571,9 +4560,13 @@ impl mmsdm_core::ArrowSchema for MeterDataCustomer1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 6)),
             exportreactivevalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 6)),
-            hostdistributor_array: arrow::array::builder::StringBuilder::new(),
+            hostdistributor_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            mda_array: arrow::array::builder::StringBuilder::new(),
+            mda_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -4675,18 +4668,24 @@ impl mmsdm_core::ArrowSchema for MeterDataCustomer1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MeterDataCustomer1Builder {
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     meterrunno_array: arrow::array::builder::Decimal128Builder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     importenergyvalue_array: arrow::array::builder::Decimal128Builder,
     exportenergyvalue_array: arrow::array::builder::Decimal128Builder,
     importreactivevalue_array: arrow::array::builder::Decimal128Builder,
     exportreactivevalue_array: arrow::array::builder::Decimal128Builder,
-    hostdistributor_array: arrow::array::builder::StringBuilder,
+    hostdistributor_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    mda_array: arrow::array::builder::StringBuilder,
+    mda_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
 }
 pub struct MeterDataGenDuid1 {
     extract_row_partition: alloc::boxed::Box<
@@ -4752,10 +4751,7 @@ impl mmsdm_core::GetTable for MeterDataGenDuid1 {
     const DATA_SET_NAME: &'static str = "METER_DATA";
     const TABLE_NAME: &'static str = "GEN_DUID";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterDataGenDuid1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -4898,7 +4894,10 @@ impl mmsdm_core::ArrowSchema for MeterDataGenDuid1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4920,7 +4919,9 @@ impl mmsdm_core::ArrowSchema for MeterDataGenDuid1 {
     fn new_builder() -> Self::Builder {
         MeterDataGenDuid1Builder {
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             mwh_reading_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -4966,7 +4967,7 @@ impl mmsdm_core::ArrowSchema for MeterDataGenDuid1 {
 #[cfg(feature = "arrow")]
 pub struct MeterDataGenDuid1Builder {
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     mwh_reading_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -5033,12 +5034,7 @@ impl mmsdm_core::GetTable for MeterdataTrk1 {
     const DATA_SET_NAME: &'static str = "METERDATA";
     const TABLE_NAME: &'static str = "TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CASE_ID",
@@ -5451,17 +5447,7 @@ impl mmsdm_core::GetTable for MeterDataCustomerTrk1 {
     const DATA_SET_NAME: &'static str = "METER_DATA";
     const TABLE_NAME: &'static str = "CUSTOMER_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterDataCustomerTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -5663,22 +5649,34 @@ impl mmsdm_core::ArrowSchema for MeterDataCustomerTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "filename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "ackfilename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5691,17 +5689,26 @@ impl mmsdm_core::ArrowSchema for MeterDataCustomerTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "meteringdataagent",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "hostdistributor",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5720,14 +5727,28 @@ impl mmsdm_core::ArrowSchema for MeterDataCustomerTrk1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             meterrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            filename_array: arrow::array::builder::StringBuilder::new(),
-            ackfilename_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            filename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            ackfilename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            meteringdataagent_array: arrow::array::builder::StringBuilder::new(),
-            hostdistributor_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            meteringdataagent_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            hostdistributor_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -5795,14 +5816,28 @@ impl mmsdm_core::ArrowSchema for MeterDataCustomerTrk1 {
 pub struct MeterDataCustomerTrk1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     meterrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    filename_array: arrow::array::builder::StringBuilder,
-    ackfilename_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    filename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    ackfilename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
-    meteringdataagent_array: arrow::array::builder::StringBuilder,
-    hostdistributor_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    meteringdataagent_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    hostdistributor_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct BidMnspFiletrk1 {
@@ -5904,13 +5939,7 @@ impl mmsdm_core::GetTable for BidMnspFiletrk1 {
     const DATA_SET_NAME: &'static str = "BID";
     const TABLE_NAME: &'static str = "MNSP_FILETRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidMnspFiletrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -6082,22 +6111,34 @@ impl mmsdm_core::ArrowSchema for BidMnspFiletrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "filename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "status",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "ackfilename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -6115,10 +6156,18 @@ impl mmsdm_core::ArrowSchema for BidMnspFiletrk1 {
         BidMnspFiletrk1Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            filename_array: arrow::array::builder::StringBuilder::new(),
-            status_array: arrow::array::builder::StringBuilder::new(),
-            ackfilename_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            filename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            status_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            ackfilename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -6164,10 +6213,16 @@ impl mmsdm_core::ArrowSchema for BidMnspFiletrk1 {
 pub struct BidMnspFiletrk1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    filename_array: arrow::array::builder::StringBuilder,
-    status_array: arrow::array::builder::StringBuilder,
-    ackfilename_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    filename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    status_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    ackfilename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct BidMnspOffertrk1 {
@@ -6252,14 +6307,7 @@ impl mmsdm_core::GetTable for BidMnspOffertrk1 {
     const DATA_SET_NAME: &'static str = "BID";
     const TABLE_NAME: &'static str = "MNSP_OFFERTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidMnspOffertrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -6455,12 +6503,18 @@ impl mmsdm_core::ArrowSchema for BidMnspOffertrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "filename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6473,7 +6527,10 @@ impl mmsdm_core::ArrowSchema for BidMnspOffertrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -6493,10 +6550,16 @@ impl mmsdm_core::ArrowSchema for BidMnspOffertrk1 {
             offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            filename_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            filename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -6556,10 +6619,16 @@ pub struct BidMnspOffertrk1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    filename_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    filename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct BidMnspPeroffer1 {
@@ -6669,28 +6738,7 @@ impl mmsdm_core::GetTable for BidMnspPeroffer1 {
     const DATA_SET_NAME: &'static str = "BID";
     const TABLE_NAME: &'static str = "MNSP_PEROFFER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidMnspPeroffer1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -7000,12 +7048,18 @@ impl mmsdm_core::ArrowSchema for BidMnspPeroffer1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "linkid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7108,8 +7162,12 @@ impl mmsdm_core::ArrowSchema for BidMnspPeroffer1 {
             offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            linkid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            linkid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             maxavail_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
@@ -7360,8 +7418,10 @@ pub struct BidMnspPeroffer1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    linkid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    linkid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     periodid_array: arrow::array::builder::TimestampMillisecondBuilder,
     maxavail_array: arrow::array::builder::Decimal128Builder,
     bandavail1_array: arrow::array::builder::Decimal128Builder,
@@ -7483,18 +7543,7 @@ impl mmsdm_core::GetTable for MrDayofferStack1 {
     const DATA_SET_NAME: &'static str = "MR";
     const TABLE_NAME: &'static str = "DAYOFFER_STACK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MrDayofferStack1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MR_DATE",
@@ -7703,7 +7752,10 @@ impl mmsdm_core::ArrowSchema for MrDayofferStack1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7721,7 +7773,10 @@ impl mmsdm_core::ArrowSchema for MrDayofferStack1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7752,7 +7807,10 @@ impl mmsdm_core::ArrowSchema for MrDayofferStack1 {
                 ),
                 arrow::datatypes::Field::new(
                     "offer_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7774,18 +7832,24 @@ impl mmsdm_core::ArrowSchema for MrDayofferStack1 {
     fn new_builder() -> Self::Builder {
         MrDayofferStack1Builder {
             mr_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             stack_position_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             authorised_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             offer_settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offer_offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offer_versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            offer_type_array: arrow::array::builder::StringBuilder::new(),
+            offer_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             laof_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -7885,15 +7949,19 @@ impl mmsdm_core::ArrowSchema for MrDayofferStack1 {
 #[cfg(feature = "arrow")]
 pub struct MrDayofferStack1Builder {
     mr_date_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     stack_position_array: arrow::array::builder::Decimal128Builder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     authorised_array: arrow::array::builder::Decimal128Builder,
     offer_settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offer_offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offer_versionno_array: arrow::array::builder::Decimal128Builder,
-    offer_type_array: arrow::array::builder::StringBuilder,
+    offer_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     laof_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -7991,14 +8059,7 @@ impl mmsdm_core::GetTable for MrEvent1 {
     const DATA_SET_NAME: &'static str = "MR";
     const TABLE_NAME: &'static str = "EVENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MrEvent1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MR_DATE",
@@ -8163,12 +8224,18 @@ impl mmsdm_core::ArrowSchema for MrEvent1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -8181,7 +8248,10 @@ impl mmsdm_core::ArrowSchema for MrEvent1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -8211,10 +8281,16 @@ impl mmsdm_core::ArrowSchema for MrEvent1 {
     fn new_builder() -> Self::Builder {
         MrEvent1Builder {
             mr_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offer_cut_off_time_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             settlement_complete_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
@@ -8279,10 +8355,16 @@ impl mmsdm_core::ArrowSchema for MrEvent1 {
 #[cfg(feature = "arrow")]
 pub struct MrEvent1Builder {
     mr_date_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     offer_cut_off_time_array: arrow::array::builder::TimestampMillisecondBuilder,
     settlement_complete_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -8374,15 +8456,7 @@ impl mmsdm_core::GetTable for MrEventSchedule1 {
     const DATA_SET_NAME: &'static str = "MR";
     const TABLE_NAME: &'static str = "EVENT_SCHEDULE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MrEventSchedule1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MR_DATE",
@@ -8566,7 +8640,10 @@ impl mmsdm_core::ArrowSchema for MrEventSchedule1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -8600,7 +8677,10 @@ impl mmsdm_core::ArrowSchema for MrEventSchedule1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -8625,13 +8705,17 @@ impl mmsdm_core::ArrowSchema for MrEventSchedule1 {
     fn new_builder() -> Self::Builder {
         MrEventSchedule1Builder {
             mr_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             demand_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             demand_offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             demand_versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
@@ -8703,12 +8787,16 @@ impl mmsdm_core::ArrowSchema for MrEventSchedule1 {
 #[cfg(feature = "arrow")]
 pub struct MrEventSchedule1Builder {
     mr_date_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     demand_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     demand_offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     demand_versionno_array: arrow::array::builder::Decimal128Builder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -8798,15 +8886,7 @@ impl mmsdm_core::GetTable for MrPerofferStack1 {
     const DATA_SET_NAME: &'static str = "MR";
     const TABLE_NAME: &'static str = "PEROFFER_STACK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MrPerofferStack1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MR_DATE",
@@ -9001,7 +9081,10 @@ impl mmsdm_core::ArrowSchema for MrPerofferStack1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9024,7 +9107,10 @@ impl mmsdm_core::ArrowSchema for MrPerofferStack1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -9051,13 +9137,17 @@ impl mmsdm_core::ArrowSchema for MrPerofferStack1 {
     fn new_builder() -> Self::Builder {
         MrPerofferStack1Builder {
             mr_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             stack_position_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             accepted_capacity_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             deducted_capacity_array: arrow::array::builder::Decimal128Builder::new()
@@ -9140,11 +9230,13 @@ impl mmsdm_core::ArrowSchema for MrPerofferStack1 {
 #[cfg(feature = "arrow")]
 pub struct MrPerofferStack1Builder {
     mr_date_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     stack_position_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     accepted_capacity_array: arrow::array::builder::Decimal128Builder,
     deducted_capacity_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -9241,23 +9333,7 @@ impl mmsdm_core::GetTable for ReserveDataReserve1 {
     const DATA_SET_NAME: &'static str = "RESERVE_DATA";
     const TABLE_NAME: &'static str = "RESERVE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ReserveDataReserve1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -9521,7 +9597,10 @@ impl mmsdm_core::ArrowSchema for ReserveDataReserve1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9605,7 +9684,9 @@ impl mmsdm_core::ArrowSchema for ReserveDataReserve1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             lower5min_array: arrow::array::builder::Decimal128Builder::new()
@@ -9815,7 +9896,9 @@ impl mmsdm_core::ArrowSchema for ReserveDataReserve1 {
 pub struct ReserveDataReserve1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     lower5min_array: arrow::array::builder::Decimal128Builder,
     lower60sec_array: arrow::array::builder::Decimal128Builder,
@@ -9913,18 +9996,7 @@ impl mmsdm_core::GetTable for SettlementsCpdataregion5 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "CPDATAREGION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsCpdataregion5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -10153,7 +10225,10 @@ impl mmsdm_core::ArrowSchema for SettlementsCpdataregion5 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -10209,7 +10284,9 @@ impl mmsdm_core::ArrowSchema for SettlementsCpdataregion5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 10)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 10)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             sumigenergy_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(27, 5)),
             sumxgenergy_array: arrow::array::builder::Decimal128Builder::new()
@@ -10353,7 +10430,9 @@ pub struct SettlementsCpdataregion5Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     sumigenergy_array: arrow::array::builder::Decimal128Builder,
     sumxgenergy_array: arrow::array::builder::Decimal128Builder,
     suminenergy_array: arrow::array::builder::Decimal128Builder,
@@ -10449,20 +10528,7 @@ impl mmsdm_core::GetTable for SettlementsGendataregion5 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "GENDATAREGION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsGendataregion5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -10707,7 +10773,10 @@ impl mmsdm_core::ArrowSchema for SettlementsGendataregion5 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -10773,7 +10842,9 @@ impl mmsdm_core::ArrowSchema for SettlementsGendataregion5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 10)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 10)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             genergy_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             aenergy_array: arrow::array::builder::Decimal128Builder::new()
@@ -10943,7 +11014,9 @@ pub struct SettlementsGendataregion5Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     genergy_array: arrow::array::builder::Decimal128Builder,
     aenergy_array: arrow::array::builder::Decimal128Builder,
     gpower_array: arrow::array::builder::Decimal128Builder,
@@ -11054,26 +11127,7 @@ impl mmsdm_core::GetTable for TradingUnitSolution2 {
     const DATA_SET_NAME: &'static str = "TRADING";
     const TABLE_NAME: &'static str = "UNIT_SOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = TradingUnitSolution2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -11363,7 +11417,10 @@ impl mmsdm_core::ArrowSchema for TradingUnitSolution2 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -11462,7 +11519,9 @@ impl mmsdm_core::ArrowSchema for TradingUnitSolution2 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             tradetype_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
@@ -11709,7 +11768,7 @@ impl mmsdm_core::ArrowSchema for TradingUnitSolution2 {
 pub struct TradingUnitSolution2Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     tradetype_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     initialmw_array: arrow::array::builder::Decimal128Builder,
@@ -11966,96 +12025,11 @@ impl mmsdm_core::GetTable for TradingRegionsum4 {
     const DATA_SET_NAME: &'static str = "TRADING";
     const TABLE_NAME: &'static str = "REGIONSUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = TradingRegionsum4Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
-        68,
-        69,
-        70,
-        71,
-        72,
-        73,
-        74,
-        75,
-        76,
-        77,
-        78,
-        79,
-        80,
-        81,
-        82,
-        83,
-        84,
-        85,
-        86,
-        87,
-        88,
-        89,
-        90,
-        91,
-        92,
-        93,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85,
+        86, 87, 88, 89, 90, 91, 92, 93,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -12899,7 +12873,10 @@ impl mmsdm_core::ArrowSchema for TradingRegionsum4 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -13348,7 +13325,9 @@ impl mmsdm_core::ArrowSchema for TradingRegionsum4 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             totaldemand_array: arrow::array::builder::Decimal128Builder::new()
@@ -14510,7 +14489,9 @@ impl mmsdm_core::ArrowSchema for TradingRegionsum4 {
 pub struct TradingRegionsum4Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     totaldemand_array: arrow::array::builder::Decimal128Builder,
     availablegeneration_array: arrow::array::builder::Decimal128Builder,

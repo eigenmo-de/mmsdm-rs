@@ -119,13 +119,7 @@ impl mmsdm_core::GetTable for MarketNoticeMarketnoticedata1 {
     const DATA_SET_NAME: &'static str = "MARKET_NOTICE";
     const TABLE_NAME: &'static str = "MARKETNOTICEDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketNoticeMarketnoticedata1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "NOTICEID",
@@ -282,12 +276,18 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticedata1 {
                 ),
                 arrow::datatypes::Field::new(
                     "typeid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "noticetype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -300,12 +300,18 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticedata1 {
                 ),
                 arrow::datatypes::Field::new(
                     "reason",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "externalreference",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -316,11 +322,19 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticedata1 {
             noticeid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            typeid_array: arrow::array::builder::StringBuilder::new(),
-            noticetype_array: arrow::array::builder::StringBuilder::new(),
+            typeid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            noticetype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            reason_array: arrow::array::builder::StringBuilder::new(),
-            externalreference_array: arrow::array::builder::StringBuilder::new(),
+            reason_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            externalreference_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -373,11 +387,15 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticedata1 {
 pub struct MarketNoticeMarketnoticedata1Builder {
     noticeid_array: arrow::array::builder::Decimal128Builder,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    typeid_array: arrow::array::builder::StringBuilder,
-    noticetype_array: arrow::array::builder::StringBuilder,
+    typeid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    noticetype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    reason_array: arrow::array::builder::StringBuilder,
-    externalreference_array: arrow::array::builder::StringBuilder,
+    reason_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int64Type>,
+    externalreference_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
 }
 pub struct MarketNoticeMarketnoticetype1 {
     extract_row_partition: alloc::boxed::Box<
@@ -466,10 +484,7 @@ impl mmsdm_core::GetTable for MarketNoticeMarketnoticetype1 {
     const DATA_SET_NAME: &'static str = "MARKET_NOTICE";
     const TABLE_NAME: &'static str = "MARKETNOTICETYPE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketNoticeMarketnoticetype1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TYPEID",
@@ -593,17 +608,26 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticetype1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "typeid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "raisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -619,9 +643,15 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticetype1 {
     }
     fn new_builder() -> Self::Builder {
         MarketNoticeMarketnoticetype1Builder {
-            typeid_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
-            raisedby_array: arrow::array::builder::StringBuilder::new(),
+            typeid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            raisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -654,9 +684,13 @@ impl mmsdm_core::ArrowSchema for MarketNoticeMarketnoticetype1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketNoticeMarketnoticetype1Builder {
-    typeid_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
-    raisedby_array: arrow::array::builder::StringBuilder,
+    typeid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    raisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketNoticeParticipantnoticetrk1 {
@@ -721,9 +755,7 @@ impl mmsdm_core::GetTable for MarketNoticeParticipantnoticetrk1 {
     const DATA_SET_NAME: &'static str = "MARKET_NOTICE";
     const TABLE_NAME: &'static str = "PARTICIPANTNOTICETRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketNoticeParticipantnoticetrk1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -853,7 +885,10 @@ impl mmsdm_core::ArrowSchema for MarketNoticeParticipantnoticetrk1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -874,7 +909,9 @@ impl mmsdm_core::ArrowSchema for MarketNoticeParticipantnoticetrk1 {
     }
     fn new_builder() -> Self::Builder {
         MarketNoticeParticipantnoticetrk1Builder {
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             noticeid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -912,7 +949,9 @@ impl mmsdm_core::ArrowSchema for MarketNoticeParticipantnoticetrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketNoticeParticipantnoticetrk1Builder {
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     noticeid_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

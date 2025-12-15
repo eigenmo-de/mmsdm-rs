@@ -75,12 +75,7 @@ impl mmsdm_core::GetTable for DispatchocdConstraintrelaxation2 {
     const DATA_SET_NAME: &'static str = "DISPATCHOCD";
     const TABLE_NAME: &'static str = "CONSTRAINTRELAXATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchocdConstraintrelaxation2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -259,7 +254,10 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintrelaxation2 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -288,7 +286,9 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintrelaxation2 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -355,7 +355,9 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintrelaxation2 {
 pub struct DispatchocdConstraintrelaxation2Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     rhs_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
@@ -437,15 +439,7 @@ impl mmsdm_core::GetTable for DispatchocdConstraintFcasOcd1 {
     const DATA_SET_NAME: &'static str = "DISPATCHOCD";
     const TABLE_NAME: &'static str = "CONSTRAINT_FCAS_OCD";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchocdConstraintFcasOcd1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -641,7 +635,10 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintFcasOcd1 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -680,7 +677,9 @@ impl mmsdm_core::ArrowSchema for DispatchocdConstraintFcasOcd1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Int64Builder::new(),
             intervention_array: arrow::array::builder::Int64Builder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             versionno_array: arrow::array::builder::Int64Builder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
@@ -764,7 +763,9 @@ pub struct DispatchocdConstraintFcasOcd1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Int64Builder,
     intervention_array: arrow::array::builder::Int64Builder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     versionno_array: arrow::array::builder::Int64Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     rhs_array: arrow::array::builder::Decimal128Builder,
@@ -869,22 +870,7 @@ impl mmsdm_core::GetTable for DispatchFcasReqConstraint1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "FCAS_REQ_CONSTRAINT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchFcasReqConstraint1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1141,17 +1127,26 @@ impl mmsdm_core::ArrowSchema for DispatchFcasReqConstraint1 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1212,9 +1207,15 @@ impl mmsdm_core::ArrowSchema for DispatchFcasReqConstraint1 {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Int64Builder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
@@ -1387,9 +1388,13 @@ pub struct DispatchFcasReqConstraint1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Int64Builder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     lhs_array: arrow::array::builder::Decimal128Builder,
     rhs_array: arrow::array::builder::Decimal128Builder,
     marginalvalue_array: arrow::array::builder::Decimal128Builder,
@@ -1459,9 +1464,7 @@ impl mmsdm_core::GetTable for DispatchFcasReqRun1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "FCAS_REQ_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchFcasReqRun1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &["RUN_DATETIME", "RUNNO", "LASTCHANGED"];
     type Row<'row> = DispatchFcasReqRun1Row<'row>;
@@ -1731,18 +1734,7 @@ impl mmsdm_core::GetTable for DispatchInterconnection1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "INTERCONNECTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchInterconnection1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -1967,12 +1959,18 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnection1 {
                 ),
                 arrow::datatypes::Field::new(
                     "from_regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "to_regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2026,8 +2024,12 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnection1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            from_regionid_array: arrow::array::builder::StringBuilder::new(),
-            to_regionid_array: arrow::array::builder::StringBuilder::new(),
+            from_regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            to_regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             irlf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
@@ -2154,8 +2156,12 @@ pub struct DispatchInterconnection1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     intervention_array: arrow::array::builder::Decimal128Builder,
-    from_regionid_array: arrow::array::builder::StringBuilder,
-    to_regionid_array: arrow::array::builder::StringBuilder,
+    from_regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    to_regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     irlf_array: arrow::array::builder::Decimal128Builder,
     mwflow_array: arrow::array::builder::Decimal128Builder,
@@ -2228,10 +2234,7 @@ impl mmsdm_core::GetTable for DispatchLocalPrice1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "LOCAL_PRICE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchLocalPrice1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -2374,7 +2377,10 @@ impl mmsdm_core::ArrowSchema for DispatchLocalPrice1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2393,7 +2399,9 @@ impl mmsdm_core::ArrowSchema for DispatchLocalPrice1 {
     fn new_builder() -> Self::Builder {
         DispatchLocalPrice1Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             local_price_adjustment_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 2)),
             locally_constrained_array: arrow::array::builder::Decimal128Builder::new()
@@ -2446,7 +2454,7 @@ impl mmsdm_core::ArrowSchema for DispatchLocalPrice1 {
 #[cfg(feature = "arrow")]
 pub struct DispatchLocalPrice1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     local_price_adjustment_array: arrow::array::builder::Decimal128Builder,
     locally_constrained_array: arrow::array::builder::Decimal128Builder,
 }
@@ -2527,14 +2535,7 @@ impl mmsdm_core::GetTable for DispatchMnspbidtrk1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "MNSPBIDTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchMnspbidtrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -2717,12 +2718,18 @@ impl mmsdm_core::ArrowSchema for DispatchMnspbidtrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "linkid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2762,8 +2769,12 @@ impl mmsdm_core::ArrowSchema for DispatchMnspbidtrk1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            linkid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            linkid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             offersettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offereffectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offerversionno_array: arrow::array::builder::Decimal128Builder::new()
@@ -2838,8 +2849,10 @@ impl mmsdm_core::ArrowSchema for DispatchMnspbidtrk1 {
 pub struct DispatchMnspbidtrk1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    linkid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    linkid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     offersettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offereffectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerversionno_array: arrow::array::builder::Decimal128Builder,
@@ -2911,11 +2924,7 @@ impl mmsdm_core::GetTable for DispatchMrScheduleTrk1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "MR_SCHEDULE_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchMrScheduleTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -3066,7 +3075,10 @@ impl mmsdm_core::ArrowSchema for DispatchMrScheduleTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3099,7 +3111,9 @@ impl mmsdm_core::ArrowSchema for DispatchMrScheduleTrk1 {
     fn new_builder() -> Self::Builder {
         DispatchMrScheduleTrk1Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             mr_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -3146,7 +3160,9 @@ impl mmsdm_core::ArrowSchema for DispatchMrScheduleTrk1 {
 #[cfg(feature = "arrow")]
 pub struct DispatchMrScheduleTrk1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     mr_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -3232,15 +3248,7 @@ impl mmsdm_core::GetTable for PriceloadPriceRevision1 {
     const DATA_SET_NAME: &'static str = "PRICELOAD";
     const TABLE_NAME: &'static str = "PRICE_REVISION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PriceloadPriceRevision1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -3443,12 +3451,18 @@ impl mmsdm_core::ArrowSchema for PriceloadPriceRevision1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3484,8 +3498,12 @@ impl mmsdm_core::ArrowSchema for PriceloadPriceRevision1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             versionno_array: arrow::array::builder::Int64Builder::new(),
             rrp_new_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
@@ -3571,8 +3589,10 @@ pub struct PriceloadPriceRevision1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     intervention_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     versionno_array: arrow::array::builder::Int64Builder,
     rrp_new_array: arrow::array::builder::Decimal128Builder,
     rrp_old_array: arrow::array::builder::Decimal128Builder,
@@ -3658,12 +3678,7 @@ impl mmsdm_core::GetTable for DispatchRooftopPvFcstTrk1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "ROOFTOP_PV_FCST_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchRooftopPvFcstTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -3817,7 +3832,10 @@ impl mmsdm_core::ArrowSchema for DispatchRooftopPvFcstTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "areaid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3830,7 +3848,10 @@ impl mmsdm_core::ArrowSchema for DispatchRooftopPvFcstTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3852,9 +3873,13 @@ impl mmsdm_core::ArrowSchema for DispatchRooftopPvFcstTrk1 {
     fn new_builder() -> Self::Builder {
         DispatchRooftopPvFcstTrk1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            areaid_array: arrow::array::builder::StringBuilder::new(),
+            areaid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -3912,9 +3937,11 @@ impl mmsdm_core::ArrowSchema for DispatchRooftopPvFcstTrk1 {
 #[cfg(feature = "arrow")]
 pub struct DispatchRooftopPvFcstTrk1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    areaid_array: arrow::array::builder::StringBuilder,
+    areaid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -4064,27 +4091,7 @@ impl mmsdm_core::GetTable for DispatchUnitConformance2 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "UNIT_CONFORMANCE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchUnitConformance2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -4334,7 +4341,10 @@ impl mmsdm_core::ArrowSchema for DispatchUnitConformance2 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4399,17 +4409,26 @@ impl mmsdm_core::ArrowSchema for DispatchUnitConformance2 {
                 ),
                 arrow::datatypes::Field::new(
                     "status",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "participant_status_action",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "operating_mode",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4422,7 +4441,10 @@ impl mmsdm_core::ArrowSchema for DispatchUnitConformance2 {
                 ),
                 arrow::datatypes::Field::new(
                     "adg_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4441,7 +4463,9 @@ impl mmsdm_core::ArrowSchema for DispatchUnitConformance2 {
     fn new_builder() -> Self::Builder {
         DispatchUnitConformance2Builder {
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             totalcleared_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             actualmw_array: arrow::array::builder::Decimal128Builder::new()
@@ -4464,11 +4488,19 @@ impl mmsdm_core::ArrowSchema for DispatchUnitConformance2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lecount_array: arrow::array::builder::Int64Builder::new(),
             secount_array: arrow::array::builder::Int64Builder::new(),
-            status_array: arrow::array::builder::StringBuilder::new(),
-            participant_status_action_array: arrow::array::builder::StringBuilder::new(),
-            operating_mode_array: arrow::array::builder::StringBuilder::new(),
+            status_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participant_status_action_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            operating_mode_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            adg_id_array: arrow::array::builder::StringBuilder::new(),
+            adg_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             semidispatchcap_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             conformance_mode_array: arrow::array::builder::Decimal128Builder::new()
@@ -4657,7 +4689,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitConformance2 {
 #[cfg(feature = "arrow")]
 pub struct DispatchUnitConformance2Builder {
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     totalcleared_array: arrow::array::builder::Decimal128Builder,
     actualmw_array: arrow::array::builder::Decimal128Builder,
     roc_array: arrow::array::builder::Decimal128Builder,
@@ -4670,11 +4702,15 @@ pub struct DispatchUnitConformance2Builder {
     max_mwerror_array: arrow::array::builder::Decimal128Builder,
     lecount_array: arrow::array::builder::Int64Builder,
     secount_array: arrow::array::builder::Int64Builder,
-    status_array: arrow::array::builder::StringBuilder,
-    participant_status_action_array: arrow::array::builder::StringBuilder,
-    operating_mode_array: arrow::array::builder::StringBuilder,
+    status_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    participant_status_action_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    operating_mode_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    adg_id_array: arrow::array::builder::StringBuilder,
+    adg_id_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     semidispatchcap_array: arrow::array::builder::Decimal128Builder,
     conformance_mode_array: arrow::array::builder::Decimal128Builder,
 }
@@ -4742,10 +4778,7 @@ impl mmsdm_core::GetTable for DispatchUnitScada1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "UNIT_SCADA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchUnitScada1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -4888,7 +4921,10 @@ impl mmsdm_core::ArrowSchema for DispatchUnitScada1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4910,7 +4946,9 @@ impl mmsdm_core::ArrowSchema for DispatchUnitScada1 {
     fn new_builder() -> Self::Builder {
         DispatchUnitScada1Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             scadavalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -4956,7 +4994,7 @@ impl mmsdm_core::ArrowSchema for DispatchUnitScada1 {
 #[cfg(feature = "arrow")]
 pub struct DispatchUnitScada1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     scadavalue_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -5023,9 +5061,7 @@ impl mmsdm_core::GetTable for DispatchBlockedConstraints1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "BLOCKED_CONSTRAINTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchBlockedConstraints1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -5171,7 +5207,10 @@ impl mmsdm_core::ArrowSchema for DispatchBlockedConstraints1 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -5182,7 +5221,9 @@ impl mmsdm_core::ArrowSchema for DispatchBlockedConstraints1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -5219,7 +5260,9 @@ impl mmsdm_core::ArrowSchema for DispatchBlockedConstraints1 {
 pub struct DispatchBlockedConstraints1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct DispatchCaseSolution2 {
     extract_row_partition: alloc::boxed::Box<
@@ -5346,30 +5389,8 @@ impl mmsdm_core::GetTable for DispatchCaseSolution2 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "CASE_SOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchCaseSolution2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -5683,7 +5704,10 @@ impl mmsdm_core::ArrowSchema for DispatchCaseSolution2 {
                 ),
                 arrow::datatypes::Field::new(
                     "casesubtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5693,7 +5717,10 @@ impl mmsdm_core::ArrowSchema for DispatchCaseSolution2 {
                 ),
                 arrow::datatypes::Field::new(
                     "spdversion",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5799,10 +5826,14 @@ impl mmsdm_core::ArrowSchema for DispatchCaseSolution2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            casesubtype_array: arrow::array::builder::StringBuilder::new(),
+            casesubtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             solutionstatus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            spdversion_array: arrow::array::builder::StringBuilder::new(),
+            spdversion_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             nonphysicallosses_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             totalobjective_array: arrow::array::builder::Decimal128Builder::new()
@@ -6093,9 +6124,13 @@ pub struct DispatchCaseSolution2Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     intervention_array: arrow::array::builder::Decimal128Builder,
-    casesubtype_array: arrow::array::builder::StringBuilder,
+    casesubtype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     solutionstatus_array: arrow::array::builder::Decimal128Builder,
-    spdversion_array: arrow::array::builder::StringBuilder,
+    spdversion_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     nonphysicallosses_array: arrow::array::builder::Decimal128Builder,
     totalobjective_array: arrow::array::builder::Decimal128Builder,
     totalareagenviolation_array: arrow::array::builder::Decimal128Builder,
@@ -6209,19 +6244,7 @@ impl mmsdm_core::GetTable for DispatchConstraint5 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "CONSTRAINT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchConstraint5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -6450,7 +6473,10 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6491,7 +6517,10 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -6520,7 +6549,9 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
@@ -6531,7 +6562,9 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
             violationdegree_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             genconid_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             genconid_versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
@@ -6657,14 +6690,16 @@ impl mmsdm_core::ArrowSchema for DispatchConstraint5 {
 pub struct DispatchConstraint5Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     rhs_array: arrow::array::builder::Decimal128Builder,
     marginalvalue_array: arrow::array::builder::Decimal128Builder,
     violationdegree_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     genconid_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     genconid_versionno_array: arrow::array::builder::Decimal128Builder,
     lhs_array: arrow::array::builder::Decimal128Builder,
@@ -6799,28 +6834,7 @@ impl mmsdm_core::GetTable for DispatchInterconnectorres3 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "INTERCONNECTORRES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchInterconnectorres3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -7116,7 +7130,10 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7182,12 +7199,18 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
                 ),
                 arrow::datatypes::Field::new(
                     "exportgenconid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "importgenconid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7228,7 +7251,9 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
@@ -7249,8 +7274,12 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             marginalloss_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            exportgenconid_array: arrow::array::builder::StringBuilder::new(),
-            importgenconid_array: arrow::array::builder::StringBuilder::new(),
+            exportgenconid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            importgenconid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             fcasexportlimit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             fcasimportlimit_array: arrow::array::builder::Decimal128Builder::new()
@@ -7482,7 +7511,9 @@ impl mmsdm_core::ArrowSchema for DispatchInterconnectorres3 {
 pub struct DispatchInterconnectorres3Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     meteredmwflow_array: arrow::array::builder::Decimal128Builder,
@@ -7494,8 +7525,12 @@ pub struct DispatchInterconnectorres3Builder {
     exportlimit_array: arrow::array::builder::Decimal128Builder,
     importlimit_array: arrow::array::builder::Decimal128Builder,
     marginalloss_array: arrow::array::builder::Decimal128Builder,
-    exportgenconid_array: arrow::array::builder::StringBuilder,
-    importgenconid_array: arrow::array::builder::StringBuilder,
+    exportgenconid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    importgenconid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     fcasexportlimit_array: arrow::array::builder::Decimal128Builder,
     fcasimportlimit_array: arrow::array::builder::Decimal128Builder,
     local_price_adjustment_export_array: arrow::array::builder::Decimal128Builder,
@@ -7710,75 +7745,10 @@ impl mmsdm_core::GetTable for DispatchUnitSolution6 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "UNIT_SOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchUnitSolution6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
-        68,
-        69,
-        70,
-        71,
-        72,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        66, 67, 68, 69, 70, 71, 72,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -8446,7 +8416,10 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution6 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -8469,7 +8442,10 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution6 {
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -8793,13 +8769,17 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution6 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             tradetype_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             dispatchmode_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             agcstatus_array: arrow::array::builder::Decimal128Builder::new()
@@ -9673,11 +9653,13 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution6 {
 pub struct DispatchUnitSolution6Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     tradetype_array: arrow::array::builder::Decimal128Builder,
     dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     dispatchmode_array: arrow::array::builder::Decimal128Builder,
     agcstatus_array: arrow::array::builder::Decimal128Builder,
     initialmw_array: arrow::array::builder::Decimal128Builder,
@@ -9813,12 +9795,7 @@ impl mmsdm_core::GetTable for DispatchOffertrk1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "OFFERTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchOffertrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -9978,12 +9955,18 @@ impl mmsdm_core::ArrowSchema for DispatchOffertrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -10016,8 +9999,12 @@ impl mmsdm_core::ArrowSchema for DispatchOffertrk1 {
     fn new_builder() -> Self::Builder {
         DispatchOffertrk1Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             bidofferdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -10067,8 +10054,8 @@ impl mmsdm_core::ArrowSchema for DispatchOffertrk1 {
 #[cfg(feature = "arrow")]
 pub struct DispatchOffertrk1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     bidofferdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -10276,72 +10263,10 @@ impl mmsdm_core::GetTable for DispatchPrice5 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "PRICE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchPrice5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
-        68,
-        69,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        66, 67, 68, 69,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -10980,7 +10905,10 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -11151,7 +11079,10 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
                 ),
                 arrow::datatypes::Field::new(
                     "price_status",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -11246,12 +11177,18 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
                 ),
                 arrow::datatypes::Field::new(
                     "ocd_status",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "mii_status",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -11312,7 +11249,9 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
@@ -11375,7 +11314,9 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lowerregapcflag_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            price_status_array: arrow::array::builder::StringBuilder::new(),
+            price_status_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             pre_ap_energy_price_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             pre_ap_raise6_price_array: arrow::array::builder::Decimal128Builder::new()
@@ -11412,8 +11353,12 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             cumul_pre_ap_lowerreg_price_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            ocd_status_array: arrow::array::builder::StringBuilder::new(),
-            mii_status_array: arrow::array::builder::StringBuilder::new(),
+            ocd_status_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            mii_status_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             raise1secrrp_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             raise1secrop_array: arrow::array::builder::Decimal128Builder::new()
@@ -12136,7 +12081,9 @@ impl mmsdm_core::ArrowSchema for DispatchPrice5 {
 pub struct DispatchPrice5Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     rrp_array: arrow::array::builder::Decimal128Builder,
@@ -12169,7 +12116,9 @@ pub struct DispatchPrice5Builder {
     lowerregrrp_array: arrow::array::builder::Decimal128Builder,
     lowerregrop_array: arrow::array::builder::Decimal128Builder,
     lowerregapcflag_array: arrow::array::builder::Decimal128Builder,
-    price_status_array: arrow::array::builder::StringBuilder,
+    price_status_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     pre_ap_energy_price_array: arrow::array::builder::Decimal128Builder,
     pre_ap_raise6_price_array: arrow::array::builder::Decimal128Builder,
     pre_ap_raise60_price_array: arrow::array::builder::Decimal128Builder,
@@ -12188,8 +12137,12 @@ pub struct DispatchPrice5Builder {
     cumul_pre_ap_lower60_price_array: arrow::array::builder::Decimal128Builder,
     cumul_pre_ap_lower5min_price_array: arrow::array::builder::Decimal128Builder,
     cumul_pre_ap_lowerreg_price_array: arrow::array::builder::Decimal128Builder,
-    ocd_status_array: arrow::array::builder::StringBuilder,
-    mii_status_array: arrow::array::builder::StringBuilder,
+    ocd_status_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    mii_status_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     raise1secrrp_array: arrow::array::builder::Decimal128Builder,
     raise1secrop_array: arrow::array::builder::Decimal128Builder,
     raise1secapcflag_array: arrow::array::builder::Decimal128Builder,
@@ -12514,133 +12467,13 @@ impl mmsdm_core::GetTable for DispatchRegionsum9 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "REGIONSUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchRegionsum9Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
-        68,
-        69,
-        70,
-        71,
-        72,
-        73,
-        74,
-        75,
-        76,
-        77,
-        78,
-        79,
-        80,
-        81,
-        82,
-        83,
-        84,
-        85,
-        86,
-        87,
-        88,
-        89,
-        90,
-        91,
-        92,
-        93,
-        94,
-        95,
-        96,
-        97,
-        98,
-        99,
-        100,
-        101,
-        102,
-        103,
-        104,
-        105,
-        106,
-        107,
-        108,
-        109,
-        110,
-        111,
-        112,
-        113,
-        114,
-        115,
-        116,
-        117,
-        118,
-        119,
-        120,
-        121,
-        122,
-        123,
-        124,
-        125,
-        126,
-        127,
-        128,
-        129,
-        130,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85,
+        86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104,
+        105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
+        121, 122, 123, 124, 125, 126, 127, 128, 129, 130,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -13782,7 +13615,10 @@ impl mmsdm_core::ArrowSchema for DispatchRegionsum9 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -14419,7 +14255,9 @@ impl mmsdm_core::ArrowSchema for DispatchRegionsum9 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
@@ -16068,7 +15906,9 @@ impl mmsdm_core::ArrowSchema for DispatchRegionsum9 {
 pub struct DispatchRegionsum9Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     dispatchinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     totaldemand_array: arrow::array::builder::Decimal128Builder,
@@ -16272,11 +16112,7 @@ impl mmsdm_core::GetTable for DispatchIntermittentForecastTrk1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "INTERMITTENT_FORECAST_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchIntermittentForecastTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -16425,12 +16261,18 @@ impl mmsdm_core::ArrowSchema for DispatchIntermittentForecastTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "origin",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -16452,8 +16294,12 @@ impl mmsdm_core::ArrowSchema for DispatchIntermittentForecastTrk1 {
     fn new_builder() -> Self::Builder {
         DispatchIntermittentForecastTrk1Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            origin_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            origin_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -16504,8 +16350,8 @@ impl mmsdm_core::ArrowSchema for DispatchIntermittentForecastTrk1 {
 #[cfg(feature = "arrow")]
 pub struct DispatchIntermittentForecastTrk1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    origin_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    origin_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -16611,21 +16457,7 @@ impl mmsdm_core::GetTable for DispatchNegativeResidue1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "NEGATIVE_RESIDUE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchNegativeResidue1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -16866,7 +16698,10 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                 ),
                 arrow::datatypes::Field::new(
                     "directional_interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -16896,7 +16731,10 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                 ),
                 arrow::datatypes::Field::new(
                     "price_revision",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -16945,7 +16783,9 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
         DispatchNegativeResidue1Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             nrm_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            directional_interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            directional_interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             nrm_activated_flag_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             cumul_negresidue_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -16956,7 +16796,9 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             negresidue_pd_next_ti_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            price_revision_array: arrow::array::builder::StringBuilder::new(),
+            price_revision_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             event_activated_di_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             event_deactivated_di_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -17113,13 +16955,17 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
 pub struct DispatchNegativeResidue1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     nrm_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    directional_interconnectorid_array: arrow::array::builder::StringBuilder,
+    directional_interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     nrm_activated_flag_array: arrow::array::builder::Decimal128Builder,
     cumul_negresidue_amount_array: arrow::array::builder::Decimal128Builder,
     cumul_negresidue_prev_ti_array: arrow::array::builder::Decimal128Builder,
     negresidue_current_ti_array: arrow::array::builder::Decimal128Builder,
     negresidue_pd_next_ti_array: arrow::array::builder::Decimal128Builder,
-    price_revision_array: arrow::array::builder::StringBuilder,
+    price_revision_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     event_activated_di_array: arrow::array::builder::TimestampMillisecondBuilder,
     event_deactivated_di_array: arrow::array::builder::TimestampMillisecondBuilder,

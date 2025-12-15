@@ -78,10 +78,7 @@ impl mmsdm_core::GetTable for MtpasaCaseresult1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "CASERESULT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaCaseresult1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -224,7 +221,10 @@ impl mmsdm_core::ArrowSchema for MtpasaCaseresult1 {
                 ),
                 arrow::datatypes::Field::new(
                     "plexos_version",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -242,7 +242,9 @@ impl mmsdm_core::ArrowSchema for MtpasaCaseresult1 {
         MtpasaCaseresult1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
-            plexos_version_array: arrow::array::builder::StringBuilder::new(),
+            plexos_version_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -279,7 +281,9 @@ impl mmsdm_core::ArrowSchema for MtpasaCaseresult1 {
 pub struct MtpasaCaseresult1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
-    plexos_version_array: arrow::array::builder::StringBuilder,
+    plexos_version_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MtpasaConstraintresult1 {
@@ -381,21 +385,7 @@ impl mmsdm_core::GetTable for MtpasaConstraintresult1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "CONSTRAINTRESULT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaConstraintresult1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -636,12 +626,18 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
                 ),
                 arrow::datatypes::Field::new(
                     "runtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "demand_poe_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -654,7 +650,10 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -715,10 +714,16 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
         MtpasaConstraintresult1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
-            runtype_array: arrow::array::builder::StringBuilder::new(),
-            demand_poe_type_array: arrow::array::builder::StringBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            demand_poe_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -863,10 +868,14 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintresult1 {
 pub struct MtpasaConstraintresult1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
-    runtype_array: arrow::array::builder::StringBuilder,
-    demand_poe_type_array: arrow::array::builder::StringBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    demand_poe_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     day_array: arrow::array::builder::TimestampMillisecondBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
@@ -975,17 +984,7 @@ impl mmsdm_core::GetTable for MtpasaConstraintsummary1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "CONSTRAINTSUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaConstraintsummary1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1195,12 +1194,18 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
                 ),
                 arrow::datatypes::Field::new(
                     "runtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "demand_poe_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1213,7 +1218,10 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1231,7 +1239,10 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
                 ),
                 arrow::datatypes::Field::new(
                     "aggregation_period",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1254,14 +1265,22 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
         MtpasaConstraintsummary1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
-            runtype_array: arrow::array::builder::StringBuilder::new(),
-            demand_poe_type_array: arrow::array::builder::StringBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            demand_poe_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            aggregation_period_array: arrow::array::builder::StringBuilder::new(),
+            aggregation_period_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             constrainthoursbinding_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -1341,13 +1360,19 @@ impl mmsdm_core::ArrowSchema for MtpasaConstraintsummary1 {
 pub struct MtpasaConstraintsummary1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
-    runtype_array: arrow::array::builder::StringBuilder,
-    demand_poe_type_array: arrow::array::builder::StringBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    demand_poe_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     day_array: arrow::array::builder::TimestampMillisecondBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    aggregation_period_array: arrow::array::builder::StringBuilder,
+    aggregation_period_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     constrainthoursbinding_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -1444,16 +1469,7 @@ impl mmsdm_core::GetTable for MtpasaDuidavailability3 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "DUIDAVAILABILITY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaDuidavailability3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PUBLISH_DATETIME",
@@ -1650,12 +1666,18 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1686,7 +1708,10 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
                 ),
                 arrow::datatypes::Field::new(
                     "pasaunitstate",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1701,15 +1726,21 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
         MtpasaDuidavailability3Builder {
             publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             pasaavailability_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 0)),
             latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             carryoverstatus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            pasaunitstate_array: arrow::array::builder::StringBuilder::new(),
+            pasaunitstate_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             pasarecalltime_array: arrow::array::builder::Int64Builder::new(),
         }
     }
@@ -1784,13 +1815,17 @@ impl mmsdm_core::ArrowSchema for MtpasaDuidavailability3 {
 pub struct MtpasaDuidavailability3Builder {
     publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     day_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     pasaavailability_array: arrow::array::builder::Decimal128Builder,
     latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     carryoverstatus_array: arrow::array::builder::Decimal128Builder,
-    pasaunitstate_array: arrow::array::builder::StringBuilder,
+    pasaunitstate_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     pasarecalltime_array: arrow::array::builder::Int64Builder,
 }
 pub struct MtpasaInterconnectorresult1 {
@@ -1895,21 +1930,7 @@ impl mmsdm_core::GetTable for MtpasaInterconnectorresult1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "INTERCONNECTORRESULT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaInterconnectorresult1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2150,12 +2171,18 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
                 ),
                 arrow::datatypes::Field::new(
                     "runtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "demand_poe_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2168,7 +2195,10 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2226,10 +2256,16 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
         MtpasaInterconnectorresult1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
-            runtype_array: arrow::array::builder::StringBuilder::new(),
-            demand_poe_type_array: arrow::array::builder::StringBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            demand_poe_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             flow90_array: arrow::array::builder::Decimal128Builder::new()
@@ -2381,10 +2417,14 @@ impl mmsdm_core::ArrowSchema for MtpasaInterconnectorresult1 {
 pub struct MtpasaInterconnectorresult1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
-    runtype_array: arrow::array::builder::StringBuilder,
-    demand_poe_type_array: arrow::array::builder::StringBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    demand_poe_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     day_array: arrow::array::builder::TimestampMillisecondBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     flow90_array: arrow::array::builder::Decimal128Builder,
     flow50_array: arrow::array::builder::Decimal128Builder,
@@ -2493,18 +2533,7 @@ impl mmsdm_core::GetTable for MtpasaLolpresult1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "LOLPRESULT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaLolpresult1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2716,7 +2745,10 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
                 ),
                 arrow::datatypes::Field::new(
                     "runtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2729,7 +2761,10 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2759,7 +2794,10 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
                 ),
                 arrow::datatypes::Field::new(
                     "lossofloadmagnitude",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2777,9 +2815,13 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
         MtpasaLolpresult1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
-            runtype_array: arrow::array::builder::StringBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             worst_interval_periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             worst_interval_demand_array: arrow::array::builder::Decimal128Builder::new()
@@ -2790,7 +2832,9 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             lossofloadprobability_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(8, 5)),
-            lossofloadmagnitude_array: arrow::array::builder::StringBuilder::new(),
+            lossofloadmagnitude_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -2891,15 +2935,19 @@ impl mmsdm_core::ArrowSchema for MtpasaLolpresult1 {
 pub struct MtpasaLolpresult1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
-    runtype_array: arrow::array::builder::StringBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     day_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     worst_interval_periodid_array: arrow::array::builder::Decimal128Builder,
     worst_interval_demand_array: arrow::array::builder::Decimal128Builder,
     worst_interval_intgen_array: arrow::array::builder::Decimal128Builder,
     worst_interval_dsp_array: arrow::array::builder::Decimal128Builder,
     lossofloadprobability_array: arrow::array::builder::Decimal128Builder,
-    lossofloadmagnitude_array: arrow::array::builder::StringBuilder,
+    lossofloadmagnitude_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MtpasaRegionavailtrk1 {
@@ -2961,10 +3009,7 @@ impl mmsdm_core::GetTable for MtpasaRegionavailtrk1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "REGIONAVAILTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaRegionavailtrk1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PUBLISH_DATETIME",
@@ -3278,24 +3323,7 @@ impl mmsdm_core::GetTable for MtpasaRegionavailability4 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "REGIONAVAILABILITY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaRegionavailability4Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PUBLISH_DATETIME",
@@ -3564,7 +3592,10 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3655,7 +3686,9 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
         MtpasaRegionavailability4Builder {
             publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             pasaavailability_scheduled_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 0)),
             latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -3872,7 +3905,9 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionavailability4 {
 pub struct MtpasaRegionavailability4Builder {
     publish_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     day_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     pasaavailability_scheduled_array: arrow::array::builder::Decimal128Builder,
     latest_offer_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     energyunconstrainedcapacity_array: arrow::array::builder::Decimal128Builder,
@@ -3988,17 +4023,7 @@ impl mmsdm_core::GetTable for MtpasaRegioniteration1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "REGIONITERATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaRegioniteration1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -4210,17 +4235,26 @@ impl mmsdm_core::ArrowSchema for MtpasaRegioniteration1 {
                 ),
                 arrow::datatypes::Field::new(
                     "runtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "demand_poe_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "aggregation_period",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4233,7 +4267,10 @@ impl mmsdm_core::ArrowSchema for MtpasaRegioniteration1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4266,11 +4303,19 @@ impl mmsdm_core::ArrowSchema for MtpasaRegioniteration1 {
         MtpasaRegioniteration1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
-            runtype_array: arrow::array::builder::StringBuilder::new(),
-            demand_poe_type_array: arrow::array::builder::StringBuilder::new(),
-            aggregation_period_array: arrow::array::builder::StringBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            demand_poe_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            aggregation_period_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             period_ending_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             use_iteration_id_array: arrow::array::builder::Int64Builder::new(),
             use_iteration_event_number_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
@@ -4353,11 +4398,17 @@ impl mmsdm_core::ArrowSchema for MtpasaRegioniteration1 {
 pub struct MtpasaRegioniteration1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
-    runtype_array: arrow::array::builder::StringBuilder,
-    demand_poe_type_array: arrow::array::builder::StringBuilder,
-    aggregation_period_array: arrow::array::builder::StringBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    demand_poe_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    aggregation_period_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     period_ending_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     use_iteration_id_array: arrow::array::builder::Int64Builder,
     use_iteration_event_number_array: arrow::array::builder::Decimal128Builder,
     use_iteration_event_average_array: arrow::array::builder::Decimal128Builder,
@@ -4504,42 +4555,8 @@ impl mmsdm_core::GetTable for MtpasaRegionresult2 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "REGIONRESULT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaRegionresult2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -4944,12 +4961,18 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
                 ),
                 arrow::datatypes::Field::new(
                     "runtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "demand_poe_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4962,7 +4985,10 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5125,10 +5151,16 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
         MtpasaRegionresult2Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
-            runtype_array: arrow::array::builder::StringBuilder::new(),
-            demand_poe_type_array: arrow::array::builder::StringBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            demand_poe_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             day_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             demand_array: arrow::array::builder::Decimal128Builder::new()
@@ -5555,10 +5587,14 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionresult2 {
 pub struct MtpasaRegionresult2Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
-    runtype_array: arrow::array::builder::StringBuilder,
-    demand_poe_type_array: arrow::array::builder::StringBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    demand_poe_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     day_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     demand_array: arrow::array::builder::Decimal128Builder,
     aggregateinstalledcapacity_array: arrow::array::builder::Decimal128Builder,
@@ -5726,36 +5762,8 @@ impl mmsdm_core::GetTable for MtpasaRegionsummary1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "REGIONSUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaRegionsummary1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -6117,17 +6125,26 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionsummary1 {
                 ),
                 arrow::datatypes::Field::new(
                     "runtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "demand_poe_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "aggregation_period",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6140,7 +6157,10 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionsummary1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6268,11 +6288,19 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionsummary1 {
         MtpasaRegionsummary1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             run_no_array: arrow::array::builder::Int64Builder::new(),
-            runtype_array: arrow::array::builder::StringBuilder::new(),
-            demand_poe_type_array: arrow::array::builder::StringBuilder::new(),
-            aggregation_period_array: arrow::array::builder::StringBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            demand_poe_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            aggregation_period_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             period_ending_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             nativedemand_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             use_percentile10_array: arrow::array::builder::Decimal128Builder::new()
@@ -6609,11 +6637,17 @@ impl mmsdm_core::ArrowSchema for MtpasaRegionsummary1 {
 pub struct MtpasaRegionsummary1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     run_no_array: arrow::array::builder::Int64Builder,
-    runtype_array: arrow::array::builder::StringBuilder,
-    demand_poe_type_array: arrow::array::builder::StringBuilder,
-    aggregation_period_array: arrow::array::builder::StringBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    demand_poe_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    aggregation_period_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     period_ending_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     nativedemand_array: arrow::array::builder::Decimal128Builder,
     use_percentile10_array: arrow::array::builder::Decimal128Builder,
     use_percentile20_array: arrow::array::builder::Decimal128Builder,

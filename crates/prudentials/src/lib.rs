@@ -100,25 +100,7 @@ impl mmsdm_core::GetTable for PrudentialCompanyPosition1 {
     const DATA_SET_NAME: &'static str = "PRUDENTIAL";
     const TABLE_NAME: &'static str = "COMPANY_POSITION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PrudentialCompanyPosition1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PRUDENTIAL_DATE",
@@ -387,7 +369,10 @@ impl mmsdm_core::ArrowSchema for PrudentialCompanyPosition1 {
                 ),
                 arrow::datatypes::Field::new(
                     "company_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -480,7 +465,9 @@ impl mmsdm_core::ArrowSchema for PrudentialCompanyPosition1 {
         PrudentialCompanyPosition1Builder {
             prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Int64Builder::new(),
-            company_id_array: arrow::array::builder::StringBuilder::new(),
+            company_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             mcl_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             credit_support_array: arrow::array::builder::Decimal128Builder::new()
@@ -714,7 +701,9 @@ impl mmsdm_core::ArrowSchema for PrudentialCompanyPosition1 {
 pub struct PrudentialCompanyPosition1Builder {
     prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Int64Builder,
-    company_id_array: arrow::array::builder::StringBuilder,
+    company_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     mcl_array: arrow::array::builder::Decimal128Builder,
     credit_support_array: arrow::array::builder::Decimal128Builder,
     trading_limit_array: arrow::array::builder::Decimal128Builder,
@@ -807,11 +796,7 @@ impl mmsdm_core::GetTable for PrudentialRuntrk1 {
     const DATA_SET_NAME: &'static str = "PRUDENTIAL";
     const TABLE_NAME: &'static str = "RUNTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PrudentialRuntrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PRUDENTIAL_DATE",
@@ -962,7 +947,10 @@ impl mmsdm_core::ArrowSchema for PrudentialRuntrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -988,7 +976,9 @@ impl mmsdm_core::ArrowSchema for PrudentialRuntrk1 {
         PrudentialRuntrk1Builder {
             prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Int64Builder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
@@ -1033,7 +1023,9 @@ impl mmsdm_core::ArrowSchema for PrudentialRuntrk1 {
 pub struct PrudentialRuntrk1Builder {
     prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Int64Builder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

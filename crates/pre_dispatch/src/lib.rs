@@ -106,23 +106,7 @@ impl mmsdm_core::GetTable for PredispatchFcasReqConstraint1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "FCAS_REQ_CONSTRAINT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchFcasReqConstraint1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -400,17 +384,26 @@ impl mmsdm_core::ArrowSchema for PredispatchFcasReqConstraint1 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -472,9 +465,15 @@ impl mmsdm_core::ArrowSchema for PredispatchFcasReqConstraint1 {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Int64Builder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
@@ -653,9 +652,13 @@ pub struct PredispatchFcasReqConstraint1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Int64Builder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     lhs_array: arrow::array::builder::Decimal128Builder,
     rhs_array: arrow::array::builder::Decimal128Builder,
     marginalvalue_array: arrow::array::builder::Decimal128Builder,
@@ -728,10 +731,7 @@ impl mmsdm_core::GetTable for PredispatchFcasReqRun1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "FCAS_REQ_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchFcasReqRun1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -1024,12 +1024,7 @@ impl mmsdm_core::GetTable for PredispatchPdIntermittentFcstTrk1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "PD_INTERMITTENT_FCST_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchPdIntermittentFcstTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -1182,7 +1177,10 @@ impl mmsdm_core::ArrowSchema for PredispatchPdIntermittentFcstTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1195,7 +1193,10 @@ impl mmsdm_core::ArrowSchema for PredispatchPdIntermittentFcstTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1217,9 +1218,13 @@ impl mmsdm_core::ArrowSchema for PredispatchPdIntermittentFcstTrk1 {
     fn new_builder() -> Self::Builder {
         PredispatchPdIntermittentFcstTrk1Builder {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -1277,9 +1282,11 @@ impl mmsdm_core::ArrowSchema for PredispatchPdIntermittentFcstTrk1 {
 #[cfg(feature = "arrow")]
 pub struct PredispatchPdIntermittentFcstTrk1Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -1363,12 +1370,7 @@ impl mmsdm_core::GetTable for PredispatchPdRooftopPvFcstTrk1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "PD_ROOFTOP_PV_FCST_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchPdRooftopPvFcstTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -1521,7 +1523,10 @@ impl mmsdm_core::ArrowSchema for PredispatchPdRooftopPvFcstTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "areaid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1534,7 +1539,10 @@ impl mmsdm_core::ArrowSchema for PredispatchPdRooftopPvFcstTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1556,9 +1564,13 @@ impl mmsdm_core::ArrowSchema for PredispatchPdRooftopPvFcstTrk1 {
     fn new_builder() -> Self::Builder {
         PredispatchPdRooftopPvFcstTrk1Builder {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            areaid_array: arrow::array::builder::StringBuilder::new(),
+            areaid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -1616,9 +1628,11 @@ impl mmsdm_core::ArrowSchema for PredispatchPdRooftopPvFcstTrk1 {
 #[cfg(feature = "arrow")]
 pub struct PredispatchPdRooftopPvFcstTrk1Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
-    areaid_array: arrow::array::builder::StringBuilder,
+    areaid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -1704,13 +1718,7 @@ impl mmsdm_core::GetTable for PredispatchLocalPrice1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "LOCAL_PRICE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchLocalPrice1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -1876,12 +1884,18 @@ impl mmsdm_core::ArrowSchema for PredispatchLocalPrice1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "periodid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1909,8 +1923,12 @@ impl mmsdm_core::ArrowSchema for PredispatchLocalPrice1 {
         PredispatchLocalPrice1Builder {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            periodid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            periodid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             local_price_adjustment_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 2)),
             locally_constrained_array: arrow::array::builder::Decimal128Builder::new()
@@ -1976,8 +1994,10 @@ impl mmsdm_core::ArrowSchema for PredispatchLocalPrice1 {
 pub struct PredispatchLocalPrice1Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    periodid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    periodid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     local_price_adjustment_array: arrow::array::builder::Decimal128Builder,
     locally_constrained_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -2069,15 +2089,7 @@ impl mmsdm_core::GetTable for PredispatchMnspbidtrk1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "MNSPBIDTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchMnspbidtrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -2252,7 +2264,10 @@ impl mmsdm_core::ArrowSchema for PredispatchMnspbidtrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "linkid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2265,7 +2280,10 @@ impl mmsdm_core::ArrowSchema for PredispatchMnspbidtrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2311,9 +2329,13 @@ impl mmsdm_core::ArrowSchema for PredispatchMnspbidtrk1 {
     fn new_builder() -> Self::Builder {
         PredispatchMnspbidtrk1Builder {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            linkid_array: arrow::array::builder::StringBuilder::new(),
+            linkid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
@@ -2387,9 +2409,11 @@ impl mmsdm_core::ArrowSchema for PredispatchMnspbidtrk1 {
 #[cfg(feature = "arrow")]
 pub struct PredispatchMnspbidtrk1Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
-    linkid_array: arrow::array::builder::StringBuilder,
+    linkid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     periodid_array: arrow::array::builder::TimestampMillisecondBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
@@ -2456,8 +2480,7 @@ impl mmsdm_core::GetTable for PredispatchBlockedConstraints1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "BLOCKED_CONSTRAINTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchBlockedConstraints1Mapping([
-        4,
-        5,
+        4, 5,
     ]);
     const COLUMNS: &'static [&'static str] = &["PREDISPATCHSEQNO", "CONSTRAINTID"];
     type Row<'row> = PredispatchBlockedConstraints1Row<'row>;
@@ -2584,7 +2607,10 @@ impl mmsdm_core::ArrowSchema for PredispatchBlockedConstraints1 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -2593,7 +2619,9 @@ impl mmsdm_core::ArrowSchema for PredispatchBlockedConstraints1 {
     fn new_builder() -> Self::Builder {
         PredispatchBlockedConstraints1Builder {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2620,7 +2648,9 @@ impl mmsdm_core::ArrowSchema for PredispatchBlockedConstraints1 {
 #[cfg(feature = "arrow")]
 pub struct PredispatchBlockedConstraints1Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct PredispatchCaseSolution1 {
     extract_row_partition: alloc::boxed::Box<
@@ -2727,26 +2757,7 @@ impl mmsdm_core::GetTable for PredispatchCaseSolution1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "CASE_SOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchCaseSolution1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -3029,7 +3040,10 @@ impl mmsdm_core::ArrowSchema for PredispatchCaseSolution1 {
                 ),
                 arrow::datatypes::Field::new(
                     "spdversion",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3125,7 +3139,9 @@ impl mmsdm_core::ArrowSchema for PredispatchCaseSolution1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             solutionstatus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            spdversion_array: arrow::array::builder::StringBuilder::new(),
+            spdversion_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             nonphysicallosses_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             totalobjective_array: arrow::array::builder::Decimal128Builder::new()
@@ -3377,7 +3393,9 @@ pub struct PredispatchCaseSolution1Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     solutionstatus_array: arrow::array::builder::Decimal128Builder,
-    spdversion_array: arrow::array::builder::StringBuilder,
+    spdversion_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     nonphysicallosses_array: arrow::array::builder::Decimal128Builder,
     totalobjective_array: arrow::array::builder::Decimal128Builder,
     totalareagenviolation_array: arrow::array::builder::Decimal128Builder,
@@ -3488,20 +3506,7 @@ impl mmsdm_core::GetTable for PredispatchConstraintSolution5 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "CONSTRAINT_SOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchConstraintSolution5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -3724,7 +3729,10 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3773,7 +3781,10 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3802,7 +3813,9 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
@@ -3814,7 +3827,9 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             genconid_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             genconid_versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
@@ -3945,7 +3960,9 @@ impl mmsdm_core::ArrowSchema for PredispatchConstraintSolution5 {
 pub struct PredispatchConstraintSolution5Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     rhs_array: arrow::array::builder::Decimal128Builder,
@@ -3953,7 +3970,7 @@ pub struct PredispatchConstraintSolution5Builder {
     violationdegree_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     genconid_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     genconid_versionno_array: arrow::array::builder::Decimal128Builder,
     lhs_array: arrow::array::builder::Decimal128Builder,
@@ -4099,28 +4116,7 @@ impl mmsdm_core::GetTable for PredispatchInterconnectorSoln3 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "INTERCONNECTOR_SOLN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchInterconnectorSoln3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
         26,
     ]);
     const COLUMNS: &'static [&'static str] = &[
@@ -4412,12 +4408,18 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "periodid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4483,12 +4485,18 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
                 ),
                 arrow::datatypes::Field::new(
                     "exportgenconid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "importgenconid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4529,8 +4537,12 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            periodid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            periodid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             meteredmwflow_array: arrow::array::builder::Decimal128Builder::new()
@@ -4551,8 +4563,12 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             marginalloss_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            exportgenconid_array: arrow::array::builder::StringBuilder::new(),
-            importgenconid_array: arrow::array::builder::StringBuilder::new(),
+            exportgenconid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            importgenconid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             fcasexportlimit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             fcasimportlimit_array: arrow::array::builder::Decimal128Builder::new()
@@ -4787,8 +4803,12 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectorSoln3 {
 pub struct PredispatchInterconnectorSoln3Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    periodid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    periodid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     intervention_array: arrow::array::builder::Decimal128Builder,
     meteredmwflow_array: arrow::array::builder::Decimal128Builder,
     mwflow_array: arrow::array::builder::Decimal128Builder,
@@ -4800,8 +4820,12 @@ pub struct PredispatchInterconnectorSoln3Builder {
     exportlimit_array: arrow::array::builder::Decimal128Builder,
     importlimit_array: arrow::array::builder::Decimal128Builder,
     marginalloss_array: arrow::array::builder::Decimal128Builder,
-    exportgenconid_array: arrow::array::builder::StringBuilder,
-    importgenconid_array: arrow::array::builder::StringBuilder,
+    exportgenconid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    importgenconid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     fcasexportlimit_array: arrow::array::builder::Decimal128Builder,
     fcasimportlimit_array: arrow::array::builder::Decimal128Builder,
     local_price_adjustment_export_array: arrow::array::builder::Decimal128Builder,
@@ -4982,57 +5006,9 @@ impl mmsdm_core::GetTable for PredispatchInterconnectrSens1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "INTERCONNECTR_SENS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchInterconnectrSens1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -5555,12 +5531,18 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "periodid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5812,8 +5794,12 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            periodid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            periodid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -6448,8 +6434,12 @@ impl mmsdm_core::ArrowSchema for PredispatchInterconnectrSens1 {
 pub struct PredispatchInterconnectrSens1Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    periodid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    periodid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     intervention_array: arrow::array::builder::Decimal128Builder,
     datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_active_array: arrow::array::builder::Decimal128Builder,
@@ -6708,71 +6698,10 @@ impl mmsdm_core::GetTable for PredispatchUnitSolution5 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "UNIT_SOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchUnitSolution5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
-        68,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        66, 67, 68,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -7401,7 +7330,10 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution5 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7411,7 +7343,10 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution5 {
                 ),
                 arrow::datatypes::Field::new(
                     "periodid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7421,7 +7356,10 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution5 {
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7728,13 +7666,19 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution5 {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             tradetype_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            periodid_array: arrow::array::builder::StringBuilder::new(),
+            periodid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             agcstatus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             dispatchmode_array: arrow::array::builder::Decimal128Builder::new()
@@ -8547,11 +8491,15 @@ impl mmsdm_core::ArrowSchema for PredispatchUnitSolution5 {
 pub struct PredispatchUnitSolution5Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     tradetype_array: arrow::array::builder::Decimal128Builder,
-    periodid_array: arrow::array::builder::StringBuilder,
+    periodid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     intervention_array: arrow::array::builder::Decimal128Builder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     agcstatus_array: arrow::array::builder::Decimal128Builder,
     dispatchmode_array: arrow::array::builder::Decimal128Builder,
     initialmw_array: arrow::array::builder::Decimal128Builder,
@@ -8691,14 +8639,7 @@ impl mmsdm_core::GetTable for PredispatchOffertrk1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "OFFERTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchOffertrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -8871,17 +8812,26 @@ impl mmsdm_core::ArrowSchema for PredispatchOffertrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "periodid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -8922,9 +8872,15 @@ impl mmsdm_core::ArrowSchema for PredispatchOffertrk1 {
     fn new_builder() -> Self::Builder {
         PredispatchOffertrk1Builder {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
-            periodid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            periodid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             bidofferdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -8983,9 +8939,11 @@ impl mmsdm_core::ArrowSchema for PredispatchOffertrk1 {
 #[cfg(feature = "arrow")]
 pub struct PredispatchOffertrk1Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
-    periodid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    periodid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     bidofferdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -9129,41 +9087,8 @@ impl mmsdm_core::GetTable for PredispatchRegionPrices2 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "REGION_PRICES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchRegionPrices2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -9556,12 +9481,18 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices2 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "periodid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -9733,8 +9664,12 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices2 {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            periodid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            periodid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             rrp_array: arrow::array::builder::Decimal128Builder::new()
@@ -10161,8 +10096,12 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionPrices2 {
 pub struct PredispatchRegionPrices2Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    periodid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    periodid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     intervention_array: arrow::array::builder::Decimal128Builder,
     rrp_array: arrow::array::builder::Decimal128Builder,
     eep_array: arrow::array::builder::Decimal128Builder,
@@ -10365,57 +10304,9 @@ impl mmsdm_core::GetTable for PredispatchPricesensitivities1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "PRICESENSITIVITIES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchPricesensitivities1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -10937,12 +10828,18 @@ impl mmsdm_core::ArrowSchema for PredispatchPricesensitivities1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "periodid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -11194,8 +11091,12 @@ impl mmsdm_core::ArrowSchema for PredispatchPricesensitivities1 {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            periodid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            periodid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             rrpeep1_array: arrow::array::builder::Decimal128Builder::new()
@@ -11830,8 +11731,12 @@ impl mmsdm_core::ArrowSchema for PredispatchPricesensitivities1 {
 pub struct PredispatchPricesensitivities1Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    periodid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    periodid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     intervention_array: arrow::array::builder::Decimal128Builder,
     rrpeep1_array: arrow::array::builder::Decimal128Builder,
     rrpeep2_array: arrow::array::builder::Decimal128Builder,
@@ -12202,133 +12107,13 @@ impl mmsdm_core::GetTable for PredispatchRegionSolution9 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "REGION_SOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchRegionSolution9Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
-        68,
-        69,
-        70,
-        71,
-        72,
-        73,
-        74,
-        75,
-        76,
-        77,
-        78,
-        79,
-        80,
-        81,
-        82,
-        83,
-        84,
-        85,
-        86,
-        87,
-        88,
-        89,
-        90,
-        91,
-        92,
-        93,
-        94,
-        95,
-        96,
-        97,
-        98,
-        99,
-        100,
-        101,
-        102,
-        103,
-        104,
-        105,
-        106,
-        107,
-        108,
-        109,
-        110,
-        111,
-        112,
-        113,
-        114,
-        115,
-        116,
-        117,
-        118,
-        119,
-        120,
-        121,
-        122,
-        123,
-        124,
-        125,
-        126,
-        127,
-        128,
-        129,
-        130,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85,
+        86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104,
+        105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
+        121, 122, 123, 124, 125, 126, 127, 128, 129, 130,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDISPATCHSEQNO",
@@ -13457,12 +13242,18 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution9 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "periodid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -14094,8 +13885,12 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution9 {
             predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            periodid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            periodid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             totaldemand_array: arrow::array::builder::Decimal128Builder::new()
@@ -15734,8 +15529,12 @@ impl mmsdm_core::ArrowSchema for PredispatchRegionSolution9 {
 pub struct PredispatchRegionSolution9Builder {
     predispatchseqno_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    periodid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    periodid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     intervention_array: arrow::array::builder::Decimal128Builder,
     totaldemand_array: arrow::array::builder::Decimal128Builder,
     availablegeneration_array: arrow::array::builder::Decimal128Builder,
@@ -15928,11 +15727,7 @@ impl mmsdm_core::GetTable for PredispatchScenarioDemand1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "SCENARIO_DEMAND";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchScenarioDemand1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -16086,7 +15881,10 @@ impl mmsdm_core::ArrowSchema for PredispatchScenarioDemand1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -16102,7 +15900,9 @@ impl mmsdm_core::ArrowSchema for PredispatchScenarioDemand1 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Int64Builder::new(),
             scenario_array: arrow::array::builder::Int64Builder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             deltamw_array: arrow::array::builder::Int64Builder::new(),
         }
     }
@@ -16141,7 +15941,9 @@ pub struct PredispatchScenarioDemand1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Int64Builder,
     scenario_array: arrow::array::builder::Int64Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     deltamw_array: arrow::array::builder::Int64Builder,
 }
 pub struct PredispatchScenarioDemandTrk1 {
@@ -16219,11 +16021,7 @@ impl mmsdm_core::GetTable for PredispatchScenarioDemandTrk1 {
     const DATA_SET_NAME: &'static str = "PREDISPATCH";
     const TABLE_NAME: &'static str = "SCENARIO_DEMAND_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PredispatchScenarioDemandTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -16377,7 +16175,10 @@ impl mmsdm_core::ArrowSchema for PredispatchScenarioDemandTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -16403,7 +16204,9 @@ impl mmsdm_core::ArrowSchema for PredispatchScenarioDemandTrk1 {
         PredispatchScenarioDemandTrk1Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Int64Builder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
@@ -16448,7 +16251,9 @@ impl mmsdm_core::ArrowSchema for PredispatchScenarioDemandTrk1 {
 pub struct PredispatchScenarioDemandTrk1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Int64Builder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

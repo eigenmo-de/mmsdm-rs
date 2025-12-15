@@ -73,12 +73,7 @@ impl mmsdm_core::GetTable for OperationalDemandActual3 {
     const DATA_SET_NAME: &'static str = "OPERATIONAL_DEMAND";
     const TABLE_NAME: &'static str = "ACTUAL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OperationalDemandActual3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -235,7 +230,10 @@ impl mmsdm_core::ArrowSchema for OperationalDemandActual3 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -267,7 +265,9 @@ impl mmsdm_core::ArrowSchema for OperationalDemandActual3 {
     fn new_builder() -> Self::Builder {
         OperationalDemandActual3Builder {
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             operational_demand_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -331,7 +331,9 @@ impl mmsdm_core::ArrowSchema for OperationalDemandActual3 {
 #[cfg(feature = "arrow")]
 pub struct OperationalDemandActual3Builder {
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     operational_demand_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     operational_demand_adjustment_array: arrow::array::builder::Decimal128Builder,
@@ -407,13 +409,7 @@ impl mmsdm_core::GetTable for OperationalDemandForecast1 {
     const DATA_SET_NAME: &'static str = "OPERATIONAL_DEMAND";
     const TABLE_NAME: &'static str = "FORECAST";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OperationalDemandForecast1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -583,7 +579,10 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -623,7 +622,9 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
     fn new_builder() -> Self::Builder {
         OperationalDemandForecast1Builder {
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             load_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             operational_demand_poe10_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 2)),
@@ -704,7 +705,9 @@ impl mmsdm_core::ArrowSchema for OperationalDemandForecast1 {
 #[cfg(feature = "arrow")]
 pub struct OperationalDemandForecast1Builder {
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     load_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     operational_demand_poe10_array: arrow::array::builder::Decimal128Builder,
     operational_demand_poe50_array: arrow::array::builder::Decimal128Builder,
@@ -787,13 +790,7 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvail2 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_CLUSTER_AVAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentClusterAvail2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -972,7 +969,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -985,7 +985,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
                 ),
                 arrow::datatypes::Field::new(
                     "clusterid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1009,9 +1012,13 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
     fn new_builder() -> Self::Builder {
         DemandIntermittentClusterAvail2Builder {
             tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            clusterid_array: arrow::array::builder::StringBuilder::new(),
+            clusterid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             elements_unavailable_array: arrow::array::builder::Decimal128Builder::new()
@@ -1083,9 +1090,11 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvail2 {
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentClusterAvail2Builder {
     tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    clusterid_array: arrow::array::builder::StringBuilder,
+    clusterid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     elements_unavailable_array: arrow::array::builder::Decimal128Builder,
     elements_available_array: arrow::array::builder::Decimal128Builder,
@@ -1159,10 +1168,7 @@ impl mmsdm_core::GetTable for DemandIntermittentClusterAvailDay1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_CLUSTER_AVAIL_DAY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentClusterAvailDay1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -1315,7 +1321,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvailDay1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1328,7 +1337,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvailDay1 {
                 ),
                 arrow::datatypes::Field::new(
                     "clusterid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -1337,9 +1349,13 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvailDay1 {
     fn new_builder() -> Self::Builder {
         DemandIntermittentClusterAvailDay1Builder {
             tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            clusterid_array: arrow::array::builder::StringBuilder::new(),
+            clusterid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1374,9 +1390,11 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentClusterAvailDay1 {
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentClusterAvailDay1Builder {
     tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    clusterid_array: arrow::array::builder::StringBuilder,
+    clusterid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct DemandIntermittentDsPred1 {
     extract_row_partition: alloc::boxed::Box<
@@ -1461,16 +1479,7 @@ impl mmsdm_core::GetTable for DemandIntermittentDsPred1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_DS_PRED";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentDsPred1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1676,7 +1685,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1697,7 +1709,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "origin",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1731,10 +1746,14 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
     fn new_builder() -> Self::Builder {
         DemandIntermittentDsPred1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            origin_array: arrow::array::builder::StringBuilder::new(),
+            origin_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             forecast_mean_array: arrow::array::builder::Decimal128Builder::new()
@@ -1837,10 +1856,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsPred1 {
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentDsPred1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    origin_array: arrow::array::builder::StringBuilder,
+    origin_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     forecast_mean_array: arrow::array::builder::Decimal128Builder,
     forecast_poe10_array: arrow::array::builder::Decimal128Builder,
@@ -1980,19 +1999,7 @@ impl mmsdm_core::GetTable for DemandIntermittentDsRun1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_DS_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentDsRun1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2196,7 +2203,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2209,7 +2219,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "origin",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2219,12 +2232,18 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "comments",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2237,7 +2256,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "model",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2260,7 +2282,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "transaction_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -2269,21 +2294,33 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
     fn new_builder() -> Self::Builder {
         DemandIntermittentDsRun1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            origin_array: arrow::array::builder::StringBuilder::new(),
+            origin_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            comments_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            comments_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            model_array: arrow::array::builder::StringBuilder::new(),
+            model_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             participant_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             suppressed_aemo_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             suppressed_participant_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            transaction_id_array: arrow::array::builder::StringBuilder::new(),
+            transaction_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2373,18 +2410,24 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentDsRun1 {
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentDsRun1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    origin_array: arrow::array::builder::StringBuilder,
+    origin_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
-    comments_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    comments_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    model_array: arrow::array::builder::StringBuilder,
+    model_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     participant_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
     suppressed_aemo_array: arrow::array::builder::Decimal128Builder,
     suppressed_participant_array: arrow::array::builder::Decimal128Builder,
-    transaction_id_array: arrow::array::builder::StringBuilder,
+    transaction_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct ForecastIntermittentGen1 {
     extract_row_partition: alloc::boxed::Box<
@@ -2454,12 +2497,7 @@ impl mmsdm_core::GetTable for ForecastIntermittentGen1 {
     const DATA_SET_NAME: &'static str = "FORECAST";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForecastIntermittentGen1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2618,7 +2656,10 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2656,7 +2697,9 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
     fn new_builder() -> Self::Builder {
         ForecastIntermittentGen1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             start_interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             end_interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
@@ -2714,7 +2757,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGen1 {
 #[cfg(feature = "arrow")]
 pub struct ForecastIntermittentGen1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     start_interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     end_interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
@@ -2793,14 +2836,7 @@ impl mmsdm_core::GetTable for ForecastIntermittentGenData1 {
     const DATA_SET_NAME: &'static str = "FORECAST";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_DATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForecastIntermittentGenData1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2982,7 +3018,10 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3027,7 +3066,9 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
     fn new_builder() -> Self::Builder {
         ForecastIntermittentGenData1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             powermean_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 3)),
@@ -3118,7 +3159,7 @@ impl mmsdm_core::ArrowSchema for ForecastIntermittentGenData1 {
 #[cfg(feature = "arrow")]
 pub struct ForecastIntermittentGenData1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     powermean_array: arrow::array::builder::Decimal128Builder,
     powerpoe50_array: arrow::array::builder::Decimal128Builder,
@@ -3209,14 +3250,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenFcstP5Pred1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_FCST_P5_PRED";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenFcstP5Pred1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "FORECAST_RUN_DATETIME",
@@ -3414,7 +3448,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstP5Pred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3427,7 +3464,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstP5Pred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3445,7 +3485,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstP5Pred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "forecast_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3459,13 +3502,19 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstP5Pred1 {
     fn new_builder() -> Self::Builder {
         DemandIntermittentGenFcstP5Pred1Builder {
             forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            forecast_type_array: arrow::array::builder::StringBuilder::new(),
+            forecast_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_value_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -3530,12 +3579,16 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstP5Pred1 {
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentGenFcstP5Pred1Builder {
     forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    forecast_type_array: arrow::array::builder::StringBuilder,
+    forecast_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_value_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct DemandIntermittentGenFcstP5Run1 {
@@ -3658,17 +3711,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenFcstP5Run1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_FCST_P5_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenFcstP5Run1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "FORECAST_RUN_DATETIME",
@@ -3868,7 +3911,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstP5Run1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3881,7 +3927,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstP5Run1 {
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3899,12 +3948,18 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstP5Run1 {
                 ),
                 arrow::datatypes::Field::new(
                     "remarks",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "model_used",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3914,7 +3969,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstP5Run1 {
                 ),
                 arrow::datatypes::Field::new(
                     "transaction_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3931,17 +3989,27 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstP5Run1 {
     fn new_builder() -> Self::Builder {
         DemandIntermittentGenFcstP5Run1Builder {
             forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            remarks_array: arrow::array::builder::StringBuilder::new(),
-            model_used_array: arrow::array::builder::StringBuilder::new(),
+            remarks_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            model_used_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             suppressed_provider_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            transaction_id_array: arrow::array::builder::StringBuilder::new(),
+            transaction_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -4018,15 +4086,21 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstP5Run1 {
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentGenFcstP5Run1Builder {
     forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
-    remarks_array: arrow::array::builder::StringBuilder,
-    model_used_array: arrow::array::builder::StringBuilder,
+    remarks_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int64Type>,
+    model_used_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     suppressed_provider_array: arrow::array::builder::Decimal128Builder,
-    transaction_id_array: arrow::array::builder::StringBuilder,
+    transaction_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct DemandIntermittentGenFcstPred1 {
@@ -4112,14 +4186,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenFcstPred1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_FCST_PRED";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenFcstPred1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "FORECAST_RUN_DATETIME",
@@ -4317,7 +4384,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstPred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4330,7 +4400,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstPred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4348,7 +4421,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstPred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "forecast_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4362,13 +4438,19 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstPred1 {
     fn new_builder() -> Self::Builder {
         DemandIntermittentGenFcstPred1Builder {
             forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            forecast_type_array: arrow::array::builder::StringBuilder::new(),
+            forecast_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_value_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -4433,12 +4515,16 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstPred1 {
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentGenFcstPred1Builder {
     forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    forecast_type_array: arrow::array::builder::StringBuilder,
+    forecast_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_value_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct DemandIntermittentGenFcstRun1 {
@@ -4561,17 +4647,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenFcstRun1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_FCST_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenFcstRun1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "FORECAST_RUN_DATETIME",
@@ -4771,7 +4847,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4784,7 +4863,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4802,12 +4884,18 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "remarks",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "model_used",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4817,7 +4905,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "transaction_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4834,17 +4925,27 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstRun1 {
     fn new_builder() -> Self::Builder {
         DemandIntermittentGenFcstRun1Builder {
             forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            remarks_array: arrow::array::builder::StringBuilder::new(),
-            model_used_array: arrow::array::builder::StringBuilder::new(),
+            remarks_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            model_used_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             suppressed_provider_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            transaction_id_array: arrow::array::builder::StringBuilder::new(),
+            transaction_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -4921,15 +5022,21 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenFcstRun1 {
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentGenFcstRun1Builder {
     forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
-    remarks_array: arrow::array::builder::StringBuilder,
-    model_used_array: arrow::array::builder::StringBuilder,
+    remarks_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int64Type>,
+    model_used_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     suppressed_provider_array: arrow::array::builder::Decimal128Builder,
-    transaction_id_array: arrow::array::builder::StringBuilder,
+    transaction_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct DemandIntermittentGenLimit1 {
@@ -5000,11 +5107,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimit1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_LIMIT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenLimit1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -5158,7 +5261,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimit1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5185,7 +5291,9 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimit1 {
     fn new_builder() -> Self::Builder {
         DemandIntermittentGenLimit1Builder {
             tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -5233,7 +5341,7 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimit1 {
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentGenLimit1Builder {
     tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     uppermwlimit_array: arrow::array::builder::Int64Builder,
@@ -5345,13 +5453,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenLimitDay1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_LIMIT_DAY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenLimitDay1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -5513,7 +5615,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5526,7 +5631,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5539,12 +5647,18 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedbyuser",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedbyparticipantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -5553,12 +5667,20 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
     fn new_builder() -> Self::Builder {
         DemandIntermittentGenLimitDay1Builder {
             tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedbyuser_array: arrow::array::builder::StringBuilder::new(),
-            authorisedbyparticipantid_array: arrow::array::builder::StringBuilder::new(),
+            authorisedbyuser_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            authorisedbyparticipantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -5607,12 +5729,18 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenLimitDay1 {
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentGenLimitDay1Builder {
     tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedbyuser_array: arrow::array::builder::StringBuilder,
-    authorisedbyparticipantid_array: arrow::array::builder::StringBuilder,
+    authorisedbyuser_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    authorisedbyparticipantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct DemandIntermittentGenScada1 {
     extract_row_partition: alloc::boxed::Box<
@@ -5698,12 +5826,7 @@ impl mmsdm_core::GetTable for DemandIntermittentGenScada1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "INTERMITTENT_GEN_SCADA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandIntermittentGenScada1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -5858,12 +5981,18 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "scada_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5873,7 +6002,10 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
                 ),
                 arrow::datatypes::Field::new(
                     "scada_quality",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5890,11 +6022,17 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
     fn new_builder() -> Self::Builder {
         DemandIntermittentGenScada1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            scada_type_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            scada_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             scada_value_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            scada_quality_array: arrow::array::builder::StringBuilder::new(),
+            scada_quality_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -5944,10 +6082,14 @@ impl mmsdm_core::ArrowSchema for DemandIntermittentGenScada1 {
 #[cfg(feature = "arrow")]
 pub struct DemandIntermittentGenScada1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    scada_type_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    scada_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     scada_value_array: arrow::array::builder::Decimal128Builder,
-    scada_quality_array: arrow::array::builder::StringBuilder,
+    scada_quality_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct DemandMtpasaIntermittentAvail2 {
@@ -6025,13 +6167,7 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentAvail2 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "MTPASA_INTERMITTENT_AVAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandMtpasaIntermittentAvail2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -6208,7 +6344,10 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6221,7 +6360,10 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
                 ),
                 arrow::datatypes::Field::new(
                     "clusterid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6248,9 +6390,13 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
     fn new_builder() -> Self::Builder {
         DemandMtpasaIntermittentAvail2Builder {
             tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            clusterid_array: arrow::array::builder::StringBuilder::new(),
+            clusterid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             elements_unavailable_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
@@ -6317,9 +6463,11 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentAvail2 {
 #[cfg(feature = "arrow")]
 pub struct DemandMtpasaIntermittentAvail2Builder {
     tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    clusterid_array: arrow::array::builder::StringBuilder,
+    clusterid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     elements_unavailable_array: arrow::array::builder::Decimal128Builder,
     elements_available_array: arrow::array::builder::Decimal128Builder,
@@ -6419,13 +6567,7 @@ impl mmsdm_core::GetTable for DemandMtpasaIntermittentLimit1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "MTPASA_INTERMITTENT_LIMIT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandMtpasaIntermittentLimit1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRADINGDATE",
@@ -6587,7 +6729,10 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6613,12 +6758,18 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedbyuser",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedbyparticipantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -6627,12 +6778,18 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
     fn new_builder() -> Self::Builder {
         DemandMtpasaIntermittentLimit1Builder {
             tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             uppermwlimit_array: arrow::array::builder::Int64Builder::new(),
-            authorisedbyuser_array: arrow::array::builder::StringBuilder::new(),
-            authorisedbyparticipantid_array: arrow::array::builder::StringBuilder::new(),
+            authorisedbyuser_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            authorisedbyparticipantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -6681,12 +6838,16 @@ impl mmsdm_core::ArrowSchema for DemandMtpasaIntermittentLimit1 {
 #[cfg(feature = "arrow")]
 pub struct DemandMtpasaIntermittentLimit1Builder {
     tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     uppermwlimit_array: arrow::array::builder::Int64Builder,
-    authorisedbyuser_array: arrow::array::builder::StringBuilder,
-    authorisedbyparticipantid_array: arrow::array::builder::StringBuilder,
+    authorisedbyuser_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    authorisedbyparticipantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct DemandPeriod1 {
     extract_row_partition: alloc::boxed::Box<
@@ -6769,17 +6930,7 @@ impl mmsdm_core::GetTable for DemandPeriod1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "PERIOD";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandPeriod1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -7003,7 +7154,10 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7059,7 +7213,9 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
         DemandPeriod1Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -7178,7 +7334,9 @@ impl mmsdm_core::ArrowSchema for DemandPeriod1 {
 pub struct DemandPeriod1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     versionno_array: arrow::array::builder::Decimal128Builder,
@@ -7284,14 +7442,7 @@ impl mmsdm_core::GetTable for DemandTrk1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -7464,7 +7615,10 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7482,7 +7636,10 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "filename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7495,7 +7652,10 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7512,13 +7672,19 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
     fn new_builder() -> Self::Builder {
         DemandTrk1Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            filename_array: arrow::array::builder::StringBuilder::new(),
+            filename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -7576,12 +7742,18 @@ impl mmsdm_core::ArrowSchema for DemandTrk1 {
 #[cfg(feature = "arrow")]
 pub struct DemandTrk1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    filename_array: arrow::array::builder::StringBuilder,
+    filename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct RooftopActual2 {
@@ -7656,12 +7828,7 @@ impl mmsdm_core::GetTable for RooftopActual2 {
     const DATA_SET_NAME: &'static str = "ROOFTOP";
     const TABLE_NAME: &'static str = "ACTUAL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = RooftopActual2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -7821,12 +7988,18 @@ impl mmsdm_core::ArrowSchema for RooftopActual2 {
                 ),
                 arrow::datatypes::Field::new(
                     "r#type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7853,8 +8026,12 @@ impl mmsdm_core::ArrowSchema for RooftopActual2 {
     fn new_builder() -> Self::Builder {
         RooftopActual2Builder {
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            r#type_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            r#type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             power_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
             qi_array: arrow::array::builder::Decimal128Builder::new()
@@ -7916,8 +8093,10 @@ impl mmsdm_core::ArrowSchema for RooftopActual2 {
 #[cfg(feature = "arrow")]
 pub struct RooftopActual2Builder {
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    r#type_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    r#type_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     power_array: arrow::array::builder::Decimal128Builder,
     qi_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -8010,16 +8189,7 @@ impl mmsdm_core::GetTable for DemandRooftopPvActualPred1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "ROOFTOP_PV_ACTUAL_PRED";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandRooftopPvActualPred1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDICTION_RUN_DATETIME",
@@ -8241,7 +8411,10 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvActualPred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "areaid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -8254,12 +8427,18 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvActualPred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "estimate_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -8293,10 +8472,16 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvActualPred1 {
             prediction_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_duration_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            areaid_array: arrow::array::builder::StringBuilder::new(),
+            areaid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            estimate_type_array: arrow::array::builder::StringBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            estimate_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             prediction_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -8387,10 +8572,14 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvActualPred1 {
 pub struct DemandRooftopPvActualPred1Builder {
     prediction_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_duration_array: arrow::array::builder::Decimal128Builder,
-    areaid_array: arrow::array::builder::StringBuilder,
+    areaid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    estimate_type_array: arrow::array::builder::StringBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    estimate_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     prediction_priority_array: arrow::array::builder::Decimal128Builder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     prediction_value_array: arrow::array::builder::Decimal128Builder,
@@ -8513,19 +8702,7 @@ impl mmsdm_core::GetTable for DemandRooftopPvActualRun1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "ROOFTOP_PV_ACTUAL_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandRooftopPvActualRun1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PREDICTION_RUN_DATETIME",
@@ -8755,7 +8932,10 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvActualRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "areaid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -8768,12 +8948,18 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvActualRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "estimate_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -8791,12 +8977,18 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvActualRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "remarks",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "model_used",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -8825,15 +9017,25 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvActualRun1 {
             prediction_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_duration_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            areaid_array: arrow::array::builder::StringBuilder::new(),
+            areaid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            estimate_type_array: arrow::array::builder::StringBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            estimate_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             prediction_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            remarks_array: arrow::array::builder::StringBuilder::new(),
-            model_used_array: arrow::array::builder::StringBuilder::new(),
+            remarks_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            model_used_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             suppressed_provider_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             installed_capacity_array: arrow::array::builder::Decimal128Builder::new()
@@ -8935,14 +9137,20 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvActualRun1 {
 pub struct DemandRooftopPvActualRun1Builder {
     prediction_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_duration_array: arrow::array::builder::Decimal128Builder,
-    areaid_array: arrow::array::builder::StringBuilder,
+    areaid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    estimate_type_array: arrow::array::builder::StringBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    estimate_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     prediction_priority_array: arrow::array::builder::Decimal128Builder,
     provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
-    remarks_array: arrow::array::builder::StringBuilder,
-    model_used_array: arrow::array::builder::StringBuilder,
+    remarks_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int64Type>,
+    model_used_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     suppressed_provider_array: arrow::array::builder::Decimal128Builder,
     installed_capacity_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -9030,14 +9238,7 @@ impl mmsdm_core::GetTable for DemandRooftopPvFcstP5Pred1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "ROOFTOP_PV_FCST_P5_PRED";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandRooftopPvFcstP5Pred1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "FORECAST_RUN_DATETIME",
@@ -9232,7 +9433,10 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstP5Pred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "areaid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9245,7 +9449,10 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstP5Pred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9263,7 +9470,10 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstP5Pred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "forecast_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9277,13 +9487,19 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstP5Pred1 {
     fn new_builder() -> Self::Builder {
         DemandRooftopPvFcstP5Pred1Builder {
             forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            areaid_array: arrow::array::builder::StringBuilder::new(),
+            areaid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            forecast_type_array: arrow::array::builder::StringBuilder::new(),
+            forecast_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_value_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -9348,12 +9564,16 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstP5Pred1 {
 #[cfg(feature = "arrow")]
 pub struct DemandRooftopPvFcstP5Pred1Builder {
     forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    areaid_array: arrow::array::builder::StringBuilder,
+    areaid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    forecast_type_array: arrow::array::builder::StringBuilder,
+    forecast_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_value_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct DemandRooftopPvFcstP5Run1 {
@@ -9464,17 +9684,7 @@ impl mmsdm_core::GetTable for DemandRooftopPvFcstP5Run1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "ROOFTOP_PV_FCST_P5_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandRooftopPvFcstP5Run1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "FORECAST_RUN_DATETIME",
@@ -9676,7 +9886,10 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstP5Run1 {
                 ),
                 arrow::datatypes::Field::new(
                     "areaid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9689,7 +9902,10 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstP5Run1 {
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9707,12 +9923,18 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstP5Run1 {
                 ),
                 arrow::datatypes::Field::new(
                     "remarks",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "model_used",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -9739,14 +9961,22 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstP5Run1 {
     fn new_builder() -> Self::Builder {
         DemandRooftopPvFcstP5Run1Builder {
             forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            areaid_array: arrow::array::builder::StringBuilder::new(),
+            areaid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            remarks_array: arrow::array::builder::StringBuilder::new(),
-            model_used_array: arrow::array::builder::StringBuilder::new(),
+            remarks_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            model_used_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             suppressed_provider_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             installed_capacity_array: arrow::array::builder::Decimal128Builder::new()
@@ -9835,13 +10065,17 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstP5Run1 {
 #[cfg(feature = "arrow")]
 pub struct DemandRooftopPvFcstP5Run1Builder {
     forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    areaid_array: arrow::array::builder::StringBuilder,
+    areaid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
-    remarks_array: arrow::array::builder::StringBuilder,
-    model_used_array: arrow::array::builder::StringBuilder,
+    remarks_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int64Type>,
+    model_used_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     suppressed_provider_array: arrow::array::builder::Decimal128Builder,
     installed_capacity_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -9929,14 +10163,7 @@ impl mmsdm_core::GetTable for DemandRooftopPvFcstPred1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "ROOFTOP_PV_FCST_PRED";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandRooftopPvFcstPred1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "FORECAST_RUN_DATETIME",
@@ -10131,7 +10358,10 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstPred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "areaid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -10144,7 +10374,10 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstPred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -10162,7 +10395,10 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstPred1 {
                 ),
                 arrow::datatypes::Field::new(
                     "forecast_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -10176,13 +10412,19 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstPred1 {
     fn new_builder() -> Self::Builder {
         DemandRooftopPvFcstPred1Builder {
             forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            areaid_array: arrow::array::builder::StringBuilder::new(),
+            areaid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            forecast_type_array: arrow::array::builder::StringBuilder::new(),
+            forecast_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_value_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -10247,12 +10489,16 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstPred1 {
 #[cfg(feature = "arrow")]
 pub struct DemandRooftopPvFcstPred1Builder {
     forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    areaid_array: arrow::array::builder::StringBuilder,
+    areaid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    forecast_type_array: arrow::array::builder::StringBuilder,
+    forecast_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_value_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct DemandRooftopPvFcstRun1 {
@@ -10363,17 +10609,7 @@ impl mmsdm_core::GetTable for DemandRooftopPvFcstRun1 {
     const DATA_SET_NAME: &'static str = "DEMAND";
     const TABLE_NAME: &'static str = "ROOFTOP_PV_FCST_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DemandRooftopPvFcstRun1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "FORECAST_RUN_DATETIME",
@@ -10575,7 +10811,10 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "areaid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -10588,7 +10827,10 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -10606,12 +10848,18 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstRun1 {
                 ),
                 arrow::datatypes::Field::new(
                     "remarks",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "model_used",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -10638,14 +10886,22 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstRun1 {
     fn new_builder() -> Self::Builder {
         DemandRooftopPvFcstRun1Builder {
             forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            areaid_array: arrow::array::builder::StringBuilder::new(),
+            areaid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            remarks_array: arrow::array::builder::StringBuilder::new(),
-            model_used_array: arrow::array::builder::StringBuilder::new(),
+            remarks_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            model_used_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             suppressed_provider_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             installed_capacity_array: arrow::array::builder::Decimal128Builder::new()
@@ -10734,13 +10990,17 @@ impl mmsdm_core::ArrowSchema for DemandRooftopPvFcstRun1 {
 #[cfg(feature = "arrow")]
 pub struct DemandRooftopPvFcstRun1Builder {
     forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    areaid_array: arrow::array::builder::StringBuilder,
+    areaid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     provider_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
-    remarks_array: arrow::array::builder::StringBuilder,
-    model_used_array: arrow::array::builder::StringBuilder,
+    remarks_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int64Type>,
+    model_used_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     suppressed_provider_array: arrow::array::builder::Decimal128Builder,
     installed_capacity_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -10818,14 +11078,7 @@ impl mmsdm_core::GetTable for RooftopForecast1 {
     const DATA_SET_NAME: &'static str = "ROOFTOP";
     const TABLE_NAME: &'static str = "FORECAST";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = RooftopForecast1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "VERSION_DATETIME",
@@ -11009,7 +11262,10 @@ impl mmsdm_core::ArrowSchema for RooftopForecast1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -11054,7 +11310,9 @@ impl mmsdm_core::ArrowSchema for RooftopForecast1 {
     fn new_builder() -> Self::Builder {
         RooftopForecast1Builder {
             version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             powermean_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
@@ -11145,7 +11403,9 @@ impl mmsdm_core::ArrowSchema for RooftopForecast1 {
 #[cfg(feature = "arrow")]
 pub struct RooftopForecast1Builder {
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     powermean_array: arrow::array::builder::Decimal128Builder,
     powerpoe50_array: arrow::array::builder::Decimal128Builder,

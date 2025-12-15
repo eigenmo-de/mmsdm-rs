@@ -143,25 +143,7 @@ impl mmsdm_core::GetTable for PdpasaCasesolution3 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "CASESOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaCasesolution3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -410,7 +392,10 @@ impl mmsdm_core::ArrowSchema for PdpasaCasesolution3 {
                 ),
                 arrow::datatypes::Field::new(
                     "pasaversion",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -473,17 +458,26 @@ impl mmsdm_core::ArrowSchema for PdpasaCasesolution3 {
                 ),
                 arrow::datatypes::Field::new(
                     "reliabilitylrccapacityoption",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "outagelrccapacityoption",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "lorcapacityoption",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -507,7 +501,9 @@ impl mmsdm_core::ArrowSchema for PdpasaCasesolution3 {
     fn new_builder() -> Self::Builder {
         PdpasaCasesolution3Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            pasaversion_array: arrow::array::builder::StringBuilder::new(),
+            pasaversion_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             reservecondition_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             lorcondition_array: arrow::array::builder::Decimal128Builder::new()
@@ -529,9 +525,15 @@ impl mmsdm_core::ArrowSchema for PdpasaCasesolution3 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
             lordemandoption_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
-            reliabilitylrccapacityoption_array: arrow::array::builder::StringBuilder::new(),
-            outagelrccapacityoption_array: arrow::array::builder::StringBuilder::new(),
-            lorcapacityoption_array: arrow::array::builder::StringBuilder::new(),
+            reliabilitylrccapacityoption_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            outagelrccapacityoption_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            lorcapacityoption_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             loruigf_option_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             reliability_lrcuigf_option_array: arrow::array::builder::Decimal128Builder::new()
@@ -729,7 +731,9 @@ impl mmsdm_core::ArrowSchema for PdpasaCasesolution3 {
 #[cfg(feature = "arrow")]
 pub struct PdpasaCasesolution3Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    pasaversion_array: arrow::array::builder::StringBuilder,
+    pasaversion_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     reservecondition_array: arrow::array::builder::Decimal128Builder,
     lorcondition_array: arrow::array::builder::Decimal128Builder,
     capacityobjfunction_array: arrow::array::builder::Decimal128Builder,
@@ -741,9 +745,15 @@ pub struct PdpasaCasesolution3Builder {
     reliabilitylrcdemandoption_array: arrow::array::builder::Decimal128Builder,
     outagelrcdemandoption_array: arrow::array::builder::Decimal128Builder,
     lordemandoption_array: arrow::array::builder::Decimal128Builder,
-    reliabilitylrccapacityoption_array: arrow::array::builder::StringBuilder,
-    outagelrccapacityoption_array: arrow::array::builder::StringBuilder,
-    lorcapacityoption_array: arrow::array::builder::StringBuilder,
+    reliabilitylrccapacityoption_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    outagelrccapacityoption_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    lorcapacityoption_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     loruigf_option_array: arrow::array::builder::Decimal128Builder,
     reliability_lrcuigf_option_array: arrow::array::builder::Decimal128Builder,
     outage_lrcuigf_option_array: arrow::array::builder::Decimal128Builder,
@@ -831,15 +841,7 @@ impl mmsdm_core::GetTable for PdpasaConstraintsolution1 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "CONSTRAINTSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaConstraintsolution1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1038,7 +1040,10 @@ impl mmsdm_core::ArrowSchema for PdpasaConstraintsolution1 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1066,12 +1071,18 @@ impl mmsdm_core::ArrowSchema for PdpasaConstraintsolution1 {
                 ),
                 arrow::datatypes::Field::new(
                     "runtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "studyregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -1081,7 +1092,9 @@ impl mmsdm_core::ArrowSchema for PdpasaConstraintsolution1 {
         PdpasaConstraintsolution1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             capacityrhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             capacitymarginalvalue_array: arrow::array::builder::Decimal128Builder::new()
@@ -1089,8 +1102,12 @@ impl mmsdm_core::ArrowSchema for PdpasaConstraintsolution1 {
             capacityviolationdegree_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            runtype_array: arrow::array::builder::StringBuilder::new(),
-            studyregionid_array: arrow::array::builder::StringBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            studyregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1167,13 +1184,17 @@ impl mmsdm_core::ArrowSchema for PdpasaConstraintsolution1 {
 pub struct PdpasaConstraintsolution1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     capacityrhs_array: arrow::array::builder::Decimal128Builder,
     capacitymarginalvalue_array: arrow::array::builder::Decimal128Builder,
     capacityviolationdegree_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    runtype_array: arrow::array::builder::StringBuilder,
-    studyregionid_array: arrow::array::builder::StringBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    studyregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct PdpasaDuidavailability1 {
     extract_row_partition: alloc::boxed::Box<
@@ -1252,16 +1273,7 @@ impl mmsdm_core::GetTable for PdpasaDuidavailability1 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "DUIDAVAILABILITY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaDuidavailability1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1466,7 +1478,10 @@ impl mmsdm_core::ArrowSchema for PdpasaDuidavailability1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1514,7 +1529,9 @@ impl mmsdm_core::ArrowSchema for PdpasaDuidavailability1 {
         PdpasaDuidavailability1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             generation_max_availability_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 6)),
             generation_pasa_availability_array: arrow::array::builder::Decimal128Builder::new()
@@ -1634,7 +1651,7 @@ impl mmsdm_core::ArrowSchema for PdpasaDuidavailability1 {
 pub struct PdpasaDuidavailability1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     generation_max_availability_array: arrow::array::builder::Decimal128Builder,
     generation_pasa_availability_array: arrow::array::builder::Decimal128Builder,
     generation_recall_period_array: arrow::array::builder::Decimal128Builder,
@@ -1761,19 +1778,7 @@ impl mmsdm_core::GetTable for PdpasaInterconnectorsoln1 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "INTERCONNECTORSOLN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaInterconnectorsoln1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1996,7 +2001,10 @@ impl mmsdm_core::ArrowSchema for PdpasaInterconnectorsoln1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2034,22 +2042,34 @@ impl mmsdm_core::ArrowSchema for PdpasaInterconnectorsoln1 {
                 ),
                 arrow::datatypes::Field::new(
                     "runtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "exportlimitconstraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "importlimitconstraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "studyregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -2059,7 +2079,9 @@ impl mmsdm_core::ArrowSchema for PdpasaInterconnectorsoln1 {
         PdpasaInterconnectorsoln1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             capacitymwflow_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             capacitymarginalvalue_array: arrow::array::builder::Decimal128Builder::new()
@@ -2071,10 +2093,18 @@ impl mmsdm_core::ArrowSchema for PdpasaInterconnectorsoln1 {
             calculatedimportlimit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            runtype_array: arrow::array::builder::StringBuilder::new(),
-            exportlimitconstraintid_array: arrow::array::builder::StringBuilder::new(),
-            importlimitconstraintid_array: arrow::array::builder::StringBuilder::new(),
-            studyregionid_array: arrow::array::builder::StringBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            exportlimitconstraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            importlimitconstraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            studyregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2183,17 +2213,25 @@ impl mmsdm_core::ArrowSchema for PdpasaInterconnectorsoln1 {
 pub struct PdpasaInterconnectorsoln1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     capacitymwflow_array: arrow::array::builder::Decimal128Builder,
     capacitymarginalvalue_array: arrow::array::builder::Decimal128Builder,
     capacityviolationdegree_array: arrow::array::builder::Decimal128Builder,
     calculatedexportlimit_array: arrow::array::builder::Decimal128Builder,
     calculatedimportlimit_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    runtype_array: arrow::array::builder::StringBuilder,
-    exportlimitconstraintid_array: arrow::array::builder::StringBuilder,
-    importlimitconstraintid_array: arrow::array::builder::StringBuilder,
-    studyregionid_array: arrow::array::builder::StringBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    exportlimitconstraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    importlimitconstraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    studyregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct PdpasaRegionsolution7 {
     extract_row_partition: alloc::boxed::Box<
@@ -2346,51 +2384,9 @@ impl mmsdm_core::GetTable for PdpasaRegionsolution7 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "REGIONSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaRegionsolution7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2875,7 +2871,10 @@ impl mmsdm_core::ArrowSchema for PdpasaRegionsolution7 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2978,7 +2977,10 @@ impl mmsdm_core::ArrowSchema for PdpasaRegionsolution7 {
                 ),
                 arrow::datatypes::Field::new(
                     "runtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3098,7 +3100,9 @@ impl mmsdm_core::ArrowSchema for PdpasaRegionsolution7 {
         PdpasaRegionsolution7Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             demand10_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             demand50_array: arrow::array::builder::Decimal128Builder::new()
@@ -3136,7 +3140,9 @@ impl mmsdm_core::ArrowSchema for PdpasaRegionsolution7 {
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             aggregatepasaavailability_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 0)),
-            runtype_array: arrow::array::builder::StringBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             energyreqdemand10_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
             calculatedlor1level_array: arrow::array::builder::Decimal128Builder::new()
@@ -3668,7 +3674,9 @@ impl mmsdm_core::ArrowSchema for PdpasaRegionsolution7 {
 pub struct PdpasaRegionsolution7Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     demand10_array: arrow::array::builder::Decimal128Builder,
     demand50_array: arrow::array::builder::Decimal128Builder,
     demand90_array: arrow::array::builder::Decimal128Builder,
@@ -3688,7 +3696,7 @@ pub struct PdpasaRegionsolution7Builder {
     aggregatescheduledload_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     aggregatepasaavailability_array: arrow::array::builder::Decimal128Builder,
-    runtype_array: arrow::array::builder::StringBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     energyreqdemand10_array: arrow::array::builder::Decimal128Builder,
     calculatedlor1level_array: arrow::array::builder::Decimal128Builder,
     calculatedlor2level_array: arrow::array::builder::Decimal128Builder,

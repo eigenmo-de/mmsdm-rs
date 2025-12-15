@@ -192,21 +192,7 @@ impl mmsdm_core::GetTable for GdInstructGdinstruct1 {
     const DATA_SET_NAME: &'static str = "GD_INSTRUCT";
     const TABLE_NAME: &'static str = "GDINSTRUCT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GdInstructGdinstruct1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -390,17 +376,26 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "stationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -410,22 +405,34 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
                 ),
                 arrow::datatypes::Field::new(
                     "instructiontypeid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "instructionsubtypeid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "instructionclassid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "reason",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -443,12 +450,18 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -480,20 +493,38 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
     }
     fn new_builder() -> Self::Builder {
         GdInstructGdinstruct1Builder {
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            stationid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            stationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             id_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
-            instructiontypeid_array: arrow::array::builder::StringBuilder::new(),
-            instructionsubtypeid_array: arrow::array::builder::StringBuilder::new(),
-            instructionclassid_array: arrow::array::builder::StringBuilder::new(),
-            reason_array: arrow::array::builder::StringBuilder::new(),
+            instructiontypeid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            instructionsubtypeid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            instructionclassid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            reason_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             instlevel_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             issuedtime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             targettime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -583,18 +614,32 @@ impl mmsdm_core::ArrowSchema for GdInstructGdinstruct1 {
 }
 #[cfg(feature = "arrow")]
 pub struct GdInstructGdinstruct1Builder {
-    duid_array: arrow::array::builder::StringBuilder,
-    stationid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    stationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     id_array: arrow::array::builder::Decimal128Builder,
-    instructiontypeid_array: arrow::array::builder::StringBuilder,
-    instructionsubtypeid_array: arrow::array::builder::StringBuilder,
-    instructionclassid_array: arrow::array::builder::StringBuilder,
-    reason_array: arrow::array::builder::StringBuilder,
+    instructiontypeid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    instructionsubtypeid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    instructionclassid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    reason_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     instlevel_array: arrow::array::builder::Decimal128Builder,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     issuedtime_array: arrow::array::builder::TimestampMillisecondBuilder,
     targettime_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -684,10 +729,7 @@ impl mmsdm_core::GetTable for GdInstructInstructionsubtype1 {
     const DATA_SET_NAME: &'static str = "GD_INSTRUCT";
     const TABLE_NAME: &'static str = "INSTRUCTIONSUBTYPE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GdInstructInstructionsubtype1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INSTRUCTIONTYPEID",
@@ -818,17 +860,26 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructionsubtype1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "instructiontypeid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "instructionsubtypeid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -844,9 +895,15 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructionsubtype1 {
     }
     fn new_builder() -> Self::Builder {
         GdInstructInstructionsubtype1Builder {
-            instructiontypeid_array: arrow::array::builder::StringBuilder::new(),
-            instructionsubtypeid_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            instructiontypeid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            instructionsubtypeid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -879,9 +936,15 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructionsubtype1 {
 }
 #[cfg(feature = "arrow")]
 pub struct GdInstructInstructionsubtype1Builder {
-    instructiontypeid_array: arrow::array::builder::StringBuilder,
-    instructionsubtypeid_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
+    instructiontypeid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    instructionsubtypeid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct GdInstructInstructiontype1 {
@@ -974,10 +1037,7 @@ impl mmsdm_core::GetTable for GdInstructInstructiontype1 {
     const DATA_SET_NAME: &'static str = "GD_INSTRUCT";
     const TABLE_NAME: &'static str = "INSTRUCTIONTYPE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GdInstructInstructiontype1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INSTRUCTIONTYPEID",
@@ -1100,17 +1160,26 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructiontype1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "instructiontypeid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1126,9 +1195,15 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructiontype1 {
     }
     fn new_builder() -> Self::Builder {
         GdInstructInstructiontype1Builder {
-            instructiontypeid_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            instructiontypeid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -1161,8 +1236,14 @@ impl mmsdm_core::ArrowSchema for GdInstructInstructiontype1 {
 }
 #[cfg(feature = "arrow")]
 pub struct GdInstructInstructiontype1Builder {
-    instructiontypeid_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    instructiontypeid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

@@ -100,13 +100,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAdgDetail1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "ADG_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationAdgDetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "ADG_ID",
@@ -264,7 +258,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "adg_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -285,7 +282,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
                 ),
                 arrow::datatypes::Field::new(
                     "adg_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -298,7 +298,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -314,12 +317,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationAdgDetail1Builder {
-            adg_id_array: arrow::array::builder::StringBuilder::new(),
+            adg_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            adg_type_array: arrow::array::builder::StringBuilder::new(),
+            adg_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -369,12 +378,16 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAdgDetail1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationAdgDetail1Builder {
-    adg_id_array: arrow::array::builder::StringBuilder,
+    adg_id_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    adg_type_array: arrow::array::builder::StringBuilder,
+    adg_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationAggregateDispatchGroup1 {
@@ -450,9 +463,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAggregateDispatchGroup1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "AGGREGATE_DISPATCH_GROUP";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationAggregateDispatchGroup1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &["ADG_ID", "COMMENTS", "LASTCHANGED"];
     type Row<'row> = ParticipantRegistrationAggregateDispatchGroup1Row<'row>;
@@ -578,12 +589,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAggregateDispatchGroup1 
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "adg_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "comments",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -599,8 +616,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAggregateDispatchGroup1 
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationAggregateDispatchGroup1Builder {
-            adg_id_array: arrow::array::builder::StringBuilder::new(),
-            comments_array: arrow::array::builder::StringBuilder::new(),
+            adg_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            comments_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -630,8 +651,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationAggregateDispatchGroup1 
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationAggregateDispatchGroup1Builder {
-    adg_id_array: arrow::array::builder::StringBuilder,
-    comments_array: arrow::array::builder::StringBuilder,
+    adg_id_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    comments_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationBidduiddetails1 {
@@ -715,16 +738,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetails1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "BIDDUIDDETAILS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationBidduiddetails1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -918,7 +932,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -936,7 +953,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -977,11 +997,15 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationBidduiddetails1Builder {
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             maxcapacity_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             minenablementlevel_array: arrow::array::builder::Decimal128Builder::new()
@@ -1090,10 +1114,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetails1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationBidduiddetails1Builder {
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     maxcapacity_array: arrow::array::builder::Decimal128Builder,
     minenablementlevel_array: arrow::array::builder::Decimal128Builder,
     maxenablementlevel_array: arrow::array::builder::Decimal128Builder,
@@ -1182,12 +1206,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetailstrk1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "BIDDUIDDETAILSTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationBidduiddetailstrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -1347,7 +1366,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1373,7 +1395,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1389,12 +1414,16 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationBidduiddetailstrk1Builder {
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -1445,11 +1474,13 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationBidduiddetailstrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationBidduiddetailstrk1Builder {
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationDispatchableunit1 {
@@ -1539,10 +1570,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDispatchableunit1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "DISPATCHABLEUNIT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDispatchableunit1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -1673,17 +1701,26 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "duname",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "unittype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1699,9 +1736,15 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationDispatchableunit1Builder {
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            duname_array: arrow::array::builder::StringBuilder::new(),
-            unittype_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            duname_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            unittype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -1734,9 +1777,11 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDispatchableunit1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationDispatchableunit1Builder {
-    duid_array: arrow::array::builder::StringBuilder,
-    duname_array: arrow::array::builder::StringBuilder,
-    unittype_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    duname_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    unittype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationDualloc1 {
@@ -1810,11 +1855,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDualloc1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "DUALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDualloc1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -1976,12 +2017,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDualloc1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "gensetid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2000,8 +2047,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDualloc1 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            gensetid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            gensetid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -2047,8 +2098,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDualloc1 {
 pub struct ParticipantRegistrationDualloc1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    duid_array: arrow::array::builder::StringBuilder,
-    gensetid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    gensetid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationDudetail7 {
@@ -2332,40 +2385,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail7 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "DUDETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDudetail7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -2697,7 +2718,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail7 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2707,12 +2731,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail7 {
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "voltlevel",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2722,12 +2752,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail7 {
                 ),
                 arrow::datatypes::Field::new(
                     "agccapability",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "dispatchtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2737,27 +2773,42 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail7 {
                 ),
                 arrow::datatypes::Field::new(
                     "starttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "normallyonflag",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "physicaldetailsflag",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "spinningreserveflag",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2778,12 +2829,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail7 {
                 ),
                 arrow::datatypes::Field::new(
                     "intermittentflag",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "semi_schedule_flag",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2798,12 +2855,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail7 {
                 ),
                 arrow::datatypes::Field::new(
                     "dispatchsubtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "adg_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2872,32 +2935,60 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail7 {
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationDudetail7Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            voltlevel_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            voltlevel_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             registeredcapacity_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
-            agccapability_array: arrow::array::builder::StringBuilder::new(),
-            dispatchtype_array: arrow::array::builder::StringBuilder::new(),
+            agccapability_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            dispatchtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             maxcapacity_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
-            starttype_array: arrow::array::builder::StringBuilder::new(),
-            normallyonflag_array: arrow::array::builder::StringBuilder::new(),
-            physicaldetailsflag_array: arrow::array::builder::StringBuilder::new(),
-            spinningreserveflag_array: arrow::array::builder::StringBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            starttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            normallyonflag_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            physicaldetailsflag_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            spinningreserveflag_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            intermittentflag_array: arrow::array::builder::StringBuilder::new(),
-            semi_schedule_flag_array: arrow::array::builder::StringBuilder::new(),
+            intermittentflag_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            semi_schedule_flag_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             maxrateofchangeup_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             maxrateofchangedown_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
-            dispatchsubtype_array: arrow::array::builder::StringBuilder::new(),
-            adg_id_array: arrow::array::builder::StringBuilder::new(),
+            dispatchsubtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            adg_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             mincapacity_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             registeredmincapacity_array: arrow::array::builder::Decimal128Builder::new()
@@ -3187,27 +3278,51 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetail7 {
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationDudetail7Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
-    voltlevel_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    voltlevel_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     registeredcapacity_array: arrow::array::builder::Decimal128Builder,
-    agccapability_array: arrow::array::builder::StringBuilder,
-    dispatchtype_array: arrow::array::builder::StringBuilder,
+    agccapability_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    dispatchtype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     maxcapacity_array: arrow::array::builder::Decimal128Builder,
-    starttype_array: arrow::array::builder::StringBuilder,
-    normallyonflag_array: arrow::array::builder::StringBuilder,
-    physicaldetailsflag_array: arrow::array::builder::StringBuilder,
-    spinningreserveflag_array: arrow::array::builder::StringBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    starttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    normallyonflag_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    physicaldetailsflag_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    spinningreserveflag_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    intermittentflag_array: arrow::array::builder::StringBuilder,
-    semi_schedule_flag_array: arrow::array::builder::StringBuilder,
+    intermittentflag_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    semi_schedule_flag_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     maxrateofchangeup_array: arrow::array::builder::Decimal128Builder,
     maxrateofchangedown_array: arrow::array::builder::Decimal128Builder,
-    dispatchsubtype_array: arrow::array::builder::StringBuilder,
-    adg_id_array: arrow::array::builder::StringBuilder,
+    dispatchsubtype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    adg_id_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     mincapacity_array: arrow::array::builder::Decimal128Builder,
     registeredmincapacity_array: arrow::array::builder::Decimal128Builder,
     maxrateofchangeup_load_array: arrow::array::builder::Decimal128Builder,
@@ -3443,35 +3558,8 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetailsummary7 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "DUDETAILSUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDudetailsummary7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -3770,7 +3858,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary7 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3791,27 +3882,42 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary7 {
                 ),
                 arrow::datatypes::Field::new(
                     "dispatchtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "stationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3829,7 +3935,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary7 {
                 ),
                 arrow::datatypes::Field::new(
                     "starttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3849,7 +3958,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary7 {
                 ),
                 arrow::datatypes::Field::new(
                     "schedule_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3879,12 +3991,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary7 {
                 ),
                 arrow::datatypes::Field::new(
                     "dispatchsubtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "adg_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3927,25 +4045,41 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary7 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationDudetailsummary7Builder {
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             start_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             end_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            dispatchtype_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            stationid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            dispatchtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            stationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             transmissionlossfactor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            starttype_array: arrow::array::builder::StringBuilder::new(),
+            starttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             distributionlossfactor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             minimum_energy_price_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 2)),
             maximum_energy_price_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 2)),
-            schedule_type_array: arrow::array::builder::StringBuilder::new(),
+            schedule_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             min_ramp_rate_up_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             min_ramp_rate_down_array: arrow::array::builder::Decimal128Builder::new()
@@ -3956,8 +4090,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary7 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             is_aggregated_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            dispatchsubtype_array: arrow::array::builder::StringBuilder::new(),
-            adg_id_array: arrow::array::builder::StringBuilder::new(),
+            dispatchsubtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            adg_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             load_minimum_energy_price_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 2)),
             load_maximum_energy_price_array: arrow::array::builder::Decimal128Builder::new()
@@ -4210,28 +4348,44 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationDudetailsummary7 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationDudetailsummary7Builder {
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     start_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     end_date_array: arrow::array::builder::TimestampMillisecondBuilder,
-    dispatchtype_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    stationid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    dispatchtype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    stationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     transmissionlossfactor_array: arrow::array::builder::Decimal128Builder,
-    starttype_array: arrow::array::builder::StringBuilder,
+    starttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     distributionlossfactor_array: arrow::array::builder::Decimal128Builder,
     minimum_energy_price_array: arrow::array::builder::Decimal128Builder,
     maximum_energy_price_array: arrow::array::builder::Decimal128Builder,
-    schedule_type_array: arrow::array::builder::StringBuilder,
+    schedule_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     min_ramp_rate_up_array: arrow::array::builder::Decimal128Builder,
     min_ramp_rate_down_array: arrow::array::builder::Decimal128Builder,
     max_ramp_rate_up_array: arrow::array::builder::Decimal128Builder,
     max_ramp_rate_down_array: arrow::array::builder::Decimal128Builder,
     is_aggregated_array: arrow::array::builder::Decimal128Builder,
-    dispatchsubtype_array: arrow::array::builder::StringBuilder,
-    adg_id_array: arrow::array::builder::StringBuilder,
+    dispatchsubtype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    adg_id_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     load_minimum_energy_price_array: arrow::array::builder::Decimal128Builder,
     load_maximum_energy_price_array: arrow::array::builder::Decimal128Builder,
     load_min_ramp_rate_up_array: arrow::array::builder::Decimal128Builder,
@@ -4401,22 +4555,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenmeter1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "GENMETER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationGenmeter1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "METERID",
@@ -4627,32 +4766,50 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "meterid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "gensetid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "stationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "metertype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "meterclass",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4675,7 +4832,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4731,18 +4891,32 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationGenmeter1Builder {
-            meterid_array: arrow::array::builder::StringBuilder::new(),
-            gensetid_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            stationid_array: arrow::array::builder::StringBuilder::new(),
-            metertype_array: arrow::array::builder::StringBuilder::new(),
-            meterclass_array: arrow::array::builder::StringBuilder::new(),
+            meterid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            gensetid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            stationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            metertype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            meterclass_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             voltagelevel_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             applydate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             comdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             decomdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -4842,16 +5016,28 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenmeter1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationGenmeter1Builder {
-    meterid_array: arrow::array::builder::StringBuilder,
-    gensetid_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
-    stationid_array: arrow::array::builder::StringBuilder,
-    metertype_array: arrow::array::builder::StringBuilder,
-    meterclass_array: arrow::array::builder::StringBuilder,
+    meterid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    gensetid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    stationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    metertype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    meterclass_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     voltagelevel_array: arrow::array::builder::Decimal128Builder,
     applydate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     comdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     decomdate_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -5102,28 +5288,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunits3 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "GENUNITS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationGenunits3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GENSETID",
@@ -5345,12 +5510,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunits3 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "gensetid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "stationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5360,17 +5531,26 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunits3 {
                 ),
                 arrow::datatypes::Field::new(
                     "cdindicator",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "agcflag",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "spinningflag",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5385,22 +5565,34 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunits3 {
                 ),
                 arrow::datatypes::Field::new(
                     "dispatchtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "starttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "mktgeneratorind",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "normalstatus",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5410,12 +5602,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunits3 {
                 ),
                 arrow::datatypes::Field::new(
                     "gensettype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "gensetname",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5433,12 +5631,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunits3 {
                 ),
                 arrow::datatypes::Field::new(
                     "co2e_energy_source",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "co2e_data_source",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5461,30 +5665,56 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunits3 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationGenunits3Builder {
-            gensetid_array: arrow::array::builder::StringBuilder::new(),
-            stationid_array: arrow::array::builder::StringBuilder::new(),
+            gensetid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            stationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             setlossfactor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            cdindicator_array: arrow::array::builder::StringBuilder::new(),
-            agcflag_array: arrow::array::builder::StringBuilder::new(),
-            spinningflag_array: arrow::array::builder::StringBuilder::new(),
+            cdindicator_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            agcflag_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            spinningflag_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             voltlevel_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             registeredcapacity_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
-            dispatchtype_array: arrow::array::builder::StringBuilder::new(),
-            starttype_array: arrow::array::builder::StringBuilder::new(),
-            mktgeneratorind_array: arrow::array::builder::StringBuilder::new(),
-            normalstatus_array: arrow::array::builder::StringBuilder::new(),
+            dispatchtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            starttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            mktgeneratorind_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            normalstatus_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             maxcapacity_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
-            gensettype_array: arrow::array::builder::StringBuilder::new(),
-            gensetname_array: arrow::array::builder::StringBuilder::new(),
+            gensettype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            gensetname_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             co2e_emissions_factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            co2e_energy_source_array: arrow::array::builder::StringBuilder::new(),
-            co2e_data_source_array: arrow::array::builder::StringBuilder::new(),
+            co2e_energy_source_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            co2e_data_source_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             mincapacity_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             registeredmincapacity_array: arrow::array::builder::Decimal128Builder::new()
@@ -5640,25 +5870,49 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunits3 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationGenunits3Builder {
-    gensetid_array: arrow::array::builder::StringBuilder,
-    stationid_array: arrow::array::builder::StringBuilder,
+    gensetid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    stationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     setlossfactor_array: arrow::array::builder::Decimal128Builder,
-    cdindicator_array: arrow::array::builder::StringBuilder,
-    agcflag_array: arrow::array::builder::StringBuilder,
-    spinningflag_array: arrow::array::builder::StringBuilder,
+    cdindicator_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    agcflag_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    spinningflag_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     voltlevel_array: arrow::array::builder::Decimal128Builder,
     registeredcapacity_array: arrow::array::builder::Decimal128Builder,
-    dispatchtype_array: arrow::array::builder::StringBuilder,
-    starttype_array: arrow::array::builder::StringBuilder,
-    mktgeneratorind_array: arrow::array::builder::StringBuilder,
-    normalstatus_array: arrow::array::builder::StringBuilder,
+    dispatchtype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    starttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    mktgeneratorind_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    normalstatus_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     maxcapacity_array: arrow::array::builder::Decimal128Builder,
-    gensettype_array: arrow::array::builder::StringBuilder,
-    gensetname_array: arrow::array::builder::StringBuilder,
+    gensettype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    gensetname_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     co2e_emissions_factor_array: arrow::array::builder::Decimal128Builder,
-    co2e_energy_source_array: arrow::array::builder::StringBuilder,
-    co2e_data_source_array: arrow::array::builder::StringBuilder,
+    co2e_energy_source_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    co2e_data_source_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     mincapacity_array: arrow::array::builder::Decimal128Builder,
     registeredmincapacity_array: arrow::array::builder::Decimal128Builder,
     maxstoragecapacity_array: arrow::array::builder::Decimal128Builder,
@@ -5753,19 +6007,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunitsUnit2 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "GENUNITS_UNIT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationGenunitsUnit2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GENSETID",
@@ -5988,7 +6230,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunitsUnit2 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "gensetid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6006,7 +6251,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunitsUnit2 {
                 ),
                 arrow::datatypes::Field::new(
                     "unit_grouping_label",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6062,11 +6310,15 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunitsUnit2 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationGenunitsUnit2Builder {
-            gensetid_array: arrow::array::builder::StringBuilder::new(),
+            gensetid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
-            unit_grouping_label_array: arrow::array::builder::StringBuilder::new(),
+            unit_grouping_label_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             unit_count_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             unit_size_array: arrow::array::builder::Decimal128Builder::new()
@@ -6214,10 +6466,14 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationGenunitsUnit2 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationGenunitsUnit2Builder {
-    gensetid_array: arrow::array::builder::StringBuilder,
+    gensetid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    unit_grouping_label_array: arrow::array::builder::StringBuilder,
+    unit_grouping_label_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     unit_count_array: arrow::array::builder::Decimal128Builder,
     unit_size_array: arrow::array::builder::Decimal128Builder,
     unit_max_size_array: arrow::array::builder::Decimal128Builder,
@@ -6363,21 +6619,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspInterconnector2 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "MNSP_INTERCONNECTOR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationMnspInterconnector2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "LINKID",
@@ -6595,7 +6837,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "linkid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6613,17 +6858,26 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregion",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "toregion",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -6656,7 +6910,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -6682,13 +6939,21 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationMnspInterconnector2Builder {
-            linkid_array: arrow::array::builder::StringBuilder::new(),
+            linkid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregion_array: arrow::array::builder::StringBuilder::new(),
-            toregion_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregion_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            toregion_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             maxcapacity_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
             tlf_array: arrow::array::builder::Decimal128Builder::new()
@@ -6698,7 +6963,9 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
             meterflowconstant_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 7)),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             from_region_tlf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 7)),
@@ -6828,18 +7095,26 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspInterconnector2 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationMnspInterconnector2Builder {
-    linkid_array: arrow::array::builder::StringBuilder,
+    linkid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregion_array: arrow::array::builder::StringBuilder,
-    toregion_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregion_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    toregion_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     maxcapacity_array: arrow::array::builder::Decimal128Builder,
     tlf_array: arrow::array::builder::Decimal128Builder,
     lhsfactor_array: arrow::array::builder::Decimal128Builder,
     meterflowconstant_array: arrow::array::builder::Decimal128Builder,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     from_region_tlf_array: arrow::array::builder::Decimal128Builder,
     to_region_tlf_array: arrow::array::builder::Decimal128Builder,
@@ -6918,11 +7193,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspParticipant1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "MNSP_PARTICIPANT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationMnspParticipant1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERCONNECTORID",
@@ -7083,7 +7354,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7101,7 +7375,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7117,11 +7394,15 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationMnspParticipant1Builder {
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -7165,10 +7446,14 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationMnspParticipant1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationMnspParticipant1Builder {
-    interconnectorid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationParticipant1 {
@@ -7292,13 +7577,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipant1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipant1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -7439,32 +7718,50 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipant1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantclassid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "name",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "acn",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "primarybusiness",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7480,12 +7777,24 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipant1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipant1Builder {
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            participantclassid_array: arrow::array::builder::StringBuilder::new(),
-            name_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
-            acn_array: arrow::array::builder::StringBuilder::new(),
-            primarybusiness_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            participantclassid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            name_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            acn_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            primarybusiness_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -7527,12 +7836,20 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipant1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationParticipant1Builder {
-    participantid_array: arrow::array::builder::StringBuilder,
-    participantclassid_array: arrow::array::builder::StringBuilder,
-    name_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
-    acn_array: arrow::array::builder::StringBuilder,
-    primarybusiness_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    participantclassid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    name_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    acn_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    primarybusiness_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationParticipantaccount1 {
@@ -7699,21 +8016,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantaccount1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTACCOUNT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantaccount1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "ACCOUNTNAME",
@@ -7908,22 +8211,34 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "accountname",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "accountnumber",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "bankname",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7933,7 +8248,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
                 ),
                 arrow::datatypes::Field::new(
                     "branchname",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7943,7 +8261,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
                 ),
                 arrow::datatypes::Field::new(
                     "bsbnumber",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7958,7 +8279,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7987,7 +8311,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
                 ),
                 arrow::datatypes::Field::new(
                     "abn",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -7995,25 +8322,41 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipantaccount1Builder {
-            accountname_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            accountnumber_array: arrow::array::builder::StringBuilder::new(),
-            bankname_array: arrow::array::builder::StringBuilder::new(),
+            accountname_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            accountnumber_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bankname_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             banknumber_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            branchname_array: arrow::array::builder::StringBuilder::new(),
+            branchname_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             branchnumber_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            bsbnumber_array: arrow::array::builder::StringBuilder::new(),
+            bsbnumber_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             nemmcocreditaccountnumber_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             nemmcodebitaccountnumber_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            abn_array: arrow::array::builder::StringBuilder::new(),
+            abn_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -8120,21 +8463,35 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantaccount1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationParticipantaccount1Builder {
-    accountname_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    accountnumber_array: arrow::array::builder::StringBuilder,
-    bankname_array: arrow::array::builder::StringBuilder,
+    accountname_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    accountnumber_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    bankname_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     banknumber_array: arrow::array::builder::Decimal128Builder,
-    branchname_array: arrow::array::builder::StringBuilder,
+    branchname_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     branchnumber_array: arrow::array::builder::Decimal128Builder,
-    bsbnumber_array: arrow::array::builder::StringBuilder,
+    bsbnumber_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     nemmcocreditaccountnumber_array: arrow::array::builder::Decimal128Builder,
     nemmcodebitaccountnumber_array: arrow::array::builder::Decimal128Builder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    abn_array: arrow::array::builder::StringBuilder,
+    abn_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
 }
 pub struct ParticipantRegistrationParticipantcategory1 {
     extract_row_partition: alloc::boxed::Box<
@@ -8212,9 +8569,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcategory1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTCATEGORY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantcategory1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTCATEGORYID",
@@ -8344,12 +8699,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "participantcategoryid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -8365,8 +8726,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipantcategory1Builder {
-            participantcategoryid_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            participantcategoryid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -8396,8 +8761,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationParticipantcategory1Builder {
-    participantcategoryid_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
+    participantcategoryid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationParticipantcategoryalloc1 {
@@ -8468,9 +8837,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcategoryalloc1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTCATEGORYALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantcategoryalloc1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTCATEGORYID",
@@ -8607,12 +8974,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "participantcategoryid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -8628,8 +9001,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipantcategoryalloc1Builder {
-            participantcategoryid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantcategoryid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -8659,8 +9036,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationParticipantcategoryalloc1Builder {
-    participantcategoryid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantcategoryid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationParticipantclass1 {
@@ -8739,9 +9120,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantclass1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTCLASS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantclass1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTCLASSID",
@@ -8869,12 +9248,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantclass1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "participantclassid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -8890,8 +9275,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantclass1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipantclass1Builder {
-            participantclassid_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            participantclassid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -8921,8 +9310,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantclass1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationParticipantclass1Builder {
-    participantclassid_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
+    participantclassid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationParticipantcreditdetail1 {
@@ -9000,12 +9393,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcreditdetail1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTCREDITDETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantcreditdetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -9173,7 +9561,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9183,7 +9574,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -9208,10 +9602,14 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipantcreditdetail1Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             creditlimit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
@@ -9266,9 +9664,13 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcreditdetail1
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationParticipantcreditdetail1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     creditlimit_array: arrow::array::builder::Decimal128Builder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -9329,9 +9731,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroup1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PMS_GROUP";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationPmsGroup1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &["GROUPID", "CREATEDDATE", "LASTCHANGED"];
     type Row<'row> = ParticipantRegistrationPmsGroup1Row<'row>;
@@ -9669,23 +10069,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroupnmi1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PMS_GROUPNMI";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationPmsGroupnmi1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GROUPNMIID",
@@ -9953,12 +10337,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
                 ),
                 arrow::datatypes::Field::new(
                     "nmi",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "sitename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -9968,7 +10358,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
                 ),
                 arrow::datatypes::Field::new(
                     "baselinemethodologyid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -9978,12 +10371,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
                 ),
                 arrow::datatypes::Field::new(
                     "mrcreason",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "retailcustomer",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -10025,15 +10424,25 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupnmi1 {
             versionto_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            nmi_array: arrow::array::builder::StringBuilder::new(),
-            sitename_array: arrow::array::builder::StringBuilder::new(),
+            nmi_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            sitename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             nerrgrouppremises_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            baselinemethodologyid_array: arrow::array::builder::StringBuilder::new(),
+            baselinemethodologyid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             mrc_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 3)),
-            mrcreason_array: arrow::array::builder::StringBuilder::new(),
-            retailcustomer_array: arrow::array::builder::StringBuilder::new(),
+            mrcreason_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            retailcustomer_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             suspended_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             unavailable_array: arrow::array::builder::Decimal128Builder::new()
@@ -10172,13 +10581,21 @@ pub struct ParticipantRegistrationPmsGroupnmi1Builder {
     versionto_array: arrow::array::builder::TimestampMillisecondBuilder,
     startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    nmi_array: arrow::array::builder::StringBuilder,
-    sitename_array: arrow::array::builder::StringBuilder,
+    nmi_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    sitename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     nerrgrouppremises_array: arrow::array::builder::Decimal128Builder,
-    baselinemethodologyid_array: arrow::array::builder::StringBuilder,
+    baselinemethodologyid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     mrc_array: arrow::array::builder::Decimal128Builder,
-    mrcreason_array: arrow::array::builder::StringBuilder,
-    retailcustomer_array: arrow::array::builder::StringBuilder,
+    mrcreason_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
+    retailcustomer_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     suspended_array: arrow::array::builder::Decimal128Builder,
     unavailable_array: arrow::array::builder::Decimal128Builder,
     approveddate_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -10340,22 +10757,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroupservice1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PMS_GROUPSERVICE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationPmsGroupservice1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GROUPSERVICEID",
@@ -10609,22 +11011,34 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
                 ),
                 arrow::datatypes::Field::new(
                     "market",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "servicetype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "entitytype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "entityid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -10634,7 +11048,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
                 ),
                 arrow::datatypes::Field::new(
                     "mrcreason",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -10644,7 +11061,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
                 ),
                 arrow::datatypes::Field::new(
                     "region",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -10676,16 +11096,28 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationPmsGroupservice1 {
             versionto_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            market_array: arrow::array::builder::StringBuilder::new(),
-            servicetype_array: arrow::array::builder::StringBuilder::new(),
-            entitytype_array: arrow::array::builder::StringBuilder::new(),
-            entityid_array: arrow::array::builder::StringBuilder::new(),
+            market_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            servicetype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            entitytype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            entityid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             mrc_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 3)),
-            mrcreason_array: arrow::array::builder::StringBuilder::new(),
+            mrcreason_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
             maximumrampratepermin_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            region_array: arrow::array::builder::StringBuilder::new(),
+            region_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             approveddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
@@ -10801,14 +11233,22 @@ pub struct ParticipantRegistrationPmsGroupservice1Builder {
     versionto_array: arrow::array::builder::TimestampMillisecondBuilder,
     startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    market_array: arrow::array::builder::StringBuilder,
-    servicetype_array: arrow::array::builder::StringBuilder,
-    entitytype_array: arrow::array::builder::StringBuilder,
-    entityid_array: arrow::array::builder::StringBuilder,
+    market_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    servicetype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    entitytype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    entityid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     mrc_array: arrow::array::builder::Decimal128Builder,
-    mrcreason_array: arrow::array::builder::StringBuilder,
+    mrcreason_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
     maximumrampratepermin_array: arrow::array::builder::Decimal128Builder,
-    region_array: arrow::array::builder::StringBuilder,
+    region_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     approveddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -10883,11 +11323,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStadualloc1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STADUALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStadualloc1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -11036,7 +11472,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStadualloc1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -11049,7 +11488,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStadualloc1 {
                 ),
                 arrow::datatypes::Field::new(
                     "stationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -11070,9 +11512,13 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStadualloc1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStadualloc1Builder {
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            stationid_array: arrow::array::builder::StringBuilder::new(),
+            stationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -11118,9 +11564,11 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStadualloc1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationStadualloc1Builder {
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    stationid_array: arrow::array::builder::StringBuilder,
+    stationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     versionno_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -11303,17 +11751,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStation1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStation1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "STATIONID",
@@ -11461,47 +11899,74 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStation1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "stationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "stationname",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "address1",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "address2",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "address3",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "address4",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "city",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "state",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "postcode",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -11514,7 +11979,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStation1 {
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -11522,17 +11990,37 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStation1 {
     }
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStation1Builder {
-            stationid_array: arrow::array::builder::StringBuilder::new(),
-            stationname_array: arrow::array::builder::StringBuilder::new(),
-            address1_array: arrow::array::builder::StringBuilder::new(),
-            address2_array: arrow::array::builder::StringBuilder::new(),
-            address3_array: arrow::array::builder::StringBuilder::new(),
-            address4_array: arrow::array::builder::StringBuilder::new(),
-            city_array: arrow::array::builder::StringBuilder::new(),
-            state_array: arrow::array::builder::StringBuilder::new(),
-            postcode_array: arrow::array::builder::StringBuilder::new(),
+            stationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            stationname_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            address1_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            address2_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            address3_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            address4_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            city_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            state_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            postcode_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -11585,17 +12073,33 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStation1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationStation1Builder {
-    stationid_array: arrow::array::builder::StringBuilder,
-    stationname_array: arrow::array::builder::StringBuilder,
-    address1_array: arrow::array::builder::StringBuilder,
-    address2_array: arrow::array::builder::StringBuilder,
-    address3_array: arrow::array::builder::StringBuilder,
-    address4_array: arrow::array::builder::StringBuilder,
-    city_array: arrow::array::builder::StringBuilder,
-    state_array: arrow::array::builder::StringBuilder,
-    postcode_array: arrow::array::builder::StringBuilder,
+    stationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    stationname_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    address1_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    address2_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    address3_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    address4_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    city_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    state_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    postcode_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
 }
 pub struct ParticipantRegistrationStationoperatingstatus1 {
     extract_row_partition: alloc::boxed::Box<
@@ -11692,13 +12196,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationoperatingstatus1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STATIONOPERATINGSTATUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStationoperatingstatus1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -11871,7 +12369,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 
                 ),
                 arrow::datatypes::Field::new(
                     "stationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -11881,12 +12382,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 
                 ),
                 arrow::datatypes::Field::new(
                     "status",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -11911,11 +12418,17 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStationoperatingstatus1Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            stationid_array: arrow::array::builder::StringBuilder::new(),
+            stationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            status_array: arrow::array::builder::StringBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            status_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
@@ -11971,10 +12484,14 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationoperatingstatus1 
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationStationoperatingstatus1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    stationid_array: arrow::array::builder::StringBuilder,
+    stationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    status_array: arrow::array::builder::StringBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    status_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -12049,11 +12566,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationowner1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STATIONOWNER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStationowner1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -12219,12 +12732,18 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationowner1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "stationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -12246,8 +12765,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationowner1 {
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStationowner1Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            stationid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            stationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -12294,8 +12817,12 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationowner1 {
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationStationowner1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    stationid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    stationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     versionno_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -12380,12 +12907,7 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationownertrk1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STATIONOWNERTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStationownertrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -12556,7 +13078,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationownertrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -12566,7 +13091,10 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationownertrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -12591,10 +13119,14 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationownertrk1 {
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationStationownertrk1Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
@@ -12647,9 +13179,13 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationStationownertrk1 {
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationStationownertrk1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

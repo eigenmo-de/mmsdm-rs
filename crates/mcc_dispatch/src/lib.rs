@@ -268,10 +268,7 @@ impl mmsdm_core::GetTable for MccConstraintsolution1 {
     const DATA_SET_NAME: &'static str = "MCC";
     const TABLE_NAME: &'static str = "CONSTRAINTSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MccConstraintsolution1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -415,7 +412,10 @@ impl mmsdm_core::ArrowSchema for MccConstraintsolution1 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -434,7 +434,9 @@ impl mmsdm_core::ArrowSchema for MccConstraintsolution1 {
     fn new_builder() -> Self::Builder {
         MccConstraintsolution1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             marginalvalue_array: arrow::array::builder::Decimal128Builder::new()
@@ -487,7 +489,9 @@ impl mmsdm_core::ArrowSchema for MccConstraintsolution1 {
 #[cfg(feature = "arrow")]
 pub struct MccConstraintsolution1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     rhs_array: arrow::array::builder::Decimal128Builder,
     marginalvalue_array: arrow::array::builder::Decimal128Builder,
 }

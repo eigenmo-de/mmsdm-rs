@@ -98,16 +98,7 @@ impl mmsdm_core::GetTable for MeterdataAggregateReads1 {
     const DATA_SET_NAME: &'static str = "METERDATA";
     const TABLE_NAME: &'static str = "AGGREGATE_READS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataAggregateReads1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CASE_ID",
@@ -311,22 +302,34 @@ impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "meter_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "frmp",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "lr",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -360,10 +363,18 @@ impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
             case_id_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            meter_type_array: arrow::array::builder::StringBuilder::new(),
-            frmp_array: arrow::array::builder::StringBuilder::new(),
-            lr_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            meter_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            frmp_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            lr_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             importvalue_array: arrow::array::builder::Decimal128Builder::new()
@@ -448,10 +459,14 @@ impl mmsdm_core::ArrowSchema for MeterdataAggregateReads1 {
 pub struct MeterdataAggregateReads1Builder {
     case_id_array: arrow::array::builder::Decimal128Builder,
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
-    meter_type_array: arrow::array::builder::StringBuilder,
-    frmp_array: arrow::array::builder::StringBuilder,
-    lr_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    meter_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    frmp_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    lr_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     periodid_array: arrow::array::builder::Decimal128Builder,
     importvalue_array: arrow::array::builder::Decimal128Builder,
     exportvalue_array: arrow::array::builder::Decimal128Builder,
@@ -561,18 +576,7 @@ impl mmsdm_core::GetTable for MeterdataIndividualReads1 {
     const DATA_SET_NAME: &'static str = "METERDATA";
     const TABLE_NAME: &'static str = "INDIVIDUAL_READS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataIndividualReads1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CASE_ID",
@@ -773,22 +777,34 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
                 ),
                 arrow::datatypes::Field::new(
                     "meter_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "meter_id_suffix",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "frmp",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "lr",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -798,12 +814,18 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "meter_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -832,14 +854,26 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
             case_id_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            meter_id_array: arrow::array::builder::StringBuilder::new(),
-            meter_id_suffix_array: arrow::array::builder::StringBuilder::new(),
-            frmp_array: arrow::array::builder::StringBuilder::new(),
-            lr_array: arrow::array::builder::StringBuilder::new(),
+            meter_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            meter_id_suffix_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            frmp_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            lr_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            meter_type_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            meter_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             importvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             exportvalue_array: arrow::array::builder::Decimal128Builder::new()
@@ -928,13 +962,21 @@ impl mmsdm_core::ArrowSchema for MeterdataIndividualReads1 {
 pub struct MeterdataIndividualReads1Builder {
     case_id_array: arrow::array::builder::Decimal128Builder,
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    meter_id_array: arrow::array::builder::StringBuilder,
-    meter_id_suffix_array: arrow::array::builder::StringBuilder,
-    frmp_array: arrow::array::builder::StringBuilder,
-    lr_array: arrow::array::builder::StringBuilder,
+    meter_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    meter_id_suffix_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    frmp_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    lr_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
-    meter_type_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    meter_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     importvalue_array: arrow::array::builder::Decimal128Builder,
     exportvalue_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -1014,13 +1056,7 @@ impl mmsdm_core::GetTable for MeterdataInterconnector1 {
     const DATA_SET_NAME: &'static str = "METERDATA";
     const TABLE_NAME: &'static str = "INTERCONNECTOR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataInterconnector1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CASE_ID",
@@ -1200,7 +1236,10 @@ impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1234,7 +1273,9 @@ impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
             case_id_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             importvalue_array: arrow::array::builder::Decimal128Builder::new()
@@ -1314,7 +1355,9 @@ impl mmsdm_core::ArrowSchema for MeterdataInterconnector1 {
 pub struct MeterdataInterconnector1Builder {
     case_id_array: arrow::array::builder::Decimal128Builder,
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     importvalue_array: arrow::array::builder::Decimal128Builder,
     exportvalue_array: arrow::array::builder::Decimal128Builder,
@@ -1413,16 +1456,7 @@ impl mmsdm_core::GetTable for MeterdataMeterdataSaps1 {
     const DATA_SET_NAME: &'static str = "METERDATA";
     const TABLE_NAME: &'static str = "METERDATA_SAPS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataMeterdataSaps1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CASE_ID",
@@ -1628,22 +1662,34 @@ impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpoint_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "meter_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "frmp",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "lr",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1677,10 +1723,18 @@ impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
             case_id_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            connectionpoint_id_array: arrow::array::builder::StringBuilder::new(),
-            meter_type_array: arrow::array::builder::StringBuilder::new(),
-            frmp_array: arrow::array::builder::StringBuilder::new(),
-            lr_array: arrow::array::builder::StringBuilder::new(),
+            connectionpoint_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            meter_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            frmp_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            lr_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             importvalue_array: arrow::array::builder::Decimal128Builder::new()
@@ -1769,10 +1823,14 @@ impl mmsdm_core::ArrowSchema for MeterdataMeterdataSaps1 {
 pub struct MeterdataMeterdataSaps1Builder {
     case_id_array: arrow::array::builder::Decimal128Builder,
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    connectionpoint_id_array: arrow::array::builder::StringBuilder,
-    meter_type_array: arrow::array::builder::StringBuilder,
-    frmp_array: arrow::array::builder::StringBuilder,
-    lr_array: arrow::array::builder::StringBuilder,
+    connectionpoint_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    meter_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    frmp_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    lr_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     periodid_array: arrow::array::builder::Decimal128Builder,
     importvalue_array: arrow::array::builder::Decimal128Builder,
     exportvalue_array: arrow::array::builder::Decimal128Builder,
@@ -1917,20 +1975,7 @@ impl mmsdm_core::GetTable for MeterdataWdrReads1 {
     const DATA_SET_NAME: &'static str = "METERDATA";
     const TABLE_NAME: &'static str = "WDR_READS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataWdrReads1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MARKET_ID",
@@ -2130,7 +2175,10 @@ impl mmsdm_core::ArrowSchema for MeterdataWdrReads1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "market_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2148,22 +2196,34 @@ impl mmsdm_core::ArrowSchema for MeterdataWdrReads1 {
                 ),
                 arrow::datatypes::Field::new(
                     "meter_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "tni",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "frmp",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "drsp",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2188,7 +2248,10 @@ impl mmsdm_core::ArrowSchema for MeterdataWdrReads1 {
                 ),
                 arrow::datatypes::Field::new(
                     "qualityflag",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2198,7 +2261,10 @@ impl mmsdm_core::ArrowSchema for MeterdataWdrReads1 {
                 ),
                 arrow::datatypes::Field::new(
                     "baselinecalculationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -2206,14 +2272,24 @@ impl mmsdm_core::ArrowSchema for MeterdataWdrReads1 {
     }
     fn new_builder() -> Self::Builder {
         MeterdataWdrReads1Builder {
-            market_id_array: arrow::array::builder::StringBuilder::new(),
+            market_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             case_id_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            meter_id_array: arrow::array::builder::StringBuilder::new(),
-            tni_array: arrow::array::builder::StringBuilder::new(),
-            frmp_array: arrow::array::builder::StringBuilder::new(),
-            drsp_array: arrow::array::builder::StringBuilder::new(),
+            meter_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            tni_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            frmp_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            drsp_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             meteredquantityimport_array: arrow::array::builder::Decimal128Builder::new()
@@ -2222,10 +2298,14 @@ impl mmsdm_core::ArrowSchema for MeterdataWdrReads1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             baselinequantity_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            qualityflag_array: arrow::array::builder::StringBuilder::new(),
+            qualityflag_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             isnoncompliant_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            baselinecalculationid_array: arrow::array::builder::StringBuilder::new(),
+            baselinecalculationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2331,18 +2411,26 @@ impl mmsdm_core::ArrowSchema for MeterdataWdrReads1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MeterdataWdrReads1Builder {
-    market_id_array: arrow::array::builder::StringBuilder,
+    market_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     case_id_array: arrow::array::builder::Decimal128Builder,
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    meter_id_array: arrow::array::builder::StringBuilder,
-    tni_array: arrow::array::builder::StringBuilder,
-    frmp_array: arrow::array::builder::StringBuilder,
-    drsp_array: arrow::array::builder::StringBuilder,
+    meter_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    tni_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    frmp_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    drsp_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     periodid_array: arrow::array::builder::Decimal128Builder,
     meteredquantityimport_array: arrow::array::builder::Decimal128Builder,
     meteredquantityexport_array: arrow::array::builder::Decimal128Builder,
     baselinequantity_array: arrow::array::builder::Decimal128Builder,
-    qualityflag_array: arrow::array::builder::StringBuilder,
+    qualityflag_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     isnoncompliant_array: arrow::array::builder::Decimal128Builder,
-    baselinecalculationid_array: arrow::array::builder::StringBuilder,
+    baselinecalculationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
