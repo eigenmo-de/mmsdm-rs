@@ -55,7 +55,7 @@ impl<'a> GetBufReader<'a> for UnzipFile<'a> {
     where
         'a: 'b,
     {
-        let mut fileref = &self.file;
+        let mut fileref = self.file;
         std::io::Seek::seek(&mut fileref, std::io::SeekFrom::Start(0))?;
         let reader = crate::unzip::AemoZipStreamerConfig::decompress_first_file_raw(fileref)?;
         Ok(BufReader::new(reader))
