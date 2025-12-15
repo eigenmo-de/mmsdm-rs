@@ -12,7 +12,7 @@ default-features = false
 features = ["log"]
 
 [workspace.dependencies.rc-zip-sync]
-version = "4.3.0"
+version = "4.4.2"
 default-features = false
 features = ["deflate","file"]
 
@@ -32,11 +32,11 @@ features = ["alloc"]
 default-features = false
 
 [workspace.dependencies.arrow]
-version = "55.0.0"
+version = "57.1.0"
 default-features = false
 
 [workspace.dependencies.csv-core]
-version = "0.1.12"
+version = "0.1.13"
 default-features = false
 
 [workspace.dependencies.flate2]
