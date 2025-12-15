@@ -7,24 +7,14 @@ repository = "https://github.com/eigenmo-de/mmsdm-rs"
 description = "Parse and Transform MMSDM data"
 resolver = "2"
 
-
 [[example]]
 path = "../../examples/parse_typed.rs"
 name = "parse_typed"
-required-features = [ "mmsdm", "arrow"]
-
-[[example]]
-path = "../../examples/parse.rs"
-name = "parse"
-required-features = [ "mmsdm"]
+required-features = [ "mmsdm", "arrow", "io_unzip" ]
 
 [dependencies.mmsdm_core]
 # version = "0.3.0"
 path = "../mmsdm_core"
-
-[dependencies.rc-zip-sync]
-workspace = true
-optional = true
 
 [dependencies.tracing]
 workspace = true
@@ -36,6 +26,14 @@ features = []
 default-features = false
 
 [dependencies.arrow]
+workspace = true
+optional = true
+
+[dependencies.rc-zip-sync]
+workspace = true
+optional = true
+
+[dependencies.flate2]
 workspace = true
 optional = true
 
@@ -257,4 +255,6 @@ mmsdm = [
     "trading_data",
 ]
 default = ["mmsdm", "arrow", "std"]
-std = ["dep:rc-zip-sync", "mmsdm_core/std"]
+std = ["mmsdm_core/std"]
+io_rc_zip = ["dep:rc-zip-sync","mmsdm_core/io_rc_zip"]
+io_unzip = ["dep:flate2","mmsdm_core/io_unzip"]

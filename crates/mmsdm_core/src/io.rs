@@ -5,7 +5,15 @@ use crate::{
 };
 use alloc::{collections::BTreeSet, format, string::String, sync::Arc, vec::Vec};
 use core::ops::AddAssign;
+
+#[cfg(feature = "io_unzip")]
+use crate::unzip::CompressedReader;
+#[cfg(feature = "io_unzip")]
+use flate2::read::DeflateDecoder;
+
+#[cfg(feature = "io_rc_zip")]
 use rc_zip_sync::{EntryHandle, EntryReader, HasCursor};
+
 use std::{
     collections::BTreeMap,
     io::{BufRead, BufReader},
@@ -18,9 +26,73 @@ pub trait GetBufReader<'a> {
     where
         Self: 'a,
         'a: 'b;
-    fn buf_reader<'b>(&'b self) -> Self::BufReader<'b>
+    fn buf_reader<'b>(&'b self) -> Result<Self::BufReader<'b>>
     where
         'a: 'b;
+}
+
+#[cfg(feature = "io_unzip")]
+pub struct UnzipFile {
+    file: std::fs::File,
+}
+
+#[cfg(feature = "io_unzip")]
+impl UnzipFile {
+    pub fn new(file: std::fs::File) -> Self {
+        UnzipFile { file }
+    }
+}
+
+#[cfg(feature = "io_unzip")]
+impl<'a> GetBufReader<'a> for UnzipFile {
+    type BufReader<'b>
+        = BufReader<DeflateDecoder<&'b std::fs::File>>
+    where
+        Self: 'a,
+        'a: 'b;
+
+    fn buf_reader<'b>(&'b self) -> Result<Self::BufReader<'b>>
+    where
+        'a: 'b,
+    {
+        let mut fileref = &self.file;
+        std::io::Seek::seek(&mut fileref, std::io::SeekFrom::Start(0))?;
+        let reader = crate::unzip::AemoZipStreamerConfig::decompress_first_file_raw(fileref)?;
+        Ok(BufReader::new(reader))
+    }
+}
+
+#[cfg(feature = "io_unzip")]
+pub struct UnzipBytes<'a> {
+    file: &'a [u8],
+    config: crate::unzip::AemoZipStreamerConfig,
+}
+
+#[cfg(feature = "io_unzip")]
+impl<'a> UnzipBytes<'a> {
+    pub fn new(bytes: &'a [u8]) -> Self {
+        UnzipBytes {
+            file: bytes,
+            config: Default::default(),
+        }
+    }
+}
+
+#[cfg(feature = "io_unzip")]
+impl<'a> GetBufReader<'a> for UnzipBytes<'a> {
+    type BufReader<'b>
+        = BufReader<DeflateDecoder<CompressedReader<&'b [u8]>>>
+    where
+        Self: 'a,
+        'a: 'b;
+
+    fn buf_reader<'b>(&'b self) -> Result<Self::BufReader<'b>>
+    where
+        'a: 'b,
+    {
+        let reader = self.config.decompress_first_file(self.file)?;
+        Ok(BufReader::new(reader))
+    }
 }
 
 impl<'a> GetBufReader<'a> for &'a str {
@@ -30,14 +102,15 @@ impl<'a> GetBufReader<'a> for &'a str {
         Self: 'a,
         'a: 'b;
 
-    fn buf_reader<'b>(&'b self) -> Self::BufReader<'b>
+    fn buf_reader<'b>(&'b self) -> Result<Self::BufReader<'b>>
     where
         'a: 'b,
     {
-        BufReader::new(self.as_bytes())
+        Ok(BufReader::new(self.as_bytes()))
     }
 }
 
+#[cfg(feature = "io_rc_zip")]
 impl<'a, F> GetBufReader<'a> for EntryHandle<'a, F>
 where
     F: HasCursor,
@@ -48,11 +121,11 @@ where
         Self: 'a,
         'a: 'b;
 
-    fn buf_reader<'b>(&'b self) -> Self::BufReader<'b>
+    fn buf_reader<'b>(&'b self) -> Result<Self::BufReader<'b>>
     where
         'a: 'b,
     {
-        BufReader::new(self.reader())
+        Ok(BufReader::new(self.reader()))
     }
 }
 
@@ -68,6 +141,7 @@ impl<'reader> FileReader<&'reader str> {
     }
 }
 
+#[cfg(feature = "io_rc_zip")]
 impl<'reader, F> FileReader<EntryHandle<'reader, F>>
 where
     F: HasCursor,
@@ -102,13 +176,13 @@ where
     /// users of the API may not realise that it internally buffers and
     /// provide something already wrapped in `BufReader`
     ///
-    fn from_get_buf_reader(handle: R) -> Result<FileReader<R>> {
+    pub fn from_get_buf_reader(handle: R) -> Result<FileReader<R>> {
         // defensively reset to the start
         let mut header = None;
         let mut file_headings = BTreeMap::new();
 
         {
-            let mut file_reader = BufReader::new(handle.buf_reader());
+            let mut file_reader = handle.buf_reader()?;
 
             let mut count = 0;
 
@@ -194,7 +268,7 @@ where
             manager,
             closest_key,
             field_mapping,
-            self.handle.buf_reader(),
+            self.handle.buf_reader()?,
         ))
     }
 
@@ -224,7 +298,7 @@ where
             manager,
             key,
             field_mapping,
-            self.handle.buf_reader(),
+            self.handle.buf_reader()?,
         ))
     }
 }

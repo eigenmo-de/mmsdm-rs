@@ -98,7 +98,15 @@ impl mmsdm_core::GetTable for IrauctionConfigAuction1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuction1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "AUCTIONID",
@@ -480,7 +488,18 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionCalendar2 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION_CALENDAR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionCalendar2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1003,7 +1022,18 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionIcAllocations2 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION_IC_ALLOCATIONS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionIcAllocations2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1515,7 +1545,17 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRevenueEstimate1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION_REVENUE_ESTIMATE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionRevenueEstimate1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -2024,7 +2064,16 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRevenueTrack1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION_REVENUE_TRACK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionRevenueTrack1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -2454,7 +2503,14 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRpEstimate1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION_RP_ESTIMATE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionRpEstimate1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -2858,7 +2914,16 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionTranche1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION_TRANCHE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionTranche1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -3314,7 +3379,12 @@ impl mmsdm_core::GetTable for IrauctionResidueBidTrk1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_BID_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueBidTrk1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -3649,7 +3719,15 @@ impl mmsdm_core::GetTable for IrauctionResidueConData2 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_CON_DATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueConData2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -4050,7 +4128,12 @@ impl mmsdm_core::GetTable for IrauctionResidueConEstimatesTrk1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_CON_ESTIMATES_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueConEstimatesTrk1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -4404,7 +4487,17 @@ impl mmsdm_core::GetTable for IrauctionResidueConFunds1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_CON_FUNDS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueConFunds1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -4965,7 +5058,24 @@ impl mmsdm_core::GetTable for IrauctionResidueContracts1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_CONTRACTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueContracts1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -5542,7 +5652,14 @@ impl mmsdm_core::GetTable for IrauctionBidsFundsBid1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_BIDS";
     const TABLE_NAME: &'static str = "FUNDS_BID";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionBidsFundsBid1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -5927,7 +6044,13 @@ impl mmsdm_core::GetTable for IrauctionResiduePriceBid1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_PRICE_BID";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResiduePriceBid1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -6287,7 +6410,14 @@ impl mmsdm_core::GetTable for IrauctionResiduePriceFundsBid1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_PRICE_FUNDS_BID";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResiduePriceFundsBid1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -6676,7 +6806,15 @@ impl mmsdm_core::GetTable for IrauctionResiduePublicData1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_PUBLIC_DATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResiduePublicData1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -7137,7 +7275,16 @@ impl mmsdm_core::GetTable for IrauctionResidueTrk1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueTrk1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -7515,7 +7662,9 @@ impl mmsdm_core::GetTable for SettlementConfigResiduecontractpayments1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
     const TABLE_NAME: &'static str = "RESIDUECONTRACTPAYMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigResiduecontractpayments1Mapping([
-        4, 5, 6,
+        4,
+        5,
+        6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -7826,7 +7975,14 @@ impl mmsdm_core::GetTable for IrauctionBidsFileTrk1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_BIDS";
     const TABLE_NAME: &'static str = "FILE_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionBidsFileTrk1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -8185,7 +8341,16 @@ impl mmsdm_core::GetTable for IrauctionSraCashSecurity1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_CASH_SECURITY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraCashSecurity1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CASH_SECURITY_ID",
@@ -8605,7 +8770,13 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucMardetail1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUC_MARDETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucMardetail1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SRA_YEAR",
@@ -8948,7 +9119,14 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucMargin1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUC_MARGIN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucMargin1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SRA_YEAR",
@@ -9349,7 +9527,19 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucReceipts1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUC_RECEIPTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucReceipts1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SRA_YEAR",
@@ -9864,7 +10054,23 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucpayDetail1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUCPAY_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucpayDetail1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SRA_YEAR",
@@ -10458,7 +10664,16 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucpaySum1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUCPAY_SUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucpaySum1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SRA_YEAR",
@@ -10894,7 +11109,15 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialRuntrk1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_FINANCIAL_RUNTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialRuntrk1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SRA_YEAR",
@@ -11296,7 +11519,16 @@ impl mmsdm_core::GetTable for IrauctionSraOfferProduct1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_OFFER_PRODUCT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraOfferProduct1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "AUCTIONID",
@@ -11707,7 +11939,13 @@ impl mmsdm_core::GetTable for IrauctionSraOfferProfile1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_OFFER_PROFILE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraOfferProfile1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "AUCTIONID",
@@ -12025,7 +12263,11 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialCashSecurity1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_PRUDENTIAL_CASH_SECURITY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraPrudentialCashSecurity1Mapping([
-        4, 5, 6, 7, 8,
+        4,
+        5,
+        6,
+        7,
+        8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PRUDENTIAL_DATE",
@@ -12337,7 +12579,12 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialCompPosition1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_PRUDENTIAL_COMP_POSITION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraPrudentialCompPosition1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PRUDENTIAL_DATE",
@@ -12726,7 +12973,20 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialExposure1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_PRUDENTIAL_EXPOSURE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraPrudentialExposure1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PRUDENTIAL_DATE",
@@ -13206,7 +13466,8 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialRun1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_PRUDENTIAL_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraPrudentialRun1Mapping([
-        4, 5,
+        4,
+        5,
     ]);
     const COLUMNS: &'static [&'static str] = &["PRUDENTIAL_DATE", "PRUDENTIAL_RUNNO"];
     type Row<'row> = IrauctionSraPrudentialRun1Row<'row>;
@@ -13446,7 +13707,9 @@ impl mmsdm_core::GetTable for IrauctionValuationid1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "VALUATIONID";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionValuationid1Mapping([
-        4, 5, 6,
+        4,
+        5,
+        6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "VALUATIONID",

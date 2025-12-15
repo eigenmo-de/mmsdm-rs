@@ -26,8 +26,12 @@ mod error;
 use csv_core::{ReadRecordResult, Reader, ReaderBuilder};
 pub use error::*;
 
+#[cfg(feature = "io_unzip")]
+mod unzip;
+
 #[cfg(feature = "std")]
 mod io;
+
 #[cfg(feature = "std")]
 pub use io::*;
 
@@ -1265,11 +1269,12 @@ pub mod mms_time {
     }
 }
 
+#[cfg(feature = "io_rc_zip")]
 #[cfg(test)]
 mod tests {
-    use rc_zip_sync::ReadZip;
 
     use super::*;
+    use rc_zip_sync::{self, ReadZip};
 
     extern crate std;
 

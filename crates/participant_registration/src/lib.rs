@@ -100,7 +100,13 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAdgDetail1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "ADG_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationAdgDetail1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "ADG_ID",
@@ -444,7 +450,9 @@ impl mmsdm_core::GetTable for ParticipantRegistrationAggregateDispatchGroup1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "AGGREGATE_DISPATCH_GROUP";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationAggregateDispatchGroup1Mapping([
-        4, 5, 6,
+        4,
+        5,
+        6,
     ]);
     const COLUMNS: &'static [&'static str] = &["ADG_ID", "COMMENTS", "LASTCHANGED"];
     type Row<'row> = ParticipantRegistrationAggregateDispatchGroup1Row<'row>;
@@ -707,7 +715,16 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetails1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "BIDDUIDDETAILS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationBidduiddetails1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -1165,7 +1182,12 @@ impl mmsdm_core::GetTable for ParticipantRegistrationBidduiddetailstrk1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "BIDDUIDDETAILSTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationBidduiddetailstrk1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -1517,7 +1539,10 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDispatchableunit1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "DISPATCHABLEUNIT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDispatchableunit1Mapping([
-        4, 5, 6, 7,
+        4,
+        5,
+        6,
+        7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -1785,7 +1810,11 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDualloc1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "DUALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDualloc1Mapping([
-        4, 5, 6, 7, 8,
+        4,
+        5,
+        6,
+        7,
+        8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -2303,8 +2332,40 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetail7 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "DUDETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDudetail7Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -3382,8 +3443,35 @@ impl mmsdm_core::GetTable for ParticipantRegistrationDudetailsummary7 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "DUDETAILSUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationDudetailsummary7Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29, 30, 31, 32,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -4313,7 +4401,22 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenmeter1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "GENMETER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationGenmeter1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "METERID",
@@ -4999,7 +5102,28 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunits3 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "GENUNITS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationGenunits3Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GENSETID",
@@ -5629,7 +5753,19 @@ impl mmsdm_core::GetTable for ParticipantRegistrationGenunitsUnit2 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "GENUNITS_UNIT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationGenunitsUnit2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GENSETID",
@@ -6227,7 +6363,21 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspInterconnector2 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "MNSP_INTERCONNECTOR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationMnspInterconnector2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "LINKID",
@@ -6768,7 +6918,11 @@ impl mmsdm_core::GetTable for ParticipantRegistrationMnspParticipant1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "MNSP_PARTICIPANT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationMnspParticipant1Mapping([
-        4, 5, 6, 7, 8,
+        4,
+        5,
+        6,
+        7,
+        8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERCONNECTORID",
@@ -7138,7 +7292,13 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipant1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipant1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -7539,7 +7699,21 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantaccount1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTACCOUNT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantaccount1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "ACCOUNTNAME",
@@ -8038,7 +8212,9 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcategory1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTCATEGORY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantcategory1Mapping([
-        4, 5, 6,
+        4,
+        5,
+        6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTCATEGORYID",
@@ -8292,7 +8468,9 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcategoryalloc1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTCATEGORYALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantcategoryalloc1Mapping([
-        4, 5, 6,
+        4,
+        5,
+        6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTCATEGORYID",
@@ -8561,7 +8739,9 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantclass1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTCLASS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantclass1Mapping([
-        4, 5, 6,
+        4,
+        5,
+        6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTCLASSID",
@@ -8820,7 +9000,12 @@ impl mmsdm_core::GetTable for ParticipantRegistrationParticipantcreditdetail1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PARTICIPANTCREDITDETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationParticipantcreditdetail1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -9144,7 +9329,9 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroup1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PMS_GROUP";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationPmsGroup1Mapping([
-        4, 5, 6,
+        4,
+        5,
+        6,
     ]);
     const COLUMNS: &'static [&'static str] = &["GROUPID", "CREATEDDATE", "LASTCHANGED"];
     type Row<'row> = ParticipantRegistrationPmsGroup1Row<'row>;
@@ -9482,7 +9669,23 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroupnmi1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PMS_GROUPNMI";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationPmsGroupnmi1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GROUPNMIID",
@@ -10137,7 +10340,22 @@ impl mmsdm_core::GetTable for ParticipantRegistrationPmsGroupservice1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "PMS_GROUPSERVICE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationPmsGroupservice1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "GROUPSERVICEID",
@@ -10665,7 +10883,11 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStadualloc1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STADUALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStadualloc1Mapping([
-        4, 5, 6, 7, 8,
+        4,
+        5,
+        6,
+        7,
+        8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -11081,7 +11303,17 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStation1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStation1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "STATIONID",
@@ -11460,7 +11692,13 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationoperatingstatus1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STATIONOPERATINGSTATUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStationoperatingstatus1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -11811,7 +12049,11 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationowner1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STATIONOWNER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStationowner1Mapping([
-        4, 5, 6, 7, 8,
+        4,
+        5,
+        6,
+        7,
+        8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -12138,7 +12380,12 @@ impl mmsdm_core::GetTable for ParticipantRegistrationStationownertrk1 {
     const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
     const TABLE_NAME: &'static str = "STATIONOWNERTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationStationownertrk1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",

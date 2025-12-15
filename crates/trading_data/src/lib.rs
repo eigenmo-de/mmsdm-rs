@@ -85,7 +85,12 @@ impl mmsdm_core::GetTable for TradingAverageprice301 {
     const DATA_SET_NAME: &'static str = "TRADING";
     const TABLE_NAME: &'static str = "AVERAGEPRICE30";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = TradingAverageprice301Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PERIODDATE",
@@ -415,7 +420,14 @@ impl mmsdm_core::GetTable for TradingInterconnectorres2 {
     const DATA_SET_NAME: &'static str = "TRADING";
     const TABLE_NAME: &'static str = "INTERCONNECTORRES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = TradingInterconnectorres2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -885,8 +897,36 @@ impl mmsdm_core::GetTable for TradingPrice3 {
     const DATA_SET_NAME: &'static str = "TRADING";
     const TABLE_NAME: &'static str = "PRICE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = TradingPrice3Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29, 30, 31, 32, 33,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -1879,7 +1919,18 @@ impl mmsdm_core::GetTable for MeterDataCustomer1 {
     const DATA_SET_NAME: &'static str = "METER_DATA";
     const TABLE_NAME: &'static str = "CUSTOMER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterDataCustomer1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -2354,7 +2405,10 @@ impl mmsdm_core::GetTable for MeterDataGenDuid1 {
     const DATA_SET_NAME: &'static str = "METER_DATA";
     const TABLE_NAME: &'static str = "GEN_DUID";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterDataGenDuid1Mapping([
-        4, 5, 6, 7,
+        4,
+        5,
+        6,
+        7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -2632,7 +2686,12 @@ impl mmsdm_core::GetTable for MeterdataTrk1 {
     const DATA_SET_NAME: &'static str = "METERDATA";
     const TABLE_NAME: &'static str = "TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterdataTrk1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CASE_ID",
@@ -3045,7 +3104,17 @@ impl mmsdm_core::GetTable for MeterDataCustomerTrk1 {
     const DATA_SET_NAME: &'static str = "METER_DATA";
     const TABLE_NAME: &'static str = "CUSTOMER_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MeterDataCustomerTrk1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -3488,7 +3557,13 @@ impl mmsdm_core::GetTable for BidMnspFiletrk1 {
     const DATA_SET_NAME: &'static str = "BID";
     const TABLE_NAME: &'static str = "MNSP_FILETRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidMnspFiletrk1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -3830,7 +3905,14 @@ impl mmsdm_core::GetTable for BidMnspOffertrk1 {
     const DATA_SET_NAME: &'static str = "BID";
     const TABLE_NAME: &'static str = "MNSP_OFFERTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidMnspOffertrk1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -4240,7 +4322,28 @@ impl mmsdm_core::GetTable for BidMnspPeroffer1 {
     const DATA_SET_NAME: &'static str = "BID";
     const TABLE_NAME: &'static str = "MNSP_PEROFFER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidMnspPeroffer1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -5033,7 +5136,18 @@ impl mmsdm_core::GetTable for MrDayofferStack1 {
     const DATA_SET_NAME: &'static str = "MR";
     const TABLE_NAME: &'static str = "DAYOFFER_STACK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MrDayofferStack1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MR_DATE",
@@ -5530,7 +5644,14 @@ impl mmsdm_core::GetTable for MrEvent1 {
     const DATA_SET_NAME: &'static str = "MR";
     const TABLE_NAME: &'static str = "EVENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MrEvent1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MR_DATE",
@@ -5906,7 +6027,15 @@ impl mmsdm_core::GetTable for MrEventSchedule1 {
     const DATA_SET_NAME: &'static str = "MR";
     const TABLE_NAME: &'static str = "EVENT_SCHEDULE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MrEventSchedule1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MR_DATE",
@@ -6322,7 +6451,15 @@ impl mmsdm_core::GetTable for MrPerofferStack1 {
     const DATA_SET_NAME: &'static str = "MR";
     const TABLE_NAME: &'static str = "PEROFFER_STACK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MrPerofferStack1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "MR_DATE",
@@ -6764,7 +6901,26 @@ impl mmsdm_core::GetTable for TradingUnitSolution2 {
     const DATA_SET_NAME: &'static str = "TRADING";
     const TABLE_NAME: &'static str = "UNIT_SOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = TradingUnitSolution2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -7657,11 +7813,96 @@ impl mmsdm_core::GetTable for TradingRegionsum4 {
     const DATA_SET_NAME: &'static str = "TRADING";
     const TABLE_NAME: &'static str = "REGIONSUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = TradingRegionsum4Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
-        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
-        66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85,
-        86, 87, 88, 89, 90, 91, 92, 93,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",

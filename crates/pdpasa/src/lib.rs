@@ -143,7 +143,25 @@ impl mmsdm_core::GetTable for PdpasaCasesolution3 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "CASESOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaCasesolution3Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -791,7 +809,7 @@ pub struct PdpasaConstraintsolution1Row<'data> {
     pub capacityviolationdegree: Option<rust_decimal::Decimal>,
     /// Last changed date of this record
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Type of run. Values are RELIABILITY_LRC, OUTAGE_LRC and LOR.
+    /// Type of run. Values are OUTAGE_LRC and LOR. Note that the PDPASA OUTAGE_LRC Run Type is discontinued from 31 July 2025, with only the LOR Run Type reported.
     pub runtype: core::ops::Range<usize>,
     /// Primary Region for LP Solve (or MARKET if none).
     pub studyregionid: core::ops::Range<usize>,
@@ -813,7 +831,15 @@ impl mmsdm_core::GetTable for PdpasaConstraintsolution1 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "CONSTRAINTSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaConstraintsolution1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1175,7 +1201,7 @@ pub struct PdpasaDuidavailability1Mapping([usize; 10]);
 ///
 /// ## PDPASA_DUIDAVAILABILITY
 ///
-/// This report delivers available capacity, PASA availability and given recall period for all scheduled resources. Note that for an MNSP, DUID = LINKID in the MNSP_INTERCONNECTOR table
+/// This report delivers available capacity, PASA availability and given recall period for all scheduled resources. Note that for an MNSP, DUID = LINKID in the MNSP_INTERCONNECTOR table.
 ///
 /// * Data Set Name: Pdpasa
 /// * File Name: Duidavailability
@@ -1194,7 +1220,7 @@ pub struct PdpasaDuidavailability1Mapping([usize; 10]);
 /// * RUN_DATETIME
 #[derive(Debug, PartialEq, Eq)]
 pub struct PdpasaDuidavailability1Row<'data> {
-    /// First half hour ended interval of the run
+    /// PDPASA run, identified by the first half hour ended interval of the run.
     pub run_datetime: chrono::NaiveDateTime,
     /// Half hour ended interval
     pub interval_datetime: chrono::NaiveDateTime,
@@ -1212,7 +1238,7 @@ pub struct PdpasaDuidavailability1Row<'data> {
     pub load_pasa_availability: Option<rust_decimal::Decimal>,
     /// Recall Period associated with the PASA Availability for a scheduled load or BDU(Load side).
     pub load_recall_period: Option<rust_decimal::Decimal>,
-    /// The Last changed Date time of the record
+    /// Report Creation Date Time.
     pub lastchanged: Option<chrono::NaiveDateTime>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
@@ -1226,7 +1252,16 @@ impl mmsdm_core::GetTable for PdpasaDuidavailability1 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "DUIDAVAILABILITY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaDuidavailability1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1673,7 +1708,7 @@ pub struct PdpasaInterconnectorsoln1Row<'data> {
     pub calculatedimportlimit: Option<rust_decimal::Decimal>,
     /// Last changed date of this record
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Type of run. Values are RELIABILITY_LRC, OUTAGE_LRC and LOR.
+    /// Type of run. Values are OUTAGE_LRC and LOR. Note that the PDPASA OUTAGE_LRC Run Type is discontinued from 31 July 2025, with only the LOR Run Type reported.
     pub runtype: core::ops::Range<usize>,
     /// ID of the constraint that sets the Interconnector Export Limit
     pub exportlimitconstraintid: core::ops::Range<usize>,
@@ -1726,7 +1761,19 @@ impl mmsdm_core::GetTable for PdpasaInterconnectorsoln1 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "INTERCONNECTORSOLN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaInterconnectorsoln1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2174,7 +2221,7 @@ pub struct PdpasaRegionsolution7Mapping([usize; 45]);
 ///
 /// ## PDPASA_REGIONSOLUTION
 ///
-/// The PDPASA region solution data
+/// The PDPASA region solution data.Note that the OUTAGE_LRC Run Type is no longer reported from 31 July 2025.
 ///
 /// * Data Set Name: Pdpasa
 /// * File Name: Regionsolution
@@ -2194,7 +2241,7 @@ pub struct PdpasaRegionsolution7Mapping([usize; 45]);
 /// * RUNTYPE
 #[derive(Debug, PartialEq, Eq)]
 pub struct PdpasaRegionsolution7Row<'data> {
-    /// Case identifier by the time the case was run
+    /// Unique Timestamp Identifier for this run, identified by the first half hour ended interval of the run.
     pub run_datetime: chrono::NaiveDateTime,
     /// End date time of the interval
     pub interval_datetime: chrono::NaiveDateTime,
@@ -2206,27 +2253,27 @@ pub struct PdpasaRegionsolution7Row<'data> {
     pub demand50: Option<rust_decimal::Decimal>,
     /// 90% Probability of Exceedance demand forecast
     pub demand90: Option<rust_decimal::Decimal>,
-    /// Region reserve requirement (MW)
+    /// Reserve Requirement (MW). This field is not populated after 30 July 2025.
     pub reservereq: Option<rust_decimal::Decimal>,
-    /// Capacity required to meet the demand and reserve levels in the capacity adequacy assessment.
+    /// Demand + Reserve requirements (MW). This field is not populated after 30 July 2025.
     pub capacityreq: Option<rust_decimal::Decimal>,
-    /// Energy (GWh) required for this energy block based on the 50% probability of exceedance demand. Listed in the first interval of the energy block.
+    /// Sum of: (Region Demand50)/Period (sum by trading day, entered in first period of trading day, GWh).
     pub energyreqdemand50: Option<rust_decimal::Decimal>,
-    /// Aggregate generator capability from Non Energy Constrained plant including restrictions due to network constraints from the capacity adequacy (LRC) assessment.
+    /// Aggregate generation + WDR capacity from Non-Energy Constrained plant subjected to restrictions due to network constraints.
     pub unconstrainedcapacity: Option<rust_decimal::Decimal>,
-    /// Aggregate generator capability from Energy Constrained plant including restrictions due to network constraints
+    /// Aggregate generation + WDR capacity from Energy Constrained plant subjected to restrictions due to network constraints.
     pub constrainedcapacity: Option<rust_decimal::Decimal>,
-    /// Net interconnector flow from the region for this interval from the capacity adequacy (LRC) assessment.
+    /// Net export (MW) out of this region in the LOR evaluation. Export if >0, Import if <0. This value is the same as LORNETINTERCHANGEUNDERSCARCITY.
     pub netinterchangeunderscarcity: Option<rust_decimal::Decimal>,
-    /// Surplus capacity (MW) above the demand, scheduled load and net interchange in this region from the capacity adequacy (LRC) assessment.
+    /// Regional surplus capacity (MW), +/- values indicate surplus/deficit capacity respectively. This value reflects Regional LOR reserve.
     pub surpluscapacity: Option<rust_decimal::Decimal>,
-    /// Surplus reserve (MW) above the demand, scheduled load,  net interchange and reserve requirement in this region from the capacity adequacy (LRC) assessment.
+    /// Regional surplus reserve (MW). This value also reflects Regional LOR reserve. Note: For LOR runs, RESERVEREQ requirement input is not used.
     pub surplusreserve: Option<rust_decimal::Decimal>,
-    /// Low Reserve Condition (LRC) flag for this region in this interval (1 - LRC, 0 - No LRC)
+    /// Regional reserve condition from LRC run. This field is not populated after 30 July 2025.
     pub reservecondition: Option<rust_decimal::Decimal>,
-    /// Maximum surplus reserve (MW) above the demand + reserve requirement able to be sourced to this region while meeting demand + reserve requirements in other regions.
+    /// Maximum Surplus Reserve (MW) evaluated for this region from LRC runs. This field is no longer populated.
     pub maxsurplusreserve: Option<rust_decimal::Decimal>,
-    /// Maximum spare capacity (MW) above the demand able to be sourced to this region while meeting demands in other regions.
+    /// Maximum Spare Capacity (MW) evaluated for this region. Calculated for each region in turn. This value reflects Regional LOR reserve.
     pub maxsparecapacity: Option<rust_decimal::Decimal>,
     /// Lack of Reserve Condition (LOR) flag for this region and interval   (3 = LOR3, 2 = LOR2, 1 = LOR1, 0 = No LOR)
     pub lorcondition: Option<rust_decimal::Decimal>,
@@ -2234,11 +2281,11 @@ pub struct PdpasaRegionsolution7Row<'data> {
     pub aggregatecapacityavailable: Option<rust_decimal::Decimal>,
     /// Sum of  MAXAVAIL quantities bid by of all Scheduled Loads in a given Region for a given PERIODID.
     pub aggregatescheduledload: Option<rust_decimal::Decimal>,
-    /// Date time the record was created or modified changed
+    /// Date time this record was created.
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Sum of PASAAVAILABILITY for all scheduled generating units and scheduled bidirectional units (Gen side) with a Recall_Period of null or <= 24 hours plus the sum of Unconstrained Intermittent Generation Forecasts (UIGF) for all semi-scheduled generating units. For the OUTAGE_LRC run, UIGF is the POE90 forecast. For the LOR Run, UIGF is the POE50 forecast. Note that the OUTAGE_LRC Run Type is discontinued from 31 July 2025.
+    /// Sum of PASAAVAILABILITY for all scheduled generating units and scheduled bidirectional units (Gen side) with a Recall_Period <= 24 hours plus the sum of Unconstrained Intermittent Generation Forecasts (UIGF) for all semi-scheduled generating units. For the OUTAGE_LRC run, UIGF is the POE90 forecast. For the LOR Run, UIGF is the POE50 forecast. Note that the OUTAGE_LRC Run Type is discontinued from 31 July 2025.
     pub aggregatepasaavailability: Option<rust_decimal::Decimal>,
-    /// Type of run. Values are RELIABILITY_LRC, OUTAGE_LRC and LOR. Note that the PDPASA OUTAGE_LRC Run Type is discontinued from 31 July 2025, with only the LOR Run Type reported.
+    /// Type of run. Values are OUTAGE_LRC and LOR. Note that the PDPASA OUTAGE_LRC Run Type is discontinued from 31 July 2025, with only the LOR Run Type reported.
     pub runtype: core::ops::Range<usize>,
     /// Energy (GWh) required for this energy block based on the 10% probability of exceedance demand. Listed in the first interval of the energy block
     pub energyreqdemand10: Option<rust_decimal::Decimal>,
@@ -2246,7 +2293,7 @@ pub struct PdpasaRegionsolution7Row<'data> {
     pub calculatedlor1level: Option<rust_decimal::Decimal>,
     /// Region Reserve Level for LOR2 used. Can be static value or calculated value if an interconnector is a credible contingency
     pub calculatedlor2level: Option<rust_decimal::Decimal>,
-    /// Net interconnector flow from the region for this interval from the MSR assessment
+    /// Net interconnector flow from the region for this interval from the MSR assessment. This field is no longer populated.
     pub msrnetinterchangeunderscarcity: Option<rust_decimal::Decimal>,
     /// Net interconnector flow from the region for this interval from the LOR assessment
     pub lornetinterchangeunderscarcity: Option<rust_decimal::Decimal>,
@@ -2256,27 +2303,27 @@ pub struct PdpasaRegionsolution7Row<'data> {
     pub demand_and_nonschedgen: Option<rust_decimal::Decimal>,
     /// Regional aggregated Unconstrained Intermittent Generation Forecast of Semi-scheduled generation (MW).
     pub uigf: Option<rust_decimal::Decimal>,
-    /// Constrained generation forecast for semi-scheduled units for the region. For RELIABILITY_LRC run semi-scheduled generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run semi-scheduled generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
+    /// Constrained generation forecast (MW) for semi-scheduled units for the region. For OUTAGE_LRC run and LOR run, semi-scheduled generation is constrained by both System Normal and Outage constraints. All run types (OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
     pub semi_scheduled_capacity: Option<rust_decimal::Decimal>,
     /// Constrained generation forecast for semi-scheduled units for the region for the LOR run. Semi-scheduled generation is constrained by both System Normal and Outage constraints, and incorporate MAXAVAIL limits.
     pub lor_semi_scheduled_capacity: Option<rust_decimal::Decimal>,
     /// Largest Credible Risk. MW value for highest credible contingency
     pub lcr: Option<rust_decimal::Decimal>,
-    /// Two Largest Creditable Risks. MW value for highest two credible contingencies.
+    /// Two Largest Credible Risks. MW value for highest two credible contingencies.
     pub lcr2: Option<rust_decimal::Decimal>,
     /// Forecasting Uncertainty Measure. MW value of reserve calculated as defined in the Reserve Level Declaration Guidelines
     pub fum: Option<rust_decimal::Decimal>,
-    /// Unconstrained Intermittent Generation Forecast for solar for the region. For RELIABILITY_LRC and OUTAGE_LRC run this is the POE90 forecast (determined by LRCUIGFOption in CaseSolution). For LOR run this is the POE50 forecast
+    /// Unconstrained Intermittent Generation Forecast for solar for the region. For OUTAGE_LRC run, this is the POE90 forecast (determined by LRCUIGFOption in CaseSolution). For LOR run, this is the POE50 forecast.
     pub ss_solar_uigf: Option<rust_decimal::Decimal>,
-    /// Unconstrained Intermittent Generation Forecast for wind for the region. For RELIABILITY_LRC and OUTAGE_LRC run this is the POE90 forecast (determined by LRCUIGFOption in CaseSolution). For LOR run this is the POE50 forecast
+    /// Unconstrained Intermittent Generation Forecast for wind for the region. For OUTAGE_LRC run, this is the POE90 forecast (determined by LRCUIGFOption in CaseSolution). For LOR run, this is the POE50 forecast.
     pub ss_wind_uigf: Option<rust_decimal::Decimal>,
-    /// Constrained generation forecast for solar for the region. For RELIABILITY_LRC run solar generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run solar generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
+    /// Constrained generation forecast for solar for the region. For OUTAGE_LRC run and LOR run. solar generation is constrained by both System Normal and Outage constraints. All run types (OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
     pub ss_solar_capacity: Option<rust_decimal::Decimal>,
-    /// Constrained generation forecast for wind for the region. For RELIABILITY_LRC run wind generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run wind generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
+    /// Constrained generation forecast for wind for the region. For OUTAGE_LRC run and LOR run, wind generation is constrained by both System Normal and Outage constraints. All run types (OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
     pub ss_wind_capacity: Option<rust_decimal::Decimal>,
-    /// Constrained generation forecast for solar for the region. For RELIABILITY_LRC run solar generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run solar generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
+    /// Constrained generation forecast (MW) for solar for the region. For OUTAGE_LRC run and LOR run, solar generation is constrained by both System Normal and Outage constraints. All run types (OUTAGE_LRC, LOR) incorporate MAXAVAIL limits. This value is the same as SS_SOLAR_CAPACITY.
     pub ss_solar_cleared: Option<rust_decimal::Decimal>,
-    /// Constrained generation forecast for wind for the region. For RELIABILITY_LRC run wind generation is constrained only by System Normal constraints. For OUTAGE_LRC run and LOR run wind generation is constrained by both System Normal and Outage constraints. All three run types (RELIABILITY_LRC, OUTAGE_LRC, LOR) incorporate MAXAVAIL limits.
+    /// Constrained generation forecast (MW) for wind for the region. For OUTAGE_LRC run and LOR run, wind generation is constrained by both System Normal and Outage constraints. All run types (OUTAGE_LRC, LOR) incorporate MAXAVAIL limits. This value is the same as SS_WIND_CAPACITY.
     pub ss_wind_cleared: Option<rust_decimal::Decimal>,
     /// Regional aggregated Wholesale Demand Response (WDR) availability in MW.
     pub wdr_available: Option<rust_decimal::Decimal>,
@@ -2299,9 +2346,51 @@ impl mmsdm_core::GetTable for PdpasaRegionsolution7 {
     const DATA_SET_NAME: &'static str = "PDPASA";
     const TABLE_NAME: &'static str = "REGIONSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaRegionsolution7Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
-        46, 47, 48,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",

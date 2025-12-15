@@ -1,11 +1,10 @@
 use chrono::Datelike;
-use mmsdm::{PartitionKey, PartitionValue};
+use mmsdm::{PartitionKey, PartitionValue, UnzipFile};
 use mmsdm_core::FileReader;
 use mmsdm_dispatch::{
     DispatchConstraint5, DispatchLocalPrice1, DispatchMnspbidtrk1, DispatchOffertrk1,
-    DispatchUnitSolution5,
+    DispatchUnitSolution6,
 };
-use rc_zip_sync::ReadZip;
 use std::boxed::Box;
 use std::error::Error;
 use std::fs::File;
@@ -19,14 +18,10 @@ use std::sync::Arc;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let file = File::open("./PUBLIC_NEXT_DAY_DISPATCH_20240419_0000000416994293.zip")?;
-    let archive = file.read_zip().unwrap();
-    let handle = archive.entries().next().unwrap();
-
-    let mut fr = FileReader::from_entry(handle).unwrap();
+    let unzipper = UnzipFile::new(file);
+    let mut fr = FileReader::from_get_buf_reader(unzipper)?;
 
     dbg!(fr.header(), fr.sub_files());
-
-    
 
     let batch = mmsdm_core::partition_to_batch::<_, DispatchOffertrk1>(
         &mut fr,
@@ -37,10 +32,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         )),
     )?;
     dbg!(batch.num_rows(), batch.num_columns());
-    let batch = mmsdm_core::partition_to_batch::<_, DispatchUnitSolution5>(
+    let batch = mmsdm_core::partition_to_batch::<_, DispatchUnitSolution6>(
         &mut fr,
         PartitionValue("2024-04-01".to_string()),
-        Arc::new(DispatchUnitSolution5::new(
+        Arc::new(DispatchUnitSolution6::new(
             PartitionKey("settlementdate"),
             |row| PartitionValue(row.settlementdate.date().with_day(1).unwrap().to_string()),
         )),

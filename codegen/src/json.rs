@@ -532,6 +532,7 @@ impl FromStr for FileNameParts {
 
 pub async fn run() -> anyhow::Result<DataModel> {
     let mut files = BTreeMap::<FileNameParts, PathBuf>::new();
+    tokio::fs::create_dir_all("./cache").await?;
     let mut readdir = tokio::fs::read_dir("./cache").await?;
 
     while let Some(item) = readdir.next_entry().await? {

@@ -117,7 +117,16 @@ impl mmsdm_core::GetTable for BillingApcCompensation2 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "APC_COMPENSATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingApcCompensation2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -509,7 +518,21 @@ impl mmsdm_core::GetTable for BillingApcRecovery3 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "APC_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingApcRecovery3Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1037,7 +1060,14 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublication1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "BILLING_CO2E_PUBLICATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingBillingCo2ePublication1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1393,7 +1423,10 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublicationTrk1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "BILLING_CO2E_PUBLICATION_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingBillingCo2ePublicationTrk1Mapping([
-        4, 5, 6, 7,
+        4,
+        5,
+        6,
+        7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1684,7 +1717,23 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary2 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DAILY_ENERGY_SUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDailyEnergySummary2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -2342,7 +2391,15 @@ impl mmsdm_core::GetTable for BillingDirFinalAmount1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_FINAL_AMOUNT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirFinalAmount1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -2766,7 +2823,15 @@ impl mmsdm_core::GetTable for BillingDirFinalRecovery1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_FINAL_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirFinalRecovery1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -3199,7 +3264,14 @@ impl mmsdm_core::GetTable for BillingDirProvAmount1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_PROV_AMOUNT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirProvAmount1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -3594,7 +3666,14 @@ impl mmsdm_core::GetTable for BillingDirProvRecovery1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_PROV_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirProvRecovery1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -4012,7 +4091,18 @@ impl mmsdm_core::GetTable for BillingDirRecoveryDetail1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_RECOVERY_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirRecoveryDetail1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -4459,7 +4549,7 @@ pub struct BillingBillingDirectionReconOther2Mapping([usize; 21]);
 /// * Data Version: 2
 ///
 /// # Description
-/// SourceBILLING_DIRECTION_RECONCILIATN is populated by the posting of a billing run.VolumeOne record inserted per direction per billing run, or 11 records inserted per week. Presently
+/// BILLING_EFTSHORTFALL_AMOUNT data is confidential, and is available only to the relevant participant.
 ///
 /// # Notes
 /// * (Visibility)  Public
@@ -4566,7 +4656,27 @@ impl mmsdm_core::GetTable for BillingBillingDirectionReconOther2 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "BILLING_DIRECTION_RECON_OTHER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingBillingDirectionReconOther2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -5254,7 +5364,16 @@ impl mmsdm_core::GetTable for BillingEftshortfallAmount1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "EFTSHORTFALL_AMOUNT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEftshortfallAmount1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -5706,7 +5825,12 @@ impl mmsdm_core::GetTable for BillingEftshortfallDetail1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "EFTSHORTFALL_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEftshortfallDetail1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -6105,7 +6229,26 @@ impl mmsdm_core::GetTable for BillingEnergyGensetDetail1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ENERGY_GENSET_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEnergyGensetDetail1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -6801,7 +6944,17 @@ impl mmsdm_core::GetTable for BillingEnergyTranSaps1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ENERGY_TRAN_SAPS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEnergyTranSaps1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -7290,7 +7443,22 @@ impl mmsdm_core::GetTable for BillingEnergyTransaction1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ENERGY_TRANSACTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEnergyTransaction1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -7938,7 +8106,19 @@ impl mmsdm_core::GetTable for BillingFcasRegAmt1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "FCAS_REG_AMT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFcasRegAmt1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -8477,7 +8657,26 @@ impl mmsdm_core::GetTable for BillingFcasRegResidamt1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "FCAS_REG_RESIDAMT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFcasRegResidamt1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -9188,7 +9387,20 @@ impl mmsdm_core::GetTable for BillingFpp1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "FPP";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFpp1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -9760,7 +9972,15 @@ impl mmsdm_core::GetTable for BillingGstDetail5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "GST_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingGstDetail5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -10181,7 +10401,14 @@ impl mmsdm_core::GetTable for BillingGstSummary5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "GST_SUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingGstSummary5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -10502,6 +10729,1171 @@ pub struct BillingGstSummary5Builder {
     gst_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
+pub struct BillingNmasManualPayment1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &BillingNmasManualPayment1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingNmasManualPayment1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct BillingNmasManualPayment1Mapping([usize; 11]);
+/// # Summary
+///
+/// ## BILLING_NMAS_MANUAL_PAYMENT
+///
+/// This report contains the NMAS Manual Weekly Payments that are uploaded by the Settlement Business Team. Amounts in this table are not calculated by the Settlement System.
+///
+/// * Data Set Name: Billing
+/// * File Name: Nmas Manual Payment
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Private
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONTRACTID
+/// * CONTRACTYEAR
+/// * DUID
+/// * PARTICIPANTID
+/// * PAYMENTTYPE
+/// * SERVICETYPE
+/// * WEEKNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct BillingNmasManualPayment1Row<'data> {
+    /// The Billing Contract Year.
+    pub contractyear: rust_decimal::Decimal,
+    /// The Billing WeekNo
+    pub weekno: rust_decimal::Decimal,
+    /// The Billing RunNo
+    pub billrunno: rust_decimal::Decimal,
+    /// The Contract Participant Id.
+    pub participantid: core::ops::Range<usize>,
+    /// The NMAS System Security Contract ID.
+    pub contractid: core::ops::Range<usize>,
+    /// The DUID associated with the Contract Payment.
+    pub duid: core::ops::Range<usize>,
+    /// The NMAS System Security Service Types (INERTIA, SYSTEM STRENGTH, TYPE1, TYPE2 and so on).
+    pub servicetype: core::ops::Range<usize>,
+    /// The Payment Type associated with the Service like Availability, Usage, Enablement, Energy Revenue, Test, ADHOC and so on.
+    pub paymenttype: core::ops::Range<usize>,
+    /// The Contract Region Id.
+    pub regionid: core::ops::Range<usize>,
+    /// The NMAS Contract Manual Payment for the Payment Type.
+    pub paymentamount: Option<rust_decimal::Decimal>,
+    /// The last changed date time of the record.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> BillingNmasManualPayment1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn contractid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.contractid.clone())
+    }
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+    pub fn servicetype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.servicetype.clone())
+    }
+    pub fn paymenttype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.paymenttype.clone())
+    }
+    pub fn regionid(&self) -> Option<&str> {
+        if self.regionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.regionid.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for BillingNmasManualPayment1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "BILLING";
+    const TABLE_NAME: &'static str = "NMAS_MANUAL_PAYMENT";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasManualPayment1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "WEEKNO",
+        "BILLRUNNO",
+        "PARTICIPANTID",
+        "CONTRACTID",
+        "DUID",
+        "SERVICETYPE",
+        "PAYMENTTYPE",
+        "REGIONID",
+        "PAYMENTAMOUNT",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = BillingNmasManualPayment1Row<'row>;
+    type FieldMapping = BillingNmasManualPayment1Mapping;
+    type PrimaryKey = BillingNmasManualPayment1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(BillingNmasManualPayment1Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            weekno: row
+                .get_custom_parsed_at_idx(
+                    "weekno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            billrunno: row
+                .get_custom_parsed_at_idx(
+                    "billrunno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participantid: row.get_range("participantid", field_mapping.0[3])?,
+            contractid: row.get_range("contractid", field_mapping.0[4])?,
+            duid: row.get_range("duid", field_mapping.0[5])?,
+            servicetype: row.get_range("servicetype", field_mapping.0[6])?,
+            paymenttype: row.get_range("paymenttype", field_mapping.0[7])?,
+            regionid: row.get_opt_range("regionid", field_mapping.0[8])?,
+            paymentamount: row
+                .get_opt_custom_parsed_at_idx(
+                    "paymentamount",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(BillingNmasManualPayment1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> BillingNmasManualPayment1PrimaryKey {
+        BillingNmasManualPayment1PrimaryKey {
+            billrunno: row.billrunno,
+            contractid: row.contractid().to_string(),
+            contractyear: row.contractyear,
+            duid: row.duid().to_string(),
+            participantid: row.participantid().to_string(),
+            paymenttype: row.paymenttype().to_string(),
+            servicetype: row.servicetype().to_string(),
+            weekno: row.weekno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_nmas_manual_payment_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        BillingNmasManualPayment1Row {
+            contractyear: row.contractyear.clone(),
+            weekno: row.weekno.clone(),
+            billrunno: row.billrunno.clone(),
+            participantid: row.participantid.clone(),
+            contractid: row.contractid.clone(),
+            duid: row.duid.clone(),
+            servicetype: row.servicetype.clone(),
+            paymenttype: row.paymenttype.clone(),
+            regionid: row.regionid.clone(),
+            paymentamount: row.paymentamount.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingNmasManualPayment1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractid: alloc::string::String,
+    pub contractyear: rust_decimal::Decimal,
+    pub duid: alloc::string::String,
+    pub participantid: alloc::string::String,
+    pub paymenttype: alloc::string::String,
+    pub servicetype: alloc::string::String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for BillingNmasManualPayment1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingNmasManualPayment1Row<'data> {
+    type Row<'other> = BillingNmasManualPayment1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno && self.contractid() == row.contractid()
+            && self.contractyear == row.contractyear && self.duid() == row.duid()
+            && self.participantid() == row.participantid()
+            && self.paymenttype() == row.paymenttype()
+            && self.servicetype() == row.servicetype() && self.weekno == row.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingNmasManualPayment1Row<'data> {
+    type PrimaryKey = BillingNmasManualPayment1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractid() == key.contractid
+            && self.contractyear == key.contractyear && self.duid() == key.duid
+            && self.participantid() == key.participantid
+            && self.paymenttype() == key.paymenttype
+            && self.servicetype() == key.servicetype && self.weekno == key.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for BillingNmasManualPayment1PrimaryKey {
+    type Row<'other> = BillingNmasManualPayment1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno && self.contractid == row.contractid()
+            && self.contractyear == row.contractyear && self.duid == row.duid()
+            && self.participantid == row.participantid()
+            && self.paymenttype == row.paymenttype()
+            && self.servicetype == row.servicetype() && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingNmasManualPayment1PrimaryKey {
+    type PrimaryKey = BillingNmasManualPayment1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractid == key.contractid
+            && self.contractyear == key.contractyear && self.duid == key.duid
+            && self.participantid == key.participantid
+            && self.paymenttype == key.paymenttype && self.servicetype == key.servicetype
+            && self.weekno == key.weekno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for BillingNmasManualPayment1 {
+    type Builder = BillingNmasManualPayment1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "weekno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "billrunno",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "servicetype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "paymenttype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "paymentamount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        BillingNmasManualPayment1Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            weekno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            billrunno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::builder::StringBuilder::new(),
+            servicetype_array: arrow::array::builder::StringBuilder::new(),
+            paymenttype_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            paymentamount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .weekno_array
+            .append_value({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .billrunno_array
+            .append_value({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.participantid_array.append_value(row.participantid());
+        builder.contractid_array.append_value(row.contractid());
+        builder.duid_array.append_value(row.duid());
+        builder.servicetype_array.append_value(row.servicetype());
+        builder.paymenttype_array.append_value(row.paymenttype());
+        builder.regionid_array.append_option(row.regionid());
+        builder
+            .paymentamount_array
+            .append_option({
+                row.paymentamount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.weekno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.billrunno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.servicetype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.paymenttype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.paymentamount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct BillingNmasManualPayment1Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    weekno_array: arrow::array::builder::Decimal128Builder,
+    billrunno_array: arrow::array::builder::Decimal128Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::builder::StringBuilder,
+    servicetype_array: arrow::array::builder::StringBuilder,
+    paymenttype_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    paymentamount_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct BillingNmasManualRecovery1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &BillingNmasManualRecovery1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl BillingNmasManualRecovery1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct BillingNmasManualRecovery1Mapping([usize; 18]);
+/// # Summary
+///
+/// ## BILLING_NMAS_MANUAL_RECOVERY
+///
+/// This report shows the summary of the Billing NMAS Recovery Amounts. This table will have recovery data for manual payments for System Security Services.
+///
+/// * Data Set Name: Billing
+/// * File Name: Nmas Manual Recovery
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Private
+///
+/// # Primary Key Columns
+///
+/// * BILLRUNNO
+/// * CONTRACTID
+/// * CONTRACTYEAR
+/// * PARTICIPANTID
+/// * PAYMENTTYPE
+/// * REGIONID
+/// * SERVICETYPE
+/// * WEEKNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct BillingNmasManualRecovery1Row<'data> {
+    /// The Billing Contract Year.
+    pub contractyear: rust_decimal::Decimal,
+    /// The Billing WeekNo
+    pub weekno: rust_decimal::Decimal,
+    /// The Billing RunNo
+    pub billrunno: rust_decimal::Decimal,
+    /// The Contract Participant Id.
+    pub participantid: core::ops::Range<usize>,
+    /// The NMAS System Security Contract ID.
+    pub contractid: core::ops::Range<usize>,
+    /// The NMAS System Security Service Types (INERTIA, SYSTEM STRENGTH, TYPE1, TYPE2 and so on).
+    pub servicetype: core::ops::Range<usize>,
+    /// The Payment Type associated with the Service like Availability, Usage, Enablement, Energy Revenue, Test, ADHOC and so on.
+    pub paymenttype: core::ops::Range<usize>,
+    /// Region Identifier
+    pub regionid: core::ops::Range<usize>,
+    /// The NMAS Contract Manual Payment for the Payment Type.
+    pub paymentamount: Option<rust_decimal::Decimal>,
+    /// The Recovery Start Date and Time for the Payment Calculation.
+    pub recoverystartdatetime: Option<chrono::NaiveDateTime>,
+    /// The Recovery End Date and Time for the Payment Calculation.
+    pub recoveryenddatetime: Option<chrono::NaiveDateTime>,
+    /// Recovery Amount on ACE portion ($).
+    pub recoveryamount_ace: Option<rust_decimal::Decimal>,
+    /// Recovery Amount on ASOE portion ($).
+    pub recoveryamount_asoe: Option<rust_decimal::Decimal>,
+    /// Participant Consumed Energy in MWh.
+    pub participant_ace_mwh: Option<rust_decimal::Decimal>,
+    /// Participant Sent Out Energy in MWh.
+    pub participant_asoe_mwh: Option<rust_decimal::Decimal>,
+    /// Region Consumed Energy in MWh.
+    pub region_ace_mwh: Option<rust_decimal::Decimal>,
+    /// Region Sent Out Energy in MWh.
+    pub region_asoe_mwh: Option<rust_decimal::Decimal>,
+    /// The last changed date time of the record.
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> BillingNmasManualRecovery1Row<'data> {
+    pub fn participantid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.participantid.clone())
+    }
+    pub fn contractid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.contractid.clone())
+    }
+    pub fn servicetype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.servicetype.clone())
+    }
+    pub fn paymenttype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.paymenttype.clone())
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+}
+impl mmsdm_core::GetTable for BillingNmasManualRecovery1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "BILLING";
+    const TABLE_NAME: &'static str = "NMAS_MANUAL_RECOVERY";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasManualRecovery1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTRACTYEAR",
+        "WEEKNO",
+        "BILLRUNNO",
+        "PARTICIPANTID",
+        "CONTRACTID",
+        "SERVICETYPE",
+        "PAYMENTTYPE",
+        "REGIONID",
+        "PAYMENTAMOUNT",
+        "RECOVERYSTARTDATETIME",
+        "RECOVERYENDDATETIME",
+        "RECOVERYAMOUNT_ACE",
+        "RECOVERYAMOUNT_ASOE",
+        "PARTICIPANT_ACE_MWH",
+        "PARTICIPANT_ASOE_MWH",
+        "REGION_ACE_MWH",
+        "REGION_ASOE_MWH",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = BillingNmasManualRecovery1Row<'row>;
+    type FieldMapping = BillingNmasManualRecovery1Mapping;
+    type PrimaryKey = BillingNmasManualRecovery1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(BillingNmasManualRecovery1Row {
+            contractyear: row
+                .get_custom_parsed_at_idx(
+                    "contractyear",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            weekno: row
+                .get_custom_parsed_at_idx(
+                    "weekno",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            billrunno: row
+                .get_custom_parsed_at_idx(
+                    "billrunno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participantid: row.get_range("participantid", field_mapping.0[3])?,
+            contractid: row.get_range("contractid", field_mapping.0[4])?,
+            servicetype: row.get_range("servicetype", field_mapping.0[5])?,
+            paymenttype: row.get_range("paymenttype", field_mapping.0[6])?,
+            regionid: row.get_range("regionid", field_mapping.0[7])?,
+            paymentamount: row
+                .get_opt_custom_parsed_at_idx(
+                    "paymentamount",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            recoverystartdatetime: row
+                .get_opt_custom_parsed_at_idx(
+                    "recoverystartdatetime",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            recoveryenddatetime: row
+                .get_opt_custom_parsed_at_idx(
+                    "recoveryenddatetime",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            recoveryamount_ace: row
+                .get_opt_custom_parsed_at_idx(
+                    "recoveryamount_ace",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            recoveryamount_asoe: row
+                .get_opt_custom_parsed_at_idx(
+                    "recoveryamount_asoe",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participant_ace_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "participant_ace_mwh",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            participant_asoe_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "participant_asoe_mwh",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            region_ace_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "region_ace_mwh",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            region_asoe_mwh: row
+                .get_opt_custom_parsed_at_idx(
+                    "region_asoe_mwh",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[17],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(BillingNmasManualRecovery1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> BillingNmasManualRecovery1PrimaryKey {
+        BillingNmasManualRecovery1PrimaryKey {
+            billrunno: row.billrunno,
+            contractid: row.contractid().to_string(),
+            contractyear: row.contractyear,
+            participantid: row.participantid().to_string(),
+            paymenttype: row.paymenttype().to_string(),
+            regionid: row.regionid().to_string(),
+            servicetype: row.servicetype().to_string(),
+            weekno: row.weekno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("billing_nmas_manual_recovery_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        BillingNmasManualRecovery1Row {
+            contractyear: row.contractyear.clone(),
+            weekno: row.weekno.clone(),
+            billrunno: row.billrunno.clone(),
+            participantid: row.participantid.clone(),
+            contractid: row.contractid.clone(),
+            servicetype: row.servicetype.clone(),
+            paymenttype: row.paymenttype.clone(),
+            regionid: row.regionid.clone(),
+            paymentamount: row.paymentamount.clone(),
+            recoverystartdatetime: row.recoverystartdatetime.clone(),
+            recoveryenddatetime: row.recoveryenddatetime.clone(),
+            recoveryamount_ace: row.recoveryamount_ace.clone(),
+            recoveryamount_asoe: row.recoveryamount_asoe.clone(),
+            participant_ace_mwh: row.participant_ace_mwh.clone(),
+            participant_asoe_mwh: row.participant_asoe_mwh.clone(),
+            region_ace_mwh: row.region_ace_mwh.clone(),
+            region_asoe_mwh: row.region_asoe_mwh.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BillingNmasManualRecovery1PrimaryKey {
+    pub billrunno: rust_decimal::Decimal,
+    pub contractid: alloc::string::String,
+    pub contractyear: rust_decimal::Decimal,
+    pub participantid: alloc::string::String,
+    pub paymenttype: alloc::string::String,
+    pub regionid: alloc::string::String,
+    pub servicetype: alloc::string::String,
+    pub weekno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for BillingNmasManualRecovery1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingNmasManualRecovery1Row<'data> {
+    type Row<'other> = BillingNmasManualRecovery1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno && self.contractid() == row.contractid()
+            && self.contractyear == row.contractyear
+            && self.participantid() == row.participantid()
+            && self.paymenttype() == row.paymenttype()
+            && self.regionid() == row.regionid()
+            && self.servicetype() == row.servicetype() && self.weekno == row.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingNmasManualRecovery1Row<'data> {
+    type PrimaryKey = BillingNmasManualRecovery1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractid() == key.contractid
+            && self.contractyear == key.contractyear
+            && self.participantid() == key.participantid
+            && self.paymenttype() == key.paymenttype && self.regionid() == key.regionid
+            && self.servicetype() == key.servicetype && self.weekno == key.weekno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for BillingNmasManualRecovery1PrimaryKey {
+    type Row<'other> = BillingNmasManualRecovery1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.billrunno == row.billrunno && self.contractid == row.contractid()
+            && self.contractyear == row.contractyear
+            && self.participantid == row.participantid()
+            && self.paymenttype == row.paymenttype() && self.regionid == row.regionid()
+            && self.servicetype == row.servicetype() && self.weekno == row.weekno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for BillingNmasManualRecovery1PrimaryKey {
+    type PrimaryKey = BillingNmasManualRecovery1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.billrunno == key.billrunno && self.contractid == key.contractid
+            && self.contractyear == key.contractyear
+            && self.participantid == key.participantid
+            && self.paymenttype == key.paymenttype && self.regionid == key.regionid
+            && self.servicetype == key.servicetype && self.weekno == key.weekno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for BillingNmasManualRecovery1 {
+    type Builder = BillingNmasManualRecovery1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contractyear",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "weekno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "billrunno",
+                    arrow::datatypes::DataType::Decimal128(4, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "participantid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "contractid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "servicetype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "paymenttype",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "paymentamount",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "recoverystartdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "recoveryenddatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "recoveryamount_ace",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "recoveryamount_asoe",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "participant_ace_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "participant_asoe_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "region_ace_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "region_asoe_mwh",
+                    arrow::datatypes::DataType::Decimal128(18, 8),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        BillingNmasManualRecovery1Builder {
+            contractyear_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            weekno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            billrunno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
+            participantid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::builder::StringBuilder::new(),
+            servicetype_array: arrow::array::builder::StringBuilder::new(),
+            paymenttype_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::builder::StringBuilder::new(),
+            paymentamount_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            recoverystartdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            recoveryenddatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            recoveryamount_ace_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            recoveryamount_asoe_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            participant_ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            participant_asoe_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            region_ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            region_asoe_mwh_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .contractyear_array
+            .append_value({
+                let mut val = row.contractyear;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .weekno_array
+            .append_value({
+                let mut val = row.weekno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder
+            .billrunno_array
+            .append_value({
+                let mut val = row.billrunno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.participantid_array.append_value(row.participantid());
+        builder.contractid_array.append_value(row.contractid());
+        builder.servicetype_array.append_value(row.servicetype());
+        builder.paymenttype_array.append_value(row.paymenttype());
+        builder.regionid_array.append_value(row.regionid());
+        builder
+            .paymentamount_array
+            .append_option({
+                row.paymentamount
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .recoverystartdatetime_array
+            .append_option(
+                row.recoverystartdatetime.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder
+            .recoveryenddatetime_array
+            .append_option(
+                row.recoveryenddatetime.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder
+            .recoveryamount_ace_array
+            .append_option({
+                row.recoveryamount_ace
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .recoveryamount_asoe_array
+            .append_option({
+                row.recoveryamount_asoe
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .participant_ace_mwh_array
+            .append_option({
+                row.participant_ace_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .participant_asoe_mwh_array
+            .append_option({
+                row.participant_asoe_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .region_ace_mwh_array
+            .append_option({
+                row.region_ace_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .region_asoe_mwh_array
+            .append_option({
+                row.region_asoe_mwh
+                    .map(|mut val| {
+                        val.rescale(8);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contractyear_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.weekno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.billrunno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participantid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.contractid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.servicetype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.paymenttype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.paymentamount_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.recoverystartdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.recoveryenddatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.recoveryamount_ace_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.recoveryamount_asoe_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participant_ace_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.participant_asoe_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.region_ace_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.region_asoe_mwh_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct BillingNmasManualRecovery1Builder {
+    contractyear_array: arrow::array::builder::Decimal128Builder,
+    weekno_array: arrow::array::builder::Decimal128Builder,
+    billrunno_array: arrow::array::builder::Decimal128Builder,
+    participantid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::builder::StringBuilder,
+    servicetype_array: arrow::array::builder::StringBuilder,
+    paymenttype_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::builder::StringBuilder,
+    paymentamount_array: arrow::array::builder::Decimal128Builder,
+    recoverystartdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    recoveryenddatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    recoveryamount_ace_array: arrow::array::builder::Decimal128Builder,
+    recoveryamount_asoe_array: arrow::array::builder::Decimal128Builder,
+    participant_ace_mwh_array: arrow::array::builder::Decimal128Builder,
+    participant_asoe_mwh_array: arrow::array::builder::Decimal128Builder,
+    region_ace_mwh_array: arrow::array::builder::Decimal128Builder,
+    region_asoe_mwh_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct BillingNmasTstPayments1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -10582,7 +11974,13 @@ impl mmsdm_core::GetTable for BillingNmasTstPayments1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_TST_PAYMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstPayments1Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -10998,8 +12396,34 @@ impl mmsdm_core::GetTable for BillingNmasTstRecovery2 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_TST_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstRecovery2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29, 30, 31,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -11925,7 +13349,16 @@ impl mmsdm_core::GetTable for BillingNmasTstRecvryRbf1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_TST_RECVRY_RBF";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstRecvryRbf1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -12356,7 +13789,12 @@ impl mmsdm_core::GetTable for BillingNmasTstRecvryTrk1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_TST_RECVRY_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstRecvryTrk1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -12762,7 +14200,15 @@ impl mmsdm_core::GetTable for BillingSecdepInterestPay1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SECDEP_INTEREST_PAY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSecdepInterestPay1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -13166,7 +14612,12 @@ impl mmsdm_core::GetTable for BillingSecdepInterestRate1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SECDEP_INTEREST_RATE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSecdepInterestRate1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -13518,7 +14969,11 @@ impl mmsdm_core::GetTable for BillingSecdepositApplication1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SECDEPOSIT_APPLICATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSecdepositApplication1Mapping([
-        4, 5, 6, 7, 8,
+        4,
+        5,
+        6,
+        7,
+        8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -13862,7 +15317,14 @@ impl mmsdm_core::GetTable for BillingSubstDemand1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SUBST_DEMAND";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSubstDemand1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -14240,7 +15702,11 @@ impl mmsdm_core::GetTable for BillingSubstRunVersion1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SUBST_RUN_VERSION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSubstRunVersion1Mapping([
-        4, 5, 6, 7, 8,
+        4,
+        5,
+        6,
+        7,
+        8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -14579,7 +16045,12 @@ impl mmsdm_core::GetTable for BillingWdr1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "WDR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingWdr1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -14948,7 +16419,16 @@ impl mmsdm_core::GetTable for BillingWdrDetail1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "WDR_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingWdrDetail1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -15436,8 +16916,32 @@ impl mmsdm_core::GetTable for BillingAspayments7 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ASPAYMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingAspayments7Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -16473,11 +17977,94 @@ impl mmsdm_core::GetTable for BillingAsrecovery10 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ASRECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingAsrecovery10Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
-        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
-        66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85,
-        86, 87, 88, 89, 90, 91,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -19033,7 +20620,12 @@ impl mmsdm_core::GetTable for BillingDaytrk5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DAYTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDaytrk5Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -19407,7 +20999,16 @@ impl mmsdm_core::GetTable for BillingFees5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "FEES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFees5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -19886,7 +21487,17 @@ impl mmsdm_core::GetTable for BillingFinancialadjustments5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "FINANCIALADJUSTMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFinancialadjustments5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -20350,7 +21961,16 @@ impl mmsdm_core::GetTable for BillingInterresidues5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "INTERRESIDUES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingInterresidues5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "ALLOCATION",
@@ -20797,7 +22417,15 @@ impl mmsdm_core::GetTable for BillingIntraresidues5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "INTRARESIDUES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIntraresidues5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "ALLOCATION",
@@ -21242,7 +22870,18 @@ impl mmsdm_core::GetTable for BillingIraucsurplus5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRAUCSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIraucsurplus5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -21758,7 +23397,22 @@ impl mmsdm_core::GetTable for BillingIraucsurplussum7 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRAUCSURPLUSSUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIraucsurplussum7Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -22388,7 +24042,18 @@ impl mmsdm_core::GetTable for BillingIrnspsurplus5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRNSPSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIrnspsurplus5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -22900,7 +24565,20 @@ impl mmsdm_core::GetTable for BillingIrnspsurplussum6 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRNSPSURPLUSSUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIrnspsurplussum6Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -23478,7 +25156,19 @@ impl mmsdm_core::GetTable for BillingIrpartsurplus5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRPARTSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIrpartsurplus5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -24021,7 +25711,22 @@ impl mmsdm_core::GetTable for BillingIrpartsurplussum7 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRPARTSURPLUSSUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIrpartsurplussum7Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -24648,7 +26353,22 @@ impl mmsdm_core::GetTable for BillingPrioradjustments5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "PRIORADJUSTMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingPrioradjustments5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -25281,7 +27001,13 @@ impl mmsdm_core::GetTable for BillingRealloc5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRealloc5Mapping([
-        4, 5, 6, 7, 8, 9, 10,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -25660,7 +27386,14 @@ impl mmsdm_core::GetTable for BillingReallocDetail5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REALLOC_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingReallocDetail5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -26055,7 +27788,16 @@ impl mmsdm_core::GetTable for BillingRegionexports5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REGIONEXPORTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRegionexports5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -26524,7 +28266,24 @@ impl mmsdm_core::GetTable for BillingRegionfigures6 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REGIONFIGURES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRegionfigures6Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -27205,7 +28964,16 @@ impl mmsdm_core::GetTable for BillingRegionimports5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REGIONIMPORTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRegionimports5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -27738,7 +29506,22 @@ impl mmsdm_core::GetTable for BillingRuntrk5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "RUNTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRuntrk5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -28300,7 +30083,14 @@ impl mmsdm_core::GetTable for BillingReservetraderpayment1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "RESERVETRADERPAYMENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingReservetraderpayment1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -28712,7 +30502,22 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery3 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "RESERVETRADERRECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingReservetraderrecovery3Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",

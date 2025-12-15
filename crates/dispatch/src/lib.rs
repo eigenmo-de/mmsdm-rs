@@ -75,7 +75,12 @@ impl mmsdm_core::GetTable for DispatchocdConstraintrelaxation2 {
     const DATA_SET_NAME: &'static str = "DISPATCHOCD";
     const TABLE_NAME: &'static str = "CONSTRAINTRELAXATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchocdConstraintrelaxation2Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -432,7 +437,15 @@ impl mmsdm_core::GetTable for DispatchocdConstraintFcasOcd1 {
     const DATA_SET_NAME: &'static str = "DISPATCHOCD";
     const TABLE_NAME: &'static str = "CONSTRAINT_FCAS_OCD";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchocdConstraintFcasOcd1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -856,7 +869,22 @@ impl mmsdm_core::GetTable for DispatchFcasReqConstraint1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "FCAS_REQ_CONSTRAINT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchFcasReqConstraint1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1431,7 +1459,9 @@ impl mmsdm_core::GetTable for DispatchFcasReqRun1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "FCAS_REQ_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchFcasReqRun1Mapping([
-        4, 5, 6,
+        4,
+        5,
+        6,
     ]);
     const COLUMNS: &'static [&'static str] = &["RUN_DATETIME", "RUNNO", "LASTCHANGED"];
     type Row<'row> = DispatchFcasReqRun1Row<'row>;
@@ -1701,7 +1731,18 @@ impl mmsdm_core::GetTable for DispatchInterconnection1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "INTERCONNECTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchInterconnection1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -2187,7 +2228,10 @@ impl mmsdm_core::GetTable for DispatchLocalPrice1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "LOCAL_PRICE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchLocalPrice1Mapping([
-        4, 5, 6, 7,
+        4,
+        5,
+        6,
+        7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -2483,7 +2527,14 @@ impl mmsdm_core::GetTable for DispatchMnspbidtrk1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "MNSPBIDTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchMnspbidtrk1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -2860,7 +2911,11 @@ impl mmsdm_core::GetTable for DispatchMrScheduleTrk1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "MR_SCHEDULE_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchMrScheduleTrk1Mapping([
-        4, 5, 6, 7, 8,
+        4,
+        5,
+        6,
+        7,
+        8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -3129,7 +3184,7 @@ pub struct PriceloadPriceRevision1Mapping([usize; 9]);
 /// * Data Version: 1
 ///
 /// # Description
-/// DISPATCH_UNIT_CONFORMANCE data is confidential.SourceDISPATCH_UNIT_CONFORMANCE shows data for every 5 minutes for all scheduled unitsVolumeRows per day: 288 per scheduled unit
+///
 ///
 /// # Notes
 /// * (Visibility)  Public
@@ -3177,7 +3232,15 @@ impl mmsdm_core::GetTable for PriceloadPriceRevision1 {
     const DATA_SET_NAME: &'static str = "PRICELOAD";
     const TABLE_NAME: &'static str = "PRICE_REVISION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PriceloadPriceRevision1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -3515,6 +3578,346 @@ pub struct PriceloadPriceRevision1Builder {
     rrp_old_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
+pub struct DispatchRooftopPvFcstTrk1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &DispatchRooftopPvFcstTrk1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl DispatchRooftopPvFcstTrk1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct DispatchRooftopPvFcstTrk1Mapping([usize; 6]);
+/// # Summary
+///
+/// ## DISPATCH_ROOFTOP_PV_FCST_TRK
+///
+/// Uniquely tracks which Rooftop PV forecast run (from ROOFTOP_PV_FCST_P5_RUN) was used for the Area in which Dispatch run.
+///
+/// * Data Set Name: Dispatch
+/// * File Name: Rooftop Pv Fcst Trk
+/// * Data Version: 1
+///
+/// # Description
+/// DISPATCH_UNIT_CONFORMANCE data is confidential.SourceDISPATCH_UNIT_CONFORMANCE shows data for every 5 minutes for all scheduled unitsVolumeRows per day: 288 per scheduled unit
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * AREAID
+/// * RUN_DATETIME
+#[derive(Debug, PartialEq, Eq)]
+pub struct DispatchRooftopPvFcstTrk1Row<'data> {
+    /// Datetime (interval ending) of the Dispatch run.
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Area identifier aligning with the load forecasting areas, tracks to ROOFTOP_PV_FCST_P5_RUN.AREAID.
+    pub areaid: core::ops::Range<usize>,
+    /// Datetime (interval ending) when this forecast run is valid. It aligns with run_datetime, unless a forecast run is missed, in this case the previous run is used. Tracks to ROOFTOP_PV_FCST_P5_RUN.FORECAST_RUN_DATETIME.
+    pub forecast_run_datetime: Option<chrono::NaiveDateTime>,
+    /// Provider identifier of the forecast run used for the DS run, tracks to ROOFTOP_PV_FCST_P5_RUN.PROVIDERID.
+    pub providerid: core::ops::Range<usize>,
+    /// Priority of the forecast run used for the DS run, tracks to ROOFTOP_PV_FCST_P5_RUN.FORECAST_PRIORITY.
+    pub forecast_priority: Option<rust_decimal::Decimal>,
+    /// Submission datetime of the forecast run used for the DS run, tracks to ROOFTOP_PV_FCST_P5_RUN.OFFERDATETIME.
+    pub offerdatetime: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> DispatchRooftopPvFcstTrk1Row<'data> {
+    pub fn areaid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.areaid.clone())
+    }
+    pub fn providerid(&self) -> Option<&str> {
+        if self.providerid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.providerid.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for DispatchRooftopPvFcstTrk1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "DISPATCH";
+    const TABLE_NAME: &'static str = "ROOFTOP_PV_FCST_TRK";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchRooftopPvFcstTrk1Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "AREAID",
+        "FORECAST_RUN_DATETIME",
+        "PROVIDERID",
+        "FORECAST_PRIORITY",
+        "OFFERDATETIME",
+    ];
+    type Row<'row> = DispatchRooftopPvFcstTrk1Row<'row>;
+    type FieldMapping = DispatchRooftopPvFcstTrk1Mapping;
+    type PrimaryKey = DispatchRooftopPvFcstTrk1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(DispatchRooftopPvFcstTrk1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            areaid: row.get_range("areaid", field_mapping.0[1])?,
+            forecast_run_datetime: row
+                .get_opt_custom_parsed_at_idx(
+                    "forecast_run_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            providerid: row.get_opt_range("providerid", field_mapping.0[3])?,
+            forecast_priority: row
+                .get_opt_custom_parsed_at_idx(
+                    "forecast_priority",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            offerdatetime: row
+                .get_opt_custom_parsed_at_idx(
+                    "offerdatetime",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(DispatchRooftopPvFcstTrk1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> DispatchRooftopPvFcstTrk1PrimaryKey {
+        DispatchRooftopPvFcstTrk1PrimaryKey {
+            areaid: row.areaid().to_string(),
+            run_datetime: row.run_datetime,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("dispatch_rooftop_pv_fcst_trk_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        DispatchRooftopPvFcstTrk1Row {
+            run_datetime: row.run_datetime.clone(),
+            areaid: row.areaid.clone(),
+            forecast_run_datetime: row.forecast_run_datetime.clone(),
+            providerid: row.providerid.clone(),
+            forecast_priority: row.forecast_priority.clone(),
+            offerdatetime: row.offerdatetime.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DispatchRooftopPvFcstTrk1PrimaryKey {
+    pub areaid: alloc::string::String,
+    pub run_datetime: chrono::NaiveDateTime,
+}
+impl mmsdm_core::PrimaryKey for DispatchRooftopPvFcstTrk1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DispatchRooftopPvFcstTrk1Row<'data> {
+    type Row<'other> = DispatchRooftopPvFcstTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid() == row.areaid() && self.run_datetime == row.run_datetime
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DispatchRooftopPvFcstTrk1Row<'data> {
+    type PrimaryKey = DispatchRooftopPvFcstTrk1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid() == key.areaid && self.run_datetime == key.run_datetime
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for DispatchRooftopPvFcstTrk1PrimaryKey {
+    type Row<'other> = DispatchRooftopPvFcstTrk1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.areaid == row.areaid() && self.run_datetime == row.run_datetime
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for DispatchRooftopPvFcstTrk1PrimaryKey {
+    type PrimaryKey = DispatchRooftopPvFcstTrk1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.areaid == key.areaid && self.run_datetime == key.run_datetime
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for DispatchRooftopPvFcstTrk1 {
+    type Builder = DispatchRooftopPvFcstTrk1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "areaid",
+                    arrow::datatypes::DataType::Utf8,
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "providerid",
+                    arrow::datatypes::DataType::Utf8,
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "forecast_priority",
+                    arrow::datatypes::DataType::Decimal128(10, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        DispatchRooftopPvFcstTrk1Builder {
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            areaid_array: arrow::array::builder::StringBuilder::new(),
+            forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            providerid_array: arrow::array::builder::StringBuilder::new(),
+            forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
+            offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder.areaid_array.append_value(row.areaid());
+        builder
+            .forecast_run_datetime_array
+            .append_option(
+                row.forecast_run_datetime.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder.providerid_array.append_option(row.providerid());
+        builder
+            .forecast_priority_array
+            .append_option({
+                row.forecast_priority
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .offerdatetime_array
+            .append_option(
+                row.offerdatetime.map(|val| val.and_utc().timestamp_millis()),
+            );
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.areaid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.providerid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.forecast_priority_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct DispatchRooftopPvFcstTrk1Builder {
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    areaid_array: arrow::array::builder::StringBuilder,
+    forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    providerid_array: arrow::array::builder::StringBuilder,
+    forecast_priority_array: arrow::array::builder::Decimal128Builder,
+    offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct DispatchUnitConformance2 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -3661,7 +4064,27 @@ impl mmsdm_core::GetTable for DispatchUnitConformance2 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "UNIT_CONFORMANCE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchUnitConformance2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -4319,7 +4742,10 @@ impl mmsdm_core::GetTable for DispatchUnitScada1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "UNIT_SCADA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchUnitScada1Mapping([
-        4, 5, 6, 7,
+        4,
+        5,
+        6,
+        7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -4597,7 +5023,9 @@ impl mmsdm_core::GetTable for DispatchBlockedConstraints1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "BLOCKED_CONSTRAINTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchBlockedConstraints1Mapping([
-        4, 5, 6,
+        4,
+        5,
+        6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -4918,8 +5346,30 @@ impl mmsdm_core::GetTable for DispatchCaseSolution2 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "CASE_SOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchCaseSolution2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -5759,7 +6209,19 @@ impl mmsdm_core::GetTable for DispatchConstraint5 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "CONSTRAINT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchConstraint5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -6337,7 +6799,28 @@ impl mmsdm_core::GetTable for DispatchInterconnectorres3 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "INTERCONNECTORRES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchInterconnectorres3Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -7020,15 +7503,15 @@ pub struct DispatchInterconnectorres3Builder {
     local_price_adjustment_import_array: arrow::array::builder::Decimal128Builder,
     locally_constrained_import_array: arrow::array::builder::Decimal128Builder,
 }
-pub struct DispatchUnitSolution5 {
+pub struct DispatchUnitSolution6 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
-            &DispatchUnitSolution5Row<'_>,
+            &DispatchUnitSolution6Row<'_>,
         ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
-impl DispatchUnitSolution5 {
+impl DispatchUnitSolution6 {
     pub fn new(
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
@@ -7041,7 +7524,7 @@ impl DispatchUnitSolution5 {
         }
     }
 }
-pub struct DispatchUnitSolution5Mapping([usize; 68]);
+pub struct DispatchUnitSolution6Mapping([usize; 69]);
 /// # Summary
 ///
 /// ## DISPATCHLOAD
@@ -7050,7 +7533,7 @@ pub struct DispatchUnitSolution5Mapping([usize; 68]);
 ///
 /// * Data Set Name: Dispatch
 /// * File Name: Unit Solution
-/// * Data Version: 5
+/// * Data Version: 6
 ///
 /// # Description
 /// DISPATCHLOAD data is confidential for the current day, showing own details for participant and becomes public after close of business yesterday, and is available to all participants.SourceDISPATCHLOAD shows data for every 5 minutes for all units, even zero targets.VolumeExpect 40-50,000 records per day. All units are repeated, even zero targets.Note** A flag exists for each ancillary service type such that a unit trapped or stranded in one or more service type can be immediately identified. The flag is defined using the low 3 bits as follows:Flag NameBitDescriptionEnabled0The unit is enabled to provide this ancillary service type.Trapped1The unit is enabled to provide this ancillary service type, however the profile for this service type is causing the unit to be trapped in the energy market.Stranded2The unit is bid available to provide this ancillary service type, however, the unit is operating in the energy market outside of the profile for this service type and is stranded from providing this service.Interpretation of the bit-flags as a number gives the following possibilities (i.e. other combinations are not possible):Numeric ValueBit (2,1,0)Meaning0000Not stranded, not trapped, not enabled.1001Not stranded, not trapped, is enabled.3011Not stranded, is trapped, is enabled.4100Is stranded, not trapped, not enabled.For example, testing for availability can be done by checking for odd (=available) or even (=unavailable) number (e.g. mod(flag,2) results in 0 for unavailable and 1 for available).*** "Actual FCAS availability"is determined in a post-processing step based on the energy target (TotalCleared) and bid FCAS trapezium for that interval. However, if the unit is outside the bid FCAS trapezium at the start of the interval (InitialMW), the "Actual FCAS availability"is set to zero. For regulation services, the trapezium is the most restrictive of the bid/SCADA trapezium values.
@@ -7065,7 +7548,7 @@ pub struct DispatchUnitSolution5Mapping([usize; 68]);
 /// * RUNNO
 /// * SETTLEMENTDATE
 #[derive(Debug, PartialEq, Eq)]
-pub struct DispatchUnitSolution5Row<'data> {
+pub struct DispatchUnitSolution6Row<'data> {
     /// Market date and time starting at 04:05
     pub settlementdate: chrono::NaiveDateTime,
     /// Dispatch run no; always 1
@@ -7201,9 +7684,11 @@ pub struct DispatchUnitSolution5Row<'data> {
     pub energy_storage: Option<rust_decimal::Decimal>,
     /// BDU only. Load side availability (BidOfferPeriod.MAXAVAIL where DIRECTION = LOAD)
     pub min_availability: Option<rust_decimal::Decimal>,
+    /// Cap on the number of turbines or inverters at a DUID.
+    pub element_cap: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> DispatchUnitSolution5Row<'data> {
+impl<'data> DispatchUnitSolution6Row<'data> {
     pub fn duid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
     }
@@ -7220,15 +7705,80 @@ impl<'data> DispatchUnitSolution5Row<'data> {
         }
     }
 }
-impl mmsdm_core::GetTable for DispatchUnitSolution5 {
-    const VERSION: i32 = 5;
+impl mmsdm_core::GetTable for DispatchUnitSolution6 {
+    const VERSION: i32 = 6;
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "UNIT_SOLUTION";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchUnitSolution5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
-        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
-        66, 67, 68, 69, 70, 71,
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchUnitSolution6Mapping([
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -7299,15 +7849,16 @@ impl mmsdm_core::GetTable for DispatchUnitSolution5 {
         "INITIAL_ENERGY_STORAGE",
         "ENERGY_STORAGE",
         "MIN_AVAILABILITY",
+        "ELEMENT_CAP",
     ];
-    type Row<'row> = DispatchUnitSolution5Row<'row>;
-    type FieldMapping = DispatchUnitSolution5Mapping;
-    type PrimaryKey = DispatchUnitSolution5PrimaryKey;
+    type Row<'row> = DispatchUnitSolution6Row<'row>;
+    type FieldMapping = DispatchUnitSolution6Mapping;
+    type PrimaryKey = DispatchUnitSolution6PrimaryKey;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(DispatchUnitSolution5Row {
+        Ok(DispatchUnitSolution6Row {
             settlementdate: row
                 .get_custom_parsed_at_idx(
                     "settlementdate",
@@ -7703,6 +8254,12 @@ impl mmsdm_core::GetTable for DispatchUnitSolution5 {
                     field_mapping.0[67],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            element_cap: row
+                .get_opt_custom_parsed_at_idx(
+                    "element_cap",
+                    field_mapping.0[68],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -7734,14 +8291,14 @@ impl mmsdm_core::GetTable for DispatchUnitSolution5 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(DispatchUnitSolution5Mapping(base_mapping))
+        Ok(DispatchUnitSolution6Mapping(base_mapping))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> DispatchUnitSolution5PrimaryKey {
-        DispatchUnitSolution5PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> DispatchUnitSolution6PrimaryKey {
+        DispatchUnitSolution6PrimaryKey {
             duid: row.duid().to_string(),
             intervention: row.intervention,
             runno: row.runno,
@@ -7752,13 +8309,13 @@ impl mmsdm_core::GetTable for DispatchUnitSolution5 {
         (self.extract_row_partition)(row)
     }
     fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("dispatch_unit_solution_v5_{}", self.partition_value(row))
+        alloc::format!("dispatch_unit_solution_v6_{}", self.partition_value(row))
     }
     fn partition_key(&self) -> mmsdm_core::PartitionKey {
         self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        DispatchUnitSolution5Row {
+        DispatchUnitSolution6Row {
             settlementdate: row.settlementdate.clone(),
             runno: row.runno.clone(),
             duid: row.duid.clone(),
@@ -7827,49 +8384,50 @@ impl mmsdm_core::GetTable for DispatchUnitSolution5 {
             initial_energy_storage: row.initial_energy_storage.clone(),
             energy_storage: row.energy_storage.clone(),
             min_availability: row.min_availability.clone(),
+            element_cap: row.element_cap.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct DispatchUnitSolution5PrimaryKey {
+pub struct DispatchUnitSolution6PrimaryKey {
     pub duid: alloc::string::String,
     pub intervention: rust_decimal::Decimal,
     pub runno: rust_decimal::Decimal,
     pub settlementdate: chrono::NaiveDateTime,
 }
-impl mmsdm_core::PrimaryKey for DispatchUnitSolution5PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for DispatchUnitSolution5Row<'data> {
-    type Row<'other> = DispatchUnitSolution5Row<'other>;
+impl mmsdm_core::PrimaryKey for DispatchUnitSolution6PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DispatchUnitSolution6Row<'data> {
+    type Row<'other> = DispatchUnitSolution6Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.duid() == row.duid() && self.intervention == row.intervention
             && self.runno == row.runno && self.settlementdate == row.settlementdate
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for DispatchUnitSolution5Row<'data> {
-    type PrimaryKey = DispatchUnitSolution5PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DispatchUnitSolution6Row<'data> {
+    type PrimaryKey = DispatchUnitSolution6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid() == key.duid && self.intervention == key.intervention
             && self.runno == key.runno && self.settlementdate == key.settlementdate
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for DispatchUnitSolution5PrimaryKey {
-    type Row<'other> = DispatchUnitSolution5Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for DispatchUnitSolution6PrimaryKey {
+    type Row<'other> = DispatchUnitSolution6Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.duid == row.duid() && self.intervention == row.intervention
             && self.runno == row.runno && self.settlementdate == row.settlementdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for DispatchUnitSolution5PrimaryKey {
-    type PrimaryKey = DispatchUnitSolution5PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for DispatchUnitSolution6PrimaryKey {
+    type PrimaryKey = DispatchUnitSolution6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.duid == key.duid && self.intervention == key.intervention
             && self.runno == key.runno && self.settlementdate == key.settlementdate
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for DispatchUnitSolution5 {
-    type Builder = DispatchUnitSolution5Builder;
+impl mmsdm_core::ArrowSchema for DispatchUnitSolution6 {
+    type Builder = DispatchUnitSolution6Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -8222,11 +8780,16 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution5 {
                     arrow::datatypes::DataType::Decimal128(15, 5),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "element_cap",
+                    arrow::datatypes::DataType::Decimal128(5, 0),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        DispatchUnitSolution5Builder {
+        DispatchUnitSolution6Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -8358,6 +8921,8 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             min_availability_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            element_cap_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -8935,6 +9500,15 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution5 {
                         val.mantissa()
                     })
             });
+        builder
+            .element_cap_array
+            .append_option({
+                row.element_cap
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -9088,13 +9662,15 @@ impl mmsdm_core::ArrowSchema for DispatchUnitSolution5 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.min_availability_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.element_cap_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct DispatchUnitSolution5Builder {
+pub struct DispatchUnitSolution6Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     duid_array: arrow::array::builder::StringBuilder,
@@ -9163,6 +9739,7 @@ pub struct DispatchUnitSolution5Builder {
     initial_energy_storage_array: arrow::array::builder::Decimal128Builder,
     energy_storage_array: arrow::array::builder::Decimal128Builder,
     min_availability_array: arrow::array::builder::Decimal128Builder,
+    element_cap_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct DispatchOffertrk1 {
     extract_row_partition: alloc::boxed::Box<
@@ -9236,7 +9813,12 @@ impl mmsdm_core::GetTable for DispatchOffertrk1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "OFFERTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchOffertrk1Mapping([
-        4, 5, 6, 7, 8, 9,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -9694,10 +10276,72 @@ impl mmsdm_core::GetTable for DispatchPrice5 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "PRICE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchPrice5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
-        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
-        66, 67, 68, 69,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -11870,13 +12514,133 @@ impl mmsdm_core::GetTable for DispatchRegionsum9 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "REGIONSUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchRegionsum9Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
-        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
-        66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85,
-        86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104,
-        105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
-        121, 122, 123, 124, 125, 126, 127, 128, 129, 130,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -15508,7 +16272,11 @@ impl mmsdm_core::GetTable for DispatchIntermittentForecastTrk1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "INTERMITTENT_FORECAST_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchIntermittentForecastTrk1Mapping([
-        4, 5, 6, 7, 8,
+        4,
+        5,
+        6,
+        7,
+        8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -15843,7 +16611,21 @@ impl mmsdm_core::GetTable for DispatchNegativeResidue1 {
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "NEGATIVE_RESIDUE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchNegativeResidue1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
