@@ -3,7 +3,6 @@ use std::env;
 
 use anyhow::Context;
 use log::info;
-use structopt::StructOpt;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 mod analyse;
