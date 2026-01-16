@@ -113,19 +113,7 @@ impl mmsdm_core::GetTable for AsofferOfferagcdata1 {
     const DATA_SET_NAME: &'static str = "ASOFFER";
     const TABLE_NAME: &'static str = "OFFERAGCDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = AsofferOfferagcdata1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -330,7 +318,10 @@ impl mmsdm_core::ArrowSchema for AsofferOfferagcdata1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -371,12 +362,18 @@ impl mmsdm_core::ArrowSchema for AsofferOfferagcdata1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "filename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -407,7 +404,9 @@ impl mmsdm_core::ArrowSchema for AsofferOfferagcdata1 {
     }
     fn new_builder() -> Self::Builder {
         AsofferOfferagcdata1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -418,8 +417,12 @@ impl mmsdm_core::ArrowSchema for AsofferOfferagcdata1 {
             lowerlimit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            filename_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            filename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -543,15 +546,21 @@ impl mmsdm_core::ArrowSchema for AsofferOfferagcdata1 {
 }
 #[cfg(feature = "arrow")]
 pub struct AsofferOfferagcdata1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     availability_array: arrow::array::builder::Decimal128Builder,
     upperlimit_array: arrow::array::builder::Decimal128Builder,
     lowerlimit_array: arrow::array::builder::Decimal128Builder,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
-    filename_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    filename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     agcup_array: arrow::array::builder::Decimal128Builder,
@@ -636,11 +645,7 @@ impl mmsdm_core::GetTable for AsofferOfferastrk1 {
     const DATA_SET_NAME: &'static str = "ASOFFER";
     const TABLE_NAME: &'static str = "OFFERASTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = AsofferOfferastrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -800,12 +805,18 @@ impl mmsdm_core::ArrowSchema for AsofferOfferastrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "filename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -824,8 +835,12 @@ impl mmsdm_core::ArrowSchema for AsofferOfferastrk1 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            filename_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            filename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -871,8 +886,12 @@ impl mmsdm_core::ArrowSchema for AsofferOfferastrk1 {
 pub struct AsofferOfferastrk1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    filename_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    filename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct AsofferOfferlsheddata1 {
@@ -975,15 +994,7 @@ impl mmsdm_core::GetTable for AsofferOfferlsheddata1 {
     const DATA_SET_NAME: &'static str = "ASOFFER";
     const TABLE_NAME: &'static str = "OFFERLSHEDDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = AsofferOfferlsheddata1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -1156,7 +1167,10 @@ impl mmsdm_core::ArrowSchema for AsofferOfferlsheddata1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1187,12 +1201,18 @@ impl mmsdm_core::ArrowSchema for AsofferOfferlsheddata1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "filename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1213,15 +1233,21 @@ impl mmsdm_core::ArrowSchema for AsofferOfferlsheddata1 {
     }
     fn new_builder() -> Self::Builder {
         AsofferOfferlsheddata1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             availableload_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            filename_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            filename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -1297,13 +1323,19 @@ impl mmsdm_core::ArrowSchema for AsofferOfferlsheddata1 {
 }
 #[cfg(feature = "arrow")]
 pub struct AsofferOfferlsheddata1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     availableload_array: arrow::array::builder::Decimal128Builder,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
-    filename_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    filename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
 }
@@ -1419,15 +1451,7 @@ impl mmsdm_core::GetTable for AsofferOfferrestartdata1 {
     const DATA_SET_NAME: &'static str = "ASOFFER";
     const TABLE_NAME: &'static str = "OFFERRESTARTDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = AsofferOfferrestartdata1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -1595,7 +1619,10 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrestartdata1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1613,7 +1640,10 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrestartdata1 {
                 ),
                 arrow::datatypes::Field::new(
                     "availability",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1626,12 +1656,18 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrestartdata1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "filename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1652,14 +1688,22 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrestartdata1 {
     }
     fn new_builder() -> Self::Builder {
         AsofferOfferrestartdata1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            availability_array: arrow::array::builder::StringBuilder::new(),
+            availability_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            filename_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            filename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -1725,13 +1769,21 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrestartdata1 {
 }
 #[cfg(feature = "arrow")]
 pub struct AsofferOfferrestartdata1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    availability_array: arrow::array::builder::StringBuilder,
+    availability_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
-    filename_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    filename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
 }
@@ -1839,17 +1891,7 @@ impl mmsdm_core::GetTable for AsofferOfferrpowerdata1 {
     const DATA_SET_NAME: &'static str = "ASOFFER";
     const TABLE_NAME: &'static str = "OFFERRPOWERDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = AsofferOfferrpowerdata1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -2038,7 +2080,10 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrpowerdata1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2084,12 +2129,18 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrpowerdata1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "filename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2105,7 +2156,9 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrpowerdata1 {
     }
     fn new_builder() -> Self::Builder {
         AsofferOfferrpowerdata1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -2118,8 +2171,12 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrpowerdata1 {
             mtg_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
-            filename_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            filename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -2215,7 +2272,9 @@ impl mmsdm_core::ArrowSchema for AsofferOfferrpowerdata1 {
 }
 #[cfg(feature = "arrow")]
 pub struct AsofferOfferrpowerdata1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
@@ -2223,7 +2282,11 @@ pub struct AsofferOfferrpowerdata1Builder {
     mta_array: arrow::array::builder::Decimal128Builder,
     mtg_array: arrow::array::builder::Decimal128Builder,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
-    filename_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    filename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

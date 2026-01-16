@@ -244,39 +244,8 @@ impl mmsdm_core::GetTable for OfferBiddayoffer3 {
     const DATA_SET_NAME: &'static str = "OFFER";
     const TABLE_NAME: &'static str = "BIDDAYOFFER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OfferBiddayoffer3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -605,12 +574,18 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer3 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -631,7 +606,10 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer3 {
                 ),
                 arrow::datatypes::Field::new(
                     "direction",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -641,7 +619,10 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer3 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -651,7 +632,10 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer3 {
                 ),
                 arrow::datatypes::Field::new(
                     "rebidexplanation",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -731,7 +715,10 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer3 {
                 ),
                 arrow::datatypes::Field::new(
                     "normalstatus",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -749,32 +736,50 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer3 {
                 ),
                 arrow::datatypes::Field::new(
                     "entrytype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "rebid_event_time",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "rebid_aware_time",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "rebid_decision_time",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "rebid_category",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "reference_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -782,17 +787,27 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer3 {
     }
     fn new_builder() -> Self::Builder {
         OfferBiddayoffer3Builder {
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            direction_array: arrow::array::builder::StringBuilder::new(),
+            direction_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             dailyenergyconstraint_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 6)),
-            rebidexplanation_array: arrow::array::builder::StringBuilder::new(),
+            rebidexplanation_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
             priceband1_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 2)),
             priceband2_array: arrow::array::builder::Decimal128Builder::new()
@@ -823,16 +838,30 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer3 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             t4_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
-            normalstatus_array: arrow::array::builder::StringBuilder::new(),
+            normalstatus_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             mr_factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            entrytype_array: arrow::array::builder::StringBuilder::new(),
-            rebid_event_time_array: arrow::array::builder::StringBuilder::new(),
-            rebid_aware_time_array: arrow::array::builder::StringBuilder::new(),
-            rebid_decision_time_array: arrow::array::builder::StringBuilder::new(),
-            rebid_category_array: arrow::array::builder::StringBuilder::new(),
-            reference_id_array: arrow::array::builder::StringBuilder::new(),
+            entrytype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            rebid_event_time_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            rebid_aware_time_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            rebid_decision_time_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            rebid_category_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            reference_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1097,15 +1126,21 @@ impl mmsdm_core::ArrowSchema for OfferBiddayoffer3 {
 }
 #[cfg(feature = "arrow")]
 pub struct OfferBiddayoffer3Builder {
-    duid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    direction_array: arrow::array::builder::StringBuilder,
+    direction_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     dailyenergyconstraint_array: arrow::array::builder::Decimal128Builder,
-    rebidexplanation_array: arrow::array::builder::StringBuilder,
+    rebidexplanation_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
     priceband1_array: arrow::array::builder::Decimal128Builder,
     priceband2_array: arrow::array::builder::Decimal128Builder,
     priceband3_array: arrow::array::builder::Decimal128Builder,
@@ -1121,15 +1156,29 @@ pub struct OfferBiddayoffer3Builder {
     t2_array: arrow::array::builder::Decimal128Builder,
     t3_array: arrow::array::builder::Decimal128Builder,
     t4_array: arrow::array::builder::Decimal128Builder,
-    normalstatus_array: arrow::array::builder::StringBuilder,
+    normalstatus_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     mr_factor_array: arrow::array::builder::Decimal128Builder,
-    entrytype_array: arrow::array::builder::StringBuilder,
-    rebid_event_time_array: arrow::array::builder::StringBuilder,
-    rebid_aware_time_array: arrow::array::builder::StringBuilder,
-    rebid_decision_time_array: arrow::array::builder::StringBuilder,
-    rebid_category_array: arrow::array::builder::StringBuilder,
-    reference_id_array: arrow::array::builder::StringBuilder,
+    entrytype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    rebid_event_time_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    rebid_aware_time_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    rebid_decision_time_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    rebid_category_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    reference_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct BidBiddayofferD3 {
     extract_row_partition: alloc::boxed::Box<
@@ -1301,35 +1350,8 @@ impl mmsdm_core::GetTable for BidBiddayofferD3 {
     const DATA_SET_NAME: &'static str = "BID";
     const TABLE_NAME: &'static str = "BIDDAYOFFER_D";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidBiddayofferD3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -1650,17 +1672,26 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD3 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "direction",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1686,7 +1717,10 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD3 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1696,7 +1730,10 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD3 {
                 ),
                 arrow::datatypes::Field::new(
                     "rebidexplanation",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1776,7 +1813,10 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD3 {
                 ),
                 arrow::datatypes::Field::new(
                     "normalstatus",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1794,7 +1834,10 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD3 {
                 ),
                 arrow::datatypes::Field::new(
                     "entrytype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -1803,17 +1846,27 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD3 {
     fn new_builder() -> Self::Builder {
         BidBiddayofferD3Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
-            direction_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            direction_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             dailyenergyconstraint_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 6)),
-            rebidexplanation_array: arrow::array::builder::StringBuilder::new(),
+            rebidexplanation_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
             priceband1_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 2)),
             priceband2_array: arrow::array::builder::Decimal128Builder::new()
@@ -1844,11 +1897,15 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD3 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             t4_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
-            normalstatus_array: arrow::array::builder::StringBuilder::new(),
+            normalstatus_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             mr_factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            entrytype_array: arrow::array::builder::StringBuilder::new(),
+            entrytype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2108,15 +2165,21 @@ impl mmsdm_core::ArrowSchema for BidBiddayofferD3 {
 #[cfg(feature = "arrow")]
 pub struct BidBiddayofferD3Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
-    direction_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    direction_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     dailyenergyconstraint_array: arrow::array::builder::Decimal128Builder,
-    rebidexplanation_array: arrow::array::builder::StringBuilder,
+    rebidexplanation_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
     priceband1_array: arrow::array::builder::Decimal128Builder,
     priceband2_array: arrow::array::builder::Decimal128Builder,
     priceband3_array: arrow::array::builder::Decimal128Builder,
@@ -2132,10 +2195,14 @@ pub struct BidBiddayofferD3Builder {
     t2_array: arrow::array::builder::Decimal128Builder,
     t3_array: arrow::array::builder::Decimal128Builder,
     t4_array: arrow::array::builder::Decimal128Builder,
-    normalstatus_array: arrow::array::builder::StringBuilder,
+    normalstatus_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     mr_factor_array: arrow::array::builder::Decimal128Builder,
-    entrytype_array: arrow::array::builder::StringBuilder,
+    entrytype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct BidsBidofferfiletrk1 {
     extract_row_partition: alloc::boxed::Box<
@@ -2291,18 +2358,7 @@ impl mmsdm_core::GetTable for BidsBidofferfiletrk1 {
     const DATA_SET_NAME: &'static str = "BIDS";
     const TABLE_NAME: &'static str = "BIDOFFERFILETRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidsBidofferfiletrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -2465,7 +2521,10 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2478,12 +2537,18 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "filename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "status",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2496,7 +2561,10 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2509,12 +2577,18 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "transaction_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "reference_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2527,12 +2601,18 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "comments",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "submission_method",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -2540,18 +2620,34 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
     }
     fn new_builder() -> Self::Builder {
         BidsBidofferfiletrk1Builder {
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            filename_array: arrow::array::builder::StringBuilder::new(),
-            status_array: arrow::array::builder::StringBuilder::new(),
+            filename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            status_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            transaction_id_array: arrow::array::builder::StringBuilder::new(),
-            reference_id_array: arrow::array::builder::StringBuilder::new(),
+            transaction_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            reference_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             submission_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            comments_array: arrow::array::builder::StringBuilder::new(),
-            submission_method_array: arrow::array::builder::StringBuilder::new(),
+            comments_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            submission_method_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2615,18 +2711,32 @@ impl mmsdm_core::ArrowSchema for BidsBidofferfiletrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct BidsBidofferfiletrk1Builder {
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    filename_array: arrow::array::builder::StringBuilder,
-    status_array: arrow::array::builder::StringBuilder,
+    filename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    status_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    transaction_id_array: arrow::array::builder::StringBuilder,
-    reference_id_array: arrow::array::builder::StringBuilder,
+    transaction_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    reference_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     submission_timestamp_array: arrow::array::builder::TimestampMillisecondBuilder,
-    comments_array: arrow::array::builder::StringBuilder,
-    submission_method_array: arrow::array::builder::StringBuilder,
+    comments_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
+    submission_method_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct BidsBidofferperiod3 {
     extract_row_partition: alloc::boxed::Box<
@@ -2750,34 +2860,8 @@ impl mmsdm_core::GetTable for BidsBidofferperiod3 {
     const DATA_SET_NAME: &'static str = "BIDS";
     const TABLE_NAME: &'static str = "BIDOFFERPERIOD";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidsBidofferperiod3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "DUID",
@@ -3100,12 +3184,18 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod3 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3126,7 +3216,10 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod3 {
                 ),
                 arrow::datatypes::Field::new(
                     "direction",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3249,11 +3342,17 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod3 {
     }
     fn new_builder() -> Self::Builder {
         BidsBidofferperiod3Builder {
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            direction_array: arrow::array::builder::StringBuilder::new(),
+            direction_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             maxavail_array: arrow::array::builder::Decimal128Builder::new()
@@ -3569,11 +3668,13 @@ impl mmsdm_core::ArrowSchema for BidsBidofferperiod3 {
 }
 #[cfg(feature = "arrow")]
 pub struct BidsBidofferperiod3Builder {
-    duid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    direction_array: arrow::array::builder::StringBuilder,
+    direction_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     maxavail_array: arrow::array::builder::Decimal128Builder,
     fixedload_array: arrow::array::builder::Decimal128Builder,
@@ -3727,38 +3828,8 @@ impl mmsdm_core::GetTable for BidBidperofferD4 {
     const DATA_SET_NAME: &'static str = "BID";
     const TABLE_NAME: &'static str = "BIDPEROFFER_D";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidBidperofferD4Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -4130,17 +4201,26 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD4 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "direction",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4301,9 +4381,15 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD4 {
     fn new_builder() -> Self::Builder {
         BidBidperofferD4Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
-            direction_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            direction_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -4674,9 +4760,11 @@ impl mmsdm_core::ArrowSchema for BidBidperofferD4 {
 #[cfg(feature = "arrow")]
 pub struct BidBidperofferD4Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
-    direction_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    direction_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     bidsettlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -4802,25 +4890,7 @@ impl mmsdm_core::GetTable for BidsMnspBidofferperiod2 {
     const DATA_SET_NAME: &'static str = "BIDS";
     const TABLE_NAME: &'static str = "MNSP_BIDOFFERPERIOD";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidsMnspBidofferperiod2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "LINKID",
@@ -5078,7 +5148,10 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod2 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "linkid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5182,7 +5255,9 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod2 {
     }
     fn new_builder() -> Self::Builder {
         BidsMnspBidofferperiod2Builder {
-            linkid_array: arrow::array::builder::StringBuilder::new(),
+            linkid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
@@ -5412,7 +5487,7 @@ impl mmsdm_core::ArrowSchema for BidsMnspBidofferperiod2 {
 }
 #[cfg(feature = "arrow")]
 pub struct BidsMnspBidofferperiod2Builder {
-    linkid_array: arrow::array::builder::StringBuilder,
+    linkid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     periodid_array: arrow::array::builder::Decimal128Builder,
@@ -5626,30 +5701,8 @@ impl mmsdm_core::GetTable for BidMnspDayoffer2 {
     const DATA_SET_NAME: &'static str = "BID";
     const TABLE_NAME: &'static str = "MNSP_DAYOFFER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BidMnspDayoffer2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -5946,22 +5999,34 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "linkid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "entrytype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "rebidexplanation",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -6029,27 +6094,42 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
                 ),
                 arrow::datatypes::Field::new(
                     "rebid_event_time",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "rebid_aware_time",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "rebid_decision_time",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "rebid_category",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "reference_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -6061,10 +6141,18 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
             offerdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            linkid_array: arrow::array::builder::StringBuilder::new(),
-            entrytype_array: arrow::array::builder::StringBuilder::new(),
-            rebidexplanation_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            linkid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            entrytype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            rebidexplanation_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
             priceband1_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(9, 2)),
             priceband2_array: arrow::array::builder::Decimal128Builder::new()
@@ -6088,11 +6176,21 @@ impl mmsdm_core::ArrowSchema for BidMnspDayoffer2 {
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             mr_factor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
-            rebid_event_time_array: arrow::array::builder::StringBuilder::new(),
-            rebid_aware_time_array: arrow::array::builder::StringBuilder::new(),
-            rebid_decision_time_array: arrow::array::builder::StringBuilder::new(),
-            rebid_category_array: arrow::array::builder::StringBuilder::new(),
-            reference_id_array: arrow::array::builder::StringBuilder::new(),
+            rebid_event_time_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            rebid_aware_time_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            rebid_decision_time_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            rebid_category_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            reference_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -6283,10 +6381,16 @@ pub struct BidMnspDayoffer2Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     offerdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    linkid_array: arrow::array::builder::StringBuilder,
-    entrytype_array: arrow::array::builder::StringBuilder,
-    rebidexplanation_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    linkid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    entrytype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    rebidexplanation_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
     priceband1_array: arrow::array::builder::Decimal128Builder,
     priceband2_array: arrow::array::builder::Decimal128Builder,
     priceband3_array: arrow::array::builder::Decimal128Builder,
@@ -6299,11 +6403,21 @@ pub struct BidMnspDayoffer2Builder {
     priceband10_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     mr_factor_array: arrow::array::builder::Decimal128Builder,
-    rebid_event_time_array: arrow::array::builder::StringBuilder,
-    rebid_aware_time_array: arrow::array::builder::StringBuilder,
-    rebid_decision_time_array: arrow::array::builder::StringBuilder,
-    rebid_category_array: arrow::array::builder::StringBuilder,
-    reference_id_array: arrow::array::builder::StringBuilder,
+    rebid_event_time_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    rebid_aware_time_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    rebid_decision_time_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    rebid_category_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    reference_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct OfferMtpasaOfferdata2 {
     extract_row_partition: alloc::boxed::Box<
@@ -6504,33 +6618,8 @@ impl mmsdm_core::GetTable for OfferMtpasaOfferdata2 {
     const DATA_SET_NAME: &'static str = "OFFER";
     const TABLE_NAME: &'static str = "MTPASA_OFFERDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OfferMtpasaOfferdata2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -6747,7 +6836,10 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6760,7 +6852,10 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
                 ),
                 arrow::datatypes::Field::new(
                     "unitid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6821,37 +6916,58 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
                 ),
                 arrow::datatypes::Field::new(
                     "unitstate1",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "unitstate2",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "unitstate3",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "unitstate4",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "unitstate5",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "unitstate6",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "unitstate7",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -6894,9 +7010,13 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
     }
     fn new_builder() -> Self::Builder {
         OfferMtpasaOfferdata2Builder {
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            unitid_array: arrow::array::builder::StringBuilder::new(),
+            unitid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             energy_array: arrow::array::builder::Int64Builder::new(),
             capacity1_array: arrow::array::builder::Int64Builder::new(),
@@ -6907,13 +7027,27 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
             capacity6_array: arrow::array::builder::Int64Builder::new(),
             capacity7_array: arrow::array::builder::Int64Builder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            unitstate1_array: arrow::array::builder::StringBuilder::new(),
-            unitstate2_array: arrow::array::builder::StringBuilder::new(),
-            unitstate3_array: arrow::array::builder::StringBuilder::new(),
-            unitstate4_array: arrow::array::builder::StringBuilder::new(),
-            unitstate5_array: arrow::array::builder::StringBuilder::new(),
-            unitstate6_array: arrow::array::builder::StringBuilder::new(),
-            unitstate7_array: arrow::array::builder::StringBuilder::new(),
+            unitstate1_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            unitstate2_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            unitstate3_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            unitstate4_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            unitstate5_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            unitstate6_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            unitstate7_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             recalltime1_array: arrow::array::builder::Int64Builder::new(),
             recalltime2_array: arrow::array::builder::Int64Builder::new(),
             recalltime3_array: arrow::array::builder::Int64Builder::new(),
@@ -7025,9 +7159,11 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferdata2 {
 }
 #[cfg(feature = "arrow")]
 pub struct OfferMtpasaOfferdata2Builder {
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    unitid_array: arrow::array::builder::StringBuilder,
+    unitid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     energy_array: arrow::array::builder::Int64Builder,
     capacity1_array: arrow::array::builder::Int64Builder,
@@ -7038,13 +7174,27 @@ pub struct OfferMtpasaOfferdata2Builder {
     capacity6_array: arrow::array::builder::Int64Builder,
     capacity7_array: arrow::array::builder::Int64Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    unitstate1_array: arrow::array::builder::StringBuilder,
-    unitstate2_array: arrow::array::builder::StringBuilder,
-    unitstate3_array: arrow::array::builder::StringBuilder,
-    unitstate4_array: arrow::array::builder::StringBuilder,
-    unitstate5_array: arrow::array::builder::StringBuilder,
-    unitstate6_array: arrow::array::builder::StringBuilder,
-    unitstate7_array: arrow::array::builder::StringBuilder,
+    unitstate1_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    unitstate2_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    unitstate3_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    unitstate4_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    unitstate5_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    unitstate6_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    unitstate7_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     recalltime1_array: arrow::array::builder::Int64Builder,
     recalltime2_array: arrow::array::builder::Int64Builder,
     recalltime3_array: arrow::array::builder::Int64Builder,
@@ -7127,9 +7277,7 @@ impl mmsdm_core::GetTable for OfferMtpasaOfferfiletrk1 {
     const DATA_SET_NAME: &'static str = "OFFER";
     const TABLE_NAME: &'static str = "MTPASA_OFFERFILETRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = OfferMtpasaOfferfiletrk1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PARTICIPANTID",
@@ -7255,7 +7403,10 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferfiletrk1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7268,7 +7419,10 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferfiletrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "filename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -7276,9 +7430,13 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferfiletrk1 {
     }
     fn new_builder() -> Self::Builder {
         OfferMtpasaOfferfiletrk1Builder {
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            filename_array: arrow::array::builder::StringBuilder::new(),
+            filename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -7307,7 +7465,11 @@ impl mmsdm_core::ArrowSchema for OfferMtpasaOfferfiletrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct OfferMtpasaOfferfiletrk1Builder {
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    filename_array: arrow::array::builder::StringBuilder,
+    filename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
 }

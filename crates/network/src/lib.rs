@@ -112,15 +112,7 @@ impl mmsdm_core::GetTable for NetworkEquipmentdetail2 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "EQUIPMENTDETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkEquipmentdetail2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SUBSTATIONID",
@@ -290,17 +282,26 @@ impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "substationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "equipmenttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "equipmentid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -321,12 +322,18 @@ impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
                 ),
                 arrow::datatypes::Field::new(
                     "voltage",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -347,13 +354,23 @@ impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
     }
     fn new_builder() -> Self::Builder {
         NetworkEquipmentdetail2Builder {
-            substationid_array: arrow::array::builder::StringBuilder::new(),
-            equipmenttype_array: arrow::array::builder::StringBuilder::new(),
-            equipmentid_array: arrow::array::builder::StringBuilder::new(),
+            substationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            equipmenttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            equipmentid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             validfrom_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             validto_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            voltage_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            voltage_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             elementid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
@@ -411,13 +428,21 @@ impl mmsdm_core::ArrowSchema for NetworkEquipmentdetail2 {
 }
 #[cfg(feature = "arrow")]
 pub struct NetworkEquipmentdetail2Builder {
-    substationid_array: arrow::array::builder::StringBuilder,
-    equipmenttype_array: arrow::array::builder::StringBuilder,
-    equipmentid_array: arrow::array::builder::StringBuilder,
+    substationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    equipmenttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    equipmentid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     validfrom_array: arrow::array::builder::TimestampMillisecondBuilder,
     validto_array: arrow::array::builder::TimestampMillisecondBuilder,
-    voltage_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
+    voltage_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     elementid_array: arrow::array::builder::Decimal128Builder,
 }
@@ -485,10 +510,7 @@ impl mmsdm_core::GetTable for NetworkOutageconstraintset1 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "OUTAGECONSTRAINTSET";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkOutageconstraintset1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "OUTAGEID",
@@ -628,7 +650,10 @@ impl mmsdm_core::ArrowSchema for NetworkOutageconstraintset1 {
                 ),
                 arrow::datatypes::Field::new(
                     "genconsetid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -654,7 +679,9 @@ impl mmsdm_core::ArrowSchema for NetworkOutageconstraintset1 {
         NetworkOutageconstraintset1Builder {
             outageid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
-            genconsetid_array: arrow::array::builder::StringBuilder::new(),
+            genconsetid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             startinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             endinterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
@@ -699,7 +726,9 @@ impl mmsdm_core::ArrowSchema for NetworkOutageconstraintset1 {
 #[cfg(feature = "arrow")]
 pub struct NetworkOutageconstraintset1Builder {
     outageid_array: arrow::array::builder::Decimal128Builder,
-    genconsetid_array: arrow::array::builder::StringBuilder,
+    genconsetid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     startinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     endinterval_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -855,25 +884,7 @@ impl mmsdm_core::GetTable for NetworkOutagedetail4 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "OUTAGEDETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkOutagedetail4Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "OUTAGEID",
@@ -1120,17 +1131,26 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
                 ),
                 arrow::datatypes::Field::new(
                     "substationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "equipmenttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "equipmentid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1159,12 +1179,18 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
                 ),
                 arrow::datatypes::Field::new(
                     "outagestatuscode",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "resubmitreason",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1192,7 +1218,10 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
                 ),
                 arrow::datatypes::Field::new(
                     "reason",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1218,7 +1247,10 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
                 ),
                 arrow::datatypes::Field::new(
                     "companyrefcode",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1233,14 +1265,24 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
         NetworkOutagedetail4Builder {
             outageid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
-            substationid_array: arrow::array::builder::StringBuilder::new(),
-            equipmenttype_array: arrow::array::builder::StringBuilder::new(),
-            equipmentid_array: arrow::array::builder::StringBuilder::new(),
+            substationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            equipmenttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            equipmentid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             starttime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             endtime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             submitteddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            outagestatuscode_array: arrow::array::builder::StringBuilder::new(),
-            resubmitreason_array: arrow::array::builder::StringBuilder::new(),
+            outagestatuscode_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            resubmitreason_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             resubmitoutageid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
             recalltimeday_array: arrow::array::builder::Decimal128Builder::new()
@@ -1248,12 +1290,16 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
             recalltimenight_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            reason_array: arrow::array::builder::StringBuilder::new(),
+            reason_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             issecondary_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             actual_starttime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             actual_endtime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            companyrefcode_array: arrow::array::builder::StringBuilder::new(),
+            companyrefcode_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             elementid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
         }
@@ -1391,23 +1437,35 @@ impl mmsdm_core::ArrowSchema for NetworkOutagedetail4 {
 #[cfg(feature = "arrow")]
 pub struct NetworkOutagedetail4Builder {
     outageid_array: arrow::array::builder::Decimal128Builder,
-    substationid_array: arrow::array::builder::StringBuilder,
-    equipmenttype_array: arrow::array::builder::StringBuilder,
-    equipmentid_array: arrow::array::builder::StringBuilder,
+    substationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    equipmenttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    equipmentid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     starttime_array: arrow::array::builder::TimestampMillisecondBuilder,
     endtime_array: arrow::array::builder::TimestampMillisecondBuilder,
     submitteddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    outagestatuscode_array: arrow::array::builder::StringBuilder,
-    resubmitreason_array: arrow::array::builder::StringBuilder,
+    outagestatuscode_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    resubmitreason_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     resubmitoutageid_array: arrow::array::builder::Decimal128Builder,
     recalltimeday_array: arrow::array::builder::Decimal128Builder,
     recalltimenight_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    reason_array: arrow::array::builder::StringBuilder,
+    reason_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     issecondary_array: arrow::array::builder::Decimal128Builder,
     actual_starttime_array: arrow::array::builder::TimestampMillisecondBuilder,
     actual_endtime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    companyrefcode_array: arrow::array::builder::StringBuilder,
+    companyrefcode_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     elementid_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct NetworkOutagestatuscode1 {
@@ -1486,9 +1544,7 @@ impl mmsdm_core::GetTable for NetworkOutagestatuscode1 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "OUTAGESTATUSCODE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkOutagestatuscode1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "OUTAGESTATUSCODE",
@@ -1608,12 +1664,18 @@ impl mmsdm_core::ArrowSchema for NetworkOutagestatuscode1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "outagestatuscode",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1629,8 +1691,12 @@ impl mmsdm_core::ArrowSchema for NetworkOutagestatuscode1 {
     }
     fn new_builder() -> Self::Builder {
         NetworkOutagestatuscode1Builder {
-            outagestatuscode_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            outagestatuscode_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -1660,8 +1726,12 @@ impl mmsdm_core::ArrowSchema for NetworkOutagestatuscode1 {
 }
 #[cfg(feature = "arrow")]
 pub struct NetworkOutagestatuscode1Builder {
-    outagestatuscode_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
+    outagestatuscode_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct NetworkRating1 {
@@ -1800,16 +1870,7 @@ impl mmsdm_core::GetTable for NetworkRating1 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "RATING";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkRating1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SPD_ID",
@@ -1967,7 +2028,10 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "spd_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1988,27 +2052,42 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "substationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "equipmenttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "equipmentid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "ratinglevel",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2029,14 +2108,26 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
     }
     fn new_builder() -> Self::Builder {
         NetworkRating1Builder {
-            spd_id_array: arrow::array::builder::StringBuilder::new(),
+            spd_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             validfrom_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             validto_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            substationid_array: arrow::array::builder::StringBuilder::new(),
-            equipmenttype_array: arrow::array::builder::StringBuilder::new(),
-            equipmentid_array: arrow::array::builder::StringBuilder::new(),
-            ratinglevel_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            substationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            equipmenttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            equipmentid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            ratinglevel_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             isdynamic_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -2099,14 +2190,24 @@ impl mmsdm_core::ArrowSchema for NetworkRating1 {
 }
 #[cfg(feature = "arrow")]
 pub struct NetworkRating1Builder {
-    spd_id_array: arrow::array::builder::StringBuilder,
+    spd_id_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     validfrom_array: arrow::array::builder::TimestampMillisecondBuilder,
     validto_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    substationid_array: arrow::array::builder::StringBuilder,
-    equipmenttype_array: arrow::array::builder::StringBuilder,
-    equipmentid_array: arrow::array::builder::StringBuilder,
-    ratinglevel_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    substationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    equipmenttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    equipmentid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    ratinglevel_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     isdynamic_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -2172,9 +2273,7 @@ impl mmsdm_core::GetTable for NetworkRealtimerating1 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "REALTIMERATING";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkRealtimerating1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -2309,7 +2408,10 @@ impl mmsdm_core::ArrowSchema for NetworkRealtimerating1 {
                 ),
                 arrow::datatypes::Field::new(
                     "spd_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2323,7 +2425,9 @@ impl mmsdm_core::ArrowSchema for NetworkRealtimerating1 {
     fn new_builder() -> Self::Builder {
         NetworkRealtimerating1Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            spd_id_array: arrow::array::builder::StringBuilder::new(),
+            spd_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             ratingvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
         }
@@ -2361,7 +2465,7 @@ impl mmsdm_core::ArrowSchema for NetworkRealtimerating1 {
 #[cfg(feature = "arrow")]
 pub struct NetworkRealtimerating1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    spd_id_array: arrow::array::builder::StringBuilder,
+    spd_id_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     ratingvalue_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct NetworkStaticrating1 {
@@ -2454,15 +2558,7 @@ impl mmsdm_core::GetTable for NetworkStaticrating1 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "STATICRATING";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkStaticrating1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SUBSTATIONID",
@@ -2641,27 +2737,42 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "substationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "equipmenttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "equipmentid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "ratinglevel",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "applicationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2698,11 +2809,21 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
     }
     fn new_builder() -> Self::Builder {
         NetworkStaticrating1Builder {
-            substationid_array: arrow::array::builder::StringBuilder::new(),
-            equipmenttype_array: arrow::array::builder::StringBuilder::new(),
-            equipmentid_array: arrow::array::builder::StringBuilder::new(),
-            ratinglevel_array: arrow::array::builder::StringBuilder::new(),
-            applicationid_array: arrow::array::builder::StringBuilder::new(),
+            substationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            equipmenttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            equipmentid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            ratinglevel_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            applicationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             validfrom_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             validto_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             ratingvalue_array: arrow::array::builder::Decimal128Builder::new()
@@ -2764,11 +2885,21 @@ impl mmsdm_core::ArrowSchema for NetworkStaticrating1 {
 }
 #[cfg(feature = "arrow")]
 pub struct NetworkStaticrating1Builder {
-    substationid_array: arrow::array::builder::StringBuilder,
-    equipmenttype_array: arrow::array::builder::StringBuilder,
-    equipmentid_array: arrow::array::builder::StringBuilder,
-    ratinglevel_array: arrow::array::builder::StringBuilder,
-    applicationid_array: arrow::array::builder::StringBuilder,
+    substationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    equipmenttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    equipmentid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    ratinglevel_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    applicationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     validfrom_array: arrow::array::builder::TimestampMillisecondBuilder,
     validto_array: arrow::array::builder::TimestampMillisecondBuilder,
     ratingvalue_array: arrow::array::builder::Decimal128Builder,
@@ -2880,13 +3011,7 @@ impl mmsdm_core::GetTable for NetworkSubstationdetail2 {
     const DATA_SET_NAME: &'static str = "NETWORK";
     const TABLE_NAME: &'static str = "SUBSTATIONDETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = NetworkSubstationdetail2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SUBSTATIONID",
@@ -3030,7 +3155,10 @@ impl mmsdm_core::ArrowSchema for NetworkSubstationdetail2 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "substationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3051,17 +3179,26 @@ impl mmsdm_core::ArrowSchema for NetworkSubstationdetail2 {
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "ownerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3077,12 +3214,20 @@ impl mmsdm_core::ArrowSchema for NetworkSubstationdetail2 {
     }
     fn new_builder() -> Self::Builder {
         NetworkSubstationdetail2Builder {
-            substationid_array: arrow::array::builder::StringBuilder::new(),
+            substationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             validfrom_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             validto_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            ownerid_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            ownerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -3126,11 +3271,17 @@ impl mmsdm_core::ArrowSchema for NetworkSubstationdetail2 {
 }
 #[cfg(feature = "arrow")]
 pub struct NetworkSubstationdetail2Builder {
-    substationid_array: arrow::array::builder::StringBuilder,
+    substationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     validfrom_array: arrow::array::builder::TimestampMillisecondBuilder,
     validto_array: arrow::array::builder::TimestampMillisecondBuilder,
-    description_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    ownerid_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    ownerid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

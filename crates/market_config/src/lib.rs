@@ -98,12 +98,7 @@ impl mmsdm_core::GetTable for MarketConfigArea1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "AREA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigArea1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "AREAID",
@@ -250,7 +245,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigArea1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "areaid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -268,12 +266,18 @@ impl mmsdm_core::ArrowSchema for MarketConfigArea1 {
                 ),
                 arrow::datatypes::Field::new(
                     "area_name",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "area_description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -289,12 +293,18 @@ impl mmsdm_core::ArrowSchema for MarketConfigArea1 {
     }
     fn new_builder() -> Self::Builder {
         MarketConfigArea1Builder {
-            areaid_array: arrow::array::builder::StringBuilder::new(),
+            areaid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            area_name_array: arrow::array::builder::StringBuilder::new(),
-            area_description_array: arrow::array::builder::StringBuilder::new(),
+            area_name_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            area_description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -341,11 +351,15 @@ impl mmsdm_core::ArrowSchema for MarketConfigArea1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketConfigArea1Builder {
-    areaid_array: arrow::array::builder::StringBuilder,
+    areaid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    area_name_array: arrow::array::builder::StringBuilder,
-    area_description_array: arrow::array::builder::StringBuilder,
+    area_name_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    area_description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigBidtypes1 {
@@ -459,15 +473,7 @@ impl mmsdm_core::GetTable for MarketConfigBidtypes1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "BIDTYPES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigBidtypes1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "BIDTYPE",
@@ -633,7 +639,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -651,7 +660,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -666,7 +678,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
                 ),
                 arrow::datatypes::Field::new(
                     "validationrule",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -679,7 +694,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
                 ),
                 arrow::datatypes::Field::new(
                     "spdalias",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -687,18 +705,26 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
     }
     fn new_builder() -> Self::Builder {
         MarketConfigBidtypes1Builder {
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             numberofbands_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             numdaysaheadpricelocked_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            validationrule_array: arrow::array::builder::StringBuilder::new(),
+            validationrule_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            spdalias_array: arrow::array::builder::StringBuilder::new(),
+            spdalias_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -769,15 +795,21 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypes1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketConfigBidtypes1Builder {
-    bidtype_array: arrow::array::builder::StringBuilder,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    description_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     numberofbands_array: arrow::array::builder::Decimal128Builder,
     numdaysaheadpricelocked_array: arrow::array::builder::Decimal128Builder,
-    validationrule_array: arrow::array::builder::StringBuilder,
+    validationrule_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    spdalias_array: arrow::array::builder::StringBuilder,
+    spdalias_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
 }
 pub struct MarketConfigBidtypestrk1 {
     extract_row_partition: alloc::boxed::Box<
@@ -854,11 +886,7 @@ impl mmsdm_core::GetTable for MarketConfigBidtypestrk1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "BIDTYPESTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigBidtypestrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -1022,7 +1050,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1042,7 +1073,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigBidtypestrk1 {
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -1093,7 +1126,9 @@ pub struct MarketConfigBidtypestrk1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigFcasregusefactors1 {
@@ -1172,13 +1207,7 @@ impl mmsdm_core::GetTable for MarketConfigFcasregusefactors1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "FCASREGUSEFACTORS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigFcasregusefactors1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -1362,12 +1391,18 @@ impl mmsdm_core::ArrowSchema for MarketConfigFcasregusefactors1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1396,8 +1431,12 @@ impl mmsdm_core::ArrowSchema for MarketConfigFcasregusefactors1 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             usage_factor_array: arrow::array::builder::Decimal128Builder::new()
@@ -1467,8 +1506,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigFcasregusefactors1 {
 pub struct MarketConfigFcasregusefactors1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     periodid_array: arrow::array::builder::Decimal128Builder,
     usage_factor_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -1533,10 +1574,7 @@ impl mmsdm_core::GetTable for MarketConfigFcasregusefactorsTrk1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "FCASREGUSEFACTORS_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigFcasregusefactorsTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -1879,12 +1917,7 @@ impl mmsdm_core::GetTable for MarketConfigInterconnector1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "INTERCONNECTOR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigInterconnector1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERCONNECTORID",
@@ -2013,27 +2046,42 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionfrom",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "rsoid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "regionto",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2049,11 +2097,21 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
     }
     fn new_builder() -> Self::Builder {
         MarketConfigInterconnector1Builder {
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            regionfrom_array: arrow::array::builder::StringBuilder::new(),
-            rsoid_array: arrow::array::builder::StringBuilder::new(),
-            regionto_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionfrom_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            rsoid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionto_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -2092,11 +2150,19 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnector1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketConfigInterconnector1Builder {
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    regionfrom_array: arrow::array::builder::StringBuilder,
-    rsoid_array: arrow::array::builder::StringBuilder,
-    regionto_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    regionfrom_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    rsoid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    regionto_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigInterconnectoralloc1 {
@@ -2181,13 +2247,7 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectoralloc1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "INTERCONNECTORALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigInterconnectoralloc1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -2370,17 +2430,26 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2404,9 +2473,15 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             allocation_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -2468,9 +2543,15 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectoralloc1 {
 pub struct MarketConfigInterconnectoralloc1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     allocation_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -2626,28 +2707,7 @@ impl mmsdm_core::GetTable for MarketConfigInterconnectorconstraint1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "INTERCONNECTORCONSTRAINT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigInterconnectorconstraint1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RESERVEOVERALLLOADFACTOR",
@@ -2947,7 +3007,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2972,12 +3035,18 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                 ),
                 arrow::datatypes::Field::new(
                     "emsmeasurand",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2990,7 +3059,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                 ),
                 arrow::datatypes::Field::new(
                     "dynamicrhs",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3038,7 +3110,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                 ),
                 arrow::datatypes::Field::new(
                     "ictype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -3053,7 +3128,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             maxmwin_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             maxmwout_array: arrow::array::builder::Decimal128Builder::new()
@@ -3062,10 +3139,16 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 6)),
             lossflowcoefficient_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(27, 17)),
-            emsmeasurand_array: arrow::array::builder::StringBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            emsmeasurand_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            dynamicrhs_array: arrow::array::builder::StringBuilder::new(),
+            dynamicrhs_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             importlimit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             exportlimit_array: arrow::array::builder::Decimal128Builder::new()
@@ -3081,7 +3164,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigInterconnectorconstraint1 {
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             fcassupportunavailable_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            ictype_array: arrow::array::builder::StringBuilder::new(),
+            ictype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -3288,15 +3373,23 @@ pub struct MarketConfigInterconnectorconstraint1Builder {
     fromregionlossshare_array: arrow::array::builder::Decimal128Builder,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     maxmwin_array: arrow::array::builder::Decimal128Builder,
     maxmwout_array: arrow::array::builder::Decimal128Builder,
     lossconstant_array: arrow::array::builder::Decimal128Builder,
     lossflowcoefficient_array: arrow::array::builder::Decimal128Builder,
-    emsmeasurand_array: arrow::array::builder::StringBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    emsmeasurand_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    dynamicrhs_array: arrow::array::builder::StringBuilder,
+    dynamicrhs_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     importlimit_array: arrow::array::builder::Decimal128Builder,
     exportlimit_array: arrow::array::builder::Decimal128Builder,
     outagederationfactor_array: arrow::array::builder::Decimal128Builder,
@@ -3305,7 +3398,7 @@ pub struct MarketConfigInterconnectorconstraint1Builder {
     overloadfactor6sec_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     fcassupportunavailable_array: arrow::array::builder::Decimal128Builder,
-    ictype_array: arrow::array::builder::StringBuilder,
+    ictype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
 }
 pub struct MarketConfigIntraregionalloc1 {
     extract_row_partition: alloc::boxed::Box<
@@ -3380,12 +3473,7 @@ impl mmsdm_core::GetTable for MarketConfigIntraregionalloc1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "INTRAREGIONALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigIntraregionalloc1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -3557,12 +3645,18 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3586,8 +3680,12 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             allocation_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(12, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -3646,8 +3744,12 @@ impl mmsdm_core::ArrowSchema for MarketConfigIntraregionalloc1 {
 pub struct MarketConfigIntraregionalloc1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     allocation_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -3727,12 +3829,7 @@ impl mmsdm_core::GetTable for MarketConfigLossfactormodel1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "LOSSFACTORMODEL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigLossfactormodel1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -3904,12 +4001,18 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3933,8 +4036,12 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             demandcoefficient_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(27, 17)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -3993,8 +4100,12 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossfactormodel1 {
 pub struct MarketConfigLossfactormodel1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     demandcoefficient_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -4087,14 +4198,7 @@ impl mmsdm_core::GetTable for MarketConfigLossmodel1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "LOSSMODEL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigLossmodel1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -4281,12 +4385,18 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "periodid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4320,8 +4430,12 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            periodid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            periodid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             losssegment_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
             mwbreakpoint_array: arrow::array::builder::Decimal128Builder::new()
@@ -4404,8 +4518,12 @@ impl mmsdm_core::ArrowSchema for MarketConfigLossmodel1 {
 pub struct MarketConfigLossmodel1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    periodid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    periodid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     losssegment_array: arrow::array::builder::Decimal128Builder,
     mwbreakpoint_array: arrow::array::builder::Decimal128Builder,
     lossfactor_array: arrow::array::builder::Decimal128Builder,
@@ -4492,14 +4610,7 @@ impl mmsdm_core::GetTable for MarketConfigMarketPriceThresholds1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "MARKET_PRICE_THRESHOLDS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigMarketPriceThresholds1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -4705,7 +4816,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4731,7 +4845,9 @@ impl mmsdm_core::ArrowSchema for MarketConfigMarketPriceThresholds1 {
             administered_price_threshold_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -4819,7 +4935,9 @@ pub struct MarketConfigMarketPriceThresholds1Builder {
     marketpricefloor_array: arrow::array::builder::Decimal128Builder,
     administered_price_threshold_array: arrow::array::builder::Decimal128Builder,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigRegion1 {
@@ -4909,10 +5027,7 @@ impl mmsdm_core::GetTable for MarketConfigRegion1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "REGION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigRegion1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -5035,17 +5150,26 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegion1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "regionstatus",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5061,9 +5185,15 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegion1 {
     }
     fn new_builder() -> Self::Builder {
         MarketConfigRegion1Builder {
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
-            regionstatus_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionstatus_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -5096,9 +5226,15 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegion1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketConfigRegion1Builder {
-    regionid_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
-    regionstatus_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionstatus_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigRegionArea1 {
@@ -5172,11 +5308,7 @@ impl mmsdm_core::GetTable for MarketConfigRegionArea1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "REGION_AREA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigRegionArea1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -5322,7 +5454,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionArea1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5340,7 +5475,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionArea1 {
                 ),
                 arrow::datatypes::Field::new(
                     "areaid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5356,11 +5494,15 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionArea1 {
     }
     fn new_builder() -> Self::Builder {
         MarketConfigRegionArea1Builder {
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            areaid_array: arrow::array::builder::StringBuilder::new(),
+            areaid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -5404,10 +5546,12 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionArea1 {
 }
 #[cfg(feature = "arrow")]
 pub struct MarketConfigRegionArea1Builder {
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    areaid_array: arrow::array::builder::StringBuilder,
+    areaid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct MarketConfigRegionstandingdata1 {
@@ -5520,16 +5664,7 @@ impl mmsdm_core::GetTable for MarketConfigRegionstandingdata1 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "REGIONSTANDINGDATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigRegionstandingdata1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -5720,17 +5855,26 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "rsoid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "regionalreferencepointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5748,7 +5892,10 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5772,13 +5919,21 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            rsoid_array: arrow::array::builder::StringBuilder::new(),
-            regionalreferencepointid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            rsoid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionalreferencepointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             peaktradingperiod_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             scalingfactor_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -5864,12 +6019,18 @@ impl mmsdm_core::ArrowSchema for MarketConfigRegionstandingdata1 {
 pub struct MarketConfigRegionstandingdata1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    rsoid_array: arrow::array::builder::StringBuilder,
-    regionalreferencepointid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    rsoid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    regionalreferencepointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     peaktradingperiod_array: arrow::array::builder::Decimal128Builder,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     scalingfactor_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -5959,13 +6120,7 @@ impl mmsdm_core::GetTable for MarketConfigTransmissionlossfactor2 {
     const DATA_SET_NAME: &'static str = "MARKET_CONFIG";
     const TABLE_NAME: &'static str = "TRANSMISSIONLOSSFACTOR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MarketConfigTransmissionlossfactor2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRANSMISSIONLOSSFACTOR",
@@ -6151,12 +6306,18 @@ impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -6182,8 +6343,12 @@ impl mmsdm_core::ArrowSchema for MarketConfigTransmissionlossfactor2 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             secondary_tlf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
@@ -6252,8 +6417,12 @@ pub struct MarketConfigTransmissionlossfactor2Builder {
     transmissionlossfactor_array: arrow::array::builder::Decimal128Builder,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     secondary_tlf_array: arrow::array::builder::Decimal128Builder,
 }

@@ -98,15 +98,7 @@ impl mmsdm_core::GetTable for IrauctionConfigAuction1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuction1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "AUCTIONID",
@@ -269,7 +261,10 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "auctionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -306,7 +301,10 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -319,7 +317,10 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -335,14 +336,20 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionConfigAuction1Builder {
-            auctionid_array: arrow::array::builder::StringBuilder::new(),
+            auctionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             auctiondate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             notifydate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -402,14 +409,20 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuction1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionConfigAuction1Builder {
-    auctionid_array: arrow::array::builder::StringBuilder,
+    auctionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     auctiondate_array: arrow::array::builder::TimestampMillisecondBuilder,
     notifydate_array: arrow::array::builder::TimestampMillisecondBuilder,
     startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    description_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionConfigAuctionCalendar2 {
@@ -488,18 +501,7 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionCalendar2 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION_CALENDAR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionCalendar2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1022,18 +1024,7 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionIcAllocations2 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION_IC_ALLOCATIONS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionIcAllocations2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1260,12 +1251,18 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1293,7 +1290,10 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
                 ),
                 arrow::datatypes::Field::new(
                     "changedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1320,8 +1320,12 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             maximumunits_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
             proportion_array: arrow::array::builder::Decimal128Builder::new()
@@ -1329,7 +1333,9 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionIcAllocations2 {
             auctionfee_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
             changedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            changedby_array: arrow::array::builder::StringBuilder::new(),
+            changedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             auctionfee_sales_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
@@ -1443,13 +1449,19 @@ pub struct IrauctionConfigAuctionIcAllocations2Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     quarter_array: arrow::array::builder::Decimal128Builder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     maximumunits_array: arrow::array::builder::Decimal128Builder,
     proportion_array: arrow::array::builder::Decimal128Builder,
     auctionfee_array: arrow::array::builder::Decimal128Builder,
     changedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    changedby_array: arrow::array::builder::StringBuilder,
+    changedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     auctionfee_sales_array: arrow::array::builder::Decimal128Builder,
 }
@@ -1545,17 +1557,7 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRevenueEstimate1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION_REVENUE_ESTIMATE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionRevenueEstimate1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1777,7 +1779,10 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
                 ),
                 arrow::datatypes::Field::new(
                     "valuationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1787,12 +1792,18 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1838,11 +1849,17 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             quarter_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            valuationid_array: arrow::array::builder::StringBuilder::new(),
+            valuationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             monthno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -1940,10 +1957,16 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueEstimate1 {
 pub struct IrauctionConfigAuctionRevenueEstimate1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     quarter_array: arrow::array::builder::Decimal128Builder,
-    valuationid_array: arrow::array::builder::StringBuilder,
+    valuationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     monthno_array: arrow::array::builder::Decimal128Builder,
     startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -2064,16 +2087,7 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRevenueTrack1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION_REVENUE_TRACK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionRevenueTrack1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -2267,7 +2281,10 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
                 ),
                 arrow::datatypes::Field::new(
                     "valuationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2285,12 +2302,18 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
                 ),
                 arrow::datatypes::Field::new(
                     "status",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "documentref",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2303,7 +2326,10 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2323,14 +2349,22 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             quarter_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            valuationid_array: arrow::array::builder::StringBuilder::new(),
+            valuationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            status_array: arrow::array::builder::StringBuilder::new(),
-            documentref_array: arrow::array::builder::StringBuilder::new(),
+            status_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            documentref_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -2409,13 +2443,19 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRevenueTrack1 {
 pub struct IrauctionConfigAuctionRevenueTrack1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     quarter_array: arrow::array::builder::Decimal128Builder,
-    valuationid_array: arrow::array::builder::StringBuilder,
+    valuationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     versionno_array: arrow::array::builder::Decimal128Builder,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    status_array: arrow::array::builder::StringBuilder,
-    documentref_array: arrow::array::builder::StringBuilder,
+    status_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    documentref_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionConfigAuctionRpEstimate1 {
@@ -2503,14 +2543,7 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionRpEstimate1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION_RP_ESTIMATE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionRpEstimate1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -2701,7 +2734,10 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
                 ),
                 arrow::datatypes::Field::new(
                     "valuationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2711,12 +2747,18 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2741,11 +2783,17 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             quarter_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            valuationid_array: arrow::array::builder::StringBuilder::new(),
+            valuationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             rpestimate_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -2820,10 +2868,16 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionRpEstimate1 {
 pub struct IrauctionConfigAuctionRpEstimate1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     quarter_array: arrow::array::builder::Decimal128Builder,
-    valuationid_array: arrow::array::builder::StringBuilder,
+    valuationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     rpestimate_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -2914,16 +2968,7 @@ impl mmsdm_core::GetTable for IrauctionConfigAuctionTranche1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_CONFIG";
     const TABLE_NAME: &'static str = "AUCTION_TRANCHE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionConfigAuctionTranche1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -3166,7 +3211,10 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
                 ),
                 arrow::datatypes::Field::new(
                     "changedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3195,7 +3243,9 @@ impl mmsdm_core::ArrowSchema for IrauctionConfigAuctionTranche1 {
             unitallocation_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             changedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            changedby_array: arrow::array::builder::StringBuilder::new(),
+            changedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -3292,7 +3342,9 @@ pub struct IrauctionConfigAuctionTranche1Builder {
     notifydate_array: arrow::array::builder::TimestampMillisecondBuilder,
     unitallocation_array: arrow::array::builder::Decimal128Builder,
     changedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    changedby_array: arrow::array::builder::StringBuilder,
+    changedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionResidueBidTrk1 {
@@ -3379,12 +3431,7 @@ impl mmsdm_core::GetTable for IrauctionResidueBidTrk1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_BID_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueBidTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -3532,7 +3579,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueBidTrk1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3542,7 +3592,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueBidTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3563,7 +3616,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueBidTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "auctionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -3571,13 +3627,19 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueBidTrk1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionResidueBidTrk1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             bidloaddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            auctionid_array: arrow::array::builder::StringBuilder::new(),
+            auctionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -3623,12 +3685,18 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueBidTrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionResidueBidTrk1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     bidloaddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    auctionid_array: arrow::array::builder::StringBuilder,
+    auctionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct IrauctionResidueConData2 {
     extract_row_partition: alloc::boxed::Box<
@@ -3719,15 +3787,7 @@ impl mmsdm_core::GetTable for IrauctionResidueConData2 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_CON_DATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueConData2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -3905,7 +3965,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConData2 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3915,17 +3978,26 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConData2 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3956,12 +4028,20 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConData2 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionResidueConData2Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             unitspurchased_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
             linkpayment_array: arrow::array::builder::Decimal128Builder::new()
@@ -4045,11 +4125,19 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConData2 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionResidueConData2Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     unitspurchased_array: arrow::array::builder::Decimal128Builder,
     linkpayment_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -4128,12 +4216,7 @@ impl mmsdm_core::GetTable for IrauctionResidueConEstimatesTrk1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_CON_ESTIMATES_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueConEstimatesTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -4290,7 +4373,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4305,7 +4391,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "valuationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4326,12 +4415,16 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionResidueConEstimatesTrk1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             contractyear_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             quarter_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            valuationid_array: arrow::array::builder::StringBuilder::new(),
+            valuationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -4392,10 +4485,14 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConEstimatesTrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionResidueConEstimatesTrk1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     contractyear_array: arrow::array::builder::Decimal128Builder,
     quarter_array: arrow::array::builder::Decimal128Builder,
-    valuationid_array: arrow::array::builder::StringBuilder,
+    valuationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     versionno_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -4487,17 +4584,7 @@ impl mmsdm_core::GetTable for IrauctionResidueConFunds1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_CON_FUNDS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueConFunds1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -4685,17 +4772,26 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConFunds1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4746,9 +4842,15 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConFunds1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionResidueConFunds1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             defaultunits_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
             rolloverunits_array: arrow::array::builder::Decimal128Builder::new()
@@ -4872,9 +4974,15 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueConFunds1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionResidueConFunds1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     defaultunits_array: arrow::array::builder::Decimal128Builder,
     rolloverunits_array: arrow::array::builder::Decimal128Builder,
     reallocatedunits_array: arrow::array::builder::Decimal128Builder,
@@ -5058,24 +5166,7 @@ impl mmsdm_core::GetTable for IrauctionResidueContracts1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_CONTRACTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueContracts1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -5313,7 +5404,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5350,7 +5444,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 ),
                 arrow::datatypes::Field::new(
                     "calcmethod",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5363,7 +5460,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5376,7 +5476,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 ),
                 arrow::datatypes::Field::new(
                     "notifyby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5389,7 +5492,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 ),
                 arrow::datatypes::Field::new(
                     "postedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5402,12 +5508,18 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "auctionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -5421,21 +5533,35 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueContracts1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             tranche_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             enddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             notifydate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             auctiondate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            calcmethod_array: arrow::array::builder::StringBuilder::new(),
+            calcmethod_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             notifypostdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            notifyby_array: arrow::array::builder::StringBuilder::new(),
+            notifyby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             postdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            postedby_array: arrow::array::builder::StringBuilder::new(),
+            postedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
-            auctionid_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            auctionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -5548,21 +5674,35 @@ pub struct IrauctionResidueContracts1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     quarter_array: arrow::array::builder::Decimal128Builder,
     tranche_array: arrow::array::builder::Decimal128Builder,
-    contractid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     notifydate_array: arrow::array::builder::TimestampMillisecondBuilder,
     auctiondate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    calcmethod_array: arrow::array::builder::StringBuilder,
+    calcmethod_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     notifypostdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    notifyby_array: arrow::array::builder::StringBuilder,
+    notifyby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     postdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    postedby_array: arrow::array::builder::StringBuilder,
+    postedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    description_array: arrow::array::builder::StringBuilder,
-    auctionid_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    auctionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct IrauctionBidsFundsBid1 {
     extract_row_partition: alloc::boxed::Box<
@@ -5652,14 +5792,7 @@ impl mmsdm_core::GetTable for IrauctionBidsFundsBid1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_BIDS";
     const TABLE_NAME: &'static str = "FUNDS_BID";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionBidsFundsBid1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -5832,12 +5965,18 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5855,12 +5994,18 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5881,13 +6026,21 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionBidsFundsBid1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             loaddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             optionid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             units_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -5948,12 +6101,20 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFundsBid1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionBidsFundsBid1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     loaddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     optionid_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     units_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -6044,13 +6205,7 @@ impl mmsdm_core::GetTable for IrauctionResiduePriceBid1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_PRICE_BID";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResiduePriceBid1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -6208,12 +6363,18 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6244,7 +6405,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
                 ),
                 arrow::datatypes::Field::new(
                     "auctionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -6252,15 +6416,21 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionResiduePriceBid1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             loaddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             optionid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             bidprice_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            auctionid_array: arrow::array::builder::StringBuilder::new(),
+            auctionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -6315,13 +6485,19 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceBid1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionResiduePriceBid1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     loaddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     optionid_array: arrow::array::builder::Decimal128Builder,
     bidprice_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    auctionid_array: arrow::array::builder::StringBuilder,
+    auctionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct IrauctionResiduePriceFundsBid1 {
     extract_row_partition: alloc::boxed::Box<
@@ -6410,14 +6586,7 @@ impl mmsdm_core::GetTable for IrauctionResiduePriceFundsBid1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_PRICE_FUNDS_BID";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResiduePriceFundsBid1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -6590,17 +6759,26 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceFundsBid1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6620,7 +6798,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceFundsBid1 {
                 ),
                 arrow::datatypes::Field::new(
                     "auctionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6636,16 +6817,24 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceFundsBid1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionResiduePriceFundsBid1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             units_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
             bidprice_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(17, 5)),
             linkedbidflag_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 0)),
-            auctionid_array: arrow::array::builder::StringBuilder::new(),
+            auctionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -6712,13 +6901,21 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePriceFundsBid1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionResiduePriceFundsBid1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     units_array: arrow::array::builder::Decimal128Builder,
     bidprice_array: arrow::array::builder::Decimal128Builder,
     linkedbidflag_array: arrow::array::builder::Decimal128Builder,
-    auctionid_array: arrow::array::builder::StringBuilder,
+    auctionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionResiduePublicData1 {
@@ -6806,15 +7003,7 @@ impl mmsdm_core::GetTable for IrauctionResiduePublicData1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_PUBLIC_DATA";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResiduePublicData1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -6992,7 +7181,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePublicData1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7002,12 +7194,18 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePublicData1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7043,11 +7241,17 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePublicData1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionResiduePublicData1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             unitsoffered_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
             unitssold_array: arrow::array::builder::Decimal128Builder::new()
@@ -7141,10 +7345,16 @@ impl mmsdm_core::ArrowSchema for IrauctionResiduePublicData1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionResiduePublicData1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     unitsoffered_array: arrow::array::builder::Decimal128Builder,
     unitssold_array: arrow::array::builder::Decimal128Builder,
     clearingprice_array: arrow::array::builder::Decimal128Builder,
@@ -7275,16 +7485,7 @@ impl mmsdm_core::GetTable for IrauctionResidueTrk1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "RESIDUE_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionResidueTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -7447,7 +7648,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7473,7 +7677,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7486,7 +7693,10 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "postedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7499,12 +7709,18 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "status",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "auctionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -7512,17 +7728,27 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionResidueTrk1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             rundate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             postdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            postedby_array: arrow::array::builder::StringBuilder::new(),
+            postedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            status_array: arrow::array::builder::StringBuilder::new(),
-            auctionid_array: arrow::array::builder::StringBuilder::new(),
+            status_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            auctionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -7586,16 +7812,24 @@ impl mmsdm_core::ArrowSchema for IrauctionResidueTrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionResidueTrk1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     versionno_array: arrow::array::builder::Decimal128Builder,
     rundate_array: arrow::array::builder::TimestampMillisecondBuilder,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     postdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    postedby_array: arrow::array::builder::StringBuilder,
+    postedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    status_array: arrow::array::builder::StringBuilder,
-    auctionid_array: arrow::array::builder::StringBuilder,
+    status_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    auctionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct SettlementConfigResiduecontractpayments1 {
     extract_row_partition: alloc::boxed::Box<
@@ -7662,9 +7896,7 @@ impl mmsdm_core::GetTable for SettlementConfigResiduecontractpayments1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENT_CONFIG";
     const TABLE_NAME: &'static str = "RESIDUECONTRACTPAYMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementConfigResiduecontractpayments1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -7795,12 +8027,18 @@ impl mmsdm_core::ArrowSchema for SettlementConfigResiduecontractpayments1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7816,8 +8054,12 @@ impl mmsdm_core::ArrowSchema for SettlementConfigResiduecontractpayments1 {
     }
     fn new_builder() -> Self::Builder {
         SettlementConfigResiduecontractpayments1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -7847,8 +8089,12 @@ impl mmsdm_core::ArrowSchema for SettlementConfigResiduecontractpayments1 {
 }
 #[cfg(feature = "arrow")]
 pub struct SettlementConfigResiduecontractpayments1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionBidsFileTrk1 {
@@ -7975,14 +8221,7 @@ impl mmsdm_core::GetTable for IrauctionBidsFileTrk1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION_BIDS";
     const TABLE_NAME: &'static str = "FILE_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionBidsFileTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTID",
@@ -8130,12 +8369,18 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFileTrk1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -8148,17 +8393,26 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFileTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "filename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "ackfilename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "status",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -8171,7 +8425,10 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFileTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "auctionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -8179,14 +8436,26 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFileTrk1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionBidsFileTrk1Builder {
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             loaddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            filename_array: arrow::array::builder::StringBuilder::new(),
-            ackfilename_array: arrow::array::builder::StringBuilder::new(),
-            status_array: arrow::array::builder::StringBuilder::new(),
+            filename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            ackfilename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            status_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            auctionid_array: arrow::array::builder::StringBuilder::new(),
+            auctionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -8230,14 +8499,24 @@ impl mmsdm_core::ArrowSchema for IrauctionBidsFileTrk1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionBidsFileTrk1Builder {
-    contractid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     loaddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    filename_array: arrow::array::builder::StringBuilder,
-    ackfilename_array: arrow::array::builder::StringBuilder,
-    status_array: arrow::array::builder::StringBuilder,
+    filename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    ackfilename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    status_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    auctionid_array: arrow::array::builder::StringBuilder,
+    auctionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct IrauctionSraCashSecurity1 {
     extract_row_partition: alloc::boxed::Box<
@@ -8341,16 +8620,7 @@ impl mmsdm_core::GetTable for IrauctionSraCashSecurity1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_CASH_SECURITY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraCashSecurity1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CASH_SECURITY_ID",
@@ -8521,12 +8791,18 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "cash_security_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -8544,7 +8820,10 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interest_acct_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -8589,12 +8868,18 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionSraCashSecurity1Builder {
-            cash_security_id_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            cash_security_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             provision_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             cash_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            interest_acct_id_array: arrow::array::builder::StringBuilder::new(),
+            interest_acct_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             finalreturndate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             cash_security_returned_array: arrow::array::builder::Decimal128Builder::new()
@@ -8680,11 +8965,17 @@ impl mmsdm_core::ArrowSchema for IrauctionSraCashSecurity1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionSraCashSecurity1Builder {
-    cash_security_id_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    cash_security_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     provision_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     cash_amount_array: arrow::array::builder::Decimal128Builder,
-    interest_acct_id_array: arrow::array::builder::StringBuilder,
+    interest_acct_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     finalreturndate_array: arrow::array::builder::TimestampMillisecondBuilder,
     cash_security_returned_array: arrow::array::builder::Decimal128Builder,
@@ -8770,13 +9061,7 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucMardetail1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUC_MARDETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucMardetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SRA_YEAR",
@@ -8951,12 +9236,18 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucMardetail1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "cash_security_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -8977,8 +9268,12 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucMardetail1 {
             sra_year_array: arrow::array::builder::Int64Builder::new(),
             sra_quarter_array: arrow::array::builder::Int64Builder::new(),
             sra_runno_array: arrow::array::builder::Int64Builder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            cash_security_id_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            cash_security_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             returned_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             returned_interest_array: arrow::array::builder::Decimal128Builder::new()
@@ -9040,8 +9335,12 @@ pub struct IrauctionSraFinancialAucMardetail1Builder {
     sra_year_array: arrow::array::builder::Int64Builder,
     sra_quarter_array: arrow::array::builder::Int64Builder,
     sra_runno_array: arrow::array::builder::Int64Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    cash_security_id_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    cash_security_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     returned_amount_array: arrow::array::builder::Decimal128Builder,
     returned_interest_array: arrow::array::builder::Decimal128Builder,
 }
@@ -9119,14 +9418,7 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucMargin1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUC_MARGIN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucMargin1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SRA_YEAR",
@@ -9305,7 +9597,10 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucMargin1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9336,7 +9631,9 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucMargin1 {
             sra_year_array: arrow::array::builder::Int64Builder::new(),
             sra_quarter_array: arrow::array::builder::Int64Builder::new(),
             sra_runno_array: arrow::array::builder::Int64Builder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             total_cash_security_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             required_margin_array: arrow::array::builder::Decimal128Builder::new()
@@ -9422,7 +9719,9 @@ pub struct IrauctionSraFinancialAucMargin1Builder {
     sra_year_array: arrow::array::builder::Int64Builder,
     sra_quarter_array: arrow::array::builder::Int64Builder,
     sra_runno_array: arrow::array::builder::Int64Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     total_cash_security_array: arrow::array::builder::Decimal128Builder,
     required_margin_array: arrow::array::builder::Decimal128Builder,
     returned_margin_array: arrow::array::builder::Decimal128Builder,
@@ -9527,19 +9826,7 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucReceipts1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUC_RECEIPTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucReceipts1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SRA_YEAR",
@@ -9761,22 +10048,34 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucReceipts1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9820,10 +10119,18 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucReceipts1 {
             sra_year_array: arrow::array::builder::Int64Builder::new(),
             sra_quarter_array: arrow::array::builder::Int64Builder::new(),
             sra_runno_array: arrow::array::builder::Int64Builder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             units_purchased_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             clearing_price_array: arrow::array::builder::Decimal128Builder::new()
@@ -9936,10 +10243,18 @@ pub struct IrauctionSraFinancialAucReceipts1Builder {
     sra_year_array: arrow::array::builder::Int64Builder,
     sra_quarter_array: arrow::array::builder::Int64Builder,
     sra_runno_array: arrow::array::builder::Int64Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     units_purchased_array: arrow::array::builder::Decimal128Builder,
     clearing_price_array: arrow::array::builder::Decimal128Builder,
     receipt_amount_array: arrow::array::builder::Decimal128Builder,
@@ -10054,23 +10369,7 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucpayDetail1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUCPAY_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucpayDetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SRA_YEAR",
@@ -10324,22 +10623,34 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpayDetail1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -10403,10 +10714,18 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpayDetail1 {
             sra_year_array: arrow::array::builder::Int64Builder::new(),
             sra_quarter_array: arrow::array::builder::Int64Builder::new(),
             sra_runno_array: arrow::array::builder::Int64Builder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             maximum_units_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             units_sold_array: arrow::array::builder::Decimal128Builder::new()
@@ -10571,10 +10890,18 @@ pub struct IrauctionSraFinancialAucpayDetail1Builder {
     sra_year_array: arrow::array::builder::Int64Builder,
     sra_quarter_array: arrow::array::builder::Int64Builder,
     sra_runno_array: arrow::array::builder::Int64Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     maximum_units_array: arrow::array::builder::Decimal128Builder,
     units_sold_array: arrow::array::builder::Decimal128Builder,
     shortfall_units_array: arrow::array::builder::Decimal128Builder,
@@ -10664,16 +10991,7 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialAucpaySum1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_FINANCIAL_AUCPAY_SUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialAucpaySum1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SRA_YEAR",
@@ -10868,7 +11186,10 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpaySum1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -10912,7 +11233,9 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialAucpaySum1 {
             sra_year_array: arrow::array::builder::Int64Builder::new(),
             sra_quarter_array: arrow::array::builder::Int64Builder::new(),
             sra_runno_array: arrow::array::builder::Int64Builder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             gross_proceeds_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             total_gross_proceeds_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -11017,7 +11340,9 @@ pub struct IrauctionSraFinancialAucpaySum1Builder {
     sra_year_array: arrow::array::builder::Int64Builder,
     sra_quarter_array: arrow::array::builder::Int64Builder,
     sra_runno_array: arrow::array::builder::Int64Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     gross_proceeds_amount_array: arrow::array::builder::Decimal128Builder,
     total_gross_proceeds_amount_array: arrow::array::builder::Decimal128Builder,
     shortfall_amount_array: arrow::array::builder::Decimal128Builder,
@@ -11109,15 +11434,7 @@ impl mmsdm_core::GetTable for IrauctionSraFinancialRuntrk1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_FINANCIAL_RUNTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraFinancialRuntrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SRA_YEAR",
@@ -11291,7 +11608,10 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialRuntrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "runtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -11336,7 +11656,9 @@ impl mmsdm_core::ArrowSchema for IrauctionSraFinancialRuntrk1 {
             sra_year_array: arrow::array::builder::Int64Builder::new(),
             sra_quarter_array: arrow::array::builder::Int64Builder::new(),
             sra_runno_array: arrow::array::builder::Int64Builder::new(),
-            runtype_array: arrow::array::builder::StringBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             rundate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             posteddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interest_versionno_array: arrow::array::builder::Int64Builder::new(),
@@ -11395,7 +11717,7 @@ pub struct IrauctionSraFinancialRuntrk1Builder {
     sra_year_array: arrow::array::builder::Int64Builder,
     sra_quarter_array: arrow::array::builder::Int64Builder,
     sra_runno_array: arrow::array::builder::Int64Builder,
-    runtype_array: arrow::array::builder::StringBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     rundate_array: arrow::array::builder::TimestampMillisecondBuilder,
     posteddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     interest_versionno_array: arrow::array::builder::Int64Builder,
@@ -11519,16 +11841,7 @@ impl mmsdm_core::GetTable for IrauctionSraOfferProduct1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_OFFER_PRODUCT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraOfferProduct1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "AUCTIONID",
@@ -11691,12 +12004,18 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "auctionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -11714,12 +12033,18 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -11734,7 +12059,10 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
                 ),
                 arrow::datatypes::Field::new(
                     "trancheid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -11750,16 +12078,26 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionSraOfferProduct1Builder {
-            auctionid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            auctionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             loaddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             optionid_array: arrow::array::builder::Int64Builder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             offer_quantity_array: arrow::array::builder::Int64Builder::new(),
             offer_price_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            trancheid_array: arrow::array::builder::StringBuilder::new(),
+            trancheid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -11818,15 +12156,25 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProduct1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionSraOfferProduct1Builder {
-    auctionid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    auctionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     loaddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     optionid_array: arrow::array::builder::Int64Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     offer_quantity_array: arrow::array::builder::Int64Builder,
     offer_price_array: arrow::array::builder::Decimal128Builder,
-    trancheid_array: arrow::array::builder::StringBuilder,
+    trancheid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionSraOfferProfile1 {
@@ -11939,13 +12287,7 @@ impl mmsdm_core::GetTable for IrauctionSraOfferProfile1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_OFFER_PROFILE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraOfferProfile1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "AUCTIONID",
@@ -12090,12 +12432,18 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProfile1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "auctionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -12108,17 +12456,26 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProfile1 {
                 ),
                 arrow::datatypes::Field::new(
                     "filename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "ackfilename",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "transactionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -12134,12 +12491,22 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProfile1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionSraOfferProfile1Builder {
-            auctionid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            auctionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             loaddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            filename_array: arrow::array::builder::StringBuilder::new(),
-            ackfilename_array: arrow::array::builder::StringBuilder::new(),
-            transactionid_array: arrow::array::builder::StringBuilder::new(),
+            filename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            ackfilename_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            transactionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -12181,12 +12548,22 @@ impl mmsdm_core::ArrowSchema for IrauctionSraOfferProfile1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionSraOfferProfile1Builder {
-    auctionid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    auctionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     loaddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    filename_array: arrow::array::builder::StringBuilder,
-    ackfilename_array: arrow::array::builder::StringBuilder,
-    transactionid_array: arrow::array::builder::StringBuilder,
+    filename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    ackfilename_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    transactionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct IrauctionSraPrudentialCashSecurity1 {
@@ -12263,11 +12640,7 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialCashSecurity1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_PRUDENTIAL_CASH_SECURITY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraPrudentialCashSecurity1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PRUDENTIAL_DATE",
@@ -12438,12 +12811,18 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "cash_security_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -12458,8 +12837,12 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
         IrauctionSraPrudentialCashSecurity1Builder {
             prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             prudential_runno_array: arrow::array::builder::Int64Builder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            cash_security_id_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            cash_security_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             cash_security_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -12506,8 +12889,12 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCashSecurity1 {
 pub struct IrauctionSraPrudentialCashSecurity1Builder {
     prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     prudential_runno_array: arrow::array::builder::Int64Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    cash_security_id_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    cash_security_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     cash_security_amount_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct IrauctionSraPrudentialCompPosition1 {
@@ -12579,12 +12966,7 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialCompPosition1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_PRUDENTIAL_COMP_POSITION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraPrudentialCompPosition1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PRUDENTIAL_DATE",
@@ -12762,7 +13144,10 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -12787,7 +13172,9 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
         IrauctionSraPrudentialCompPosition1Builder {
             prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             prudential_runno_array: arrow::array::builder::Int64Builder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             trading_limit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             prudential_exposure_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -12858,7 +13245,9 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialCompPosition1 {
 pub struct IrauctionSraPrudentialCompPosition1Builder {
     prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     prudential_runno_array: arrow::array::builder::Int64Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     trading_limit_array: arrow::array::builder::Decimal128Builder,
     prudential_exposure_amount_array: arrow::array::builder::Decimal128Builder,
     trading_margin_array: arrow::array::builder::Decimal128Builder,
@@ -12973,20 +13362,7 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialExposure1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_PRUDENTIAL_EXPOSURE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraPrudentialExposure1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "PRUDENTIAL_DATE",
@@ -13213,7 +13589,10 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -13228,12 +13607,18 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -13243,7 +13628,10 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
                 ),
                 arrow::datatypes::Field::new(
                     "auctionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -13281,13 +13669,21 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
         IrauctionSraPrudentialExposure1Builder {
             prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             prudential_runno_array: arrow::array::builder::Int64Builder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             sra_year_array: arrow::array::builder::Int64Builder::new(),
             sra_quarter_array: arrow::array::builder::Int64Builder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             max_tranche_array: arrow::array::builder::Int64Builder::new(),
-            auctionid_array: arrow::array::builder::StringBuilder::new(),
+            auctionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             offer_submissiontime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             average_purchase_price_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
@@ -13397,13 +13793,21 @@ impl mmsdm_core::ArrowSchema for IrauctionSraPrudentialExposure1 {
 pub struct IrauctionSraPrudentialExposure1Builder {
     prudential_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     prudential_runno_array: arrow::array::builder::Int64Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     sra_year_array: arrow::array::builder::Int64Builder,
     sra_quarter_array: arrow::array::builder::Int64Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     max_tranche_array: arrow::array::builder::Int64Builder,
-    auctionid_array: arrow::array::builder::StringBuilder,
+    auctionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     offer_submissiontime_array: arrow::array::builder::TimestampMillisecondBuilder,
     average_purchase_price_array: arrow::array::builder::Decimal128Builder,
     average_cancellation_price_array: arrow::array::builder::Decimal128Builder,
@@ -13466,8 +13870,7 @@ impl mmsdm_core::GetTable for IrauctionSraPrudentialRun1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "SRA_PRUDENTIAL_RUN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionSraPrudentialRun1Mapping([
-        4,
-        5,
+        4, 5,
     ]);
     const COLUMNS: &'static [&'static str] = &["PRUDENTIAL_DATE", "PRUDENTIAL_RUNNO"];
     type Row<'row> = IrauctionSraPrudentialRun1Row<'row>;
@@ -13707,9 +14110,7 @@ impl mmsdm_core::GetTable for IrauctionValuationid1 {
     const DATA_SET_NAME: &'static str = "IRAUCTION";
     const TABLE_NAME: &'static str = "VALUATIONID";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = IrauctionValuationid1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "VALUATIONID",
@@ -13829,12 +14230,18 @@ impl mmsdm_core::ArrowSchema for IrauctionValuationid1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "valuationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -13850,8 +14257,12 @@ impl mmsdm_core::ArrowSchema for IrauctionValuationid1 {
     }
     fn new_builder() -> Self::Builder {
         IrauctionValuationid1Builder {
-            valuationid_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            valuationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -13881,7 +14292,11 @@ impl mmsdm_core::ArrowSchema for IrauctionValuationid1 {
 }
 #[cfg(feature = "arrow")]
 pub struct IrauctionValuationid1Builder {
-    valuationid_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
+    valuationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

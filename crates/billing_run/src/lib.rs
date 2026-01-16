@@ -117,16 +117,7 @@ impl mmsdm_core::GetTable for BillingApcCompensation2 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "APC_COMPENSATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingApcCompensation2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -314,7 +305,10 @@ impl mmsdm_core::ArrowSchema for BillingApcCompensation2 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -324,12 +318,18 @@ impl mmsdm_core::ArrowSchema for BillingApcCompensation2 {
                 ),
                 arrow::datatypes::Field::new(
                     "event_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "compensation_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -350,11 +350,17 @@ impl mmsdm_core::ArrowSchema for BillingApcCompensation2 {
             billrunno_array: arrow::array::builder::Int64Builder::new(),
             apeventid_array: arrow::array::builder::Int64Builder::new(),
             claimid_array: arrow::array::builder::Int64Builder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             compensation_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            event_type_array: arrow::array::builder::StringBuilder::new(),
-            compensation_type_array: arrow::array::builder::StringBuilder::new(),
+            event_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            compensation_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -418,10 +424,16 @@ pub struct BillingApcCompensation2Builder {
     billrunno_array: arrow::array::builder::Int64Builder,
     apeventid_array: arrow::array::builder::Int64Builder,
     claimid_array: arrow::array::builder::Int64Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     compensation_amount_array: arrow::array::builder::Decimal128Builder,
-    event_type_array: arrow::array::builder::StringBuilder,
-    compensation_type_array: arrow::array::builder::StringBuilder,
+    event_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    compensation_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct BillingApcRecovery3 {
@@ -518,21 +530,7 @@ impl mmsdm_core::GetTable for BillingApcRecovery3 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "APC_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingApcRecovery3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -772,12 +770,18 @@ impl mmsdm_core::ArrowSchema for BillingApcRecovery3 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -839,8 +843,12 @@ impl mmsdm_core::ArrowSchema for BillingApcRecovery3 {
             billrunno_array: arrow::array::builder::Int64Builder::new(),
             apeventid_array: arrow::array::builder::Int64Builder::new(),
             claimid_array: arrow::array::builder::Int64Builder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             recovery_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             eligibility_start_interval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -975,8 +983,12 @@ pub struct BillingApcRecovery3Builder {
     billrunno_array: arrow::array::builder::Int64Builder,
     apeventid_array: arrow::array::builder::Int64Builder,
     claimid_array: arrow::array::builder::Int64Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     recovery_amount_array: arrow::array::builder::Decimal128Builder,
     eligibility_start_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
     eligibility_end_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -1060,14 +1072,7 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublication1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "BILLING_CO2E_PUBLICATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingBillingCo2ePublication1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1253,7 +1258,10 @@ impl mmsdm_core::ArrowSchema for BillingBillingCo2ePublication1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1280,7 +1288,9 @@ impl mmsdm_core::ArrowSchema for BillingBillingCo2ePublication1 {
             weekno_array: arrow::array::builder::Int64Builder::new(),
             billrunno_array: arrow::array::builder::Int64Builder::new(),
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             sentoutenergy_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             generatoremissions_array: arrow::array::builder::Decimal128Builder::new()
@@ -1358,7 +1368,9 @@ pub struct BillingBillingCo2ePublication1Builder {
     weekno_array: arrow::array::builder::Int64Builder,
     billrunno_array: arrow::array::builder::Int64Builder,
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     sentoutenergy_array: arrow::array::builder::Decimal128Builder,
     generatoremissions_array: arrow::array::builder::Decimal128Builder,
     intensityindex_array: arrow::array::builder::Decimal128Builder,
@@ -1423,10 +1435,7 @@ impl mmsdm_core::GetTable for BillingBillingCo2ePublicationTrk1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "BILLING_CO2E_PUBLICATION_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingBillingCo2ePublicationTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -1717,23 +1726,7 @@ impl mmsdm_core::GetTable for BillingDailyEnergySummary2 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DAILY_ENERGY_SUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDailyEnergySummary2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -2009,12 +2002,18 @@ impl mmsdm_core::ArrowSchema for BillingDailyEnergySummary2 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2084,8 +2083,12 @@ impl mmsdm_core::ArrowSchema for BillingDailyEnergySummary2 {
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             customer_energy_purchased_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             generator_energy_sold_array: arrow::array::builder::Decimal128Builder::new()
@@ -2290,8 +2293,12 @@ pub struct BillingDailyEnergySummary2Builder {
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     customer_energy_purchased_array: arrow::array::builder::Decimal128Builder,
     generator_energy_sold_array: arrow::array::builder::Decimal128Builder,
     generator_energy_purchased_array: arrow::array::builder::Decimal128Builder,
@@ -2391,15 +2398,7 @@ impl mmsdm_core::GetTable for BillingDirFinalAmount1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_FINAL_AMOUNT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirFinalAmount1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -2603,17 +2602,26 @@ impl mmsdm_core::ArrowSchema for BillingDirFinalAmount1 {
                 ),
                 arrow::datatypes::Field::new(
                     "direction_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "compensation_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2645,9 +2653,15 @@ impl mmsdm_core::ArrowSchema for BillingDirFinalAmount1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            direction_id_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            compensation_type_array: arrow::array::builder::StringBuilder::new(),
+            direction_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            compensation_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             provisional_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             final_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -2736,9 +2750,15 @@ pub struct BillingDirFinalAmount1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    direction_id_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    compensation_type_array: arrow::array::builder::StringBuilder,
+    direction_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    compensation_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     provisional_amount_array: arrow::array::builder::Decimal128Builder,
     final_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -2823,15 +2843,7 @@ impl mmsdm_core::GetTable for BillingDirFinalRecovery1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_FINAL_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirFinalRecovery1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -3030,12 +3042,18 @@ impl mmsdm_core::ArrowSchema for BillingDirFinalRecovery1 {
                 ),
                 arrow::datatypes::Field::new(
                     "direction_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3072,8 +3090,12 @@ impl mmsdm_core::ArrowSchema for BillingDirFinalRecovery1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            direction_id_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            direction_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             cra_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             provisional_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -3172,8 +3194,12 @@ pub struct BillingDirFinalRecovery1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    direction_id_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    direction_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     cra_amount_array: arrow::array::builder::Decimal128Builder,
     provisional_amount_array: arrow::array::builder::Decimal128Builder,
     final_amount_array: arrow::array::builder::Decimal128Builder,
@@ -3264,14 +3290,7 @@ impl mmsdm_core::GetTable for BillingDirProvAmount1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_PROV_AMOUNT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirProvAmount1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -3467,17 +3486,26 @@ impl mmsdm_core::ArrowSchema for BillingDirProvAmount1 {
                 ),
                 arrow::datatypes::Field::new(
                     "direction_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "compensation_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3504,9 +3532,15 @@ impl mmsdm_core::ArrowSchema for BillingDirProvAmount1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            direction_id_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            compensation_type_array: arrow::array::builder::StringBuilder::new(),
+            direction_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            compensation_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             compensation_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -3582,9 +3616,15 @@ pub struct BillingDirProvAmount1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    direction_id_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    compensation_type_array: arrow::array::builder::StringBuilder,
+    direction_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    compensation_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     compensation_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -3666,14 +3706,7 @@ impl mmsdm_core::GetTable for BillingDirProvRecovery1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_PROV_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirProvRecovery1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -3864,12 +3897,18 @@ impl mmsdm_core::ArrowSchema for BillingDirProvRecovery1 {
                 ),
                 arrow::datatypes::Field::new(
                     "direction_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3901,8 +3940,12 @@ impl mmsdm_core::ArrowSchema for BillingDirProvRecovery1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            direction_id_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            direction_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             cra_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             recovery_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -3988,8 +4031,12 @@ pub struct BillingDirProvRecovery1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    direction_id_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    direction_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     cra_amount_array: arrow::array::builder::Decimal128Builder,
     recovery_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -4091,18 +4138,7 @@ impl mmsdm_core::GetTable for BillingDirRecoveryDetail1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DIR_RECOVERY_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDirRecoveryDetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -4328,22 +4364,34 @@ impl mmsdm_core::ArrowSchema for BillingDirRecoveryDetail1 {
                 ),
                 arrow::datatypes::Field::new(
                     "direction_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantcategoryid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4385,10 +4433,18 @@ impl mmsdm_core::ArrowSchema for BillingDirRecoveryDetail1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            direction_id_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            participantcategoryid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            direction_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantcategoryid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             recovery_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             recovery_energy_array: arrow::array::builder::Decimal128Builder::new()
@@ -4506,10 +4562,18 @@ pub struct BillingDirRecoveryDetail1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    direction_id_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    participantcategoryid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    direction_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantcategoryid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     recovery_amount_array: arrow::array::builder::Decimal128Builder,
     recovery_energy_array: arrow::array::builder::Decimal128Builder,
     region_energy_array: arrow::array::builder::Decimal128Builder,
@@ -4656,27 +4720,7 @@ impl mmsdm_core::GetTable for BillingBillingDirectionReconOther2 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "BILLING_DIRECTION_RECON_OTHER";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingBillingDirectionReconOther2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -4946,22 +4990,34 @@ impl mmsdm_core::ArrowSchema for BillingBillingDirectionReconOther2 {
                 ),
                 arrow::datatypes::Field::new(
                     "direction_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "direction_desc",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "direction_type_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5043,7 +5099,10 @@ impl mmsdm_core::ArrowSchema for BillingBillingDirectionReconOther2 {
                 ),
                 arrow::datatypes::Field::new(
                     "direction_service_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -5054,10 +5113,18 @@ impl mmsdm_core::ArrowSchema for BillingBillingDirectionReconOther2 {
             contractyear_array: arrow::array::builder::Int64Builder::new(),
             weekno_array: arrow::array::builder::Int64Builder::new(),
             billrunno_array: arrow::array::builder::Int64Builder::new(),
-            direction_id_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            direction_desc_array: arrow::array::builder::StringBuilder::new(),
-            direction_type_id_array: arrow::array::builder::StringBuilder::new(),
+            direction_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            direction_desc_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            direction_type_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             direction_start_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             direction_end_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             direction_start_interval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -5080,7 +5147,9 @@ impl mmsdm_core::ArrowSchema for BillingBillingDirectionReconOther2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             region_asoe_mwh_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            direction_service_id_array: arrow::array::builder::StringBuilder::new(),
+            direction_service_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -5255,10 +5324,18 @@ pub struct BillingBillingDirectionReconOther2Builder {
     contractyear_array: arrow::array::builder::Int64Builder,
     weekno_array: arrow::array::builder::Int64Builder,
     billrunno_array: arrow::array::builder::Int64Builder,
-    direction_id_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    direction_desc_array: arrow::array::builder::StringBuilder,
-    direction_type_id_array: arrow::array::builder::StringBuilder,
+    direction_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    direction_desc_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
+    direction_type_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     direction_start_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     direction_end_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     direction_start_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -5272,7 +5349,9 @@ pub struct BillingBillingDirectionReconOther2Builder {
     regional_benefit_factor_array: arrow::array::builder::Decimal128Builder,
     region_ace_mwh_array: arrow::array::builder::Decimal128Builder,
     region_asoe_mwh_array: arrow::array::builder::Decimal128Builder,
-    direction_service_id_array: arrow::array::builder::StringBuilder,
+    direction_service_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct BillingEftshortfallAmount1 {
     extract_row_partition: alloc::boxed::Box<
@@ -5364,16 +5443,7 @@ impl mmsdm_core::GetTable for BillingEftshortfallAmount1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "EFTSHORTFALL_AMOUNT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEftshortfallAmount1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -5575,7 +5645,10 @@ impl mmsdm_core::ArrowSchema for BillingEftshortfallAmount1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5590,7 +5663,10 @@ impl mmsdm_core::ArrowSchema for BillingEftshortfallAmount1 {
                 ),
                 arrow::datatypes::Field::new(
                     "shortfall_company_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5619,12 +5695,16 @@ impl mmsdm_core::ArrowSchema for BillingEftshortfallAmount1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             shortfall_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             shortfall_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            shortfall_company_id_array: arrow::array::builder::StringBuilder::new(),
+            shortfall_company_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             company_shortfall_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             participant_net_energy_array: arrow::array::builder::Decimal128Builder::new()
@@ -5740,10 +5820,14 @@ pub struct BillingEftshortfallAmount1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     shortfall_amount_array: arrow::array::builder::Decimal128Builder,
     shortfall_array: arrow::array::builder::Decimal128Builder,
-    shortfall_company_id_array: arrow::array::builder::StringBuilder,
+    shortfall_company_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     company_shortfall_amount_array: arrow::array::builder::Decimal128Builder,
     participant_net_energy_array: arrow::array::builder::Decimal128Builder,
     company_net_energy_array: arrow::array::builder::Decimal128Builder,
@@ -5825,12 +5909,7 @@ impl mmsdm_core::GetTable for BillingEftshortfallDetail1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "EFTSHORTFALL_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEftshortfallDetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -6008,12 +6087,18 @@ impl mmsdm_core::ArrowSchema for BillingEftshortfallDetail1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "transaction_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6032,8 +6117,12 @@ impl mmsdm_core::ArrowSchema for BillingEftshortfallDetail1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            transaction_type_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            transaction_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -6100,8 +6189,12 @@ pub struct BillingEftshortfallDetail1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    transaction_type_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    transaction_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     amount_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BillingEnergyGensetDetail1 {
@@ -6229,26 +6322,7 @@ impl mmsdm_core::GetTable for BillingEnergyGensetDetail1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ENERGY_GENSET_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEnergyGensetDetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -6535,37 +6609,58 @@ impl mmsdm_core::ArrowSchema for BillingEnergyGensetDetail1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "stationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "gensetid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "meterid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6632,13 +6727,27 @@ impl mmsdm_core::ArrowSchema for BillingEnergyGensetDetail1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            stationid_array: arrow::array::builder::StringBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            gensetid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            meterid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            stationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            gensetid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            meterid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             ce_mwh_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             ufea_mwh_array: arrow::array::builder::Decimal128Builder::new()
@@ -6830,13 +6939,23 @@ pub struct BillingEnergyGensetDetail1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    stationid_array: arrow::array::builder::StringBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    gensetid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
-    meterid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    stationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    gensetid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    meterid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     ce_mwh_array: arrow::array::builder::Decimal128Builder,
     ufea_mwh_array: arrow::array::builder::Decimal128Builder,
     ace_mwh_array: arrow::array::builder::Decimal128Builder,
@@ -6944,17 +7063,7 @@ impl mmsdm_core::GetTable for BillingEnergyTranSaps1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ENERGY_TRAN_SAPS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEnergyTranSaps1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -7164,17 +7273,26 @@ impl mmsdm_core::ArrowSchema for BillingEnergyTranSaps1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "tni",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -7216,9 +7334,15 @@ impl mmsdm_core::ArrowSchema for BillingEnergyTranSaps1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            tni_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            tni_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             consumed_energy_mwh_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             sentout_energy_mwh_array: arrow::array::builder::Decimal128Builder::new()
@@ -7333,9 +7457,13 @@ pub struct BillingEnergyTranSaps1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    tni_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    tni_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     consumed_energy_mwh_array: arrow::array::builder::Decimal128Builder,
     sentout_energy_mwh_array: arrow::array::builder::Decimal128Builder,
     consumed_energy_cost_array: arrow::array::builder::Decimal128Builder,
@@ -7443,22 +7571,7 @@ impl mmsdm_core::GetTable for BillingEnergyTransaction1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ENERGY_TRANSACTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingEnergyTransaction1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -7718,17 +7831,26 @@ impl mmsdm_core::ArrowSchema for BillingEnergyTransaction1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7795,9 +7917,15 @@ impl mmsdm_core::ArrowSchema for BillingEnergyTransaction1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             ce_mwh_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             ufea_mwh_array: arrow::array::builder::Decimal128Builder::new()
@@ -7977,9 +8105,15 @@ pub struct BillingEnergyTransaction1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     ce_mwh_array: arrow::array::builder::Decimal128Builder,
     ufea_mwh_array: arrow::array::builder::Decimal128Builder,
     ace_mwh_array: arrow::array::builder::Decimal128Builder,
@@ -8106,19 +8240,7 @@ impl mmsdm_core::GetTable for BillingFcasRegAmt1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "FCAS_REG_AMT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFcasRegAmt1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -8350,32 +8472,50 @@ impl mmsdm_core::ArrowSchema for BillingFcasRegAmt1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "unitid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -8412,12 +8552,24 @@ impl mmsdm_core::ArrowSchema for BillingFcasRegAmt1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            unitid_array: arrow::array::builder::StringBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            unitid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             fpp_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             used_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -8528,12 +8680,20 @@ pub struct BillingFcasRegAmt1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    unitid_array: arrow::array::builder::StringBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    unitid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     fpp_amount_array: arrow::array::builder::Decimal128Builder,
     used_amount_array: arrow::array::builder::Decimal128Builder,
     unused_amount_array: arrow::array::builder::Decimal128Builder,
@@ -8657,26 +8817,7 @@ impl mmsdm_core::GetTable for BillingFcasRegResidamt1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "FCAS_REG_RESIDAMT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFcasRegResidamt1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -8959,22 +9100,34 @@ impl mmsdm_core::ArrowSchema for BillingFcasRegResidamt1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -9056,10 +9209,18 @@ impl mmsdm_core::ArrowSchema for BillingFcasRegResidamt1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             asoe_mwh_array: arrow::array::builder::Decimal128Builder::new()
@@ -9281,10 +9442,16 @@ pub struct BillingFcasRegResidamt1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     ace_mwh_array: arrow::array::builder::Decimal128Builder,
     asoe_mwh_array: arrow::array::builder::Decimal128Builder,
     residual_mwh_array: arrow::array::builder::Decimal128Builder,
@@ -9387,20 +9554,7 @@ impl mmsdm_core::GetTable for BillingFpp1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "FPP";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFpp1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -9639,12 +9793,18 @@ impl mmsdm_core::ArrowSchema for BillingFpp1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9706,8 +9866,12 @@ impl mmsdm_core::ArrowSchema for BillingFpp1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lowerreg_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             lowerreg_ace_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -9873,8 +10037,12 @@ pub struct BillingFpp1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lowerreg_amount_array: arrow::array::builder::Decimal128Builder,
     lowerreg_ace_amount_array: arrow::array::builder::Decimal128Builder,
     lowerreg_asoe_amount_array: arrow::array::builder::Decimal128Builder,
@@ -9972,15 +10140,7 @@ impl mmsdm_core::GetTable for BillingGstDetail5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "GST_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingGstDetail5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -10183,17 +10343,26 @@ impl mmsdm_core::ArrowSchema for BillingGstDetail5 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bas_class",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "transaction_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -10225,9 +10394,15 @@ impl mmsdm_core::ArrowSchema for BillingGstDetail5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            bas_class_array: arrow::array::builder::StringBuilder::new(),
-            transaction_type_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            bas_class_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            transaction_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             gst_exclusive_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             gst_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -10316,9 +10491,15 @@ pub struct BillingGstDetail5Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    bas_class_array: arrow::array::builder::StringBuilder,
-    transaction_type_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    bas_class_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    transaction_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     gst_exclusive_amount_array: arrow::array::builder::Decimal128Builder,
     gst_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -10401,14 +10582,7 @@ impl mmsdm_core::GetTable for BillingGstSummary5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "GST_SUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingGstSummary5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -10599,12 +10773,18 @@ impl mmsdm_core::ArrowSchema for BillingGstSummary5 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bas_class",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -10636,8 +10816,12 @@ impl mmsdm_core::ArrowSchema for BillingGstSummary5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            bas_class_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            bas_class_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             gst_exclusive_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             gst_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -10723,8 +10907,12 @@ pub struct BillingGstSummary5Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    bas_class_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    bas_class_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     gst_exclusive_amount_array: arrow::array::builder::Decimal128Builder,
     gst_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -10837,17 +11025,7 @@ impl mmsdm_core::GetTable for BillingNmasManualPayment1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_MANUAL_PAYMENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasManualPayment1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -11056,32 +11234,50 @@ impl mmsdm_core::ArrowSchema for BillingNmasManualPayment1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "servicetype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "paymenttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -11108,12 +11304,24 @@ impl mmsdm_core::ArrowSchema for BillingNmasManualPayment1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            servicetype_array: arrow::array::builder::StringBuilder::new(),
-            paymenttype_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            servicetype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            paymenttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             paymentamount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -11198,12 +11406,22 @@ pub struct BillingNmasManualPayment1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    servicetype_array: arrow::array::builder::StringBuilder,
-    paymenttype_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    servicetype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    paymenttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     paymentamount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -11317,24 +11535,7 @@ impl mmsdm_core::GetTable for BillingNmasManualRecovery1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_MANUAL_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasManualRecovery1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -11605,27 +11806,42 @@ impl mmsdm_core::ArrowSchema for BillingNmasManualRecovery1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "servicetype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "paymenttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -11698,11 +11914,21 @@ impl mmsdm_core::ArrowSchema for BillingNmasManualRecovery1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            servicetype_array: arrow::array::builder::StringBuilder::new(),
-            paymenttype_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            servicetype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            paymenttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             paymentamount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             recoverystartdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -11878,11 +12104,21 @@ pub struct BillingNmasManualRecovery1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
-    servicetype_array: arrow::array::builder::StringBuilder,
-    paymenttype_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    servicetype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    paymenttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     paymentamount_array: arrow::array::builder::Decimal128Builder,
     recoverystartdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     recoveryenddatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -11974,13 +12210,7 @@ impl mmsdm_core::GetTable for BillingNmasTstPayments1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_TST_PAYMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstPayments1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -12164,17 +12394,26 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstPayments1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "service",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -12193,9 +12432,15 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstPayments1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            service_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            service_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             payment_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -12265,9 +12510,13 @@ pub struct BillingNmasTstPayments1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    service_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    service_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     payment_amount_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BillingNmasTstRecovery2 {
@@ -12396,34 +12645,8 @@ impl mmsdm_core::GetTable for BillingNmasTstRecovery2 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_TST_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstRecovery2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -12775,22 +12998,34 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstRecovery2 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "service",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -12918,10 +13153,18 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstRecovery2 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            service_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            service_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             rbf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             test_payment_array: arrow::array::builder::Decimal128Builder::new()
@@ -13237,10 +13480,16 @@ pub struct BillingNmasTstRecovery2Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    service_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    service_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     rbf_array: arrow::array::builder::Decimal128Builder,
     test_payment_array: arrow::array::builder::Decimal128Builder,
     recovery_start_date_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -13349,16 +13598,7 @@ impl mmsdm_core::GetTable for BillingNmasTstRecvryRbf1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_TST_RECVRY_RBF";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstRecvryRbf1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -13562,17 +13802,26 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstRecvryRbf1 {
                 ),
                 arrow::datatypes::Field::new(
                     "service",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -13609,9 +13858,15 @@ impl mmsdm_core::ArrowSchema for BillingNmasTstRecvryRbf1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            service_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            service_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             rbf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             payment_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -13713,9 +13968,13 @@ pub struct BillingNmasTstRecvryRbf1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    service_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    service_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     rbf_array: arrow::array::builder::Decimal128Builder,
     payment_amount_array: arrow::array::builder::Decimal128Builder,
     recovery_amount_array: arrow::array::builder::Decimal128Builder,
@@ -13789,12 +14048,7 @@ impl mmsdm_core::GetTable for BillingNmasTstRecvryTrk1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "NMAS_TST_RECVRY_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingNmasTstRecvryTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -14200,15 +14454,7 @@ impl mmsdm_core::GetTable for BillingSecdepInterestPay1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SECDEP_INTEREST_PAY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSecdepInterestPay1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -14403,12 +14649,18 @@ impl mmsdm_core::ArrowSchema for BillingSecdepInterestPay1 {
                 ),
                 arrow::datatypes::Field::new(
                     "security_deposit_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -14418,12 +14670,18 @@ impl mmsdm_core::ArrowSchema for BillingSecdepInterestPay1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interest_calc_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "interest_acct_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -14442,12 +14700,20 @@ impl mmsdm_core::ArrowSchema for BillingSecdepInterestPay1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            security_deposit_id_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            security_deposit_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             interest_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            interest_calc_type_array: arrow::array::builder::StringBuilder::new(),
-            interest_acct_id_array: arrow::array::builder::StringBuilder::new(),
+            interest_calc_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            interest_acct_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             interest_rate_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -14531,11 +14797,19 @@ pub struct BillingSecdepInterestPay1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    security_deposit_id_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    security_deposit_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     interest_amount_array: arrow::array::builder::Decimal128Builder,
-    interest_calc_type_array: arrow::array::builder::StringBuilder,
-    interest_acct_id_array: arrow::array::builder::StringBuilder,
+    interest_calc_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    interest_acct_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     interest_rate_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BillingSecdepInterestRate1 {
@@ -14612,12 +14886,7 @@ impl mmsdm_core::GetTable for BillingSecdepInterestRate1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SECDEP_INTEREST_RATE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSecdepInterestRate1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -14800,7 +15069,10 @@ impl mmsdm_core::ArrowSchema for BillingSecdepInterestRate1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interest_acct_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -14827,7 +15099,9 @@ impl mmsdm_core::ArrowSchema for BillingSecdepInterestRate1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interest_acct_id_array: arrow::array::builder::StringBuilder::new(),
+            interest_acct_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interest_rate_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
@@ -14897,7 +15171,9 @@ pub struct BillingSecdepInterestRate1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    interest_acct_id_array: arrow::array::builder::StringBuilder,
+    interest_acct_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     interest_rate_array: arrow::array::builder::Decimal128Builder,
 }
@@ -14969,11 +15245,7 @@ impl mmsdm_core::GetTable for BillingSecdepositApplication1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SECDEPOSIT_APPLICATION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSecdepositApplication1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -15140,7 +15412,10 @@ impl mmsdm_core::ArrowSchema for BillingSecdepositApplication1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -15159,7 +15434,9 @@ impl mmsdm_core::ArrowSchema for BillingSecdepositApplication1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             application_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -15223,7 +15500,9 @@ pub struct BillingSecdepositApplication1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     application_amount_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BillingSubstDemand1 {
@@ -15317,14 +15596,7 @@ impl mmsdm_core::GetTable for BillingSubstDemand1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SUBST_DEMAND";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSubstDemand1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -15524,17 +15796,26 @@ impl mmsdm_core::ArrowSchema for BillingSubstDemand1 {
                 ),
                 arrow::datatypes::Field::new(
                     "tni",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -15554,9 +15835,15 @@ impl mmsdm_core::ArrowSchema for BillingSubstDemand1 {
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            tni_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            tni_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             substitutedemand_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -15632,9 +15919,13 @@ pub struct BillingSubstDemand1Builder {
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    tni_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    tni_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     substitutedemand_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BillingSubstRunVersion1 {
@@ -15702,11 +15993,7 @@ impl mmsdm_core::GetTable for BillingSubstRunVersion1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "SUBST_RUN_VERSION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingSubstRunVersion1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -16045,12 +16332,7 @@ impl mmsdm_core::GetTable for BillingWdr1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "WDR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingWdr1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -16224,7 +16506,10 @@ impl mmsdm_core::ArrowSchema for BillingWdr1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -16248,7 +16533,9 @@ impl mmsdm_core::ArrowSchema for BillingWdr1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             wdr_credit_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             wdr_debit_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -16325,7 +16612,9 @@ pub struct BillingWdr1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     wdr_credit_amount_array: arrow::array::builder::Decimal128Builder,
     wdr_debit_amount_array: arrow::array::builder::Decimal128Builder,
 }
@@ -16419,16 +16708,7 @@ impl mmsdm_core::GetTable for BillingWdrDetail1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "WDR_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingWdrDetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -16633,22 +16913,34 @@ impl mmsdm_core::ArrowSchema for BillingWdrDetail1 {
                 ),
                 arrow::datatypes::Field::new(
                     "wdrrrperiod",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "frmp",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "drsp",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -16677,10 +16969,18 @@ impl mmsdm_core::ArrowSchema for BillingWdrDetail1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            wdrrrperiod_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            frmp_array: arrow::array::builder::StringBuilder::new(),
-            drsp_array: arrow::array::builder::StringBuilder::new(),
+            wdrrrperiod_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            frmp_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            drsp_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             wdrsq_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             wdrrr_array: arrow::array::builder::Decimal128Builder::new()
@@ -16779,10 +17079,14 @@ pub struct BillingWdrDetail1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    wdrrrperiod_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    frmp_array: arrow::array::builder::StringBuilder,
-    drsp_array: arrow::array::builder::StringBuilder,
+    wdrrrperiod_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    frmp_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    drsp_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     wdrsq_array: arrow::array::builder::Decimal128Builder,
     wdrrr_array: arrow::array::builder::Decimal128Builder,
     wdrta_array: arrow::array::builder::Decimal128Builder,
@@ -16916,32 +17220,8 @@ impl mmsdm_core::GetTable for BillingAspayments7 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ASPAYMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingAspayments7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -17260,7 +17540,10 @@ impl mmsdm_core::ArrowSchema for BillingAspayments7 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -17280,12 +17563,18 @@ impl mmsdm_core::ArrowSchema for BillingAspayments7 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -17396,15 +17685,21 @@ impl mmsdm_core::ArrowSchema for BillingAspayments7 {
     }
     fn new_builder() -> Self::Builder {
         BillingAspayments7Builder {
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             contractyear_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             weekno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             raise6sec_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lower6sec_array: arrow::array::builder::Decimal128Builder::new()
@@ -17712,12 +18007,18 @@ impl mmsdm_core::ArrowSchema for BillingAspayments7 {
 }
 #[cfg(feature = "arrow")]
 pub struct BillingAspayments7Builder {
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     raise6sec_array: arrow::array::builder::Decimal128Builder,
     lower6sec_array: arrow::array::builder::Decimal128Builder,
     raise60sec_array: arrow::array::builder::Decimal128Builder,
@@ -17977,94 +18278,11 @@ impl mmsdm_core::GetTable for BillingAsrecovery10 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "ASRECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingAsrecovery10Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
-        68,
-        69,
-        70,
-        71,
-        72,
-        73,
-        74,
-        75,
-        76,
-        77,
-        78,
-        79,
-        80,
-        81,
-        82,
-        83,
-        84,
-        85,
-        86,
-        87,
-        88,
-        89,
-        90,
-        91,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85,
+        86, 87, 88, 89, 90, 91,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -18880,7 +19098,10 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery10 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -18900,7 +19121,10 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery10 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -19326,14 +19550,18 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery10 {
     }
     fn new_builder() -> Self::Builder {
         BillingAsrecovery10Builder {
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             contractyear_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             weekno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             raise6sec_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lower6sec_array: arrow::array::builder::Decimal128Builder::new()
@@ -20465,11 +20693,15 @@ impl mmsdm_core::ArrowSchema for BillingAsrecovery10 {
 }
 #[cfg(feature = "arrow")]
 pub struct BillingAsrecovery10Builder {
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     raise6sec_array: arrow::array::builder::Decimal128Builder,
     lower6sec_array: arrow::array::builder::Decimal128Builder,
     raise60sec_array: arrow::array::builder::Decimal128Builder,
@@ -20620,12 +20852,7 @@ impl mmsdm_core::GetTable for BillingDaytrk5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "DAYTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingDaytrk5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -20999,16 +21226,7 @@ impl mmsdm_core::GetTable for BillingFees5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "FEES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFees5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -21217,12 +21435,18 @@ impl mmsdm_core::ArrowSchema for BillingFees5 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "marketfeeid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -21250,7 +21474,10 @@ impl mmsdm_core::ArrowSchema for BillingFees5 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantcategoryid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -21264,8 +21491,12 @@ impl mmsdm_core::ArrowSchema for BillingFees5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            marketfeeid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            marketfeeid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             rate_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             energy_array: arrow::array::builder::Decimal128Builder::new()
@@ -21273,7 +21504,9 @@ impl mmsdm_core::ArrowSchema for BillingFees5 {
             value_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            participantcategoryid_array: arrow::array::builder::StringBuilder::new(),
+            participantcategoryid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -21368,13 +21601,19 @@ pub struct BillingFees5Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    marketfeeid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    marketfeeid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     rate_array: arrow::array::builder::Decimal128Builder,
     energy_array: arrow::array::builder::Decimal128Builder,
     value_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    participantcategoryid_array: arrow::array::builder::StringBuilder,
+    participantcategoryid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct BillingFinancialadjustments5 {
     extract_row_partition: alloc::boxed::Box<
@@ -21487,17 +21726,7 @@ impl mmsdm_core::GetTable for BillingFinancialadjustments5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "FINANCIALADJUSTMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingFinancialadjustments5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -21703,17 +21932,26 @@ impl mmsdm_core::ArrowSchema for BillingFinancialadjustments5 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participanttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "adjustmentitem",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -21741,7 +21979,10 @@ impl mmsdm_core::ArrowSchema for BillingFinancialadjustments5 {
                 ),
                 arrow::datatypes::Field::new(
                     "bas_class",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -21755,9 +21996,15 @@ impl mmsdm_core::ArrowSchema for BillingFinancialadjustments5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            participanttype_array: arrow::array::builder::StringBuilder::new(),
-            adjustmentitem_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            participanttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            adjustmentitem_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             value_array: arrow::array::builder::Decimal128Builder::new()
@@ -21765,7 +22012,9 @@ impl mmsdm_core::ArrowSchema for BillingFinancialadjustments5 {
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             financialcode_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
-            bas_class_array: arrow::array::builder::StringBuilder::new(),
+            bas_class_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -21863,14 +22112,22 @@ pub struct BillingFinancialadjustments5Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    participanttype_array: arrow::array::builder::StringBuilder,
-    adjustmentitem_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    participanttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    adjustmentitem_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     amount_array: arrow::array::builder::Decimal128Builder,
     value_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     financialcode_array: arrow::array::builder::Decimal128Builder,
-    bas_class_array: arrow::array::builder::StringBuilder,
+    bas_class_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct BillingInterresidues5 {
     extract_row_partition: alloc::boxed::Box<
@@ -21961,16 +22218,7 @@ impl mmsdm_core::GetTable for BillingInterresidues5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "INTERRESIDUES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingInterresidues5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "ALLOCATION",
@@ -22173,7 +22421,10 @@ impl mmsdm_core::ArrowSchema for BillingInterresidues5 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -22193,7 +22444,10 @@ impl mmsdm_core::ArrowSchema for BillingInterresidues5 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -22211,7 +22465,10 @@ impl mmsdm_core::ArrowSchema for BillingInterresidues5 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -22223,18 +22480,24 @@ impl mmsdm_core::ArrowSchema for BillingInterresidues5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(6, 3)),
             totalsurplus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             contractyear_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             weekno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             surplusvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 6)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -22328,14 +22591,20 @@ impl mmsdm_core::ArrowSchema for BillingInterresidues5 {
 pub struct BillingInterresidues5Builder {
     allocation_array: arrow::array::builder::Decimal128Builder,
     totalsurplus_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     surplusvalue_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
 }
 pub struct BillingIntraresidues5 {
     extract_row_partition: alloc::boxed::Box<
@@ -22417,15 +22686,7 @@ impl mmsdm_core::GetTable for BillingIntraresidues5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "INTRARESIDUES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIntraresidues5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "ALLOCATION",
@@ -22634,7 +22895,10 @@ impl mmsdm_core::ArrowSchema for BillingIntraresidues5 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -22652,7 +22916,10 @@ impl mmsdm_core::ArrowSchema for BillingIntraresidues5 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -22670,11 +22937,15 @@ impl mmsdm_core::ArrowSchema for BillingIntraresidues5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             surplusvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 6)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -22768,10 +23039,14 @@ pub struct BillingIntraresidues5Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     surplusvalue_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
 }
 pub struct BillingIraucsurplus5 {
     extract_row_partition: alloc::boxed::Box<
@@ -22870,18 +23145,7 @@ impl mmsdm_core::GetTable for BillingIraucsurplus5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRAUCSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIraucsurplus5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -23116,22 +23380,34 @@ impl mmsdm_core::ArrowSchema for BillingIraucsurplus5 {
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -23167,10 +23443,18 @@ impl mmsdm_core::ArrowSchema for BillingIraucsurplus5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             totalresidues_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             adjustment_array: arrow::array::builder::Decimal128Builder::new()
@@ -23286,10 +23570,18 @@ pub struct BillingIraucsurplus5Builder {
     residueyear_array: arrow::array::builder::Decimal128Builder,
     quarter_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    contractid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     totalresidues_array: arrow::array::builder::Decimal128Builder,
     adjustment_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -23397,22 +23689,7 @@ impl mmsdm_core::GetTable for BillingIraucsurplussum7 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRAUCSURPLUSSUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIraucsurplussum7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -23686,17 +23963,26 @@ impl mmsdm_core::ArrowSchema for BillingIraucsurplussum7 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -23757,9 +24043,15 @@ impl mmsdm_core::ArrowSchema for BillingIraucsurplussum7 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             totalsurplus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             auctionfees_array: arrow::array::builder::Decimal128Builder::new()
@@ -23933,9 +24225,15 @@ pub struct BillingIraucsurplussum7Builder {
     residueyear_array: arrow::array::builder::Decimal128Builder,
     quarter_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     totalsurplus_array: arrow::array::builder::Decimal128Builder,
     auctionfees_array: arrow::array::builder::Decimal128Builder,
     actualpayment_array: arrow::array::builder::Decimal128Builder,
@@ -24042,18 +24340,7 @@ impl mmsdm_core::GetTable for BillingIrnspsurplus5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRNSPSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIrnspsurplus5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -24288,22 +24575,34 @@ impl mmsdm_core::ArrowSchema for BillingIrnspsurplus5 {
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -24339,10 +24638,18 @@ impl mmsdm_core::ArrowSchema for BillingIrnspsurplus5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             totalresidues_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             adjustment_array: arrow::array::builder::Decimal128Builder::new()
@@ -24458,10 +24765,18 @@ pub struct BillingIrnspsurplus5Builder {
     residueyear_array: arrow::array::builder::Decimal128Builder,
     quarter_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    contractid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     totalresidues_array: arrow::array::builder::Decimal128Builder,
     adjustment_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -24565,20 +24880,7 @@ impl mmsdm_core::GetTable for BillingIrnspsurplussum6 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRNSPSURPLUSSUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIrnspsurplussum6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -24836,17 +25138,26 @@ impl mmsdm_core::ArrowSchema for BillingIrnspsurplussum6 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -24897,9 +25208,15 @@ impl mmsdm_core::ArrowSchema for BillingIrnspsurplussum6 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             totalsurplus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             auctionfees_array: arrow::array::builder::Decimal128Builder::new()
@@ -25047,9 +25364,15 @@ pub struct BillingIrnspsurplussum6Builder {
     residueyear_array: arrow::array::builder::Decimal128Builder,
     quarter_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     totalsurplus_array: arrow::array::builder::Decimal128Builder,
     auctionfees_array: arrow::array::builder::Decimal128Builder,
     auctionfees_gst_array: arrow::array::builder::Decimal128Builder,
@@ -25156,19 +25479,7 @@ impl mmsdm_core::GetTable for BillingIrpartsurplus5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRPARTSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIrpartsurplus5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -25411,22 +25722,34 @@ impl mmsdm_core::ArrowSchema for BillingIrpartsurplus5 {
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -25467,10 +25790,18 @@ impl mmsdm_core::ArrowSchema for BillingIrpartsurplus5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             totalresidues_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             adjustment_array: arrow::array::builder::Decimal128Builder::new()
@@ -25599,10 +25930,18 @@ pub struct BillingIrpartsurplus5Builder {
     residueyear_array: arrow::array::builder::Decimal128Builder,
     quarter_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    contractid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     totalresidues_array: arrow::array::builder::Decimal128Builder,
     adjustment_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -25711,22 +26050,7 @@ impl mmsdm_core::GetTable for BillingIrpartsurplussum7 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "IRPARTSURPLUSSUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingIrpartsurplussum7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -26000,17 +26324,26 @@ impl mmsdm_core::ArrowSchema for BillingIrpartsurplussum7 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -26071,9 +26404,15 @@ impl mmsdm_core::ArrowSchema for BillingIrpartsurplussum7 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             totalsurplus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             auctionfees_array: arrow::array::builder::Decimal128Builder::new()
@@ -26248,9 +26587,15 @@ pub struct BillingIrpartsurplussum7Builder {
     residueyear_array: arrow::array::builder::Decimal128Builder,
     quarter_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     totalsurplus_array: arrow::array::builder::Decimal128Builder,
     auctionfees_array: arrow::array::builder::Decimal128Builder,
     actualpayment_array: arrow::array::builder::Decimal128Builder,
@@ -26353,22 +26698,7 @@ impl mmsdm_core::GetTable for BillingPrioradjustments5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "PRIORADJUSTMENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingPrioradjustments5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -26655,7 +26985,10 @@ impl mmsdm_core::ArrowSchema for BillingPrioradjustments5 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -26723,7 +27056,9 @@ impl mmsdm_core::ArrowSchema for BillingPrioradjustments5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             adjbillrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             prevamount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             adjamount_array: arrow::array::builder::Decimal128Builder::new()
@@ -26914,7 +27249,9 @@ pub struct BillingPrioradjustments5Builder {
     adjcontractyear_array: arrow::array::builder::Decimal128Builder,
     adjweekno_array: arrow::array::builder::Decimal128Builder,
     adjbillrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     prevamount_array: arrow::array::builder::Decimal128Builder,
     adjamount_array: arrow::array::builder::Decimal128Builder,
     irn_array: arrow::array::builder::Decimal128Builder,
@@ -27001,13 +27338,7 @@ impl mmsdm_core::GetTable for BillingRealloc5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REALLOC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRealloc5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -27190,12 +27521,18 @@ impl mmsdm_core::ArrowSchema for BillingRealloc5 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "counterparty",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -27222,8 +27559,12 @@ impl mmsdm_core::ArrowSchema for BillingRealloc5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            counterparty_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            counterparty_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             value_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -27296,8 +27637,12 @@ pub struct BillingRealloc5Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    counterparty_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    counterparty_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     value_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -27386,14 +27731,7 @@ impl mmsdm_core::GetTable for BillingReallocDetail5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REALLOC_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingReallocDetail5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -27585,17 +27923,26 @@ impl mmsdm_core::ArrowSchema for BillingReallocDetail5 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "counterparty",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "reallocationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -27622,9 +27969,15 @@ impl mmsdm_core::ArrowSchema for BillingReallocDetail5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            counterparty_array: arrow::array::builder::StringBuilder::new(),
-            reallocationid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            counterparty_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            reallocationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             value_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -27700,9 +28053,15 @@ pub struct BillingReallocDetail5Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    counterparty_array: arrow::array::builder::StringBuilder,
-    reallocationid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    counterparty_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    reallocationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     value_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -27788,16 +28147,7 @@ impl mmsdm_core::GetTable for BillingRegionexports5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REGIONEXPORTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRegionexports5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -28004,12 +28354,18 @@ impl mmsdm_core::ArrowSchema for BillingRegionexports5 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "exportto",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -28051,8 +28407,12 @@ impl mmsdm_core::ArrowSchema for BillingRegionexports5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            exportto_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            exportto_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             energy_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             value_array: arrow::array::builder::Decimal128Builder::new()
@@ -28164,8 +28524,12 @@ pub struct BillingRegionexports5Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    exportto_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    exportto_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     energy_array: arrow::array::builder::Decimal128Builder,
     value_array: arrow::array::builder::Decimal128Builder,
     surplusenergy_array: arrow::array::builder::Decimal128Builder,
@@ -28266,24 +28630,7 @@ impl mmsdm_core::GetTable for BillingRegionfigures6 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REGIONFIGURES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRegionfigures6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -28553,7 +28900,10 @@ impl mmsdm_core::ArrowSchema for BillingRegionfigures6 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -28640,7 +28990,9 @@ impl mmsdm_core::ArrowSchema for BillingRegionfigures6 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             energyout_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             valueout_array: arrow::array::builder::Decimal128Builder::new()
@@ -28866,7 +29218,9 @@ pub struct BillingRegionfigures6Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     energyout_array: arrow::array::builder::Decimal128Builder,
     valueout_array: arrow::array::builder::Decimal128Builder,
     energypurchased_array: arrow::array::builder::Decimal128Builder,
@@ -28964,16 +29318,7 @@ impl mmsdm_core::GetTable for BillingRegionimports5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "REGIONIMPORTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRegionimports5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -29180,12 +29525,18 @@ impl mmsdm_core::ArrowSchema for BillingRegionimports5 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "importfrom",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -29227,8 +29578,12 @@ impl mmsdm_core::ArrowSchema for BillingRegionimports5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            importfrom_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            importfrom_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             energy_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             value_array: arrow::array::builder::Decimal128Builder::new()
@@ -29340,8 +29695,12 @@ pub struct BillingRegionimports5Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    importfrom_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    importfrom_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     energy_array: arrow::array::builder::Decimal128Builder,
     value_array: arrow::array::builder::Decimal128Builder,
     surplusenergy_array: arrow::array::builder::Decimal128Builder,
@@ -29506,22 +29865,7 @@ impl mmsdm_core::GetTable for BillingRuntrk5 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "RUNTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRuntrk5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -29748,12 +30092,18 @@ impl mmsdm_core::ArrowSchema for BillingRuntrk5 {
                 ),
                 arrow::datatypes::Field::new(
                     "status",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "adj_cleared",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -29766,7 +30116,10 @@ impl mmsdm_core::ArrowSchema for BillingRuntrk5 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -29779,7 +30132,10 @@ impl mmsdm_core::ArrowSchema for BillingRuntrk5 {
                 ),
                 arrow::datatypes::Field::new(
                     "postby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -29800,7 +30156,10 @@ impl mmsdm_core::ArrowSchema for BillingRuntrk5 {
                 ),
                 arrow::datatypes::Field::new(
                     "receiptpostby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -29813,7 +30172,10 @@ impl mmsdm_core::ArrowSchema for BillingRuntrk5 {
                 ),
                 arrow::datatypes::Field::new(
                     "paymentpostby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -29837,17 +30199,29 @@ impl mmsdm_core::ArrowSchema for BillingRuntrk5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            status_array: arrow::array::builder::StringBuilder::new(),
-            adj_cleared_array: arrow::array::builder::StringBuilder::new(),
+            status_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            adj_cleared_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             postdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            postby_array: arrow::array::builder::StringBuilder::new(),
+            postby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             receiptpostdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            receiptpostby_array: arrow::array::builder::StringBuilder::new(),
+            receiptpostby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             paymentpostdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            paymentpostby_array: arrow::array::builder::StringBuilder::new(),
+            paymentpostby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             shortfall_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             makeup_array: arrow::array::builder::Decimal128Builder::new()
@@ -29970,17 +30344,25 @@ pub struct BillingRuntrk5Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    status_array: arrow::array::builder::StringBuilder,
-    adj_cleared_array: arrow::array::builder::StringBuilder,
+    status_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    adj_cleared_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     postdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    postby_array: arrow::array::builder::StringBuilder,
+    postby_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     receiptpostdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    receiptpostby_array: arrow::array::builder::StringBuilder,
+    receiptpostby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     paymentpostdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    paymentpostby_array: arrow::array::builder::StringBuilder,
+    paymentpostby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     shortfall_array: arrow::array::builder::Decimal128Builder,
     makeup_array: arrow::array::builder::Decimal128Builder,
 }
@@ -30083,14 +30465,7 @@ impl mmsdm_core::GetTable for BillingReservetraderpayment1 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "RESERVETRADERPAYMENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingReservetraderpayment1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -30277,12 +30652,18 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderpayment1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -30292,7 +30673,10 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderpayment1 {
                 ),
                 arrow::datatypes::Field::new(
                     "payment_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -30311,11 +30695,17 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderpayment1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             payment_id_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            payment_type_array: arrow::array::builder::StringBuilder::new(),
+            payment_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             payment_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -30394,10 +30784,16 @@ pub struct BillingReservetraderpayment1Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     payment_id_array: arrow::array::builder::Decimal128Builder,
-    payment_type_array: arrow::array::builder::StringBuilder,
+    payment_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     payment_amount_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BillingReservetraderrecovery3 {
@@ -30502,22 +30898,7 @@ impl mmsdm_core::GetTable for BillingReservetraderrecovery3 {
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "RESERVETRADERRECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingReservetraderrecovery3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -30780,7 +31161,10 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery3 {
                 ),
                 arrow::datatypes::Field::new(
                     "publication_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -30795,12 +31179,18 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery3 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -30860,13 +31250,19 @@ impl mmsdm_core::ArrowSchema for BillingReservetraderrecovery3 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             billrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            publication_id_array: arrow::array::builder::StringBuilder::new(),
+            publication_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             payment_id_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             payment_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             participant_demand_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             region_demand_array: arrow::array::builder::Decimal128Builder::new()
@@ -31041,11 +31437,17 @@ pub struct BillingReservetraderrecovery3Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
-    publication_id_array: arrow::array::builder::StringBuilder,
+    publication_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     payment_id_array: arrow::array::builder::Decimal128Builder,
     payment_amount_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     participant_demand_array: arrow::array::builder::Decimal128Builder,
     region_demand_array: arrow::array::builder::Decimal128Builder,
     eligibility_start_interval_array: arrow::array::builder::TimestampMillisecondBuilder,

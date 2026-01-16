@@ -32,19 +32,19 @@ pub trait GetBufReader<'a> {
 }
 
 #[cfg(feature = "io_unzip")]
-pub struct UnzipFile {
-    file: std::fs::File,
+pub struct UnzipFile<'a> {
+    file: &'a std::fs::File,
 }
 
 #[cfg(feature = "io_unzip")]
-impl UnzipFile {
-    pub fn new(file: std::fs::File) -> Self {
+impl<'a> UnzipFile<'a> {
+    pub fn new(file: &'a std::fs::File) -> Self {
         UnzipFile { file }
     }
 }
 
 #[cfg(feature = "io_unzip")]
-impl<'a> GetBufReader<'a> for UnzipFile {
+impl<'a> GetBufReader<'a> for UnzipFile<'a> {
     type BufReader<'b>
         = BufReader<DeflateDecoder<&'b std::fs::File>>
     where
@@ -55,7 +55,7 @@ impl<'a> GetBufReader<'a> for UnzipFile {
     where
         'a: 'b,
     {
-        let mut fileref = &self.file;
+        let mut fileref = self.file;
         std::io::Seek::seek(&mut fileref, std::io::SeekFrom::Start(0))?;
         let reader = crate::unzip::AemoZipStreamerConfig::decompress_first_file_raw(fileref)?;
         Ok(BufReader::new(reader))

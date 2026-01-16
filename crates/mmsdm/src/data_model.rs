@@ -75,3 +75,6 @@ pub use mmsdm_stpasa_solution::*;
 
 #[cfg(feature = "trading_data")]
 pub use mmsdm_trading_data::*;
+
+#[cfg(feature = "historical_tables")]
+pub use mmsdm_historical_tables;

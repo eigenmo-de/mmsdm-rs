@@ -32,8 +32,17 @@ impl mms::DataType {
     }
     fn as_arrow_type(&self) -> String {
         match self {
-            mms::DataType::Varchar { .. } | mms::DataType::Char => {
-                "arrow::datatypes::DataType::Utf8".to_string()
+            mms::DataType::Char => {
+                "arrow::datatypes::DataType::Dictionary(alloc::boxed::Box::new(arrow::datatypes::DataType::Int8), alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8))".to_string()
+            }
+            mms::DataType::Varchar { length } if *length <= 10 => {
+                "arrow::datatypes::DataType::Dictionary(alloc::boxed::Box::new(arrow::datatypes::DataType::Int16), alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8))".to_string()
+            }
+            mms::DataType::Varchar { length } if *length <= 100 => {
+                "arrow::datatypes::DataType::Dictionary(alloc::boxed::Box::new(arrow::datatypes::DataType::Int32), alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8))".to_string()
+            }
+            mms::DataType::Varchar { length }  => {
+                "arrow::datatypes::DataType::Dictionary(alloc::boxed::Box::new(arrow::datatypes::DataType::Int64), alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8))".to_string()
             }
             mms::DataType::Date | mms::DataType::DateTime => {
                 "arrow::datatypes::DataType::Timestamp(arrow::datatypes::TimeUnit::Millisecond, None)"
@@ -48,8 +57,21 @@ impl mms::DataType {
     }
     fn as_arrow_builder(&self) -> String {
         match self {
-            mms::DataType::Varchar { .. } | mms::DataType::Char => {
-                "arrow::array::builder::StringBuilder::new()".to_string()
+            mms::DataType::Char => {
+                "arrow::array::StringDictionaryBuilder::<arrow::array::types::Int8Type>::new()"
+                    .to_string()
+            }
+            mms::DataType::Varchar { length } if *length <= 10 => {
+                "arrow::array::StringDictionaryBuilder::<arrow::array::types::Int16Type>::new()"
+                    .to_string()
+            }
+            mms::DataType::Varchar { length } if *length <= 100 => {
+                "arrow::array::StringDictionaryBuilder::<arrow::array::types::Int32Type>::new()"
+                    .to_string()
+            }
+            mms::DataType::Varchar { length } => {
+                "arrow::array::StringDictionaryBuilder::<arrow::array::types::Int64Type>::new()"
+                    .to_string()
             }
             mms::DataType::Date | mms::DataType::DateTime => {
                 "arrow::array::builder::TimestampMillisecondBuilder::new()".to_string()
@@ -66,8 +88,17 @@ impl mms::DataType {
     }
     fn as_arrow_builder_ty(&self) -> String {
         match self {
-            mms::DataType::Varchar { .. } | mms::DataType::Char => {
-                "arrow::array::builder::StringBuilder".to_string()
+            mms::DataType::Char => {
+                "arrow::array::StringDictionaryBuilder<arrow::array::types::Int8Type>".to_string()
+            }
+            mms::DataType::Varchar { length } if *length <= 10 => {
+                "arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>".to_string()
+            }
+            mms::DataType::Varchar { length } if *length <= 100 => {
+                "arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>".to_string()
+            }
+            mms::DataType::Varchar { length } => {
+                "arrow::array::StringDictionaryBuilder<arrow::array::types::Int64Type>".to_string()
             }
             mms::DataType::Date | mms::DataType::DateTime => {
                 "arrow::array::builder::TimestampMillisecondBuilder".to_string()

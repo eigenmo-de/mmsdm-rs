@@ -109,15 +109,7 @@ impl mmsdm_core::GetTable for ApApevent1 {
     const DATA_SET_NAME: &'static str = "AP";
     const TABLE_NAME: &'static str = "APEVENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ApApevent1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "APEVENTID",
@@ -302,12 +294,18 @@ impl mmsdm_core::ArrowSchema for ApApevent1 {
                 ),
                 arrow::datatypes::Field::new(
                     "reason",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "startauthorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -320,7 +318,10 @@ impl mmsdm_core::ArrowSchema for ApApevent1 {
                 ),
                 arrow::datatypes::Field::new(
                     "endauthorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -348,10 +349,16 @@ impl mmsdm_core::ArrowSchema for ApApevent1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
             effectivefrominterval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             effectivetointerval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            reason_array: arrow::array::builder::StringBuilder::new(),
-            startauthorisedby_array: arrow::array::builder::StringBuilder::new(),
+            reason_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            startauthorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             startauthoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            endauthorisedby_array: arrow::array::builder::StringBuilder::new(),
+            endauthorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             endauthoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
@@ -425,10 +432,14 @@ pub struct ApApevent1Builder {
     apeventid_array: arrow::array::builder::Decimal128Builder,
     effectivefrominterval_array: arrow::array::builder::TimestampMillisecondBuilder,
     effectivetointerval_array: arrow::array::builder::TimestampMillisecondBuilder,
-    reason_array: arrow::array::builder::StringBuilder,
-    startauthorisedby_array: arrow::array::builder::StringBuilder,
+    reason_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int64Type>,
+    startauthorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     startauthoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    endauthorisedby_array: arrow::array::builder::StringBuilder,
+    endauthorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     endauthoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -516,20 +527,7 @@ impl mmsdm_core::GetTable for ApApeventregion2 {
     const DATA_SET_NAME: &'static str = "AP";
     const TABLE_NAME: &'static str = "APEVENTREGION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ApApeventregion2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "APEVENTID",
@@ -749,7 +747,10 @@ impl mmsdm_core::ArrowSchema for ApApeventregion2 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -822,7 +823,9 @@ impl mmsdm_core::ArrowSchema for ApApeventregion2 {
         ApApeventregion2Builder {
             apeventid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             energyapflag_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
@@ -1002,7 +1005,9 @@ impl mmsdm_core::ArrowSchema for ApApeventregion2 {
 #[cfg(feature = "arrow")]
 pub struct ApApeventregion2Builder {
     apeventid_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     energyapflag_array: arrow::array::builder::Decimal128Builder,
     raise6secapflag_array: arrow::array::builder::Decimal128Builder,
@@ -1101,14 +1106,7 @@ impl mmsdm_core::GetTable for ForceMajeureIrfmamount1 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "IRFMAMOUNT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureIrfmamount1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "IRFMID",
@@ -1276,7 +1274,10 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "irfmid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1304,7 +1305,10 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1328,7 +1332,9 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
     }
     fn new_builder() -> Self::Builder {
         ForceMajeureIrfmamount1Builder {
-            irfmid_array: arrow::array::builder::StringBuilder::new(),
+            irfmid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -1336,7 +1342,9 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
@@ -1410,12 +1418,14 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmamount1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ForceMajeureIrfmamount1Builder {
-    irfmid_array: arrow::array::builder::StringBuilder,
+    irfmid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
     amount_array: arrow::array::builder::Decimal128Builder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -1480,12 +1490,7 @@ impl mmsdm_core::GetTable for ForceMajeureIrfmevents1 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "IRFMEVENTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureIrfmevents1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "IRFMID",
@@ -1634,7 +1639,10 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "irfmid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1676,7 +1684,9 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
     }
     fn new_builder() -> Self::Builder {
         ForceMajeureIrfmevents1Builder {
-            irfmid_array: arrow::array::builder::StringBuilder::new(),
+            irfmid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             startperiod_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -1741,7 +1751,7 @@ impl mmsdm_core::ArrowSchema for ForceMajeureIrfmevents1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ForceMajeureIrfmevents1Builder {
-    irfmid_array: arrow::array::builder::StringBuilder,
+    irfmid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     startperiod_array: arrow::array::builder::Decimal128Builder,
     enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -1832,12 +1842,7 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendRegimeSum1 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "MARKET_SUSPEND_REGIME_SUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureMarketSuspendRegimeSum1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SUSPENSION_ID",
@@ -1992,12 +1997,18 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "suspension_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2018,7 +2029,10 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
                 ),
                 arrow::datatypes::Field::new(
                     "pricing_regime",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2034,11 +2048,17 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
     }
     fn new_builder() -> Self::Builder {
         ForceMajeureMarketSuspendRegimeSum1Builder {
-            suspension_id_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            suspension_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             start_interval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             end_interval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            pricing_regime_array: arrow::array::builder::StringBuilder::new(),
+            pricing_regime_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -2081,11 +2101,17 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegimeSum1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ForceMajeureMarketSuspendRegimeSum1Builder {
-    suspension_id_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    suspension_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     start_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
     end_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
-    pricing_regime_array: arrow::array::builder::StringBuilder,
+    pricing_regime_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ForceMajeureMarketSuspendRegionSum1 {
@@ -2159,12 +2185,7 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendRegionSum1 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "MARKET_SUSPEND_REGION_SUM";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureMarketSuspendRegionSum1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SUSPENSION_ID",
@@ -2318,12 +2339,18 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "suspension_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2363,8 +2390,12 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
     }
     fn new_builder() -> Self::Builder {
         ForceMajeureMarketSuspendRegionSum1Builder {
-            suspension_id_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            suspension_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             initial_interval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             end_region_interval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             end_suspension_interval_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -2418,8 +2449,12 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendRegionSum1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ForceMajeureMarketSuspendRegionSum1Builder {
-    suspension_id_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    suspension_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     initial_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
     end_region_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
     end_suspension_interval_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -2518,22 +2553,7 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendSchedule2 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "MARKET_SUSPEND_SCHEDULE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureMarketSuspendSchedule2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -2778,12 +2798,18 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule2 {
                 ),
                 arrow::datatypes::Field::new(
                     "day_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2860,8 +2886,12 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule2 {
     fn new_builder() -> Self::Builder {
         ForceMajeureMarketSuspendSchedule2Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            day_type_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            day_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             energy_rrp_array: arrow::array::builder::Decimal128Builder::new()
@@ -3051,8 +3081,12 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendSchedule2 {
 #[cfg(feature = "arrow")]
 pub struct ForceMajeureMarketSuspendSchedule2Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    day_type_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    day_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     energy_rrp_array: arrow::array::builder::Decimal128Builder,
     r6_rrp_array: arrow::array::builder::Decimal128Builder,
@@ -3143,12 +3177,7 @@ impl mmsdm_core::GetTable for ForceMajeureMarketSuspendScheduleTrk1 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "MARKET_SUSPEND_SCHEDULE_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureMarketSuspendScheduleTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -3329,7 +3358,10 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "comments",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3356,7 +3388,9 @@ impl mmsdm_core::ArrowSchema for ForceMajeureMarketSuspendScheduleTrk1 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             source_start_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             source_end_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            comments_array: arrow::array::builder::StringBuilder::new(),
+            comments_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
@@ -3413,7 +3447,9 @@ pub struct ForceMajeureMarketSuspendScheduleTrk1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     source_start_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     source_end_date_array: arrow::array::builder::TimestampMillisecondBuilder,
-    comments_array: arrow::array::builder::StringBuilder,
+    comments_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -3530,16 +3566,7 @@ impl mmsdm_core::GetTable for ForceMajeureOverriderrp1 {
     const DATA_SET_NAME: &'static str = "FORCE_MAJEURE";
     const TABLE_NAME: &'static str = "OVERRIDERRP";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ForceMajeureOverriderrp1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -3713,7 +3740,10 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3749,17 +3779,26 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "authorisestart",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "authoriseend",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3775,7 +3814,9 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
     }
     fn new_builder() -> Self::Builder {
         ForceMajeureOverriderrp1Builder {
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             startdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             startperiod_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -3784,9 +3825,15 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             rrp_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 0)),
-            description_array: arrow::array::builder::StringBuilder::new(),
-            authorisestart_array: arrow::array::builder::StringBuilder::new(),
-            authoriseend_array: arrow::array::builder::StringBuilder::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
+            authorisestart_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            authoriseend_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -3861,15 +3908,23 @@ impl mmsdm_core::ArrowSchema for ForceMajeureOverriderrp1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ForceMajeureOverriderrp1Builder {
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     startperiod_array: arrow::array::builder::Decimal128Builder,
     enddate_array: arrow::array::builder::TimestampMillisecondBuilder,
     endperiod_array: arrow::array::builder::Decimal128Builder,
     rrp_array: arrow::array::builder::Decimal128Builder,
-    description_array: arrow::array::builder::StringBuilder,
-    authorisestart_array: arrow::array::builder::StringBuilder,
-    authoriseend_array: arrow::array::builder::StringBuilder,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
+    authorisestart_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    authoriseend_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ApRegionapc1 {
@@ -3953,12 +4008,7 @@ impl mmsdm_core::GetTable for ApRegionapc1 {
     const DATA_SET_NAME: &'static str = "AP";
     const TABLE_NAME: &'static str = "REGIONAPC";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ApRegionapc1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -4110,7 +4160,10 @@ impl mmsdm_core::ArrowSchema for ApRegionapc1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4136,7 +4189,10 @@ impl mmsdm_core::ArrowSchema for ApRegionapc1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4152,12 +4208,16 @@ impl mmsdm_core::ArrowSchema for ApRegionapc1 {
     }
     fn new_builder() -> Self::Builder {
         ApRegionapc1Builder {
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -4208,11 +4268,15 @@ impl mmsdm_core::ArrowSchema for ApRegionapc1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ApRegionapc1Builder {
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ApRegionapcintervals1 {
@@ -4291,15 +4355,7 @@ impl mmsdm_core::GetTable for ApRegionapcintervals1 {
     const DATA_SET_NAME: &'static str = "AP";
     const TABLE_NAME: &'static str = "REGIONAPCINTERVALS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ApRegionapcintervals1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "REGIONID",
@@ -4482,7 +4538,10 @@ impl mmsdm_core::ArrowSchema for ApRegionapcintervals1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4536,7 +4595,9 @@ impl mmsdm_core::ArrowSchema for ApRegionapcintervals1 {
     }
     fn new_builder() -> Self::Builder {
         ApRegionapcintervals1Builder {
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -4643,7 +4704,9 @@ impl mmsdm_core::ArrowSchema for ApRegionapcintervals1 {
 }
 #[cfg(feature = "arrow")]
 pub struct ApRegionapcintervals1Builder {
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,

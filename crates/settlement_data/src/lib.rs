@@ -126,16 +126,7 @@ impl mmsdm_core::GetTable for SettlementsDaytrack7 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "DAYTRACK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsDaytrack7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -311,12 +302,18 @@ impl mmsdm_core::ArrowSchema for SettlementsDaytrack7 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "exanterunstatus",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -326,7 +323,10 @@ impl mmsdm_core::ArrowSchema for SettlementsDaytrack7 {
                 ),
                 arrow::datatypes::Field::new(
                     "expostrunstatus",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -354,7 +354,10 @@ impl mmsdm_core::ArrowSchema for SettlementsDaytrack7 {
                 ),
                 arrow::datatypes::Field::new(
                     "meter_runtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -363,11 +366,17 @@ impl mmsdm_core::ArrowSchema for SettlementsDaytrack7 {
     fn new_builder() -> Self::Builder {
         SettlementsDaytrack7Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            exanterunstatus_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            exanterunstatus_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             exanterunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            expostrunstatus_array: arrow::array::builder::StringBuilder::new(),
+            expostrunstatus_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             expostrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -375,7 +384,9 @@ impl mmsdm_core::ArrowSchema for SettlementsDaytrack7 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             meter_caseid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(5, 0)),
-            meter_runtype_array: arrow::array::builder::StringBuilder::new(),
+            meter_runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -459,15 +470,23 @@ impl mmsdm_core::ArrowSchema for SettlementsDaytrack7 {
 #[cfg(feature = "arrow")]
 pub struct SettlementsDaytrack7Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    exanterunstatus_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    exanterunstatus_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     exanterunno_array: arrow::array::builder::Decimal128Builder,
-    expostrunstatus_array: arrow::array::builder::StringBuilder,
+    expostrunstatus_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     expostrunno_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     settlementintervallength_array: arrow::array::builder::Decimal128Builder,
     meter_caseid_array: arrow::array::builder::Decimal128Builder,
-    meter_runtype_array: arrow::array::builder::StringBuilder,
+    meter_runtype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
 }
 pub struct SettlementsAncillarySummary5 {
     extract_row_partition: alloc::boxed::Box<
@@ -551,14 +570,7 @@ impl mmsdm_core::GetTable for SettlementsAncillarySummary5 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "ANCILLARY_SUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsAncillarySummary5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -749,17 +761,26 @@ impl mmsdm_core::ArrowSchema for SettlementsAncillarySummary5 {
                 ),
                 arrow::datatypes::Field::new(
                     "service",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "paymenttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -788,9 +809,15 @@ impl mmsdm_core::ArrowSchema for SettlementsAncillarySummary5 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            service_array: arrow::array::builder::StringBuilder::new(),
-            paymenttype_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            service_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            paymenttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             paymentamount_array: arrow::array::builder::Decimal128Builder::new()
@@ -863,9 +890,13 @@ impl mmsdm_core::ArrowSchema for SettlementsAncillarySummary5 {
 pub struct SettlementsAncillarySummary5Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    service_array: arrow::array::builder::StringBuilder,
-    paymenttype_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    service_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    paymenttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     paymentamount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -1028,28 +1059,7 @@ impl mmsdm_core::GetTable for SettlementsEnergyGensetDetail1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "ENERGY_GENSET_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsEnergyGensetDetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -1336,32 +1346,50 @@ impl mmsdm_core::ArrowSchema for SettlementsEnergyGensetDetail1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "stationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "gensetid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1376,7 +1404,10 @@ impl mmsdm_core::ArrowSchema for SettlementsEnergyGensetDetail1 {
                 ),
                 arrow::datatypes::Field::new(
                     "meterid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1442,17 +1473,31 @@ impl mmsdm_core::ArrowSchema for SettlementsEnergyGensetDetail1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            stationid_array: arrow::array::builder::StringBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            gensetid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            stationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            gensetid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             rrp_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             tlf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            meterid_array: arrow::array::builder::StringBuilder::new(),
+            meterid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             ce_mwh_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             ufea_mwh_array: arrow::array::builder::Decimal128Builder::new()
@@ -1662,15 +1707,25 @@ pub struct SettlementsEnergyGensetDetail1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    stationid_array: arrow::array::builder::StringBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    gensetid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    stationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    gensetid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     rrp_array: arrow::array::builder::Decimal128Builder,
     tlf_array: arrow::array::builder::Decimal128Builder,
-    meterid_array: arrow::array::builder::StringBuilder,
+    meterid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     ce_mwh_array: arrow::array::builder::Decimal128Builder,
     ufea_mwh_array: arrow::array::builder::Decimal128Builder,
     ace_mwh_array: arrow::array::builder::Decimal128Builder,
@@ -1766,19 +1821,7 @@ impl mmsdm_core::GetTable for SettlementsEnergyRegionSummary1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "ENERGY_REGION_SUMMARY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsEnergyRegionSummary1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -2018,7 +2061,10 @@ impl mmsdm_core::ArrowSchema for SettlementsEnergyRegionSummary1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2079,7 +2125,9 @@ impl mmsdm_core::ArrowSchema for SettlementsEnergyRegionSummary1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             ce_mwh_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             ufea_mwh_array: arrow::array::builder::Decimal128Builder::new()
@@ -2236,7 +2284,9 @@ pub struct SettlementsEnergyRegionSummary1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     ce_mwh_array: arrow::array::builder::Decimal128Builder,
     ufea_mwh_array: arrow::array::builder::Decimal128Builder,
     ace_mwh_array: arrow::array::builder::Decimal128Builder,
@@ -2345,18 +2395,7 @@ impl mmsdm_core::GetTable for SettlementsEnergyTranSaps1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "ENERGY_TRAN_SAPS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsEnergyTranSaps1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -2577,17 +2616,26 @@ impl mmsdm_core::ArrowSchema for SettlementsEnergyTranSaps1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "tni",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2633,9 +2681,15 @@ impl mmsdm_core::ArrowSchema for SettlementsEnergyTranSaps1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            tni_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            tni_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             saps_rrp_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             consumed_energy_mwh_array: arrow::array::builder::Decimal128Builder::new()
@@ -2759,9 +2813,13 @@ pub struct SettlementsEnergyTranSaps1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    tni_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    tni_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     saps_rrp_array: arrow::array::builder::Decimal128Builder,
     consumed_energy_mwh_array: arrow::array::builder::Decimal128Builder,
     sentout_energy_mwh_array: arrow::array::builder::Decimal128Builder,
@@ -2894,28 +2952,7 @@ impl mmsdm_core::GetTable for SettlementsEnergyTransaction1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "ENERGY_TRANSACTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsEnergyTransaction1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -3222,22 +3259,34 @@ impl mmsdm_core::ArrowSchema for SettlementsEnergyTransaction1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "meter_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3328,10 +3377,18 @@ impl mmsdm_core::ArrowSchema for SettlementsEnergyTransaction1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
-            meter_type_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            meter_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             rrp_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             tlf_array: arrow::array::builder::Decimal128Builder::new()
@@ -3575,10 +3632,18 @@ pub struct SettlementsEnergyTransaction1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
-    meter_type_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    meter_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     rrp_array: arrow::array::builder::Decimal128Builder,
     tlf_array: arrow::array::builder::Decimal128Builder,
     ce_mwh_array: arrow::array::builder::Decimal128Builder,
@@ -3694,23 +3759,7 @@ impl mmsdm_core::GetTable for SettlementsFcasClawbackReq1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_CLAWBACK_REQ";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasClawbackReq1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -3966,17 +4015,26 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasClawbackReq1 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4050,9 +4108,15 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasClawbackReq1 {
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             region_enablement_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             constraint_enablement_array: arrow::array::builder::Decimal128Builder::new()
@@ -4245,9 +4309,13 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasClawbackReq1 {
 pub struct SettlementsFcasClawbackReq1Builder {
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    constraintid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     region_enablement_array: arrow::array::builder::Decimal128Builder,
     constraint_enablement_array: arrow::array::builder::Decimal128Builder,
     region_base_cost_array: arrow::array::builder::Decimal128Builder,
@@ -4341,13 +4409,7 @@ impl mmsdm_core::GetTable for SettlementsFcasClawbackRunTrk1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_CLAWBACK_RUN_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasClawbackRunTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -4553,7 +4615,10 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasClawbackRunTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "prev_data_source",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -4576,7 +4641,9 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasClawbackRunTrk1 {
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             clawback_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            prev_data_source_array: arrow::array::builder::StringBuilder::new(),
+            prev_data_source_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -4645,7 +4712,9 @@ pub struct SettlementsFcasClawbackRunTrk1Builder {
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     clawback_date_array: arrow::array::builder::TimestampMillisecondBuilder,
-    prev_data_source_array: arrow::array::builder::StringBuilder,
+    prev_data_source_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SettlementsFcasClawbackUnitsol1 {
@@ -4733,20 +4802,7 @@ impl mmsdm_core::GetTable for SettlementsFcasClawbackUnitsol1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_CLAWBACK_UNITSOL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasClawbackUnitsol1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTERVAL_DATETIME",
@@ -4983,7 +5039,10 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasClawbackUnitsol1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5052,7 +5111,9 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasClawbackUnitsol1 {
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lower1sec_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             lower5min_array: arrow::array::builder::Decimal128Builder::new()
@@ -5225,7 +5286,7 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasClawbackUnitsol1 {
 pub struct SettlementsFcasClawbackUnitsol1Builder {
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     lower1sec_array: arrow::array::builder::Decimal128Builder,
     lower5min_array: arrow::array::builder::Decimal128Builder,
     lower60sec_array: arrow::array::builder::Decimal128Builder,
@@ -5354,23 +5415,7 @@ impl mmsdm_core::GetTable for SettlementsFcasPayment6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_PAYMENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasPayment6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -5624,17 +5669,26 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasPayment6 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -5708,9 +5762,15 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasPayment6 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             lower6sec_payment_array: arrow::array::builder::Decimal128Builder::new()
@@ -5900,9 +5960,13 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasPayment6 {
 pub struct SettlementsFcasPayment6Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     lower6sec_payment_array: arrow::array::builder::Decimal128Builder,
     raise6sec_payment_array: arrow::array::builder::Decimal128Builder,
@@ -6105,68 +6169,9 @@ impl mmsdm_core::GetTable for SettlementsFcasRecovery9 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasRecovery9Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -6780,17 +6785,26 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRecovery9 {
                 ),
                 arrow::datatypes::Field::new(
                     "versionno",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -7092,9 +7106,15 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRecovery9 {
     fn new_builder() -> Self::Builder {
         SettlementsFcasRecovery9Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            versionno_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            versionno_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             lower6sec_recovery_array: arrow::array::builder::Decimal128Builder::new()
@@ -7874,9 +7894,15 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRecovery9 {
 #[cfg(feature = "arrow")]
 pub struct SettlementsFcasRecovery9Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    versionno_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    versionno_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     lower6sec_recovery_array: arrow::array::builder::Decimal128Builder,
     raise6sec_recovery_array: arrow::array::builder::Decimal128Builder,
@@ -8044,17 +8070,7 @@ impl mmsdm_core::GetTable for SettlementsFcasRegAmt1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_REG_AMT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasRegAmt1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -8257,12 +8273,18 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegAmt1 {
                 ),
                 arrow::datatypes::Field::new(
                     "unitid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -8272,12 +8294,18 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegAmt1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -8311,12 +8339,20 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegAmt1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            unitid_array: arrow::array::builder::StringBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            unitid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             fpp_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             used_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -8416,11 +8452,15 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegAmt1 {
 pub struct SettlementsFcasRegAmt1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    unitid_array: arrow::array::builder::StringBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    unitid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     fpp_amount_array: arrow::array::builder::Decimal128Builder,
     used_amount_array: arrow::array::builder::Decimal128Builder,
     unused_amount_array: arrow::array::builder::Decimal128Builder,
@@ -8530,15 +8570,7 @@ impl mmsdm_core::GetTable for SettlementsFcasRegDefAmt1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_REG_DEF_AMT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasRegDefAmt1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -8725,12 +8757,18 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegDefAmt1 {
                 ),
                 arrow::datatypes::Field::new(
                     "unitid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -8740,12 +8778,18 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegDefAmt1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -8769,12 +8813,20 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegDefAmt1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            unitid_array: arrow::array::builder::StringBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            unitid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             unused_amount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -8848,11 +8900,15 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegDefAmt1 {
 pub struct SettlementsFcasRegDefAmt1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    unitid_array: arrow::array::builder::StringBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    unitid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     unused_amount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -8962,20 +9018,7 @@ impl mmsdm_core::GetTable for SettlementsFcasRegDefResidamt1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_REG_DEF_RESIDAMT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasRegDefResidamt1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -9214,12 +9257,18 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegDefResidamt1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9229,12 +9278,18 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegDefResidamt1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -9283,12 +9338,20 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegDefResidamt1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             asoe_mwh_array: arrow::array::builder::Decimal128Builder::new()
@@ -9427,11 +9490,17 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegDefResidamt1 {
 pub struct SettlementsFcasRegDefResidamt1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     ace_mwh_array: arrow::array::builder::Decimal128Builder,
     asoe_mwh_array: arrow::array::builder::Decimal128Builder,
     residual_mwh_array: arrow::array::builder::Decimal128Builder,
@@ -9558,26 +9627,7 @@ impl mmsdm_core::GetTable for SettlementsFcasRegResidamt1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCAS_REG_RESIDAMT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasRegResidamt1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -9861,12 +9911,18 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegResidamt1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9876,12 +9932,18 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegResidamt1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -9960,12 +10022,20 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegResidamt1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             ace_mwh_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             asoe_mwh_array: arrow::array::builder::Decimal128Builder::new()
@@ -10182,11 +10252,17 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasRegResidamt1 {
 pub struct SettlementsFcasRegResidamt1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     ace_mwh_array: arrow::array::builder::Decimal128Builder,
     asoe_mwh_array: arrow::array::builder::Decimal128Builder,
     residual_mwh_array: arrow::array::builder::Decimal128Builder,
@@ -10309,31 +10385,8 @@ impl mmsdm_core::GetTable for SettlementsSetFcasRegulationTrk3 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "SET_FCAS_REGULATION_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsSetFcasRegulationTrk3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -10676,7 +10729,10 @@ impl mmsdm_core::ArrowSchema for SettlementsSetFcasRegulationTrk3 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -10796,7 +10852,9 @@ impl mmsdm_core::ArrowSchema for SettlementsSetFcasRegulationTrk3 {
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             cmpf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             crmpf_array: arrow::array::builder::Decimal128Builder::new()
@@ -11105,7 +11163,9 @@ pub struct SettlementsSetFcasRegulationTrk3Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     cmpf_array: arrow::array::builder::Decimal128Builder,
     crmpf_array: arrow::array::builder::Decimal128Builder,
     recovery_factor_cmpf_array: arrow::array::builder::Decimal128Builder,
@@ -11218,20 +11278,7 @@ impl mmsdm_core::GetTable for SettlementsFpp1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FPP";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFpp1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -11471,12 +11518,18 @@ impl mmsdm_core::ArrowSchema for SettlementsFpp1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -11540,8 +11593,12 @@ impl mmsdm_core::ArrowSchema for SettlementsFpp1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             lowerreg_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -11704,8 +11761,12 @@ impl mmsdm_core::ArrowSchema for SettlementsFpp1 {
 pub struct SettlementsFpp1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     lowerreg_amount_array: arrow::array::builder::Decimal128Builder,
     lowerreg_ace_amount_array: arrow::array::builder::Decimal128Builder,
@@ -11825,17 +11886,7 @@ impl mmsdm_core::GetTable for SettlementsNmasManualPayment1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "NMAS_MANUAL_PAYMENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsNmasManualPayment1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -12049,27 +12100,42 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasManualPayment1 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "servicetype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "paymenttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -12079,7 +12145,10 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasManualPayment1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -12103,14 +12172,26 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasManualPayment1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            servicetype_array: arrow::array::builder::StringBuilder::new(),
-            paymenttype_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            servicetype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            paymenttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             paymentamount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -12190,13 +12271,23 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasManualPayment1 {
 pub struct SettlementsNmasManualPayment1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    servicetype_array: arrow::array::builder::StringBuilder,
-    paymenttype_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    servicetype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    paymenttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     paymentamount_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -12322,30 +12413,8 @@ impl mmsdm_core::GetTable for SettlementsNmasRecovery3 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "NMAS_RECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsNmasRecovery3Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -12667,27 +12736,42 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasRecovery3 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "service",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "paymenttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -12783,11 +12867,21 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasRecovery3 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            service_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            paymenttype_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            service_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            paymenttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             rbf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             payment_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -13049,11 +13143,19 @@ pub struct SettlementsNmasRecovery3Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    service_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
-    paymenttype_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    service_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    paymenttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     rbf_array: arrow::array::builder::Decimal128Builder,
     payment_amount_array: arrow::array::builder::Decimal128Builder,
     participant_energy_array: arrow::array::builder::Decimal128Builder,
@@ -13163,17 +13265,7 @@ impl mmsdm_core::GetTable for SettlementsNmasRecoveryRbf1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "NMAS_RECOVERY_RBF";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsNmasRecoveryRbf1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -13390,22 +13482,34 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasRecoveryRbf1 {
                 ),
                 arrow::datatypes::Field::new(
                     "service",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "paymenttype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -13441,10 +13545,18 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasRecoveryRbf1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            service_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
-            paymenttype_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            service_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            paymenttype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             rbf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             payment_amount_array: arrow::array::builder::Decimal128Builder::new()
@@ -13545,10 +13657,16 @@ pub struct SettlementsNmasRecoveryRbf1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    service_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
-    paymenttype_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    service_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    paymenttype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     rbf_array: arrow::array::builder::Decimal128Builder,
     payment_amount_array: arrow::array::builder::Decimal128Builder,
     recovery_amount_array: arrow::array::builder::Decimal128Builder,
@@ -13666,31 +13784,8 @@ impl mmsdm_core::GetTable for SettlementsRecoveryEnergy2 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "RECOVERY_ENERGY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsRecoveryEnergy2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -14018,12 +14113,18 @@ impl mmsdm_core::ArrowSchema for SettlementsRecoveryEnergy2 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -14139,8 +14240,12 @@ impl mmsdm_core::ArrowSchema for SettlementsRecoveryEnergy2 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             settlementrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             customerenergyactual_array: arrow::array::builder::Decimal128Builder::new()
@@ -14459,8 +14564,12 @@ impl mmsdm_core::ArrowSchema for SettlementsRecoveryEnergy2 {
 pub struct SettlementsRecoveryEnergy2Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     settlementrunno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     customerenergyactual_array: arrow::array::builder::Decimal128Builder,
     customerenergympfexactual_array: arrow::array::builder::Decimal128Builder,
@@ -14545,10 +14654,7 @@ impl mmsdm_core::GetTable for SettlementsSubstRunVersion1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "SUBST_RUN_VERSION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsSubstRunVersion1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -14875,12 +14981,7 @@ impl mmsdm_core::GetTable for SettlementsSubstDemand1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "SUBST_DEMAND";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsSubstDemand1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -15046,17 +15147,26 @@ impl mmsdm_core::ArrowSchema for SettlementsSubstDemand1 {
                 ),
                 arrow::datatypes::Field::new(
                     "tni",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -15072,9 +15182,15 @@ impl mmsdm_core::ArrowSchema for SettlementsSubstDemand1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             settlementrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            tni_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            tni_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             substitutedemand_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -15130,9 +15246,13 @@ impl mmsdm_core::ArrowSchema for SettlementsSubstDemand1 {
 pub struct SettlementsSubstDemand1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     settlementrunno_array: arrow::array::builder::Decimal128Builder,
-    tni_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    tni_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     substitutedemand_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct SettlementsWdrReconDetail1 {
@@ -15296,27 +15416,7 @@ impl mmsdm_core::GetTable for SettlementsWdrReconDetail1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "WDR_RECON_DETAIL";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsWdrReconDetail1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -15583,27 +15683,42 @@ impl mmsdm_core::ArrowSchema for SettlementsWdrReconDetail1 {
                 ),
                 arrow::datatypes::Field::new(
                     "nmi",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "tni",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "frmp",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "drsp",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -15663,7 +15778,10 @@ impl mmsdm_core::ArrowSchema for SettlementsWdrReconDetail1 {
                 ),
                 arrow::datatypes::Field::new(
                     "qualityflag",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -15673,7 +15791,10 @@ impl mmsdm_core::ArrowSchema for SettlementsWdrReconDetail1 {
                 ),
                 arrow::datatypes::Field::new(
                     "baselinecalculationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -15684,11 +15805,21 @@ impl mmsdm_core::ArrowSchema for SettlementsWdrReconDetail1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             settlementrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            nmi_array: arrow::array::builder::StringBuilder::new(),
-            tni_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            frmp_array: arrow::array::builder::StringBuilder::new(),
-            drsp_array: arrow::array::builder::StringBuilder::new(),
+            nmi_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            tni_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            frmp_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            drsp_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             wdrsq_uncapped_array: arrow::array::builder::Decimal128Builder::new()
@@ -15711,10 +15842,14 @@ impl mmsdm_core::ArrowSchema for SettlementsWdrReconDetail1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             isnoncompliant_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
-            qualityflag_array: arrow::array::builder::StringBuilder::new(),
+            qualityflag_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             transactionamount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            baselinecalculationid_array: arrow::array::builder::StringBuilder::new(),
+            baselinecalculationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -15899,11 +16034,13 @@ impl mmsdm_core::ArrowSchema for SettlementsWdrReconDetail1 {
 pub struct SettlementsWdrReconDetail1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     settlementrunno_array: arrow::array::builder::Decimal128Builder,
-    nmi_array: arrow::array::builder::StringBuilder,
-    tni_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    frmp_array: arrow::array::builder::StringBuilder,
-    drsp_array: arrow::array::builder::StringBuilder,
+    nmi_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    tni_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    frmp_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    drsp_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     periodid_array: arrow::array::builder::Decimal128Builder,
     wdrsq_uncapped_array: arrow::array::builder::Decimal128Builder,
     wdrsq_capped_array: arrow::array::builder::Decimal128Builder,
@@ -15915,9 +16052,13 @@ pub struct SettlementsWdrReconDetail1Builder {
     me_dlfadjusted_array: arrow::array::builder::Decimal128Builder,
     bq_dlfadjusted_array: arrow::array::builder::Decimal128Builder,
     isnoncompliant_array: arrow::array::builder::Decimal128Builder,
-    qualityflag_array: arrow::array::builder::StringBuilder,
+    qualityflag_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     transactionamount_array: arrow::array::builder::Decimal128Builder,
-    baselinecalculationid_array: arrow::array::builder::StringBuilder,
+    baselinecalculationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct SettlementsWdrTransact1 {
     extract_row_partition: alloc::boxed::Box<
@@ -16011,14 +16152,7 @@ impl mmsdm_core::GetTable for SettlementsWdrTransact1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "WDR_TRANSACT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsWdrTransact1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
+        4, 5, 6, 7, 8, 9, 10, 11,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -16219,22 +16353,34 @@ impl mmsdm_core::ArrowSchema for SettlementsWdrTransact1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantroleid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "counterpartyparticipantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -16252,10 +16398,18 @@ impl mmsdm_core::ArrowSchema for SettlementsWdrTransact1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            participantroleid_array: arrow::array::builder::StringBuilder::new(),
-            counterpartyparticipantid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantroleid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            counterpartyparticipantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             transactionamount_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
         }
@@ -16327,10 +16481,18 @@ pub struct SettlementsWdrTransact1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     settlementrunno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    participantroleid_array: arrow::array::builder::StringBuilder,
-    counterpartyparticipantid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantroleid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    counterpartyparticipantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     transactionamount_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct SettlementsFcasregionrecovery6 {
@@ -16423,20 +16585,7 @@ impl mmsdm_core::GetTable for SettlementsFcasregionrecovery6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "FCASREGIONRECOVERY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsFcasregionrecovery6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -16677,12 +16826,18 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasregionrecovery6 {
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -16746,8 +16901,12 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasregionrecovery6 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             generatorregionenergy_array: arrow::array::builder::Decimal128Builder::new()
@@ -16910,8 +17069,10 @@ impl mmsdm_core::ArrowSchema for SettlementsFcasregionrecovery6 {
 pub struct SettlementsFcasregionrecovery6Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    bidtype_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     generatorregionenergy_array: arrow::array::builder::Decimal128Builder,
     customerregionenergy_array: arrow::array::builder::Decimal128Builder,
@@ -17005,18 +17166,7 @@ impl mmsdm_core::GetTable for SettlementsIntraregionresidues6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "INTRAREGIONRESIDUES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsIntraregionresidues6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -17234,7 +17384,10 @@ impl mmsdm_core::ArrowSchema for SettlementsIntraregionresidues6 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -17288,7 +17441,9 @@ impl mmsdm_core::ArrowSchema for SettlementsIntraregionresidues6 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Int64Builder::new(),
             periodid_array: arrow::array::builder::Int64Builder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             ep_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             ec_array: arrow::array::builder::Decimal128Builder::new()
@@ -17420,7 +17575,9 @@ pub struct SettlementsIntraregionresidues6Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Int64Builder,
     periodid_array: arrow::array::builder::Int64Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     ep_array: arrow::array::builder::Decimal128Builder,
     ec_array: arrow::array::builder::Decimal128Builder,
     rrp_array: arrow::array::builder::Decimal128Builder,
@@ -17529,19 +17686,7 @@ impl mmsdm_core::GetTable for SettlementsIraucsurplus6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "IRAUCSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsIraucsurplus6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -17773,7 +17918,10 @@ impl mmsdm_core::ArrowSchema for SettlementsIraucsurplus6 {
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -17783,17 +17931,26 @@ impl mmsdm_core::ArrowSchema for SettlementsIraucsurplus6 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -17837,12 +17994,20 @@ impl mmsdm_core::ArrowSchema for SettlementsIraucsurplus6 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             settlementrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             totalsurplus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             contractallocation_array: arrow::array::builder::Decimal128Builder::new()
@@ -17968,11 +18133,19 @@ impl mmsdm_core::ArrowSchema for SettlementsIraucsurplus6 {
 pub struct SettlementsIraucsurplus6Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     settlementrunno_array: arrow::array::builder::Decimal128Builder,
-    contractid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     totalsurplus_array: arrow::array::builder::Decimal128Builder,
     contractallocation_array: arrow::array::builder::Decimal128Builder,
     surplusvalue_array: arrow::array::builder::Decimal128Builder,
@@ -18079,19 +18252,7 @@ impl mmsdm_core::GetTable for SettlementsIrnspsurplus6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "IRNSPSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsIrnspsurplus6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -18323,7 +18484,10 @@ impl mmsdm_core::ArrowSchema for SettlementsIrnspsurplus6 {
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -18333,17 +18497,26 @@ impl mmsdm_core::ArrowSchema for SettlementsIrnspsurplus6 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -18387,12 +18560,20 @@ impl mmsdm_core::ArrowSchema for SettlementsIrnspsurplus6 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             settlementrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             totalsurplus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             contractallocation_array: arrow::array::builder::Decimal128Builder::new()
@@ -18518,11 +18699,19 @@ impl mmsdm_core::ArrowSchema for SettlementsIrnspsurplus6 {
 pub struct SettlementsIrnspsurplus6Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     settlementrunno_array: arrow::array::builder::Decimal128Builder,
-    contractid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     totalsurplus_array: arrow::array::builder::Decimal128Builder,
     contractallocation_array: arrow::array::builder::Decimal128Builder,
     surplusvalue_array: arrow::array::builder::Decimal128Builder,
@@ -18629,19 +18818,7 @@ impl mmsdm_core::GetTable for SettlementsIrpartsurplus6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "IRPARTSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsIrpartsurplus6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -18873,7 +19050,10 @@ impl mmsdm_core::ArrowSchema for SettlementsIrpartsurplus6 {
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -18883,17 +19063,26 @@ impl mmsdm_core::ArrowSchema for SettlementsIrpartsurplus6 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "fromregionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -18937,12 +19126,20 @@ impl mmsdm_core::ArrowSchema for SettlementsIrpartsurplus6 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             settlementrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            fromregionid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            fromregionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             totalsurplus_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             contractallocation_array: arrow::array::builder::Decimal128Builder::new()
@@ -19068,11 +19265,19 @@ impl mmsdm_core::ArrowSchema for SettlementsIrpartsurplus6 {
 pub struct SettlementsIrpartsurplus6Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     settlementrunno_array: arrow::array::builder::Decimal128Builder,
-    contractid_array: arrow::array::builder::StringBuilder,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    fromregionid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    fromregionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     totalsurplus_array: arrow::array::builder::Decimal128Builder,
     contractallocation_array: arrow::array::builder::Decimal128Builder,
     surplusvalue_array: arrow::array::builder::Decimal128Builder,
@@ -19167,17 +19372,7 @@ impl mmsdm_core::GetTable for SettlementsIrsurplus6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "IRSURPLUS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsIrsurplus6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -19398,12 +19593,18 @@ impl mmsdm_core::ArrowSchema for SettlementsIrsurplus6 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -19449,8 +19650,12 @@ impl mmsdm_core::ArrowSchema for SettlementsIrsurplus6 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             mwflow_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 6)),
             lossfactor_array: arrow::array::builder::Decimal128Builder::new()
@@ -19571,8 +19776,12 @@ pub struct SettlementsIrsurplus6Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     settlementrunno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     mwflow_array: arrow::array::builder::Decimal128Builder,
     lossfactor_array: arrow::array::builder::Decimal128Builder,
     surplusvalue_array: arrow::array::builder::Decimal128Builder,
@@ -19658,16 +19867,7 @@ impl mmsdm_core::GetTable for SettlementsLocalareaenergy1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "LOCALAREAENERGY";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsLocalareaenergy1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -19875,7 +20075,10 @@ impl mmsdm_core::ArrowSchema for SettlementsLocalareaenergy1 {
                 ),
                 arrow::datatypes::Field::new(
                     "localareaid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -19924,7 +20127,9 @@ impl mmsdm_core::ArrowSchema for SettlementsLocalareaenergy1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             settlementrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            localareaid_array: arrow::array::builder::StringBuilder::new(),
+            localareaid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             ufe_array: arrow::array::builder::Decimal128Builder::new()
@@ -20043,7 +20248,9 @@ impl mmsdm_core::ArrowSchema for SettlementsLocalareaenergy1 {
 pub struct SettlementsLocalareaenergy1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     settlementrunno_array: arrow::array::builder::Decimal128Builder,
-    localareaid_array: arrow::array::builder::StringBuilder,
+    localareaid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
     ufe_array: arrow::array::builder::Decimal128Builder,
     ddme_array: arrow::array::builder::Decimal128Builder,
@@ -20123,11 +20330,7 @@ impl mmsdm_core::GetTable for SettlementsLocalareatni1 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "LOCALAREATNI";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsLocalareatni1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -20289,12 +20492,18 @@ impl mmsdm_core::ArrowSchema for SettlementsLocalareatni1 {
                 ),
                 arrow::datatypes::Field::new(
                     "localareaid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "tni",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -20313,8 +20522,12 @@ impl mmsdm_core::ArrowSchema for SettlementsLocalareatni1 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             settlementrunno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            localareaid_array: arrow::array::builder::StringBuilder::new(),
-            tni_array: arrow::array::builder::StringBuilder::new(),
+            localareaid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            tni_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -20360,8 +20573,10 @@ impl mmsdm_core::ArrowSchema for SettlementsLocalareatni1 {
 pub struct SettlementsLocalareatni1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     settlementrunno_array: arrow::array::builder::Decimal128Builder,
-    localareaid_array: arrow::array::builder::StringBuilder,
-    tni_array: arrow::array::builder::StringBuilder,
+    localareaid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    tni_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct SettlementsLshedpayment5 {
@@ -20495,30 +20710,8 @@ impl mmsdm_core::GetTable for SettlementsLshedpayment5 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "LSHEDPAYMENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsLshedpayment5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -20826,12 +21019,18 @@ impl mmsdm_core::ArrowSchema for SettlementsLshedpayment5 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -20841,12 +21040,18 @@ impl mmsdm_core::ArrowSchema for SettlementsLshedpayment5 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -20948,12 +21153,20 @@ impl mmsdm_core::ArrowSchema for SettlementsLshedpayment5 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             tlf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(7, 5)),
             rrp_array: arrow::array::builder::Decimal128Builder::new()
@@ -21215,11 +21428,17 @@ impl mmsdm_core::ArrowSchema for SettlementsLshedpayment5 {
 pub struct SettlementsLshedpayment5Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    duid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     tlf_array: arrow::array::builder::Decimal128Builder,
     rrp_array: arrow::array::builder::Decimal128Builder,
     lseprice_array: arrow::array::builder::Decimal128Builder,
@@ -21357,19 +21576,7 @@ impl mmsdm_core::GetTable for SettlementsMarketfees7 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "MARKETFEES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsMarketfees7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -21591,7 +21798,10 @@ impl mmsdm_core::ArrowSchema for SettlementsMarketfees7 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -21601,7 +21811,10 @@ impl mmsdm_core::ArrowSchema for SettlementsMarketfees7 {
                 ),
                 arrow::datatypes::Field::new(
                     "marketfeeid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -21624,7 +21837,10 @@ impl mmsdm_core::ArrowSchema for SettlementsMarketfees7 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantcategoryid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -21639,12 +21855,18 @@ impl mmsdm_core::ArrowSchema for SettlementsMarketfees7 {
                 ),
                 arrow::datatypes::Field::new(
                     "meter_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "meter_subtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -21655,22 +21877,32 @@ impl mmsdm_core::ArrowSchema for SettlementsMarketfees7 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            marketfeeid_array: arrow::array::builder::StringBuilder::new(),
+            marketfeeid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             marketfeevalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             energy_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            participantcategoryid_array: arrow::array::builder::StringBuilder::new(),
+            participantcategoryid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             feerate_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             feeunits_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            meter_type_array: arrow::array::builder::StringBuilder::new(),
-            meter_subtype_array: arrow::array::builder::StringBuilder::new(),
+            meter_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            meter_subtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -21777,17 +22009,27 @@ impl mmsdm_core::ArrowSchema for SettlementsMarketfees7 {
 pub struct SettlementsMarketfees7Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    marketfeeid_array: arrow::array::builder::StringBuilder,
+    marketfeeid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     marketfeevalue_array: arrow::array::builder::Decimal128Builder,
     energy_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    participantcategoryid_array: arrow::array::builder::StringBuilder,
+    participantcategoryid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     feerate_array: arrow::array::builder::Decimal128Builder,
     feeunits_array: arrow::array::builder::Decimal128Builder,
-    meter_type_array: arrow::array::builder::StringBuilder,
-    meter_subtype_array: arrow::array::builder::StringBuilder,
+    meter_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    meter_subtype_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct SettlementsReallocations5 {
     extract_row_partition: alloc::boxed::Box<
@@ -21872,15 +22114,7 @@ impl mmsdm_core::GetTable for SettlementsReallocations5 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "REALLOCATIONS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsReallocations5Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -22082,12 +22316,18 @@ impl mmsdm_core::ArrowSchema for SettlementsReallocations5 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "reallocationid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -22123,8 +22363,12 @@ impl mmsdm_core::ArrowSchema for SettlementsReallocations5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            reallocationid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            reallocationid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             reallocationvalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             energy_array: arrow::array::builder::Decimal128Builder::new()
@@ -22219,8 +22463,12 @@ pub struct SettlementsReallocations5Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    reallocationid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    reallocationid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     reallocationvalue_array: arrow::array::builder::Decimal128Builder,
     energy_array: arrow::array::builder::Decimal128Builder,
     rrp_array: arrow::array::builder::Decimal128Builder,
@@ -22332,22 +22580,7 @@ impl mmsdm_core::GetTable for SettlementsRestartpayment6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "RESTARTPAYMENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsRestartpayment6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -22596,12 +22829,18 @@ impl mmsdm_core::ArrowSchema for SettlementsRestartpayment6 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -22611,7 +22850,10 @@ impl mmsdm_core::ArrowSchema for SettlementsRestartpayment6 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -22678,11 +22920,17 @@ impl mmsdm_core::ArrowSchema for SettlementsRestartpayment6 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             restarttype_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
             avaflag_array: arrow::array::builder::Decimal128Builder::new()
@@ -22850,10 +23098,16 @@ impl mmsdm_core::ArrowSchema for SettlementsRestartpayment6 {
 pub struct SettlementsRestartpayment6Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     restarttype_array: arrow::array::builder::Decimal128Builder,
     avaflag_array: arrow::array::builder::Decimal128Builder,
     availabilityprice_array: arrow::array::builder::Decimal128Builder,
@@ -23006,35 +23260,8 @@ impl mmsdm_core::GetTable for SettlementsRpowerpayment6 {
     const DATA_SET_NAME: &'static str = "SETTLEMENTS";
     const TABLE_NAME: &'static str = "RPOWERPAYMENT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = SettlementsRpowerpayment6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -23382,12 +23609,18 @@ impl mmsdm_core::ArrowSchema for SettlementsRpowerpayment6 {
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "contractid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -23397,12 +23630,18 @@ impl mmsdm_core::ArrowSchema for SettlementsRpowerpayment6 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -23529,12 +23768,20 @@ impl mmsdm_core::ArrowSchema for SettlementsRpowerpayment6 {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
-            contractid_array: arrow::array::builder::StringBuilder::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            contractid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             tlf_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(7, 5)),
             ebp_array: arrow::array::builder::Decimal128Builder::new()
@@ -23862,11 +24109,17 @@ impl mmsdm_core::ArrowSchema for SettlementsRpowerpayment6 {
 pub struct SettlementsRpowerpayment6Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    participantid_array: arrow::array::builder::StringBuilder,
-    contractid_array: arrow::array::builder::StringBuilder,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    contractid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    duid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     tlf_array: arrow::array::builder::Decimal128Builder,
     ebp_array: arrow::array::builder::Decimal128Builder,
     rrp_array: arrow::array::builder::Decimal128Builder,

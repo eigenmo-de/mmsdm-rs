@@ -77,16 +77,7 @@ impl mmsdm_core::GetTable for BillingConfigBillingcalendar2 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "BILLINGCALENDAR";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigBillingcalendar2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -532,9 +523,7 @@ impl mmsdm_core::GetTable for BillingConfigGstBasClass1 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "GST_BAS_CLASS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigGstBasClass1Mapping([
-        4,
-        5,
-        6,
+        4, 5, 6,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "BAS_CLASS",
@@ -654,12 +643,18 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstBasClass1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "bas_class",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -675,8 +670,12 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstBasClass1 {
     }
     fn new_builder() -> Self::Builder {
         BillingConfigGstBasClass1Builder {
-            bas_class_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            bas_class_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -706,8 +705,12 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstBasClass1 {
 }
 #[cfg(feature = "arrow")]
 pub struct BillingConfigGstBasClass1Builder {
-    bas_class_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
+    bas_class_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct BillingConfigGstRate1 {
@@ -777,11 +780,7 @@ impl mmsdm_core::GetTable for BillingConfigGstRate1 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "GST_RATE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigGstRate1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -943,7 +942,10 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstRate1 {
                 ),
                 arrow::datatypes::Field::new(
                     "bas_class",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -967,7 +969,9 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstRate1 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            bas_class_array: arrow::array::builder::StringBuilder::new(),
+            bas_class_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             gst_rate_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(8, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -1023,7 +1027,9 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstRate1 {
 pub struct BillingConfigGstRate1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    bas_class_array: arrow::array::builder::StringBuilder,
+    bas_class_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     gst_rate_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -1101,11 +1107,7 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionClass1 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "GST_TRANSACTION_CLASS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigGstTransactionClass1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -1271,12 +1273,18 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionClass1 {
                 ),
                 arrow::datatypes::Field::new(
                     "transaction_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bas_class",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1295,8 +1303,12 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionClass1 {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
-            transaction_type_array: arrow::array::builder::StringBuilder::new(),
-            bas_class_array: arrow::array::builder::StringBuilder::new(),
+            transaction_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bas_class_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -1342,8 +1354,12 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionClass1 {
 pub struct BillingConfigGstTransactionClass1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
-    transaction_type_array: arrow::array::builder::StringBuilder,
-    bas_class_array: arrow::array::builder::StringBuilder,
+    transaction_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    bas_class_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct BillingConfigGstTransactionType1 {
@@ -1448,11 +1464,7 @@ impl mmsdm_core::GetTable for BillingConfigGstTransactionType1 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "GST_TRANSACTION_TYPE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigGstTransactionType1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "TRANSACTION_TYPE",
@@ -1581,22 +1593,34 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionType1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "transaction_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "gl_financialcode",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "gl_tcode",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1612,10 +1636,18 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionType1 {
     }
     fn new_builder() -> Self::Builder {
         BillingConfigGstTransactionType1Builder {
-            transaction_type_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
-            gl_financialcode_array: arrow::array::builder::StringBuilder::new(),
-            gl_tcode_array: arrow::array::builder::StringBuilder::new(),
+            transaction_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            gl_financialcode_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            gl_tcode_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -1651,10 +1683,18 @@ impl mmsdm_core::ArrowSchema for BillingConfigGstTransactionType1 {
 }
 #[cfg(feature = "arrow")]
 pub struct BillingConfigGstTransactionType1Builder {
-    transaction_type_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
-    gl_financialcode_array: arrow::array::builder::StringBuilder,
-    gl_tcode_array: arrow::array::builder::StringBuilder,
+    transaction_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    gl_financialcode_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    gl_tcode_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct BillingConfigSecdepositInterestRate1 {
@@ -1725,10 +1765,7 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositInterestRate1 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "SECDEPOSIT_INTEREST_RATE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigSecdepositInterestRate1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "INTEREST_ACCT_ID",
@@ -1881,7 +1918,10 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositInterestRate1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "interest_acct_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1910,7 +1950,9 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositInterestRate1 {
     }
     fn new_builder() -> Self::Builder {
         BillingConfigSecdepositInterestRate1Builder {
-            interest_acct_id_array: arrow::array::builder::StringBuilder::new(),
+            interest_acct_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interest_rate_array: arrow::array::builder::Decimal128Builder::new()
@@ -1956,7 +1998,9 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositInterestRate1 {
 }
 #[cfg(feature = "arrow")]
 pub struct BillingConfigSecdepositInterestRate1Builder {
-    interest_acct_id_array: arrow::array::builder::StringBuilder,
+    interest_acct_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interest_rate_array: arrow::array::builder::Decimal128Builder,
@@ -2065,15 +2109,7 @@ impl mmsdm_core::GetTable for BillingConfigSecdepositProvision1 {
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "SECDEPOSIT_PROVISION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigSecdepositProvision1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SECURITY_DEPOSIT_ID",
@@ -2242,12 +2278,18 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositProvision1 {
             alloc::vec::Vec::from([
                 arrow::datatypes::Field::new(
                     "security_deposit_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "participantid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2280,12 +2322,18 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositProvision1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interest_calc_type",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "interest_acct_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
             ]),
@@ -2293,8 +2341,12 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositProvision1 {
     }
     fn new_builder() -> Self::Builder {
         BillingConfigSecdepositProvision1Builder {
-            security_deposit_id_array: arrow::array::builder::StringBuilder::new(),
-            participantid_array: arrow::array::builder::StringBuilder::new(),
+            security_deposit_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            participantid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             transaction_date_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             maturity_contractyear_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
@@ -2304,8 +2356,12 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositProvision1 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
             interest_rate_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
-            interest_calc_type_array: arrow::array::builder::StringBuilder::new(),
-            interest_acct_id_array: arrow::array::builder::StringBuilder::new(),
+            interest_calc_type_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            interest_acct_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -2386,13 +2442,21 @@ impl mmsdm_core::ArrowSchema for BillingConfigSecdepositProvision1 {
 }
 #[cfg(feature = "arrow")]
 pub struct BillingConfigSecdepositProvision1Builder {
-    security_deposit_id_array: arrow::array::builder::StringBuilder,
-    participantid_array: arrow::array::builder::StringBuilder,
+    security_deposit_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    participantid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     transaction_date_array: arrow::array::builder::TimestampMillisecondBuilder,
     maturity_contractyear_array: arrow::array::builder::Decimal128Builder,
     maturity_weekno_array: arrow::array::builder::Decimal128Builder,
     amount_array: arrow::array::builder::Decimal128Builder,
     interest_rate_array: arrow::array::builder::Decimal128Builder,
-    interest_calc_type_array: arrow::array::builder::StringBuilder,
-    interest_acct_id_array: arrow::array::builder::StringBuilder,
+    interest_calc_type_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    interest_acct_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }

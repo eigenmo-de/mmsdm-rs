@@ -89,12 +89,7 @@ impl mmsdm_core::GetTable for MtpasaReservelimit1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "RESERVELIMIT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaReservelimit1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -266,12 +261,18 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
                 ),
                 arrow::datatypes::Field::new(
                     "reservelimitid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -294,8 +295,12 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
         MtpasaReservelimit1Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            reservelimitid_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            reservelimitid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -350,8 +355,12 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimit1 {
 pub struct MtpasaReservelimit1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    reservelimitid_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
+    reservelimitid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
     rhs_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -431,12 +440,7 @@ impl mmsdm_core::GetTable for MtpasaReservelimitRegion1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "RESERVELIMIT_REGION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaReservelimitRegion1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -610,12 +614,18 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
                 ),
                 arrow::datatypes::Field::new(
                     "reservelimitid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -638,8 +648,12 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
         MtpasaReservelimitRegion1Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            reservelimitid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            reservelimitid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             coef_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -694,8 +708,12 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitRegion1 {
 pub struct MtpasaReservelimitRegion1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    reservelimitid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    reservelimitid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     coef_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -802,13 +820,7 @@ impl mmsdm_core::GetTable for MtpasaReservelimitSet1 {
     const DATA_SET_NAME: &'static str = "MTPASA";
     const TABLE_NAME: &'static str = "RESERVELIMIT_SET";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = MtpasaReservelimitSet1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
+        4, 5, 6, 7, 8, 9, 10,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -978,12 +990,18 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
                 ),
                 arrow::datatypes::Field::new(
                     "reservelimit_set_id",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "description",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int64),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -996,7 +1014,10 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
                 ),
                 arrow::datatypes::Field::new(
                     "authorisedby",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1014,10 +1035,16 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
         MtpasaReservelimitSet1Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            reservelimit_set_id_array: arrow::array::builder::StringBuilder::new(),
-            description_array: arrow::array::builder::StringBuilder::new(),
+            reservelimit_set_id_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            description_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int64Type,
+            >::new(),
             authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            authorisedby_array: arrow::array::builder::StringBuilder::new(),
+            authorisedby_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
@@ -1069,9 +1096,15 @@ impl mmsdm_core::ArrowSchema for MtpasaReservelimitSet1 {
 pub struct MtpasaReservelimitSet1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    reservelimit_set_id_array: arrow::array::builder::StringBuilder,
-    description_array: arrow::array::builder::StringBuilder,
+    reservelimit_set_id_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    description_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int64Type,
+    >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
-    authorisedby_array: arrow::array::builder::StringBuilder,
+    authorisedby_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }

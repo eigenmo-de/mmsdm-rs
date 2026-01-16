@@ -1,10 +1,24 @@
 use anyhow::format_err;
 use log::info;
 
-use crate::{json::DataModel, mms, rust::TableMapping};
+use crate::{
+    json::DataModel,
+    mms::{self, DataType},
+    rust::TableMapping,
+};
 
 pub fn run(local_info: DataModel) -> anyhow::Result<()> {
     let map = TableMapping::read()?;
+
+    let mut rows = Vec::new();
+    rows.push(Vec::from([
+        "data_set".to_string(),
+        "table".to_string(),
+        "pdr".to_string(),
+        "pdr_sub_type".to_string(),
+        "length".to_string(),
+        "comment".to_string(),
+    ]));
 
     for (data_set, package) in local_info.packages.iter() {
         // println!("Processing data set {data_set}");
@@ -38,16 +52,48 @@ pub fn run(local_info: DataModel) -> anyhow::Result<()> {
 
             match map.get(&mms_report) {
                 Some(_pdr_report) => {
+                    dbg!(&mms_report, &_pdr_report);
                     for column in table.columns() {
-                        if column.is_dispatch_period() && column.is_trading_period() {
-                            dbg!(&data_set, &table_key, column);
+                        if let DataType::Varchar { length } = column.data_type {
+                            rows.push(
+                                [
+                                    data_set.to_string(),
+                                    table_key.to_string(),
+                                    _pdr_report.name.to_string(),
+                                    _pdr_report
+                                        .sub_type
+                                        .as_ref()
+                                        .map(|x| x.to_string())
+                                        .unwrap_or_default(),
+                                    length.to_string(),
+                                    column.comment.to_string(),
+                                ]
+                                .into(),
+                            );
                         }
+
+                        // if column.is_dispatch_period() && column.is_trading_period() {
+                        //     dbg!(&data_set, &table_key, column);
+                        // }
                     }
                 }
                 None => eprintln!("Cannot find PDR mapping for MMS Report: {mms_report:?}"),
             }
         }
     }
+
+    let file = std::fs::OpenOptions::new()
+        .create(true)
+        .write(true)
+        .open("./varchar_columns.tsv")?;
+
+    let mut builder = csv::WriterBuilder::new().delimiter(b'\t').from_writer(file);
+
+    for row in rows {
+        builder.write_record(row)?;
+    }
+
+    builder.flush()?;
 
     Ok(())
 }

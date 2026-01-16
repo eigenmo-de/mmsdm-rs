@@ -65,8 +65,7 @@ impl mmsdm_core::GetTable for P5minBlockedConstraints1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "BLOCKED_CONSTRAINTS";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minBlockedConstraints1Mapping([
-        4,
-        5,
+        4, 5,
     ]);
     const COLUMNS: &'static [&'static str] = &["RUN_DATETIME", "CONSTRAINTID"];
     type Row<'row> = P5minBlockedConstraints1Row<'row>;
@@ -191,7 +190,10 @@ impl mmsdm_core::ArrowSchema for P5minBlockedConstraints1 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
             ]),
@@ -200,7 +202,9 @@ impl mmsdm_core::ArrowSchema for P5minBlockedConstraints1 {
     fn new_builder() -> Self::Builder {
         P5minBlockedConstraints1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -227,7 +231,9 @@ impl mmsdm_core::ArrowSchema for P5minBlockedConstraints1 {
 #[cfg(feature = "arrow")]
 pub struct P5minBlockedConstraints1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct P5minCasesolution2 {
     extract_row_partition: alloc::boxed::Box<
@@ -331,25 +337,7 @@ impl mmsdm_core::GetTable for P5minCasesolution2 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "CASESOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minCasesolution2Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -613,7 +601,10 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
                 ),
                 arrow::datatypes::Field::new(
                     "startinterval_datetime",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -710,7 +701,9 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
     fn new_builder() -> Self::Builder {
         P5minCasesolution2Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            startinterval_datetime_array: arrow::array::builder::StringBuilder::new(),
+            startinterval_datetime_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             totalobjective_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(27, 10)),
             nonphysicallosses_array: arrow::array::builder::Decimal128Builder::new()
@@ -953,7 +946,9 @@ impl mmsdm_core::ArrowSchema for P5minCasesolution2 {
 #[cfg(feature = "arrow")]
 pub struct P5minCasesolution2Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    startinterval_datetime_array: arrow::array::builder::StringBuilder,
+    startinterval_datetime_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     totalobjective_array: arrow::array::builder::Decimal128Builder,
     nonphysicallosses_array: arrow::array::builder::Decimal128Builder,
     totalareagenviolation_array: arrow::array::builder::Decimal128Builder,
@@ -1062,18 +1057,7 @@ impl mmsdm_core::GetTable for P5minConstraintsolution6 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "CONSTRAINTSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minConstraintsolution6Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1299,7 +1283,10 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1327,7 +1314,10 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -1360,7 +1350,9 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
         P5minConstraintsolution6Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             marginalvalue_array: arrow::array::builder::Decimal128Builder::new()
@@ -1368,7 +1360,9 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
             violationdegree_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             genconid_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             genconid_versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(22, 0)),
@@ -1487,12 +1481,14 @@ impl mmsdm_core::ArrowSchema for P5minConstraintsolution6 {
 pub struct P5minConstraintsolution6Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     rhs_array: arrow::array::builder::Decimal128Builder,
     marginalvalue_array: arrow::array::builder::Decimal128Builder,
     violationdegree_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     genconid_effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     genconid_versionno_array: arrow::array::builder::Decimal128Builder,
     lhs_array: arrow::array::builder::Decimal128Builder,
@@ -1596,22 +1592,7 @@ impl mmsdm_core::GetTable for P5minFcasReqConstraint1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "FCAS_REQ_CONSTRAINT";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minFcasReqConstraint1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -1868,17 +1849,26 @@ impl mmsdm_core::ArrowSchema for P5minFcasReqConstraint1 {
                 ),
                 arrow::datatypes::Field::new(
                     "constraintid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "bidtype",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -1939,9 +1929,15 @@ impl mmsdm_core::ArrowSchema for P5minFcasReqConstraint1 {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             runno_array: arrow::array::builder::Int64Builder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            constraintid_array: arrow::array::builder::StringBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
-            bidtype_array: arrow::array::builder::StringBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bidtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             lhs_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             rhs_array: arrow::array::builder::Decimal128Builder::new()
@@ -2114,9 +2110,13 @@ pub struct P5minFcasReqConstraint1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     runno_array: arrow::array::builder::Int64Builder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    constraintid_array: arrow::array::builder::StringBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
-    bidtype_array: arrow::array::builder::StringBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    bidtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     lhs_array: arrow::array::builder::Decimal128Builder,
     rhs_array: arrow::array::builder::Decimal128Builder,
     marginalvalue_array: arrow::array::builder::Decimal128Builder,
@@ -2496,28 +2496,7 @@ impl mmsdm_core::GetTable for P5minInterconnectorsoln4 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "INTERCONNECTORSOLN";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minInterconnectorsoln4Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -2810,7 +2789,10 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -2868,12 +2850,18 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
                 ),
                 arrow::datatypes::Field::new(
                     "exportgenconid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
                     "importgenconid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -2925,7 +2913,9 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
     fn new_builder() -> Self::Builder {
         P5minInterconnectorsoln4Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             meteredmwflow_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
@@ -2945,8 +2935,12 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             marginalloss_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
-            exportgenconid_array: arrow::array::builder::StringBuilder::new(),
-            importgenconid_array: arrow::array::builder::StringBuilder::new(),
+            exportgenconid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            importgenconid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             fcasexportlimit_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             fcasimportlimit_array: arrow::array::builder::Decimal128Builder::new()
@@ -3182,7 +3176,9 @@ impl mmsdm_core::ArrowSchema for P5minInterconnectorsoln4 {
 #[cfg(feature = "arrow")]
 pub struct P5minInterconnectorsoln4Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     meteredmwflow_array: arrow::array::builder::Decimal128Builder,
     mwflow_array: arrow::array::builder::Decimal128Builder,
@@ -3193,8 +3189,12 @@ pub struct P5minInterconnectorsoln4Builder {
     exportlimit_array: arrow::array::builder::Decimal128Builder,
     importlimit_array: arrow::array::builder::Decimal128Builder,
     marginalloss_array: arrow::array::builder::Decimal128Builder,
-    exportgenconid_array: arrow::array::builder::StringBuilder,
-    importgenconid_array: arrow::array::builder::StringBuilder,
+    exportgenconid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    importgenconid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     fcasexportlimit_array: arrow::array::builder::Decimal128Builder,
     fcasimportlimit_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -3284,12 +3284,7 @@ impl mmsdm_core::GetTable for P5minIntermittentFcstTrk1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "INTERMITTENT_FCST_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minIntermittentFcstTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -3443,7 +3438,10 @@ impl mmsdm_core::ArrowSchema for P5minIntermittentFcstTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -3456,7 +3454,10 @@ impl mmsdm_core::ArrowSchema for P5minIntermittentFcstTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -3478,9 +3479,13 @@ impl mmsdm_core::ArrowSchema for P5minIntermittentFcstTrk1 {
     fn new_builder() -> Self::Builder {
         P5minIntermittentFcstTrk1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -3538,9 +3543,11 @@ impl mmsdm_core::ArrowSchema for P5minIntermittentFcstTrk1 {
 #[cfg(feature = "arrow")]
 pub struct P5minIntermittentFcstTrk1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -3702,55 +3709,9 @@ impl mmsdm_core::GetTable for P5minIntersensitivities1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "INTERSENSITIVITIES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minIntersensitivities1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -4269,7 +4230,10 @@ impl mmsdm_core::ArrowSchema for P5minIntersensitivities1 {
                 ),
                 arrow::datatypes::Field::new(
                     "interconnectorid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -4519,7 +4483,9 @@ impl mmsdm_core::ArrowSchema for P5minIntersensitivities1 {
     fn new_builder() -> Self::Builder {
         P5minIntersensitivities1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            interconnectorid_array: arrow::array::builder::StringBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
@@ -5141,7 +5107,9 @@ impl mmsdm_core::ArrowSchema for P5minIntersensitivities1 {
 #[cfg(feature = "arrow")]
 pub struct P5minIntersensitivities1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    interconnectorid_array: arrow::array::builder::StringBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     intervention_active_array: arrow::array::builder::Decimal128Builder,
@@ -5257,11 +5225,7 @@ impl mmsdm_core::GetTable for P5minLocalPrice1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "LOCAL_PRICE";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minLocalPrice1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -5426,7 +5390,10 @@ impl mmsdm_core::ArrowSchema for P5minLocalPrice1 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -5446,7 +5413,9 @@ impl mmsdm_core::ArrowSchema for P5minLocalPrice1 {
         P5minLocalPrice1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             local_price_adjustment_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 2)),
             locally_constrained_array: arrow::array::builder::Decimal128Builder::new()
@@ -5505,7 +5474,7 @@ impl mmsdm_core::ArrowSchema for P5minLocalPrice1 {
 pub struct P5minLocalPrice1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     local_price_adjustment_array: arrow::array::builder::Decimal128Builder,
     locally_constrained_array: arrow::array::builder::Decimal128Builder,
 }
@@ -5664,55 +5633,9 @@ impl mmsdm_core::GetTable for P5minPricesensitivities1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "PRICESENSITIVITIES";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minPricesensitivities1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -6227,7 +6150,10 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -6477,7 +6403,9 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
     fn new_builder() -> Self::Builder {
         P5minPricesensitivities1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             intervention_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
@@ -7099,7 +7027,9 @@ impl mmsdm_core::ArrowSchema for P5minPricesensitivities1 {
 #[cfg(feature = "arrow")]
 pub struct P5minPricesensitivities1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     intervention_array: arrow::array::builder::Decimal128Builder,
     intervention_active_array: arrow::array::builder::Decimal128Builder,
@@ -7443,125 +7373,13 @@ impl mmsdm_core::GetTable for P5minRegionsolution10 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "REGIONSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minRegionsolution10Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
-        68,
-        69,
-        70,
-        71,
-        72,
-        73,
-        74,
-        75,
-        76,
-        77,
-        78,
-        79,
-        80,
-        81,
-        82,
-        83,
-        84,
-        85,
-        86,
-        87,
-        88,
-        89,
-        90,
-        91,
-        92,
-        93,
-        94,
-        95,
-        96,
-        97,
-        98,
-        99,
-        100,
-        101,
-        102,
-        103,
-        104,
-        105,
-        106,
-        107,
-        108,
-        109,
-        110,
-        111,
-        112,
-        113,
-        114,
-        115,
-        116,
-        117,
-        118,
-        119,
-        120,
-        121,
-        122,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+        46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85,
+        86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104,
+        105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
+        121, 122,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -8644,7 +8462,10 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution10 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -9237,7 +9058,9 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution10 {
         P5minRegionsolution10Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             rrp_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             rop_array: arrow::array::builder::Decimal128Builder::new()
@@ -10775,7 +10598,9 @@ impl mmsdm_core::ArrowSchema for P5minRegionsolution10 {
 pub struct P5minRegionsolution10Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
     rrp_array: arrow::array::builder::Decimal128Builder,
     rop_array: arrow::array::builder::Decimal128Builder,
     excessgeneration_array: arrow::array::builder::Decimal128Builder,
@@ -10973,12 +10798,7 @@ impl mmsdm_core::GetTable for P5minRooftopPvFcstTrk1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "ROOFTOP_PV_FCST_TRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minRooftopPvFcstTrk1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
+        4, 5, 6, 7, 8, 9,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "RUN_DATETIME",
@@ -11132,7 +10952,10 @@ impl mmsdm_core::ArrowSchema for P5minRooftopPvFcstTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "areaid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -11145,7 +10968,10 @@ impl mmsdm_core::ArrowSchema for P5minRooftopPvFcstTrk1 {
                 ),
                 arrow::datatypes::Field::new(
                     "providerid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -11167,9 +10993,13 @@ impl mmsdm_core::ArrowSchema for P5minRooftopPvFcstTrk1 {
     fn new_builder() -> Self::Builder {
         P5minRooftopPvFcstTrk1Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            areaid_array: arrow::array::builder::StringBuilder::new(),
+            areaid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
             forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            providerid_array: arrow::array::builder::StringBuilder::new(),
+            providerid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             forecast_priority_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(10, 0)),
             offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
@@ -11227,9 +11057,11 @@ impl mmsdm_core::ArrowSchema for P5minRooftopPvFcstTrk1 {
 #[cfg(feature = "arrow")]
 pub struct P5minRooftopPvFcstTrk1Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    areaid_array: arrow::array::builder::StringBuilder,
+    areaid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     forecast_run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    providerid_array: arrow::array::builder::StringBuilder,
+    providerid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
@@ -11301,11 +11133,7 @@ impl mmsdm_core::GetTable for P5minScenariodemand1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "SCENARIODEMAND";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minScenariodemand1Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
+        4, 5, 6, 7, 8,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -11481,7 +11309,10 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemand1 {
                 ),
                 arrow::datatypes::Field::new(
                     "regionid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
@@ -11498,7 +11329,9 @@ impl mmsdm_core::ArrowSchema for P5minScenariodemand1 {
             version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             scenario_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
-            regionid_array: arrow::array::builder::StringBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             deltamw_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
         }
@@ -11554,7 +11387,9 @@ pub struct P5minScenariodemand1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     version_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     scenario_array: arrow::array::builder::Decimal128Builder,
-    regionid_array: arrow::array::builder::StringBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     deltamw_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct P5minScenariodemandtrk1 {
@@ -11617,10 +11452,7 @@ impl mmsdm_core::GetTable for P5minScenariodemandtrk1 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "SCENARIODEMANDTRK";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minScenariodemandtrk1Mapping([
-        4,
-        5,
-        6,
-        7,
+        4, 5, 6, 7,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -12002,48 +11834,8 @@ impl mmsdm_core::GetTable for P5minUnitsolution7 {
     const DATA_SET_NAME: &'static str = "P5MIN";
     const TABLE_NAME: &'static str = "UNITSOLUTION";
     const DEFAULT_FIELD_MAPPING: Self::FieldMapping = P5minUnitsolution7Mapping([
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
         46,
     ]);
     const COLUMNS: &'static [&'static str] = &[
@@ -12515,12 +12307,18 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution7 {
                 ),
                 arrow::datatypes::Field::new(
                     "duid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     false,
                 ),
                 arrow::datatypes::Field::new(
                     "connectionpointid",
-                    arrow::datatypes::DataType::Utf8,
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
                     true,
                 ),
                 arrow::datatypes::Field::new(
@@ -12728,8 +12526,12 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution7 {
         P5minUnitsolution7Builder {
             run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
-            duid_array: arrow::array::builder::StringBuilder::new(),
-            connectionpointid_array: arrow::array::builder::StringBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            connectionpointid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
             tradetype_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             agcstatus_array: arrow::array::builder::Decimal128Builder::new()
@@ -13263,8 +13065,10 @@ impl mmsdm_core::ArrowSchema for P5minUnitsolution7 {
 pub struct P5minUnitsolution7Builder {
     run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
-    duid_array: arrow::array::builder::StringBuilder,
-    connectionpointid_array: arrow::array::builder::StringBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    connectionpointid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     tradetype_array: arrow::array::builder::Decimal128Builder,
     agcstatus_array: arrow::array::builder::Decimal128Builder,
     initialmw_array: arrow::array::builder::Decimal128Builder,

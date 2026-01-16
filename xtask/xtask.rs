@@ -1,11 +1,11 @@
-use cargo::core::compiler::BuildConfig;
+use cargo::GlobalContext;
 use cargo::core::Workspace;
+use cargo::core::compiler::BuildConfig;
+use cargo::core::compiler::UserIntent;
 use cargo::ops;
 use cargo::ops::CompileOptions;
 use cargo::ops::Packages;
-use cargo::util::command_prelude::CompileMode;
 use cargo::util::context::JobsConfig;
-use cargo::GlobalContext;
 use std::env;
 use std::path::Path;
 use std::process;
@@ -17,13 +17,13 @@ fn main() -> anyhow::Result<()> {
     if let Some(arg) = env::args().nth(1) {
         match arg.as_str() {
             "json" => {
-                let base_compile_options = CompileOptions::new(&config, CompileMode::Build)?;
+                let base_compile_options = CompileOptions::new(&config, UserIntent::Build)?;
                 let build_config = BuildConfig::new(
                     &config,
                     Some(JobsConfig::String("default".to_string())),
                     false,
                     &[],
-                    CompileMode::Build,
+                    UserIntent::Build,
                 )?;
                 let local_build_options = CompileOptions {
                     spec: Packages::Packages(Vec::from(["mmsdm-codegen".to_string()])),
@@ -40,13 +40,13 @@ fn main() -> anyhow::Result<()> {
                 println!("Generated json mmsdm output");
             }
             "rust" => {
-                let base_compile_options = CompileOptions::new(&config, CompileMode::Build)?;
+                let base_compile_options = CompileOptions::new(&config, UserIntent::Build)?;
                 let build_config = BuildConfig::new(
                     &config,
                     Some(JobsConfig::String("default".to_string())),
                     false,
                     &[],
-                    CompileMode::Build,
+                    UserIntent::Build,
                 )?;
                 let local_build_options = CompileOptions {
                     spec: Packages::Packages(Vec::from(["mmsdm-codegen".to_string()])),
@@ -61,20 +61,15 @@ fn main() -> anyhow::Result<()> {
                     .arg("rust")
                     .status()?;
                 println!("Generated rust structures");
-
-                process::Command::new("target/debug/mmsdm-codegen")
-                    .arg("sql-server-tables")
-                    .status()?;
-                println!("Generated sql server tables");
             }
             "analyse" => {
-                let base_compile_options = CompileOptions::new(&config, CompileMode::Build)?;
+                let base_compile_options = CompileOptions::new(&config, UserIntent::Build)?;
                 let build_config = BuildConfig::new(
                     &config,
                     Some(JobsConfig::String("default".to_string())),
                     false,
                     &[],
-                    CompileMode::Build,
+                    UserIntent::Build,
                 )?;
                 let local_build_options = CompileOptions {
                     spec: Packages::Packages(Vec::from(["mmsdm-codegen".to_string()])),
