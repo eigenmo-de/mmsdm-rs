@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 
 const PACKAGES_TO_SKIP: &[&str] = &[
     "FPP",
+    "CONFIGURATION",
 ];
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
