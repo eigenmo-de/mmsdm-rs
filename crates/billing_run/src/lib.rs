@@ -21475,7 +21475,7 @@ impl mmsdm_core::ArrowSchema for BillingFees5 {
                 arrow::datatypes::Field::new(
                     "participantcategoryid",
                     arrow::datatypes::DataType::Dictionary(
-                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
                         alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
                     ),
                     false,
@@ -21505,7 +21505,7 @@ impl mmsdm_core::ArrowSchema for BillingFees5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             participantcategoryid_array: arrow::array::StringDictionaryBuilder::<
-                arrow::array::types::Int32Type,
+                arrow::array::types::Int16Type,
             >::new(),
         }
     }
@@ -21612,7 +21612,7 @@ pub struct BillingFees5Builder {
     value_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     participantcategoryid_array: arrow::array::StringDictionaryBuilder<
-        arrow::array::types::Int32Type,
+        arrow::array::types::Int16Type,
     >,
 }
 pub struct BillingFinancialadjustments5 {
@@ -29707,15 +29707,15 @@ pub struct BillingRegionimports5Builder {
     surplusvalue_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct BillingRuntrk5 {
+pub struct BillingRuntrk6 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
-            &BillingRuntrk5Row<'_>,
+            &BillingRuntrk6Row<'_>,
         ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
-impl BillingRuntrk5 {
+impl BillingRuntrk6 {
     pub fn new(
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
@@ -29728,7 +29728,7 @@ impl BillingRuntrk5 {
         }
     }
 }
-pub struct BillingRuntrk5Mapping([usize; 16]);
+pub struct BillingRuntrk6Mapping([usize; 17]);
 /// # Summary
 ///
 /// ## BILLINGRUNTRK
@@ -29737,7 +29737,7 @@ pub struct BillingRuntrk5Mapping([usize; 16]);
 ///
 /// * Data Set Name: Billing
 /// * File Name: Runtrk
-/// * Data Version: 5
+/// * Data Version: 6
 ///
 /// # Description
 /// BILLINGRUNTRK is public data, and is available to all participants.SourceBILLINGRUNTRK is populated by the posting of a billing run.VolumeAn indicative maximum is one record inserted per billing run, or 11 records inserted per week.
@@ -29751,7 +29751,7 @@ pub struct BillingRuntrk5Mapping([usize; 16]);
 /// * CONTRACTYEAR
 /// * WEEKNO
 #[derive(Debug, PartialEq, Eq)]
-pub struct BillingRuntrk5Row<'data> {
+pub struct BillingRuntrk6Row<'data> {
     /// Year of the run
     pub contractyear: rust_decimal::Decimal,
     /// Week number of the run
@@ -29784,9 +29784,11 @@ pub struct BillingRuntrk5Row<'data> {
     pub shortfall: Option<rust_decimal::Decimal>,
     /// Not Used
     pub makeup: Option<rust_decimal::Decimal>,
+    /// Revision Run Type
+    pub revisionindex: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> BillingRuntrk5Row<'data> {
+impl<'data> BillingRuntrk6Row<'data> {
     pub fn status(&self) -> Option<&str> {
         if self.status.is_empty() {
             None
@@ -29860,12 +29862,12 @@ impl<'data> BillingRuntrk5Row<'data> {
         }
     }
 }
-impl mmsdm_core::GetTable for BillingRuntrk5 {
-    const VERSION: i32 = 5;
+impl mmsdm_core::GetTable for BillingRuntrk6 {
+    const VERSION: i32 = 6;
     const DATA_SET_NAME: &'static str = "BILLING";
     const TABLE_NAME: &'static str = "RUNTRK";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRuntrk5Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingRuntrk6Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -29884,15 +29886,16 @@ impl mmsdm_core::GetTable for BillingRuntrk5 {
         "PAYMENTPOSTBY",
         "SHORTFALL",
         "MAKEUP",
+        "REVISIONINDEX",
     ];
-    type Row<'row> = BillingRuntrk5Row<'row>;
-    type FieldMapping = BillingRuntrk5Mapping;
-    type PrimaryKey = BillingRuntrk5PrimaryKey;
+    type Row<'row> = BillingRuntrk6Row<'row>;
+    type FieldMapping = BillingRuntrk6Mapping;
+    type PrimaryKey = BillingRuntrk6PrimaryKey;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(BillingRuntrk5Row {
+        Ok(BillingRuntrk6Row {
             contractyear: row
                 .get_custom_parsed_at_idx(
                     "contractyear",
@@ -29959,6 +29962,12 @@ impl mmsdm_core::GetTable for BillingRuntrk5 {
                     field_mapping.0[15],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            revisionindex: row
+                .get_opt_custom_parsed_at_idx(
+                    "revisionindex",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -29990,14 +29999,14 @@ impl mmsdm_core::GetTable for BillingRuntrk5 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(BillingRuntrk5Mapping(base_mapping))
+        Ok(BillingRuntrk6Mapping(base_mapping))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> BillingRuntrk5PrimaryKey {
-        BillingRuntrk5PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> BillingRuntrk6PrimaryKey {
+        BillingRuntrk6PrimaryKey {
             billrunno: row.billrunno,
             contractyear: row.contractyear,
             weekno: row.weekno,
@@ -30007,13 +30016,13 @@ impl mmsdm_core::GetTable for BillingRuntrk5 {
         (self.extract_row_partition)(row)
     }
     fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("billing_runtrk_v5_{}", self.partition_value(row))
+        alloc::format!("billing_runtrk_v6_{}", self.partition_value(row))
     }
     fn partition_key(&self) -> mmsdm_core::PartitionKey {
         self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        BillingRuntrk5Row {
+        BillingRuntrk6Row {
             contractyear: row.contractyear.clone(),
             weekno: row.weekno.clone(),
             billrunno: row.billrunno.clone(),
@@ -30030,48 +30039,49 @@ impl mmsdm_core::GetTable for BillingRuntrk5 {
             paymentpostby: row.paymentpostby.clone(),
             shortfall: row.shortfall.clone(),
             makeup: row.makeup.clone(),
+            revisionindex: row.revisionindex.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingRuntrk5PrimaryKey {
+pub struct BillingRuntrk6PrimaryKey {
     pub billrunno: rust_decimal::Decimal,
     pub contractyear: rust_decimal::Decimal,
     pub weekno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for BillingRuntrk5PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for BillingRuntrk5Row<'data> {
-    type Row<'other> = BillingRuntrk5Row<'other>;
+impl mmsdm_core::PrimaryKey for BillingRuntrk6PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingRuntrk6Row<'data> {
+    type Row<'other> = BillingRuntrk6Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.weekno == row.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingRuntrk5Row<'data> {
-    type PrimaryKey = BillingRuntrk5PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for BillingRuntrk6Row<'data> {
+    type PrimaryKey = BillingRuntrk6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.weekno == key.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for BillingRuntrk5PrimaryKey {
-    type Row<'other> = BillingRuntrk5Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for BillingRuntrk6PrimaryKey {
+    type Row<'other> = BillingRuntrk6Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.billrunno == row.billrunno && self.contractyear == row.contractyear
             && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingRuntrk5PrimaryKey {
-    type PrimaryKey = BillingRuntrk5PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingRuntrk6PrimaryKey {
+    type PrimaryKey = BillingRuntrk6PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.billrunno == key.billrunno && self.contractyear == key.contractyear
             && self.weekno == key.weekno
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingRuntrk5 {
-    type Builder = BillingRuntrk5Builder;
+impl mmsdm_core::ArrowSchema for BillingRuntrk6 {
+    type Builder = BillingRuntrk6Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -30188,11 +30198,16 @@ impl mmsdm_core::ArrowSchema for BillingRuntrk5 {
                     arrow::datatypes::DataType::Decimal128(15, 5),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "revisionindex",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        BillingRuntrk5Builder {
+        BillingRuntrk6Builder {
             contractyear_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             weekno_array: arrow::array::builder::Decimal128Builder::new()
@@ -30226,6 +30241,8 @@ impl mmsdm_core::ArrowSchema for BillingRuntrk5 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             makeup_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            revisionindex_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -30295,6 +30312,15 @@ impl mmsdm_core::ArrowSchema for BillingRuntrk5 {
                         val.mantissa()
                     })
             });
+        builder
+            .revisionindex_array
+            .append_option({
+                row.revisionindex
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -30334,13 +30360,15 @@ impl mmsdm_core::ArrowSchema for BillingRuntrk5 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.makeup_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.revisionindex_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct BillingRuntrk5Builder {
+pub struct BillingRuntrk6Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     billrunno_array: arrow::array::builder::Decimal128Builder,
@@ -30365,6 +30393,7 @@ pub struct BillingRuntrk5Builder {
     >,
     shortfall_array: arrow::array::builder::Decimal128Builder,
     makeup_array: arrow::array::builder::Decimal128Builder,
+    revisionindex_array: arrow::array::builder::Decimal128Builder,
 }
 pub struct BillingReservetraderpayment1 {
     extract_row_partition: alloc::boxed::Box<

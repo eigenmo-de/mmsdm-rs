@@ -3121,7 +3121,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
                 arrow::datatypes::Field::new(
                     "participantcategoryid",
                     arrow::datatypes::DataType::Dictionary(
-                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
                         alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
                     ),
                     false,
@@ -3154,7 +3154,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigParticipantBandfeeAlloc1 {
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             participantcategoryid_array: arrow::array::StringDictionaryBuilder::<
-                arrow::array::types::Int32Type,
+                arrow::array::types::Int16Type,
             >::new(),
             marketfeevalue_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
@@ -3224,7 +3224,7 @@ pub struct SettlementConfigParticipantBandfeeAlloc1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     participantcategoryid_array: arrow::array::StringDictionaryBuilder<
-        arrow::array::types::Int32Type,
+        arrow::array::types::Int16Type,
     >,
     marketfeevalue_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -4475,7 +4475,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
                 arrow::datatypes::Field::new(
                     "participantcategoryid",
                     arrow::datatypes::DataType::Dictionary(
-                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
                         alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
                     ),
                     false,
@@ -4513,7 +4513,7 @@ impl mmsdm_core::ArrowSchema for SettlementConfigSetcfgParticipantMpf1 {
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             participantcategoryid_array: arrow::array::StringDictionaryBuilder::<
-                arrow::array::types::Int32Type,
+                arrow::array::types::Int16Type,
             >::new(),
             connectionpointid_array: arrow::array::StringDictionaryBuilder::<
                 arrow::array::types::Int16Type,
@@ -4583,7 +4583,7 @@ pub struct SettlementConfigSetcfgParticipantMpf1Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     participantcategoryid_array: arrow::array::StringDictionaryBuilder<
-        arrow::array::types::Int32Type,
+        arrow::array::types::Int16Type,
     >,
     connectionpointid_array: arrow::array::StringDictionaryBuilder<
         arrow::array::types::Int16Type,

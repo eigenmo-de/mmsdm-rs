@@ -5,15 +5,15 @@ use alloc::string::ToString;
 use chrono::Datelike as _;
 #[cfg(feature = "arrow")]
 extern crate std;
-pub struct BillingConfigBillingcalendar2 {
+pub struct BillingConfigBillingcalendar3 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
-            &BillingConfigBillingcalendar2Row<'_>,
+            &BillingConfigBillingcalendar3Row<'_>,
         ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
-impl BillingConfigBillingcalendar2 {
+impl BillingConfigBillingcalendar3 {
     pub fn new(
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
@@ -26,7 +26,7 @@ impl BillingConfigBillingcalendar2 {
         }
     }
 }
-pub struct BillingConfigBillingcalendar2Mapping([usize; 10]);
+pub struct BillingConfigBillingcalendar3Mapping([usize; 11]);
 /// # Summary
 ///
 /// ## BILLINGCALENDAR
@@ -35,7 +35,7 @@ pub struct BillingConfigBillingcalendar2Mapping([usize; 10]);
 ///
 /// * Data Set Name: Billing Config
 /// * File Name: Billingcalendar
-/// * Data Version: 2
+/// * Data Version: 3
 ///
 /// # Description
 /// BILLINGCALENDAR is public data, and is available to all participants.SourceInfrequently, only when inserting billing weeks for a future contractyear.Volume52-53 records inserted per contractyear
@@ -48,7 +48,7 @@ pub struct BillingConfigBillingcalendar2Mapping([usize; 10]);
 /// * CONTRACTYEAR
 /// * WEEKNO
 #[derive(Debug, PartialEq, Eq)]
-pub struct BillingConfigBillingcalendar2Row<'data> {
+pub struct BillingConfigBillingcalendar3Row<'data> {
     /// AEMO Contract Year number starting in week containing 1st January
     pub contractyear: rust_decimal::Decimal,
     /// Week no within the contract year. Week no 1 is the week containing 1st January
@@ -69,15 +69,17 @@ pub struct BillingConfigBillingcalendar2Row<'data> {
     pub revision1_statementdate: Option<chrono::NaiveDateTime>,
     /// Revision 2 Statement Date for the billing week.
     pub revision2_statementdate: Option<chrono::NaiveDateTime>,
+    /// Revision 0 Statement Date for the billing week.
+    pub revision0_statementdate: Option<chrono::NaiveDateTime>,
     backing_data: core::marker::PhantomData<&'data ()>,
 }
-impl<'data> BillingConfigBillingcalendar2Row<'data> {}
-impl mmsdm_core::GetTable for BillingConfigBillingcalendar2 {
-    const VERSION: i32 = 2;
+impl<'data> BillingConfigBillingcalendar3Row<'data> {}
+impl mmsdm_core::GetTable for BillingConfigBillingcalendar3 {
+    const VERSION: i32 = 3;
     const DATA_SET_NAME: &'static str = "BILLING_CONFIG";
     const TABLE_NAME: &'static str = "BILLINGCALENDAR";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigBillingcalendar2Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = BillingConfigBillingcalendar3Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "CONTRACTYEAR",
@@ -90,15 +92,16 @@ impl mmsdm_core::GetTable for BillingConfigBillingcalendar2 {
         "LASTCHANGED",
         "REVISION1_STATEMENTDATE",
         "REVISION2_STATEMENTDATE",
+        "REVISION0_STATEMENTDATE",
     ];
-    type Row<'row> = BillingConfigBillingcalendar2Row<'row>;
-    type FieldMapping = BillingConfigBillingcalendar2Mapping;
-    type PrimaryKey = BillingConfigBillingcalendar2PrimaryKey;
+    type Row<'row> = BillingConfigBillingcalendar3Row<'row>;
+    type FieldMapping = BillingConfigBillingcalendar3Mapping;
+    type PrimaryKey = BillingConfigBillingcalendar3PrimaryKey;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(BillingConfigBillingcalendar2Row {
+        Ok(BillingConfigBillingcalendar3Row {
             contractyear: row
                 .get_custom_parsed_at_idx(
                     "contractyear",
@@ -159,6 +162,12 @@ impl mmsdm_core::GetTable for BillingConfigBillingcalendar2 {
                     field_mapping.0[9],
                     mmsdm_core::mms_datetime::parse,
                 )?,
+            revision0_statementdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "revision0_statementdate",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
             backing_data: core::marker::PhantomData,
         })
     }
@@ -190,14 +199,14 @@ impl mmsdm_core::GetTable for BillingConfigBillingcalendar2 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(BillingConfigBillingcalendar2Mapping(base_mapping))
+        Ok(BillingConfigBillingcalendar3Mapping(base_mapping))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> BillingConfigBillingcalendar2PrimaryKey {
-        BillingConfigBillingcalendar2PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> BillingConfigBillingcalendar3PrimaryKey {
+        BillingConfigBillingcalendar3PrimaryKey {
             contractyear: row.contractyear,
             weekno: row.weekno,
         }
@@ -206,13 +215,13 @@ impl mmsdm_core::GetTable for BillingConfigBillingcalendar2 {
         (self.extract_row_partition)(row)
     }
     fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("billing_config_billingcalendar_v2_{}", self.partition_value(row))
+        alloc::format!("billing_config_billingcalendar_v3_{}", self.partition_value(row))
     }
     fn partition_key(&self) -> mmsdm_core::PartitionKey {
         self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        BillingConfigBillingcalendar2Row {
+        BillingConfigBillingcalendar3Row {
             contractyear: row.contractyear.clone(),
             weekno: row.weekno.clone(),
             startdate: row.startdate.clone(),
@@ -223,44 +232,45 @@ impl mmsdm_core::GetTable for BillingConfigBillingcalendar2 {
             lastchanged: row.lastchanged.clone(),
             revision1_statementdate: row.revision1_statementdate.clone(),
             revision2_statementdate: row.revision2_statementdate.clone(),
+            revision0_statementdate: row.revision0_statementdate.clone(),
             backing_data: core::marker::PhantomData,
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct BillingConfigBillingcalendar2PrimaryKey {
+pub struct BillingConfigBillingcalendar3PrimaryKey {
     pub contractyear: rust_decimal::Decimal,
     pub weekno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for BillingConfigBillingcalendar2PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for BillingConfigBillingcalendar2Row<'data> {
-    type Row<'other> = BillingConfigBillingcalendar2Row<'other>;
+impl mmsdm_core::PrimaryKey for BillingConfigBillingcalendar3PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for BillingConfigBillingcalendar3Row<'data> {
+    type Row<'other> = BillingConfigBillingcalendar3Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.contractyear == row.contractyear && self.weekno == row.weekno
     }
 }
 impl<'data> mmsdm_core::CompareWithPrimaryKey
-for BillingConfigBillingcalendar2Row<'data> {
-    type PrimaryKey = BillingConfigBillingcalendar2PrimaryKey;
+for BillingConfigBillingcalendar3Row<'data> {
+    type PrimaryKey = BillingConfigBillingcalendar3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.contractyear == key.contractyear && self.weekno == key.weekno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for BillingConfigBillingcalendar2PrimaryKey {
-    type Row<'other> = BillingConfigBillingcalendar2Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for BillingConfigBillingcalendar3PrimaryKey {
+    type Row<'other> = BillingConfigBillingcalendar3Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.contractyear == row.contractyear && self.weekno == row.weekno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for BillingConfigBillingcalendar2PrimaryKey {
-    type PrimaryKey = BillingConfigBillingcalendar2PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for BillingConfigBillingcalendar3PrimaryKey {
+    type PrimaryKey = BillingConfigBillingcalendar3PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.contractyear == key.contractyear && self.weekno == key.weekno
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
-    type Builder = BillingConfigBillingcalendar2Builder;
+impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar3 {
+    type Builder = BillingConfigBillingcalendar3Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -338,11 +348,19 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
                     ),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "revision0_statementdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        BillingConfigBillingcalendar2Builder {
+        BillingConfigBillingcalendar3Builder {
             contractyear_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(4, 0)),
             weekno_array: arrow::array::builder::Decimal128Builder::new()
@@ -355,6 +373,7 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             revision1_statementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             revision2_statementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            revision0_statementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -404,6 +423,11 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
             .append_option(
                 row.revision2_statementdate.map(|val| val.and_utc().timestamp_millis()),
             );
+        builder
+            .revision0_statementdate_array
+            .append_option(
+                row.revision0_statementdate.map(|val| val.and_utc().timestamp_millis()),
+            );
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -432,13 +456,15 @@ impl mmsdm_core::ArrowSchema for BillingConfigBillingcalendar2 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.revision2_statementdate_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.revision0_statementdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct BillingConfigBillingcalendar2Builder {
+pub struct BillingConfigBillingcalendar3Builder {
     contractyear_array: arrow::array::builder::Decimal128Builder,
     weekno_array: arrow::array::builder::Decimal128Builder,
     startdate_array: arrow::array::builder::TimestampMillisecondBuilder,
@@ -449,6 +475,7 @@ pub struct BillingConfigBillingcalendar2Builder {
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     revision1_statementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     revision2_statementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    revision0_statementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct BillingConfigGstBasClass1 {
     extract_row_partition: alloc::boxed::Box<

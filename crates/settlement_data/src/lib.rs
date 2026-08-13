@@ -12349,9 +12349,9 @@ pub struct SettlementsNmasRecovery3Row<'data> {
     pub periodid: rust_decimal::Decimal,
     /// The Participant from whom the amount is recovered
     pub participantid: core::ops::Range<usize>,
-    /// The type of NSCAS service. Current value values are:- REACTIVE- LOADSHED- RESTART
+    /// The type of NSCAS service incl ISF Services. Current value values are:- REACTIVE- LOADSHED- RESTART- INERTIA, SYSTEM STRENGTH, TYPE1, TYPE2
     pub service: core::ops::Range<usize>,
-    /// The NMAS Contract Id
+    /// The NMAS/ISF Contract Id
     pub contractid: core::ops::Range<usize>,
     /// The type of payment being recovered. Valid values are:- AVAILABILITY- ENABLEMENT- COMPENSATION
     pub paymenttype: core::ops::Range<usize>,
@@ -12745,7 +12745,7 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasRecovery3 {
                 arrow::datatypes::Field::new(
                     "service",
                     arrow::datatypes::DataType::Dictionary(
-                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
                         alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
                     ),
                     false,
@@ -12753,7 +12753,7 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasRecovery3 {
                 arrow::datatypes::Field::new(
                     "contractid",
                     arrow::datatypes::DataType::Dictionary(
-                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
                         alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
                     ),
                     false,
@@ -12871,10 +12871,10 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasRecovery3 {
                 arrow::array::types::Int32Type,
             >::new(),
             service_array: arrow::array::StringDictionaryBuilder::<
-                arrow::array::types::Int16Type,
+                arrow::array::types::Int32Type,
             >::new(),
             contractid_array: arrow::array::StringDictionaryBuilder::<
-                arrow::array::types::Int16Type,
+                arrow::array::types::Int32Type,
             >::new(),
             paymenttype_array: arrow::array::StringDictionaryBuilder::<
                 arrow::array::types::Int32Type,
@@ -13146,9 +13146,9 @@ pub struct SettlementsNmasRecovery3Builder {
     participantid_array: arrow::array::StringDictionaryBuilder<
         arrow::array::types::Int32Type,
     >,
-    service_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    service_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     contractid_array: arrow::array::StringDictionaryBuilder<
-        arrow::array::types::Int16Type,
+        arrow::array::types::Int32Type,
     >,
     paymenttype_array: arrow::array::StringDictionaryBuilder<
         arrow::array::types::Int32Type,
@@ -13228,9 +13228,9 @@ pub struct SettlementsNmasRecoveryRbf1Row<'data> {
     pub versionno: rust_decimal::Decimal,
     /// Settlements Trading Interval.
     pub periodid: rust_decimal::Decimal,
-    /// The type of NSCAS service. Current value values are:- REACTIVE- LOADSHED
+    /// The type of NSCAS service incl ISF Services. Current value values are:- REACTIVE- LOADSHED- RESTART- INERTIA, SYSTEM STRENGTH, TYPE1, TYPE2
     pub service: core::ops::Range<usize>,
-    /// The NMAS Contract Id
+    /// The NMAS/ISF Contract Id
     pub contractid: core::ops::Range<usize>,
     /// The type of payment being recovered. Valid values are:- AVAILABILITY- ENABLEMENT- COMPENSATION
     pub paymenttype: core::ops::Range<usize>,
@@ -13483,7 +13483,7 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasRecoveryRbf1 {
                 arrow::datatypes::Field::new(
                     "service",
                     arrow::datatypes::DataType::Dictionary(
-                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
                         alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
                     ),
                     false,
@@ -13491,7 +13491,7 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasRecoveryRbf1 {
                 arrow::datatypes::Field::new(
                     "contractid",
                     arrow::datatypes::DataType::Dictionary(
-                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
                         alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
                     ),
                     false,
@@ -13546,10 +13546,10 @@ impl mmsdm_core::ArrowSchema for SettlementsNmasRecoveryRbf1 {
             periodid_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
             service_array: arrow::array::StringDictionaryBuilder::<
-                arrow::array::types::Int16Type,
+                arrow::array::types::Int32Type,
             >::new(),
             contractid_array: arrow::array::StringDictionaryBuilder::<
-                arrow::array::types::Int16Type,
+                arrow::array::types::Int32Type,
             >::new(),
             paymenttype_array: arrow::array::StringDictionaryBuilder::<
                 arrow::array::types::Int32Type,
@@ -13657,9 +13657,9 @@ pub struct SettlementsNmasRecoveryRbf1Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     periodid_array: arrow::array::builder::Decimal128Builder,
-    service_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
+    service_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
     contractid_array: arrow::array::StringDictionaryBuilder<
-        arrow::array::types::Int16Type,
+        arrow::array::types::Int32Type,
     >,
     paymenttype_array: arrow::array::StringDictionaryBuilder<
         arrow::array::types::Int32Type,
@@ -21838,7 +21838,7 @@ impl mmsdm_core::ArrowSchema for SettlementsMarketfees7 {
                 arrow::datatypes::Field::new(
                     "participantcategoryid",
                     arrow::datatypes::DataType::Dictionary(
-                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
                         alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
                     ),
                     false,
@@ -21891,7 +21891,7 @@ impl mmsdm_core::ArrowSchema for SettlementsMarketfees7 {
                 .with_data_type(arrow::datatypes::DataType::Decimal128(16, 6)),
             lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             participantcategoryid_array: arrow::array::StringDictionaryBuilder::<
-                arrow::array::types::Int32Type,
+                arrow::array::types::Int16Type,
             >::new(),
             feerate_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(18, 8)),
@@ -22020,7 +22020,7 @@ pub struct SettlementsMarketfees7Builder {
     energy_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
     participantcategoryid_array: arrow::array::StringDictionaryBuilder<
-        arrow::array::types::Int32Type,
+        arrow::array::types::Int16Type,
     >,
     feerate_array: arrow::array::builder::Decimal128Builder,
     feeunits_array: arrow::array::builder::Decimal128Builder,

@@ -16355,15 +16355,15 @@ pub struct DispatchIntermittentForecastTrk1Builder {
     forecast_priority_array: arrow::array::builder::Decimal128Builder,
     offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct DispatchNegativeResidue1 {
+pub struct DispatchNegativeResidue2 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
-            &DispatchNegativeResidue1Row<'_>,
+            &DispatchNegativeResidue2Row<'_>,
         ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
-impl DispatchNegativeResidue1 {
+impl DispatchNegativeResidue2 {
     pub fn new(
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
@@ -16376,7 +16376,7 @@ impl DispatchNegativeResidue1 {
         }
     }
 }
-pub struct DispatchNegativeResidue1Mapping([usize; 15]);
+pub struct DispatchNegativeResidue2Mapping([usize; 16]);
 /// # Summary
 ///
 /// ## NEGATIVE_RESIDUE
@@ -16385,7 +16385,7 @@ pub struct DispatchNegativeResidue1Mapping([usize; 15]);
 ///
 /// * Data Set Name: Dispatch
 /// * File Name: Negative Residue
-/// * Data Version: 1
+/// * Data Version: 2
 ///
 /// # Description
 ///
@@ -16399,7 +16399,7 @@ pub struct DispatchNegativeResidue1Mapping([usize; 15]);
 /// * NRM_DATETIME
 /// * SETTLEMENTDATE
 #[derive(Debug, PartialEq, Eq)]
-pub struct DispatchNegativeResidue1Row<'data> {
+pub struct DispatchNegativeResidue2Row<'data> {
     /// Dispatch Interval
     pub settlementdate: chrono::NaiveDateTime,
     /// The time that residue information is processed
@@ -16430,9 +16430,11 @@ pub struct DispatchNegativeResidue1Row<'data> {
     pub di_violated_count: Option<rust_decimal::Decimal>,
     /// 1 if constraint is blocked, else 0
     pub nrmconstraint_blocked_flag: Option<rust_decimal::Decimal>,
+    /// NRM Loop Flag controls monitoring behaviour: 0 = Individual NRM monitoring suppressed (loop operational with aggregate IRSR >= 0)1 = Individual NRM monitoring active (applies to: loop not operational, aggregate loop IRSR <0, or non-loop interconnection)This flag is evaluated and set for ALL interconnections in each dispatch interval
+    pub nrm_loop_flag: Option<rust_decimal::Decimal>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> DispatchNegativeResidue1Row<'data> {
+impl<'data> DispatchNegativeResidue2Row<'data> {
     pub fn directional_interconnectorid(&self) -> &str {
         core::ops::Index::index(
             self.backing_data.as_slice(),
@@ -16452,12 +16454,12 @@ impl<'data> DispatchNegativeResidue1Row<'data> {
         }
     }
 }
-impl mmsdm_core::GetTable for DispatchNegativeResidue1 {
-    const VERSION: i32 = 1;
+impl mmsdm_core::GetTable for DispatchNegativeResidue2 {
+    const VERSION: i32 = 2;
     const DATA_SET_NAME: &'static str = "DISPATCH";
     const TABLE_NAME: &'static str = "NEGATIVE_RESIDUE";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchNegativeResidue1Mapping([
-        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = DispatchNegativeResidue2Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "SETTLEMENTDATE",
@@ -16475,15 +16477,16 @@ impl mmsdm_core::GetTable for DispatchNegativeResidue1 {
         "DI_NOTBINDING_COUNT",
         "DI_VIOLATED_COUNT",
         "NRMCONSTRAINT_BLOCKED_FLAG",
+        "NRM_LOOP_FLAG",
     ];
-    type Row<'row> = DispatchNegativeResidue1Row<'row>;
-    type FieldMapping = DispatchNegativeResidue1Mapping;
-    type PrimaryKey = DispatchNegativeResidue1PrimaryKey;
+    type Row<'row> = DispatchNegativeResidue2Row<'row>;
+    type FieldMapping = DispatchNegativeResidue2Mapping;
+    type PrimaryKey = DispatchNegativeResidue2PrimaryKey;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(DispatchNegativeResidue1Row {
+        Ok(DispatchNegativeResidue2Row {
             settlementdate: row
                 .get_custom_parsed_at_idx(
                     "settlementdate",
@@ -16561,6 +16564,12 @@ impl mmsdm_core::GetTable for DispatchNegativeResidue1 {
                     field_mapping.0[14],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            nrm_loop_flag: row
+                .get_opt_custom_parsed_at_idx(
+                    "nrm_loop_flag",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
             backing_data: row,
         })
     }
@@ -16592,14 +16601,14 @@ impl mmsdm_core::GetTable for DispatchNegativeResidue1 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(DispatchNegativeResidue1Mapping(base_mapping))
+        Ok(DispatchNegativeResidue2Mapping(base_mapping))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> DispatchNegativeResidue1PrimaryKey {
-        DispatchNegativeResidue1PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> DispatchNegativeResidue2PrimaryKey {
+        DispatchNegativeResidue2PrimaryKey {
             directional_interconnectorid: row.directional_interconnectorid().to_string(),
             nrm_datetime: row.nrm_datetime,
             settlementdate: row.settlementdate,
@@ -16609,13 +16618,13 @@ impl mmsdm_core::GetTable for DispatchNegativeResidue1 {
         (self.extract_row_partition)(row)
     }
     fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("dispatch_negative_residue_v1_{}", self.partition_value(row))
+        alloc::format!("dispatch_negative_residue_v2_{}", self.partition_value(row))
     }
     fn partition_key(&self) -> mmsdm_core::PartitionKey {
         self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        DispatchNegativeResidue1Row {
+        DispatchNegativeResidue2Row {
             settlementdate: row.settlementdate.clone(),
             nrm_datetime: row.nrm_datetime.clone(),
             directional_interconnectorid: row.directional_interconnectorid.clone(),
@@ -16631,43 +16640,44 @@ impl mmsdm_core::GetTable for DispatchNegativeResidue1 {
             di_notbinding_count: row.di_notbinding_count.clone(),
             di_violated_count: row.di_violated_count.clone(),
             nrmconstraint_blocked_flag: row.nrmconstraint_blocked_flag.clone(),
+            nrm_loop_flag: row.nrm_loop_flag.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct DispatchNegativeResidue1PrimaryKey {
+pub struct DispatchNegativeResidue2PrimaryKey {
     pub directional_interconnectorid: alloc::string::String,
     pub nrm_datetime: chrono::NaiveDateTime,
     pub settlementdate: chrono::NaiveDateTime,
 }
-impl mmsdm_core::PrimaryKey for DispatchNegativeResidue1PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for DispatchNegativeResidue1Row<'data> {
-    type Row<'other> = DispatchNegativeResidue1Row<'other>;
+impl mmsdm_core::PrimaryKey for DispatchNegativeResidue2PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for DispatchNegativeResidue2Row<'data> {
+    type Row<'other> = DispatchNegativeResidue2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.directional_interconnectorid() == row.directional_interconnectorid()
             && self.nrm_datetime == row.nrm_datetime
             && self.settlementdate == row.settlementdate
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for DispatchNegativeResidue1Row<'data> {
-    type PrimaryKey = DispatchNegativeResidue1PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for DispatchNegativeResidue2Row<'data> {
+    type PrimaryKey = DispatchNegativeResidue2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.directional_interconnectorid() == key.directional_interconnectorid
             && self.nrm_datetime == key.nrm_datetime
             && self.settlementdate == key.settlementdate
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for DispatchNegativeResidue1PrimaryKey {
-    type Row<'other> = DispatchNegativeResidue1Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for DispatchNegativeResidue2PrimaryKey {
+    type Row<'other> = DispatchNegativeResidue2Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.directional_interconnectorid == row.directional_interconnectorid()
             && self.nrm_datetime == row.nrm_datetime
             && self.settlementdate == row.settlementdate
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for DispatchNegativeResidue1PrimaryKey {
-    type PrimaryKey = DispatchNegativeResidue1PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for DispatchNegativeResidue2PrimaryKey {
+    type PrimaryKey = DispatchNegativeResidue2PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.directional_interconnectorid == key.directional_interconnectorid
             && self.nrm_datetime == key.nrm_datetime
@@ -16675,8 +16685,8 @@ impl mmsdm_core::CompareWithPrimaryKey for DispatchNegativeResidue1PrimaryKey {
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
-    type Builder = DispatchNegativeResidue1Builder;
+impl mmsdm_core::ArrowSchema for DispatchNegativeResidue2 {
+    type Builder = DispatchNegativeResidue2Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -16776,11 +16786,16 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                     arrow::datatypes::DataType::Decimal128(1, 0),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "nrm_loop_flag",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        DispatchNegativeResidue1Builder {
+        DispatchNegativeResidue2Builder {
             settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             nrm_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             directional_interconnectorid_array: arrow::array::StringDictionaryBuilder::<
@@ -16807,6 +16822,8 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
             di_violated_count_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(2, 0)),
             nrmconstraint_blocked_flag_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            nrm_loop_flag_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
         }
     }
@@ -16906,6 +16923,15 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                         val.mantissa()
                     })
             });
+        builder
+            .nrm_loop_flag_array
+            .append_option({
+                row.nrm_loop_flag
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -16946,13 +16972,15 @@ impl mmsdm_core::ArrowSchema for DispatchNegativeResidue1 {
                     alloc::sync::Arc::new(
                         builder.nrmconstraint_blocked_flag_array.finish(),
                     ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.nrm_loop_flag_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct DispatchNegativeResidue1Builder {
+pub struct DispatchNegativeResidue2Builder {
     settlementdate_array: arrow::array::builder::TimestampMillisecondBuilder,
     nrm_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
     directional_interconnectorid_array: arrow::array::StringDictionaryBuilder<
@@ -16972,4 +17000,5 @@ pub struct DispatchNegativeResidue1Builder {
     di_notbinding_count_array: arrow::array::builder::Decimal128Builder,
     di_violated_count_array: arrow::array::builder::Decimal128Builder,
     nrmconstraint_blocked_flag_array: arrow::array::builder::Decimal128Builder,
+    nrm_loop_flag_array: arrow::array::builder::Decimal128Builder,
 }
