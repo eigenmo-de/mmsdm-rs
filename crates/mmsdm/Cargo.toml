@@ -172,6 +172,21 @@ optional = true
 path = "../historical_tables"
 optional = true 
 
+[dependencies.mmsdm_voltage_instructions]
+# version = "0.1.0"
+path = "../voltage_instructions"
+optional = true 
+
+[dependencies.mmsdm_configuration]
+# version = "0.1.0"
+path = "../configuration"
+optional = true 
+
+[dependencies.mmsdm_pd7day]
+# version = "0.1.0"
+path = "../pd7day"
+optional = true 
+
 [features]
 arrow = [
     "dep:arrow", 
@@ -203,6 +218,9 @@ arrow = [
     "mmsdm_stpasa_solution?/arrow",
     "mmsdm_trading_data?/arrow",
     "mmsdm_historical_tables?/arrow",
+    "mmsdm_voltage_instructions?/arrow",
+    "mmsdm_configuration?/arrow",
+    "mmsdm_pd7day?/arrow",
     "std",
 ]
 asoffer = ["mmsdm_asoffer"]
@@ -232,6 +250,9 @@ settlement_data = ["mmsdm_settlement_data"]
 stpasa_solution = ["mmsdm_stpasa_solution"]
 trading_data = ["mmsdm_trading_data"]
 historical_tables = ["mmsdm_historical_tables"]
+voltage_instructions = ["mmsdm_voltage_instructions"]
+configuration = ["mmsdm_configuration"]
+pd7day = ["mmsdm_pd7day"]
 mmsdm = [
     "asoffer",
     "bids",
@@ -260,6 +281,9 @@ mmsdm = [
     "stpasa_solution",
     "trading_data",
     "historical_tables",
+    "voltage_instructions",
+    "configuration",
+    "pd7day",
 ]
 default = ["mmsdm", "arrow", "std"]
 std = ["mmsdm_core/std"]

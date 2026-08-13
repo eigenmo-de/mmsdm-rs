@@ -1,5 +1,15 @@
 {
   "packages": {
+    "CONFIGURATION": {
+      "comment": "MMS Data Model Configuration Management and Control",
+      "tables": {
+        "MMS_DATA_MODEL_AUDIT": {
+          "link": "Elec4.htm#1",
+          "visibility": "Private",
+          "comment": "MMS_DATA_MODEL_AUDIT shows the audit trail of scripts applied to this installation of MMS Data Model. Participants should ensure that if a database is cloned the content of this table is copied to the target database."
+        }
+      }
+    },
     "ANCILLARY_SERVICES": {
       "comment": "Ancillary Service Contract Data",
       "tables": {
@@ -3157,6 +3167,21 @@
           "link": "Elec73.htm#51",
           "visibility": "Public",
           "comment": "NETWORK_SUBSTATIONDETAIL sets out the attributes of sub-stations across time"
+        }
+      }
+    },
+    "VOLTAGE_INSTRUCTIONS": {
+      "comment": "Instructions for MVAr Dispatch",
+      "tables": {
+        "VOLTAGE_INSTRUCTION": {
+          "link": "Elec75.htm#1",
+          "visibility": "Public",
+          "comment": "Child record for Voltage Instructions (MVAr Dispatch)"
+        },
+        "VOLTAGE_INSTRUCTION_TRK": {
+          "link": "Elec75.htm#9",
+          "visibility": "Public",
+          "comment": "Parent record for Voltage Instructions (MVAr Dispatch). 'SIGNAL' records will have no children; 'INSTRUCTION' records will have children"
         }
       }
     },

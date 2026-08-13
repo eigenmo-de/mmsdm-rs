@@ -10,11 +10,7 @@ use log::{info, warn};
 use serde::{Deserialize, Serialize};
 
 const PACKAGES_TO_SKIP: &[&str] = &[
-    "CONFIGURATION",
-    "HISTORICAL_TABLES",
-    "VOLTAGE_INSTRUCTIONS",
     "FPP",
-    // "PD7DAY",
 ];
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
