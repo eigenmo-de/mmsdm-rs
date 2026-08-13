@@ -78,3 +78,9 @@ pub use mmsdm_trading_data::*;
 
 #[cfg(feature = "historical_tables")]
 pub use mmsdm_historical_tables;
+
+#[cfg(feature = "voltage_instructions")]
+pub use mmsdm_voltage_instructions::*;
+
+#[cfg(feature = "pd7day")]
+pub use mmsdm_pd7day::*;
