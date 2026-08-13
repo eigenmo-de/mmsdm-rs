@@ -14,7 +14,7 @@ const PACKAGES_TO_SKIP: &[&str] = &[
     "HISTORICAL_TABLES",
     "VOLTAGE_INSTRUCTIONS",
     "FPP",
-    "PD7DAY",
+    // "PD7DAY",
 ];
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

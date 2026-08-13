@@ -5104,7 +5104,7 @@ pub struct ParticipantRegistrationGenunits3Row<'data> {
     pub voltlevel: Option<rust_decimal::Decimal>,
     /// Registered capacity
     pub registeredcapacity: Option<rust_decimal::Decimal>,
-    /// Identifies LOAD, GENERATOR or BIDIRECTIONAL. This will likely expand to more generic models as new technology types are integrated into the NEM.
+    /// Type NET/NET identifies if DUID is a Scheduled and GROSS/NET identifies if DUID is either Semi-Scheduled or Non-Scheduled.
     pub dispatchtype: core::ops::Range<usize>,
     /// Fast / Slow / Not Dispatched
     pub starttype: core::ops::Range<usize>,
@@ -5114,7 +5114,7 @@ pub struct ParticipantRegistrationGenunits3Row<'data> {
     pub normalstatus: core::ops::Range<usize>,
     /// Maximum capacity
     pub maxcapacity: Option<rust_decimal::Decimal>,
-    /// Genset type
+    /// Identifies LOAD, GENERATOR or BIDIRECTIONAL. This will likely expand to more generic models as new technology types are integrated into the NEM.
     pub gensettype: core::ops::Range<usize>,
     /// Genset name
     pub gensetname: core::ops::Range<usize>,
@@ -8700,7 +8700,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
                 arrow::datatypes::Field::new(
                     "participantcategoryid",
                     arrow::datatypes::DataType::Dictionary(
-                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
                         alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
                     ),
                     false,
@@ -8727,7 +8727,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipantcategory1Builder {
             participantcategoryid_array: arrow::array::StringDictionaryBuilder::<
-                arrow::array::types::Int32Type,
+                arrow::array::types::Int16Type,
             >::new(),
             description_array: arrow::array::StringDictionaryBuilder::<
                 arrow::array::types::Int32Type,
@@ -8762,7 +8762,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategory1 {
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationParticipantcategory1Builder {
     participantcategoryid_array: arrow::array::StringDictionaryBuilder<
-        arrow::array::types::Int32Type,
+        arrow::array::types::Int16Type,
     >,
     description_array: arrow::array::StringDictionaryBuilder<
         arrow::array::types::Int32Type,
@@ -8975,7 +8975,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc
                 arrow::datatypes::Field::new(
                     "participantcategoryid",
                     arrow::datatypes::DataType::Dictionary(
-                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
                         alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
                     ),
                     false,
@@ -9002,7 +9002,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc
     fn new_builder() -> Self::Builder {
         ParticipantRegistrationParticipantcategoryalloc1Builder {
             participantcategoryid_array: arrow::array::StringDictionaryBuilder::<
-                arrow::array::types::Int32Type,
+                arrow::array::types::Int16Type,
             >::new(),
             participantid_array: arrow::array::StringDictionaryBuilder::<
                 arrow::array::types::Int16Type,
@@ -9037,7 +9037,7 @@ impl mmsdm_core::ArrowSchema for ParticipantRegistrationParticipantcategoryalloc
 #[cfg(feature = "arrow")]
 pub struct ParticipantRegistrationParticipantcategoryalloc1Builder {
     participantcategoryid_array: arrow::array::StringDictionaryBuilder<
-        arrow::array::types::Int32Type,
+        arrow::array::types::Int16Type,
     >,
     participantid_array: arrow::array::StringDictionaryBuilder<
         arrow::array::types::Int16Type,
@@ -9672,6 +9672,816 @@ pub struct ParticipantRegistrationParticipantcreditdetail1Builder {
         arrow::array::types::Int32Type,
     >,
     authoriseddate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct ParticipantRegistrationPasaInterzonalMapping1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &ParticipantRegistrationPasaInterzonalMapping1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationPasaInterzonalMapping1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct ParticipantRegistrationPasaInterzonalMapping1Mapping([usize; 7]);
+/// # Summary
+///
+/// ## PASA_INTERZONAL_MAPPING
+///
+/// PASA_INTERZONAL_MAPPING shows inter-zonal mapping details, including operating status.
+///
+/// * Data Set Name: Participant Registration
+/// * File Name: Pasa Interzonal Mapping
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * EFFECTIVEDATE
+/// * INTERZONALCONNECTORID
+/// * VERSIONNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct ParticipantRegistrationPasaInterzonalMapping1Row<'data> {
+    /// The identifier for this Interzonal connector
+    pub interzonalconnectorid: core::ops::Range<usize>,
+    /// Effective date of this InterZonal Mapping
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version number for the Effective date
+    pub versionno: rust_decimal::Decimal,
+    /// The From ZoneId for this Interzonal connector
+    pub fromzoneid: core::ops::Range<usize>,
+    /// The To ZoneId for this Interzonal connector
+    pub tozoneid: core::ops::Range<usize>,
+    /// Active or inactive indicator
+    pub operatingstatus: core::ops::Range<usize>,
+    /// Date time this record was created
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> ParticipantRegistrationPasaInterzonalMapping1Row<'data> {
+    pub fn interzonalconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interzonalconnectorid.clone(),
+        )
+    }
+    pub fn fromzoneid(&self) -> Option<&str> {
+        if self.fromzoneid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.fromzoneid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn tozoneid(&self) -> Option<&str> {
+        if self.tozoneid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.tozoneid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn operatingstatus(&self) -> Option<&str> {
+        if self.operatingstatus.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.operatingstatus.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for ParticipantRegistrationPasaInterzonalMapping1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
+    const TABLE_NAME: &'static str = "PASA_INTERZONAL_MAPPING";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationPasaInterzonalMapping1Mapping([
+        4, 5, 6, 7, 8, 9, 10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "INTERZONALCONNECTORID",
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "FROMZONEID",
+        "TOZONEID",
+        "OPERATINGSTATUS",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = ParticipantRegistrationPasaInterzonalMapping1Row<'row>;
+    type FieldMapping = ParticipantRegistrationPasaInterzonalMapping1Mapping;
+    type PrimaryKey = ParticipantRegistrationPasaInterzonalMapping1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(ParticipantRegistrationPasaInterzonalMapping1Row {
+            interzonalconnectorid: row
+                .get_range("interzonalconnectorid", field_mapping.0[0])?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            fromzoneid: row.get_opt_range("fromzoneid", field_mapping.0[3])?,
+            tozoneid: row.get_opt_range("tozoneid", field_mapping.0[4])?,
+            operatingstatus: row.get_opt_range("operatingstatus", field_mapping.0[5])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(ParticipantRegistrationPasaInterzonalMapping1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> ParticipantRegistrationPasaInterzonalMapping1PrimaryKey {
+        ParticipantRegistrationPasaInterzonalMapping1PrimaryKey {
+            effectivedate: row.effectivedate,
+            interzonalconnectorid: row.interzonalconnectorid().to_string(),
+            versionno: row.versionno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_pasa_interzonal_mapping_v1_{}", self
+            .partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        ParticipantRegistrationPasaInterzonalMapping1Row {
+            interzonalconnectorid: row.interzonalconnectorid.clone(),
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            fromzoneid: row.fromzoneid.clone(),
+            tozoneid: row.tozoneid.clone(),
+            operatingstatus: row.operatingstatus.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct ParticipantRegistrationPasaInterzonalMapping1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub interzonalconnectorid: alloc::string::String,
+    pub versionno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for ParticipantRegistrationPasaInterzonalMapping1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow
+for ParticipantRegistrationPasaInterzonalMapping1Row<'data> {
+    type Row<'other> = ParticipantRegistrationPasaInterzonalMapping1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.interzonalconnectorid() == row.interzonalconnectorid()
+            && self.versionno == row.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for ParticipantRegistrationPasaInterzonalMapping1Row<'data> {
+    type PrimaryKey = ParticipantRegistrationPasaInterzonalMapping1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.interzonalconnectorid() == key.interzonalconnectorid
+            && self.versionno == key.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow
+for ParticipantRegistrationPasaInterzonalMapping1PrimaryKey {
+    type Row<'other> = ParticipantRegistrationPasaInterzonalMapping1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate
+            && self.interzonalconnectorid == row.interzonalconnectorid()
+            && self.versionno == row.versionno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey
+for ParticipantRegistrationPasaInterzonalMapping1PrimaryKey {
+    type PrimaryKey = ParticipantRegistrationPasaInterzonalMapping1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate
+            && self.interzonalconnectorid == key.interzonalconnectorid
+            && self.versionno == key.versionno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for ParticipantRegistrationPasaInterzonalMapping1 {
+    type Builder = ParticipantRegistrationPasaInterzonalMapping1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "interzonalconnectorid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromzoneid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "tozoneid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "operatingstatus",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        ParticipantRegistrationPasaInterzonalMapping1Builder {
+            interzonalconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            fromzoneid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            tozoneid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            operatingstatus_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.interzonalconnectorid_array.append_value(row.interzonalconnectorid());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.fromzoneid_array.append_option(row.fromzoneid());
+        builder.tozoneid_array.append_option(row.tozoneid());
+        builder.operatingstatus_array.append_option(row.operatingstatus());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.interzonalconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromzoneid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.tozoneid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.operatingstatus_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct ParticipantRegistrationPasaInterzonalMapping1Builder {
+    interzonalconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    fromzoneid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    tozoneid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    operatingstatus_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct ParticipantRegistrationPasaZoneRegionMapping1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &ParticipantRegistrationPasaZoneRegionMapping1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl ParticipantRegistrationPasaZoneRegionMapping1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct ParticipantRegistrationPasaZoneRegionMapping1Mapping([usize; 7]);
+/// # Summary
+///
+/// ## PASA_ZONE_REGION_MAPPING
+///
+/// PASA_ZONE_REGION_MAPPING shows zone to region mapping details and provide the Region Reference Zone information.
+///
+/// * Data Set Name: Participant Registration
+/// * File Name: Pasa Zone Region Mapping
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * EFFECTIVEDATE
+/// * VERSIONNO
+/// * ZONEID
+#[derive(Debug, PartialEq, Eq)]
+pub struct ParticipantRegistrationPasaZoneRegionMapping1Row<'data> {
+    /// Zone identifier
+    pub zoneid: core::ops::Range<usize>,
+    /// Effective date of this Zone-Region Mapping
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version number for the Effective date
+    pub versionno: rust_decimal::Decimal,
+    /// Region in which this Zone belongs
+    pub regionid: core::ops::Range<usize>,
+    /// YES or NO/<Blank>. LORCONDITION is only reported for supply deficits in a Zone that contains the Regional Reference Node
+    pub is_rrn_zone: core::ops::Range<usize>,
+    /// Active or inactive indicator
+    pub operatingstatus: core::ops::Range<usize>,
+    /// Date time this record was created
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> ParticipantRegistrationPasaZoneRegionMapping1Row<'data> {
+    pub fn zoneid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.zoneid.clone())
+    }
+    pub fn regionid(&self) -> Option<&str> {
+        if self.regionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.regionid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn is_rrn_zone(&self) -> Option<&str> {
+        if self.is_rrn_zone.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.is_rrn_zone.clone(),
+                ),
+            )
+        }
+    }
+    pub fn operatingstatus(&self) -> Option<&str> {
+        if self.operatingstatus.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.operatingstatus.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for ParticipantRegistrationPasaZoneRegionMapping1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PARTICIPANT_REGISTRATION";
+    const TABLE_NAME: &'static str = "PASA_ZONE_REGION_MAPPING";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = ParticipantRegistrationPasaZoneRegionMapping1Mapping([
+        4, 5, 6, 7, 8, 9, 10,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "ZONEID",
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "REGIONID",
+        "IS_RRN_ZONE",
+        "OPERATINGSTATUS",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = ParticipantRegistrationPasaZoneRegionMapping1Row<'row>;
+    type FieldMapping = ParticipantRegistrationPasaZoneRegionMapping1Mapping;
+    type PrimaryKey = ParticipantRegistrationPasaZoneRegionMapping1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(ParticipantRegistrationPasaZoneRegionMapping1Row {
+            zoneid: row.get_range("zoneid", field_mapping.0[0])?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            regionid: row.get_opt_range("regionid", field_mapping.0[3])?,
+            is_rrn_zone: row.get_opt_range("is_rrn_zone", field_mapping.0[4])?,
+            operatingstatus: row.get_opt_range("operatingstatus", field_mapping.0[5])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(ParticipantRegistrationPasaZoneRegionMapping1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> ParticipantRegistrationPasaZoneRegionMapping1PrimaryKey {
+        ParticipantRegistrationPasaZoneRegionMapping1PrimaryKey {
+            effectivedate: row.effectivedate,
+            versionno: row.versionno,
+            zoneid: row.zoneid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "participant_registration_pasa_zone_region_mapping_v1_{}", self
+            .partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        ParticipantRegistrationPasaZoneRegionMapping1Row {
+            zoneid: row.zoneid.clone(),
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            regionid: row.regionid.clone(),
+            is_rrn_zone: row.is_rrn_zone.clone(),
+            operatingstatus: row.operatingstatus.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct ParticipantRegistrationPasaZoneRegionMapping1PrimaryKey {
+    pub effectivedate: chrono::NaiveDateTime,
+    pub versionno: rust_decimal::Decimal,
+    pub zoneid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for ParticipantRegistrationPasaZoneRegionMapping1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow
+for ParticipantRegistrationPasaZoneRegionMapping1Row<'data> {
+    type Row<'other> = ParticipantRegistrationPasaZoneRegionMapping1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.versionno == row.versionno
+            && self.zoneid() == row.zoneid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for ParticipantRegistrationPasaZoneRegionMapping1Row<'data> {
+    type PrimaryKey = ParticipantRegistrationPasaZoneRegionMapping1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate && self.versionno == key.versionno
+            && self.zoneid() == key.zoneid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow
+for ParticipantRegistrationPasaZoneRegionMapping1PrimaryKey {
+    type Row<'other> = ParticipantRegistrationPasaZoneRegionMapping1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.effectivedate == row.effectivedate && self.versionno == row.versionno
+            && self.zoneid == row.zoneid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey
+for ParticipantRegistrationPasaZoneRegionMapping1PrimaryKey {
+    type PrimaryKey = ParticipantRegistrationPasaZoneRegionMapping1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.effectivedate == key.effectivedate && self.versionno == key.versionno
+            && self.zoneid == key.zoneid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for ParticipantRegistrationPasaZoneRegionMapping1 {
+    type Builder = ParticipantRegistrationPasaZoneRegionMapping1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "zoneid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "is_rrn_zone",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "operatingstatus",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        ParticipantRegistrationPasaZoneRegionMapping1Builder {
+            zoneid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            is_rrn_zone_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            operatingstatus_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.zoneid_array.append_value(row.zoneid());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.regionid_array.append_option(row.regionid());
+        builder.is_rrn_zone_array.append_option(row.is_rrn_zone());
+        builder.operatingstatus_array.append_option(row.operatingstatus());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.zoneid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.is_rrn_zone_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.operatingstatus_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct ParticipantRegistrationPasaZoneRegionMapping1Builder {
+    zoneid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    is_rrn_zone_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    operatingstatus_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
 pub struct ParticipantRegistrationPmsGroup1 {

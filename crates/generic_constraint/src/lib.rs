@@ -328,15 +328,15 @@ pub struct GenericConstraintEmsmaster1Builder {
     >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
-pub struct GencondataNull6 {
+pub struct GencondataNull7 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
-            &GencondataNull6Row<'_>,
+            &GencondataNull7Row<'_>,
         ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
     >,
     row_partition_key: mmsdm_core::PartitionKey,
 }
-impl GencondataNull6 {
+impl GencondataNull7 {
     pub fn new(
         row_partition_key: mmsdm_core::PartitionKey,
         func: impl Fn(
@@ -349,7 +349,7 @@ impl GencondataNull6 {
         }
     }
 }
-pub struct GencondataNull6Mapping([usize; 26]);
+pub struct GencondataNull7Mapping([usize; 29]);
 /// # Summary
 ///
 /// ## GENCONDATA
@@ -358,7 +358,7 @@ pub struct GencondataNull6Mapping([usize; 26]);
 ///
 /// * Data Set Name: Gencondata
 /// * File Name: Null
-/// * Data Version: 6
+/// * Data Version: 7
 ///
 /// # Description
 /// GENCONDATA is a public data, and is available to all participants.SourceGENCONDATA updates as constraint details are updated by AEMO.NoteThe following fields enable selective application of invoked constraints in the Dispatch, Predispatch, ST PASA or MT PASA processes:·DISPATCH·PREDISPATCH·STPASA·MTPASAThe flag P5MIN_SCOPE_OVERRIDE indicates for each constraint whether 5MPD makes use of the default Dispatch (P5MIN_SCOPE_OVERRIDE = NULL) or Pre-dispatch (P5MIN_SCOPE_OVERRIDE = ‘PD’) style RHS definition. GENERICCONSTRAINTRHS stores generic constraint RHS definitions. Constraints without records in GENERICCONSTRAINTRHS only make use of the static RHS defined in the CONSTRAINTVALUE column in GENCONDATA .The default value for the P5MIN_SCOPE_OVERRIDE column is NULL, so constraints existing before implementing the column use the DISPATCH RHS definition by default, as was the case before the implementation of the change.
@@ -372,7 +372,7 @@ pub struct GencondataNull6Mapping([usize; 26]);
 /// * GENCONID
 /// * VERSIONNO
 #[derive(Debug, PartialEq, Eq)]
-pub struct GencondataNull6Row<'data> {
+pub struct GencondataNull7Row<'data> {
     /// Effective date of this constraint
     pub effectivedate: chrono::NaiveDateTime,
     /// Version with respect to the effective date
@@ -425,9 +425,15 @@ pub struct GencondataNull6Row<'data> {
     pub lor: core::ops::Range<usize>,
     /// Flags Constraints for which NEMDE must use "InitialMW"values instead of "WhatOfInitialMW"for Intervention Pricing runs
     pub force_scada: Option<rust_decimal::Decimal>,
+    /// Flags constraint is used in System Security Management (SSM) processes. 1-Used(in SSM only),0-not used
+    pub systemsecurity: core::ops::Range<usize>,
+    /// Region constraint relates to, in the format <REGIONID>_xxxx where xxxx is descriptive text
+    pub ssm_regionid: core::ops::Range<usize>,
+    /// Related constraints processed together in optimiser.
+    pub ssm_groupid: core::ops::Range<usize>,
     backing_data: mmsdm_core::CsvRow<'data>,
 }
-impl<'data> GencondataNull6Row<'data> {
+impl<'data> GencondataNull7Row<'data> {
     pub fn genconid(&self) -> &str {
         core::ops::Index::index(self.backing_data.as_slice(), self.genconid.clone())
     }
@@ -625,14 +631,50 @@ impl<'data> GencondataNull6Row<'data> {
             Some(core::ops::Index::index(self.backing_data.as_slice(), self.lor.clone()))
         }
     }
+    pub fn systemsecurity(&self) -> Option<&str> {
+        if self.systemsecurity.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.systemsecurity.clone(),
+                ),
+            )
+        }
+    }
+    pub fn ssm_regionid(&self) -> Option<&str> {
+        if self.ssm_regionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.ssm_regionid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn ssm_groupid(&self) -> Option<&str> {
+        if self.ssm_groupid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.ssm_groupid.clone(),
+                ),
+            )
+        }
+    }
 }
-impl mmsdm_core::GetTable for GencondataNull6 {
-    const VERSION: i32 = 6;
+impl mmsdm_core::GetTable for GencondataNull7 {
+    const VERSION: i32 = 7;
     const DATA_SET_NAME: &'static str = "GENCONDATA";
     const TABLE_NAME: &'static str = "NULL";
-    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GencondataNull6Mapping([
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GencondataNull7Mapping([
         4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        26, 27, 28, 29,
+        26, 27, 28, 29, 30, 31, 32,
     ]);
     const COLUMNS: &'static [&'static str] = &[
         "EFFECTIVEDATE",
@@ -661,15 +703,18 @@ impl mmsdm_core::GetTable for GencondataNull6 {
         "LRC",
         "LOR",
         "FORCE_SCADA",
+        "SYSTEMSECURITY",
+        "SSM_REGIONID",
+        "SSM_GROUPID",
     ];
-    type Row<'row> = GencondataNull6Row<'row>;
-    type FieldMapping = GencondataNull6Mapping;
-    type PrimaryKey = GencondataNull6PrimaryKey;
+    type Row<'row> = GencondataNull7Row<'row>;
+    type FieldMapping = GencondataNull7Mapping;
+    type PrimaryKey = GencondataNull7PrimaryKey;
     fn from_row<'data>(
         row: mmsdm_core::CsvRow<'data>,
         field_mapping: &Self::FieldMapping,
     ) -> mmsdm_core::Result<Self::Row<'data>> {
-        Ok(GencondataNull6Row {
+        Ok(GencondataNull7Row {
             effectivedate: row
                 .get_custom_parsed_at_idx(
                     "effectivedate",
@@ -737,6 +782,9 @@ impl mmsdm_core::GetTable for GencondataNull6 {
                     field_mapping.0[25],
                     mmsdm_core::mms_decimal::parse,
                 )?,
+            systemsecurity: row.get_opt_range("systemsecurity", field_mapping.0[26])?,
+            ssm_regionid: row.get_opt_range("ssm_regionid", field_mapping.0[27])?,
+            ssm_groupid: row.get_opt_range("ssm_groupid", field_mapping.0[28])?,
             backing_data: row,
         })
     }
@@ -768,14 +816,14 @@ impl mmsdm_core::GetTable for GencondataNull6 {
                 .position(|f| f == *field)
                 .unwrap_or(usize::MAX);
         }
-        Ok(GencondataNull6Mapping(base_mapping))
+        Ok(GencondataNull7Mapping(base_mapping))
     }
     fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
         version == key.version && Self::DATA_SET_NAME == key.data_set_name()
             && Self::TABLE_NAME == key.table_name()
     }
-    fn primary_key(row: &Self::Row<'_>) -> GencondataNull6PrimaryKey {
-        GencondataNull6PrimaryKey {
+    fn primary_key(row: &Self::Row<'_>) -> GencondataNull7PrimaryKey {
+        GencondataNull7PrimaryKey {
             effectivedate: row.effectivedate,
             genconid: row.genconid().to_string(),
             versionno: row.versionno,
@@ -785,13 +833,13 @@ impl mmsdm_core::GetTable for GencondataNull6 {
         (self.extract_row_partition)(row)
     }
     fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
-        alloc::format!("gencondata_null_v6_{}", self.partition_value(row))
+        alloc::format!("gencondata_null_v7_{}", self.partition_value(row))
     }
     fn partition_key(&self) -> mmsdm_core::PartitionKey {
         self.row_partition_key
     }
     fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
-        GencondataNull6Row {
+        GencondataNull7Row {
             effectivedate: row.effectivedate.clone(),
             versionno: row.versionno.clone(),
             genconid: row.genconid.clone(),
@@ -818,48 +866,51 @@ impl mmsdm_core::GetTable for GencondataNull6 {
             lrc: row.lrc.clone(),
             lor: row.lor.clone(),
             force_scada: row.force_scada.clone(),
+            systemsecurity: row.systemsecurity.clone(),
+            ssm_regionid: row.ssm_regionid.clone(),
+            ssm_groupid: row.ssm_groupid.clone(),
             backing_data: row.backing_data.to_owned(),
         }
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct GencondataNull6PrimaryKey {
+pub struct GencondataNull7PrimaryKey {
     pub effectivedate: chrono::NaiveDateTime,
     pub genconid: alloc::string::String,
     pub versionno: rust_decimal::Decimal,
 }
-impl mmsdm_core::PrimaryKey for GencondataNull6PrimaryKey {}
-impl<'data> mmsdm_core::CompareWithRow for GencondataNull6Row<'data> {
-    type Row<'other> = GencondataNull6Row<'other>;
+impl mmsdm_core::PrimaryKey for GencondataNull7PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for GencondataNull7Row<'data> {
+    type Row<'other> = GencondataNull7Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate && self.genconid() == row.genconid()
             && self.versionno == row.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithPrimaryKey for GencondataNull6Row<'data> {
-    type PrimaryKey = GencondataNull6PrimaryKey;
+impl<'data> mmsdm_core::CompareWithPrimaryKey for GencondataNull7Row<'data> {
+    type PrimaryKey = GencondataNull7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate && self.genconid() == key.genconid
             && self.versionno == key.versionno
     }
 }
-impl<'data> mmsdm_core::CompareWithRow for GencondataNull6PrimaryKey {
-    type Row<'other> = GencondataNull6Row<'other>;
+impl<'data> mmsdm_core::CompareWithRow for GencondataNull7PrimaryKey {
+    type Row<'other> = GencondataNull7Row<'other>;
     fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
         self.effectivedate == row.effectivedate && self.genconid == row.genconid()
             && self.versionno == row.versionno
     }
 }
-impl mmsdm_core::CompareWithPrimaryKey for GencondataNull6PrimaryKey {
-    type PrimaryKey = GencondataNull6PrimaryKey;
+impl mmsdm_core::CompareWithPrimaryKey for GencondataNull7PrimaryKey {
+    type PrimaryKey = GencondataNull7PrimaryKey;
     fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
         self.effectivedate == key.effectivedate && self.genconid == key.genconid
             && self.versionno == key.versionno
     }
 }
 #[cfg(feature = "arrow")]
-impl mmsdm_core::ArrowSchema for GencondataNull6 {
-    type Builder = GencondataNull6Builder;
+impl mmsdm_core::ArrowSchema for GencondataNull7 {
+    type Builder = GencondataNull7Builder;
     fn schema() -> arrow::datatypes::Schema {
         arrow::datatypes::Schema::new(
             alloc::vec::Vec::from([
@@ -1056,11 +1107,35 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
                     arrow::datatypes::DataType::Decimal128(1, 0),
                     true,
                 ),
+                arrow::datatypes::Field::new(
+                    "systemsecurity",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ssm_regionid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ssm_groupid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
             ]),
         )
     }
     fn new_builder() -> Self::Builder {
-        GencondataNull6Builder {
+        GencondataNull7Builder {
             effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
             versionno_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
@@ -1128,6 +1203,15 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
             >::new(),
             force_scada_array: arrow::array::builder::Decimal128Builder::new()
                 .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            systemsecurity_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            ssm_regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            ssm_groupid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
         }
     }
     fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
@@ -1203,6 +1287,9 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
                         val.mantissa()
                     })
             });
+        builder.systemsecurity_array.append_option(row.systemsecurity());
+        builder.ssm_regionid_array.append_option(row.ssm_regionid());
+        builder.ssm_groupid_array.append_option(row.ssm_groupid());
     }
     fn finalize_builder(
         builder: &mut Self::Builder,
@@ -1262,13 +1349,19 @@ impl mmsdm_core::ArrowSchema for GencondataNull6 {
                         as alloc::sync::Arc<dyn arrow::array::Array>,
                     alloc::sync::Arc::new(builder.force_scada_array.finish())
                         as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.systemsecurity_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ssm_regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ssm_groupid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
                 ]),
             )
             .map_err(Into::into)
     }
 }
 #[cfg(feature = "arrow")]
-pub struct GencondataNull6Builder {
+pub struct GencondataNull7Builder {
     effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
     versionno_array: arrow::array::builder::Decimal128Builder,
     genconid_array: arrow::array::StringDictionaryBuilder<
@@ -1315,6 +1408,15 @@ pub struct GencondataNull6Builder {
     lrc_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     lor_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int16Type>,
     force_scada_array: arrow::array::builder::Decimal128Builder,
+    systemsecurity_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    ssm_regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    ssm_groupid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
 }
 pub struct GenconsetNull1 {
     extract_row_partition: alloc::boxed::Box<
@@ -4483,6 +4585,341 @@ pub struct GeqrhsNull1Builder {
         arrow::array::types::Int32Type,
     >,
     parameterterm3_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct GenericConstraintPasaContingencyDefinition1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &GenericConstraintPasaContingencyDefinition1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl GenericConstraintPasaContingencyDefinition1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct GenericConstraintPasaContingencyDefinition1Mapping([usize; 5]);
+/// # Summary
+///
+/// ## PASA_CONTINGENCY_DEFINITION
+///
+/// PASA_CONTINGENCY_DEFINITION shows the contingency details used by PD and ST PASA.
+///
+/// * Data Set Name: Generic Constraint
+/// * File Name: Pasa Contingency Definition
+/// * Data Version: 1
+///
+/// # Description
+/// The addition of the BIDTYPE field to SPDCONNECTIONPOINTCONSTRAINT allows constraints to be applied to a dispatchable unit energy and/or Frequency Controlled Ancillary Services dispatch.SPDCONNECTIONPOINTCONSTRAINTdata is public, so is available to all participants.SourceSPDCONNECTIONPOINTCONSTRAINT updates whenever new connection point constraints are created.
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * CONTINGENCYID
+/// * EFFECTIVEDATE
+/// * VERSIONNO
+#[derive(Debug, PartialEq, Eq)]
+pub struct GenericConstraintPasaContingencyDefinition1Row<'data> {
+    /// The contingency identifier
+    pub contingencyid: core::ops::Range<usize>,
+    /// The effective date  for this contingency
+    pub effectivedate: chrono::NaiveDateTime,
+    /// Version number for the Effective date
+    pub versionno: rust_decimal::Decimal,
+    /// The description for this contingency
+    pub contingencydescription: core::ops::Range<usize>,
+    /// Date time this record was created
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> GenericConstraintPasaContingencyDefinition1Row<'data> {
+    pub fn contingencyid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.contingencyid.clone())
+    }
+    pub fn contingencydescription(&self) -> Option<&str> {
+        if self.contingencydescription.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.contingencydescription.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for GenericConstraintPasaContingencyDefinition1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "GENERIC_CONSTRAINT";
+    const TABLE_NAME: &'static str = "PASA_CONTINGENCY_DEFINITION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = GenericConstraintPasaContingencyDefinition1Mapping([
+        4, 5, 6, 7, 8,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "CONTINGENCYID",
+        "EFFECTIVEDATE",
+        "VERSIONNO",
+        "CONTINGENCYDESCRIPTION",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = GenericConstraintPasaContingencyDefinition1Row<'row>;
+    type FieldMapping = GenericConstraintPasaContingencyDefinition1Mapping;
+    type PrimaryKey = GenericConstraintPasaContingencyDefinition1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(GenericConstraintPasaContingencyDefinition1Row {
+            contingencyid: row.get_range("contingencyid", field_mapping.0[0])?,
+            effectivedate: row
+                .get_custom_parsed_at_idx(
+                    "effectivedate",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            versionno: row
+                .get_custom_parsed_at_idx(
+                    "versionno",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            contingencydescription: row
+                .get_opt_range("contingencydescription", field_mapping.0[3])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(GenericConstraintPasaContingencyDefinition1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(
+        row: &Self::Row<'_>,
+    ) -> GenericConstraintPasaContingencyDefinition1PrimaryKey {
+        GenericConstraintPasaContingencyDefinition1PrimaryKey {
+            contingencyid: row.contingencyid().to_string(),
+            effectivedate: row.effectivedate,
+            versionno: row.versionno,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!(
+            "generic_constraint_pasa_contingency_definition_v1_{}", self
+            .partition_value(row)
+        )
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        GenericConstraintPasaContingencyDefinition1Row {
+            contingencyid: row.contingencyid.clone(),
+            effectivedate: row.effectivedate.clone(),
+            versionno: row.versionno.clone(),
+            contingencydescription: row.contingencydescription.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct GenericConstraintPasaContingencyDefinition1PrimaryKey {
+    pub contingencyid: alloc::string::String,
+    pub effectivedate: chrono::NaiveDateTime,
+    pub versionno: rust_decimal::Decimal,
+}
+impl mmsdm_core::PrimaryKey for GenericConstraintPasaContingencyDefinition1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow
+for GenericConstraintPasaContingencyDefinition1Row<'data> {
+    type Row<'other> = GenericConstraintPasaContingencyDefinition1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contingencyid() == row.contingencyid()
+            && self.effectivedate == row.effectivedate && self.versionno == row.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for GenericConstraintPasaContingencyDefinition1Row<'data> {
+    type PrimaryKey = GenericConstraintPasaContingencyDefinition1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.contingencyid() == key.contingencyid
+            && self.effectivedate == key.effectivedate && self.versionno == key.versionno
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow
+for GenericConstraintPasaContingencyDefinition1PrimaryKey {
+    type Row<'other> = GenericConstraintPasaContingencyDefinition1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.contingencyid == row.contingencyid()
+            && self.effectivedate == row.effectivedate && self.versionno == row.versionno
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey
+for GenericConstraintPasaContingencyDefinition1PrimaryKey {
+    type PrimaryKey = GenericConstraintPasaContingencyDefinition1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.contingencyid == key.contingencyid
+            && self.effectivedate == key.effectivedate && self.versionno == key.versionno
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for GenericConstraintPasaContingencyDefinition1 {
+    type Builder = GenericConstraintPasaContingencyDefinition1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "contingencyid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "effectivedate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "versionno",
+                    arrow::datatypes::DataType::Decimal128(3, 0),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "contingencydescription",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        GenericConstraintPasaContingencyDefinition1Builder {
+            contingencyid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            versionno_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(3, 0)),
+            contingencydescription_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder.contingencyid_array.append_value(row.contingencyid());
+        builder
+            .effectivedate_array
+            .append_value(row.effectivedate.and_utc().timestamp_millis());
+        builder
+            .versionno_array
+            .append_value({
+                let mut val = row.versionno;
+                val.rescale(0);
+                val.mantissa()
+            });
+        builder.contingencydescription_array.append_option(row.contingencydescription());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.contingencyid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.effectivedate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.versionno_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.contingencydescription_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct GenericConstraintPasaContingencyDefinition1Builder {
+    contingencyid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    effectivedate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    versionno_array: arrow::array::builder::Decimal128Builder,
+    contingencydescription_array: arrow::array::StringDictionaryBuilder<
         arrow::array::types::Int32Type,
     >,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,

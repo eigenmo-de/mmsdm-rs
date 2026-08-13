@@ -1660,6 +1660,5257 @@ pub struct PdpasaDuidavailability1Builder {
     load_recall_period_array: arrow::array::builder::Decimal128Builder,
     lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
 }
+pub struct PdpasaFnmCasesolution1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PdpasaFnmCasesolution1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PdpasaFnmCasesolution1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PdpasaFnmCasesolution1Mapping([usize; 8]);
+/// # Summary
+///
+/// ## PDPASA_FNM_CASESOLUTION
+///
+/// PDPASA_FNM_CASESOLUTION shows the case run details, including the available run types, LOR and Deficit condition for each case.
+///
+/// * Data Set Name: Pdpasa
+/// * File Name: Fnm Casesolution
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * RUN_DATETIME
+#[derive(Debug, PartialEq, Eq)]
+pub struct PdpasaFnmCasesolution1Row<'data> {
+    /// Unique Timestamp Identifier for this run, identified by the first half hour ended interval of the run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// LORCONDITION is only set if supply deficit exists in a Zone that contains the Regional Reference Node. LORCONDITION indicates the most severe condition for the case:LORCONDITION = 3 if deficit in BASE run, else = 2 if deficit in RELIABILITY run, else = 1 if deficit in WARNING run, else 0
+    pub lorcondition: Option<rust_decimal::Decimal>,
+    /// DEFICITCONDITION is only set if supply deficit exists in a Zone that does NOT contain the Regional Reference Node. DEFICITCONDITION indicates the most severe condition for the case:DEFICITCONDITION = 3 if deficit in BASE run, else = 2 if deficit in RELIABILITY run, else = 1 if deficit in WARNING run, else 0
+    pub deficitcondition: Option<rust_decimal::Decimal>,
+    /// YES = Available, NO = Not Available
+    pub base_run_available: core::ops::Range<usize>,
+    /// YES = Available, NO = Not Available
+    pub reliability_run_available: core::ops::Range<usize>,
+    /// YES = Available, NO = Not Available
+    pub warning_run_available: core::ops::Range<usize>,
+    /// Version of the PASA solver used to solve this case
+    pub pasaversion: core::ops::Range<usize>,
+    /// Date time this record was created
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PdpasaFnmCasesolution1Row<'data> {
+    pub fn base_run_available(&self) -> Option<&str> {
+        if self.base_run_available.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.base_run_available.clone(),
+                ),
+            )
+        }
+    }
+    pub fn reliability_run_available(&self) -> Option<&str> {
+        if self.reliability_run_available.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.reliability_run_available.clone(),
+                ),
+            )
+        }
+    }
+    pub fn warning_run_available(&self) -> Option<&str> {
+        if self.warning_run_available.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.warning_run_available.clone(),
+                ),
+            )
+        }
+    }
+    pub fn pasaversion(&self) -> Option<&str> {
+        if self.pasaversion.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.pasaversion.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for PdpasaFnmCasesolution1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PDPASA";
+    const TABLE_NAME: &'static str = "FNM_CASESOLUTION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaFnmCasesolution1Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "LORCONDITION",
+        "DEFICITCONDITION",
+        "BASE_RUN_AVAILABLE",
+        "RELIABILITY_RUN_AVAILABLE",
+        "WARNING_RUN_AVAILABLE",
+        "PASAVERSION",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PdpasaFnmCasesolution1Row<'row>;
+    type FieldMapping = PdpasaFnmCasesolution1Mapping;
+    type PrimaryKey = PdpasaFnmCasesolution1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PdpasaFnmCasesolution1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            lorcondition: row
+                .get_opt_custom_parsed_at_idx(
+                    "lorcondition",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            deficitcondition: row
+                .get_opt_custom_parsed_at_idx(
+                    "deficitcondition",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            base_run_available: row
+                .get_opt_range("base_run_available", field_mapping.0[3])?,
+            reliability_run_available: row
+                .get_opt_range("reliability_run_available", field_mapping.0[4])?,
+            warning_run_available: row
+                .get_opt_range("warning_run_available", field_mapping.0[5])?,
+            pasaversion: row.get_opt_range("pasaversion", field_mapping.0[6])?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PdpasaFnmCasesolution1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PdpasaFnmCasesolution1PrimaryKey {
+        PdpasaFnmCasesolution1PrimaryKey {
+            run_datetime: row.run_datetime,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("pdpasa_fnm_casesolution_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PdpasaFnmCasesolution1Row {
+            run_datetime: row.run_datetime.clone(),
+            lorcondition: row.lorcondition.clone(),
+            deficitcondition: row.deficitcondition.clone(),
+            base_run_available: row.base_run_available.clone(),
+            reliability_run_available: row.reliability_run_available.clone(),
+            warning_run_available: row.warning_run_available.clone(),
+            pasaversion: row.pasaversion.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PdpasaFnmCasesolution1PrimaryKey {
+    pub run_datetime: chrono::NaiveDateTime,
+}
+impl mmsdm_core::PrimaryKey for PdpasaFnmCasesolution1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmCasesolution1Row<'data> {
+    type Row<'other> = PdpasaFnmCasesolution1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.run_datetime == row.run_datetime
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PdpasaFnmCasesolution1Row<'data> {
+    type PrimaryKey = PdpasaFnmCasesolution1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.run_datetime == key.run_datetime
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmCasesolution1PrimaryKey {
+    type Row<'other> = PdpasaFnmCasesolution1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.run_datetime == row.run_datetime
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PdpasaFnmCasesolution1PrimaryKey {
+    type PrimaryKey = PdpasaFnmCasesolution1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.run_datetime == key.run_datetime
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PdpasaFnmCasesolution1 {
+    type Builder = PdpasaFnmCasesolution1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lorcondition",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "deficitcondition",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "base_run_available",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "reliability_run_available",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "warning_run_available",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "pasaversion",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PdpasaFnmCasesolution1Builder {
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            lorcondition_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            deficitcondition_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            base_run_available_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            reliability_run_available_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            warning_run_available_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            pasaversion_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder
+            .lorcondition_array
+            .append_option({
+                row.lorcondition
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .deficitcondition_array
+            .append_option({
+                row.deficitcondition
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder.base_run_available_array.append_option(row.base_run_available());
+        builder
+            .reliability_run_available_array
+            .append_option(row.reliability_run_available());
+        builder.warning_run_available_array.append_option(row.warning_run_available());
+        builder.pasaversion_array.append_option(row.pasaversion());
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lorcondition_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.deficitcondition_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.base_run_available_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.reliability_run_available_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.warning_run_available_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.pasaversion_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PdpasaFnmCasesolution1Builder {
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    lorcondition_array: arrow::array::builder::Decimal128Builder,
+    deficitcondition_array: arrow::array::builder::Decimal128Builder,
+    base_run_available_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    reliability_run_available_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    warning_run_available_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    pasaversion_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct PdpasaFnmConstraintsolution1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PdpasaFnmConstraintsolution1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PdpasaFnmConstraintsolution1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PdpasaFnmConstraintsolution1Mapping([usize; 9]);
+/// # Summary
+///
+/// ## PDPASA_FNM_CONSTRAINTSOLUTION
+///
+/// PDPASA_FNM_CONSTRAINTSOLUTION shows manual or thermal constraint (created by PASA), including marginal value, violation degree, LHS and RHS.
+///
+/// * Data Set Name: Pdpasa
+/// * File Name: Fnm Constraintsolution
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * CONSTRAINTID
+/// * INTERVAL_DATETIME
+/// * RUN_DATETIME
+/// * RUNTYPE
+#[derive(Debug, PartialEq, Eq)]
+pub struct PdpasaFnmConstraintsolution1Row<'data> {
+    /// Unique Timestamp Identifier for this run, identified by the first half hour ended interval of the run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Run Type (BASE, RELIABILITY, WARNING)
+    pub runtype: core::ops::Range<usize>,
+    /// End date time of the interval
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Constraint identifier, either manual constraint (synonymous with GenConID) or thermal constraint created by PASA with format 'BASE_<BranchName>' or '<ContingencyID>_<BranchName>'
+    pub constraintid: core::ops::Range<usize>,
+    /// Constraint Marginal Value ($/MW)
+    pub marginalvalue: Option<rust_decimal::Decimal>,
+    /// Constraint Violation Degree (MW)
+    pub violationdegree: Option<rust_decimal::Decimal>,
+    /// Constraint LHS (MW)
+    pub lhs: Option<rust_decimal::Decimal>,
+    /// Constraint RHS (MW)
+    pub rhs: Option<rust_decimal::Decimal>,
+    /// Date time this record was created
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PdpasaFnmConstraintsolution1Row<'data> {
+    pub fn runtype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.runtype.clone())
+    }
+    pub fn constraintid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.constraintid.clone())
+    }
+}
+impl mmsdm_core::GetTable for PdpasaFnmConstraintsolution1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PDPASA";
+    const TABLE_NAME: &'static str = "FNM_CONSTRAINTSOLUTION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaFnmConstraintsolution1Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "RUNTYPE",
+        "INTERVAL_DATETIME",
+        "CONSTRAINTID",
+        "MARGINALVALUE",
+        "VIOLATIONDEGREE",
+        "LHS",
+        "RHS",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PdpasaFnmConstraintsolution1Row<'row>;
+    type FieldMapping = PdpasaFnmConstraintsolution1Mapping;
+    type PrimaryKey = PdpasaFnmConstraintsolution1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PdpasaFnmConstraintsolution1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            runtype: row.get_range("runtype", field_mapping.0[1])?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            constraintid: row.get_range("constraintid", field_mapping.0[3])?,
+            marginalvalue: row
+                .get_opt_custom_parsed_at_idx(
+                    "marginalvalue",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            violationdegree: row
+                .get_opt_custom_parsed_at_idx(
+                    "violationdegree",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lhs: row
+                .get_opt_custom_parsed_at_idx(
+                    "lhs",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            rhs: row
+                .get_opt_custom_parsed_at_idx(
+                    "rhs",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PdpasaFnmConstraintsolution1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PdpasaFnmConstraintsolution1PrimaryKey {
+        PdpasaFnmConstraintsolution1PrimaryKey {
+            constraintid: row.constraintid().to_string(),
+            interval_datetime: row.interval_datetime,
+            run_datetime: row.run_datetime,
+            runtype: row.runtype().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("pdpasa_fnm_constraintsolution_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PdpasaFnmConstraintsolution1Row {
+            run_datetime: row.run_datetime.clone(),
+            runtype: row.runtype.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            constraintid: row.constraintid.clone(),
+            marginalvalue: row.marginalvalue.clone(),
+            violationdegree: row.violationdegree.clone(),
+            lhs: row.lhs.clone(),
+            rhs: row.rhs.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PdpasaFnmConstraintsolution1PrimaryKey {
+    pub constraintid: alloc::string::String,
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub run_datetime: chrono::NaiveDateTime,
+    pub runtype: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for PdpasaFnmConstraintsolution1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmConstraintsolution1Row<'data> {
+    type Row<'other> = PdpasaFnmConstraintsolution1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.constraintid() == row.constraintid()
+            && self.interval_datetime == row.interval_datetime
+            && self.run_datetime == row.run_datetime && self.runtype() == row.runtype()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for PdpasaFnmConstraintsolution1Row<'data> {
+    type PrimaryKey = PdpasaFnmConstraintsolution1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.constraintid() == key.constraintid
+            && self.interval_datetime == key.interval_datetime
+            && self.run_datetime == key.run_datetime && self.runtype() == key.runtype
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmConstraintsolution1PrimaryKey {
+    type Row<'other> = PdpasaFnmConstraintsolution1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.constraintid == row.constraintid()
+            && self.interval_datetime == row.interval_datetime
+            && self.run_datetime == row.run_datetime && self.runtype == row.runtype()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PdpasaFnmConstraintsolution1PrimaryKey {
+    type PrimaryKey = PdpasaFnmConstraintsolution1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.constraintid == key.constraintid
+            && self.interval_datetime == key.interval_datetime
+            && self.run_datetime == key.run_datetime && self.runtype == key.runtype
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PdpasaFnmConstraintsolution1 {
+    type Builder = PdpasaFnmConstraintsolution1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "runtype",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "constraintid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "marginalvalue",
+                    arrow::datatypes::DataType::Decimal128(20, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "violationdegree",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lhs",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "rhs",
+                    arrow::datatypes::DataType::Decimal128(15, 5),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PdpasaFnmConstraintsolution1Builder {
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            constraintid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            marginalvalue_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(20, 5)),
+            violationdegree_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            lhs_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            rhs_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(15, 5)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder.runtype_array.append_value(row.runtype());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.constraintid_array.append_value(row.constraintid());
+        builder
+            .marginalvalue_array
+            .append_option({
+                row.marginalvalue
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .violationdegree_array
+            .append_option({
+                row.violationdegree
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lhs_array
+            .append_option({
+                row.lhs
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .rhs_array
+            .append_option({
+                row.rhs
+                    .map(|mut val| {
+                        val.rescale(5);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.runtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.constraintid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.marginalvalue_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.violationdegree_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lhs_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.rhs_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PdpasaFnmConstraintsolution1Builder {
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    constraintid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    marginalvalue_array: arrow::array::builder::Decimal128Builder,
+    violationdegree_array: arrow::array::builder::Decimal128Builder,
+    lhs_array: arrow::array::builder::Decimal128Builder,
+    rhs_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct PdpasaFnmDuidavailability1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PdpasaFnmDuidavailability1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PdpasaFnmDuidavailability1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PdpasaFnmDuidavailability1Mapping([usize; 12]);
+/// # Summary
+///
+/// ## PDPASA_FNM_DUIDAVAILABILITY
+///
+/// PDPASA_FNM_DUIDAVAILABILITY shows Available Capacity, PASA Availability and Recall Period for all scheduled resources
+///
+/// * Data Set Name: Pdpasa
+/// * File Name: Fnm Duidavailability
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * DUID
+/// * INTERVAL_DATETIME
+/// * RUN_DATETIME
+#[derive(Debug, PartialEq, Eq)]
+pub struct PdpasaFnmDuidavailability1Row<'data> {
+    /// Unique Timestamp Identifier for this run, identified by the first half hour ended interval of the run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// End date time of the interval
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// NEM Dispatchable Unit Identifier
+    pub duid: core::ops::Range<usize>,
+    /// Trading Date of the energy bid
+    pub bid_tradingdate: Option<chrono::NaiveDateTime>,
+    /// Date Time that the energy bid was received
+    pub bid_offerdatetime: Option<chrono::NaiveDateTime>,
+    /// Available Capacity for a scheduled generating unit, semi-scheduled generating unit, BDU (Gen side), WDR or MNSP (MW)
+    pub generation_max_availability: Option<rust_decimal::Decimal>,
+    /// PASA Availability for a scheduled generating unit, BDU (Gen side), WDR or MNSP. Null for a semi-scheduled generating unit (MW)
+    pub generation_pasa_availability: Option<rust_decimal::Decimal>,
+    /// Recall Period associated with the PASA Availability for a scheduled generating unit, BDU (Gen side), WDR or MNSP. Null for a semi-scheduled generating unit (Hours)
+    pub generation_recall_period: Option<rust_decimal::Decimal>,
+    /// Available Capacity for a scheduled load or BDU (Load side) (MW)
+    pub load_max_availability: Option<rust_decimal::Decimal>,
+    /// PASA Availability for a scheduled load or BDU (Load side) (MW)
+    pub load_pasa_availability: Option<rust_decimal::Decimal>,
+    /// Recall Period associated with the PASA Availability for a scheduled load or BDU (Load side) (Hours)
+    pub load_recall_period: Option<rust_decimal::Decimal>,
+    /// Date time this record was created
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PdpasaFnmDuidavailability1Row<'data> {
+    pub fn duid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.duid.clone())
+    }
+}
+impl mmsdm_core::GetTable for PdpasaFnmDuidavailability1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PDPASA";
+    const TABLE_NAME: &'static str = "FNM_DUIDAVAILABILITY";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaFnmDuidavailability1Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "INTERVAL_DATETIME",
+        "DUID",
+        "BID_TRADINGDATE",
+        "BID_OFFERDATETIME",
+        "GENERATION_MAX_AVAILABILITY",
+        "GENERATION_PASA_AVAILABILITY",
+        "GENERATION_RECALL_PERIOD",
+        "LOAD_MAX_AVAILABILITY",
+        "LOAD_PASA_AVAILABILITY",
+        "LOAD_RECALL_PERIOD",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PdpasaFnmDuidavailability1Row<'row>;
+    type FieldMapping = PdpasaFnmDuidavailability1Mapping;
+    type PrimaryKey = PdpasaFnmDuidavailability1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PdpasaFnmDuidavailability1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            duid: row.get_range("duid", field_mapping.0[2])?,
+            bid_tradingdate: row
+                .get_opt_custom_parsed_at_idx(
+                    "bid_tradingdate",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            bid_offerdatetime: row
+                .get_opt_custom_parsed_at_idx(
+                    "bid_offerdatetime",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            generation_max_availability: row
+                .get_opt_custom_parsed_at_idx(
+                    "generation_max_availability",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            generation_pasa_availability: row
+                .get_opt_custom_parsed_at_idx(
+                    "generation_pasa_availability",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            generation_recall_period: row
+                .get_opt_custom_parsed_at_idx(
+                    "generation_recall_period",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            load_max_availability: row
+                .get_opt_custom_parsed_at_idx(
+                    "load_max_availability",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            load_pasa_availability: row
+                .get_opt_custom_parsed_at_idx(
+                    "load_pasa_availability",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            load_recall_period: row
+                .get_opt_custom_parsed_at_idx(
+                    "load_recall_period",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PdpasaFnmDuidavailability1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PdpasaFnmDuidavailability1PrimaryKey {
+        PdpasaFnmDuidavailability1PrimaryKey {
+            duid: row.duid().to_string(),
+            interval_datetime: row.interval_datetime,
+            run_datetime: row.run_datetime,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("pdpasa_fnm_duidavailability_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PdpasaFnmDuidavailability1Row {
+            run_datetime: row.run_datetime.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            duid: row.duid.clone(),
+            bid_tradingdate: row.bid_tradingdate.clone(),
+            bid_offerdatetime: row.bid_offerdatetime.clone(),
+            generation_max_availability: row.generation_max_availability.clone(),
+            generation_pasa_availability: row.generation_pasa_availability.clone(),
+            generation_recall_period: row.generation_recall_period.clone(),
+            load_max_availability: row.load_max_availability.clone(),
+            load_pasa_availability: row.load_pasa_availability.clone(),
+            load_recall_period: row.load_recall_period.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PdpasaFnmDuidavailability1PrimaryKey {
+    pub duid: alloc::string::String,
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub run_datetime: chrono::NaiveDateTime,
+}
+impl mmsdm_core::PrimaryKey for PdpasaFnmDuidavailability1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmDuidavailability1Row<'data> {
+    type Row<'other> = PdpasaFnmDuidavailability1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid() == row.duid() && self.interval_datetime == row.interval_datetime
+            && self.run_datetime == row.run_datetime
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PdpasaFnmDuidavailability1Row<'data> {
+    type PrimaryKey = PdpasaFnmDuidavailability1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid() == key.duid && self.interval_datetime == key.interval_datetime
+            && self.run_datetime == key.run_datetime
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmDuidavailability1PrimaryKey {
+    type Row<'other> = PdpasaFnmDuidavailability1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.duid == row.duid() && self.interval_datetime == row.interval_datetime
+            && self.run_datetime == row.run_datetime
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PdpasaFnmDuidavailability1PrimaryKey {
+    type PrimaryKey = PdpasaFnmDuidavailability1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.duid == key.duid && self.interval_datetime == key.interval_datetime
+            && self.run_datetime == key.run_datetime
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PdpasaFnmDuidavailability1 {
+    type Builder = PdpasaFnmDuidavailability1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "duid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "bid_tradingdate",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "bid_offerdatetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "generation_max_availability",
+                    arrow::datatypes::DataType::Decimal128(12, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "generation_pasa_availability",
+                    arrow::datatypes::DataType::Decimal128(12, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "generation_recall_period",
+                    arrow::datatypes::DataType::Decimal128(8, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "load_max_availability",
+                    arrow::datatypes::DataType::Decimal128(12, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "load_pasa_availability",
+                    arrow::datatypes::DataType::Decimal128(12, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "load_recall_period",
+                    arrow::datatypes::DataType::Decimal128(8, 3),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PdpasaFnmDuidavailability1Builder {
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            duid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            bid_tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            bid_offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            generation_max_availability_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
+            generation_pasa_availability_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
+            generation_recall_period_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(8, 3)),
+            load_max_availability_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
+            load_pasa_availability_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 3)),
+            load_recall_period_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(8, 3)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.duid_array.append_value(row.duid());
+        builder
+            .bid_tradingdate_array
+            .append_option(
+                row.bid_tradingdate.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder
+            .bid_offerdatetime_array
+            .append_option(
+                row.bid_offerdatetime.map(|val| val.and_utc().timestamp_millis()),
+            );
+        builder
+            .generation_max_availability_array
+            .append_option({
+                row.generation_max_availability
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .generation_pasa_availability_array
+            .append_option({
+                row.generation_pasa_availability
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .generation_recall_period_array
+            .append_option({
+                row.generation_recall_period
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .load_max_availability_array
+            .append_option({
+                row.load_max_availability
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .load_pasa_availability_array
+            .append_option({
+                row.load_pasa_availability
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .load_recall_period_array
+            .append_option({
+                row.load_recall_period
+                    .map(|mut val| {
+                        val.rescale(3);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.duid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bid_tradingdate_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bid_offerdatetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.generation_max_availability_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.generation_pasa_availability_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.generation_recall_period_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.load_max_availability_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.load_pasa_availability_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.load_recall_period_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PdpasaFnmDuidavailability1Builder {
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    duid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    bid_tradingdate_array: arrow::array::builder::TimestampMillisecondBuilder,
+    bid_offerdatetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    generation_max_availability_array: arrow::array::builder::Decimal128Builder,
+    generation_pasa_availability_array: arrow::array::builder::Decimal128Builder,
+    generation_recall_period_array: arrow::array::builder::Decimal128Builder,
+    load_max_availability_array: arrow::array::builder::Decimal128Builder,
+    load_pasa_availability_array: arrow::array::builder::Decimal128Builder,
+    load_recall_period_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct PdpasaFnmInterconnectorsoln1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PdpasaFnmInterconnectorsoln1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PdpasaFnmInterconnectorsoln1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PdpasaFnmInterconnectorsoln1Mapping([usize; 6]);
+/// # Summary
+///
+/// ## PDPASA_FNM_INTERCONNECTORSOLN
+///
+/// PDPASA_FNM_INTERCONNECTORSOLN shows cleared Interconnector flow for the interval.
+///
+/// * Data Set Name: Pdpasa
+/// * File Name: Fnm Interconnectorsoln
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * INTERCONNECTORID
+/// * INTERVAL_DATETIME
+/// * RUN_DATETIME
+/// * RUNTYPE
+#[derive(Debug, PartialEq, Eq)]
+pub struct PdpasaFnmInterconnectorsoln1Row<'data> {
+    /// Unique Timestamp Identifier for this run, identified by the first half hour ended interval of the run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Run Type (BASE, RELIABILITY, WARNING)
+    pub runtype: core::ops::Range<usize>,
+    /// End date time of the interval
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Interconnector Identifier
+    pub interconnectorid: core::ops::Range<usize>,
+    /// Cleared Interconnector flow (MW)
+    pub clearedflow: Option<rust_decimal::Decimal>,
+    /// Date time this record was created
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PdpasaFnmInterconnectorsoln1Row<'data> {
+    pub fn runtype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.runtype.clone())
+    }
+    pub fn interconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interconnectorid.clone(),
+        )
+    }
+}
+impl mmsdm_core::GetTable for PdpasaFnmInterconnectorsoln1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PDPASA";
+    const TABLE_NAME: &'static str = "FNM_INTERCONNECTORSOLN";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaFnmInterconnectorsoln1Mapping([
+        4, 5, 6, 7, 8, 9,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "RUNTYPE",
+        "INTERVAL_DATETIME",
+        "INTERCONNECTORID",
+        "CLEAREDFLOW",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PdpasaFnmInterconnectorsoln1Row<'row>;
+    type FieldMapping = PdpasaFnmInterconnectorsoln1Mapping;
+    type PrimaryKey = PdpasaFnmInterconnectorsoln1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PdpasaFnmInterconnectorsoln1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            runtype: row.get_range("runtype", field_mapping.0[1])?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            interconnectorid: row.get_range("interconnectorid", field_mapping.0[3])?,
+            clearedflow: row
+                .get_opt_custom_parsed_at_idx(
+                    "clearedflow",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PdpasaFnmInterconnectorsoln1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PdpasaFnmInterconnectorsoln1PrimaryKey {
+        PdpasaFnmInterconnectorsoln1PrimaryKey {
+            interconnectorid: row.interconnectorid().to_string(),
+            interval_datetime: row.interval_datetime,
+            run_datetime: row.run_datetime,
+            runtype: row.runtype().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("pdpasa_fnm_interconnectorsoln_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PdpasaFnmInterconnectorsoln1Row {
+            run_datetime: row.run_datetime.clone(),
+            runtype: row.runtype.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            interconnectorid: row.interconnectorid.clone(),
+            clearedflow: row.clearedflow.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PdpasaFnmInterconnectorsoln1PrimaryKey {
+    pub interconnectorid: alloc::string::String,
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub run_datetime: chrono::NaiveDateTime,
+    pub runtype: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for PdpasaFnmInterconnectorsoln1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmInterconnectorsoln1Row<'data> {
+    type Row<'other> = PdpasaFnmInterconnectorsoln1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interconnectorid() == row.interconnectorid()
+            && self.interval_datetime == row.interval_datetime
+            && self.run_datetime == row.run_datetime && self.runtype() == row.runtype()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for PdpasaFnmInterconnectorsoln1Row<'data> {
+    type PrimaryKey = PdpasaFnmInterconnectorsoln1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interconnectorid() == key.interconnectorid
+            && self.interval_datetime == key.interval_datetime
+            && self.run_datetime == key.run_datetime && self.runtype() == key.runtype
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmInterconnectorsoln1PrimaryKey {
+    type Row<'other> = PdpasaFnmInterconnectorsoln1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interconnectorid == row.interconnectorid()
+            && self.interval_datetime == row.interval_datetime
+            && self.run_datetime == row.run_datetime && self.runtype == row.runtype()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PdpasaFnmInterconnectorsoln1PrimaryKey {
+    type PrimaryKey = PdpasaFnmInterconnectorsoln1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interconnectorid == key.interconnectorid
+            && self.interval_datetime == key.interval_datetime
+            && self.run_datetime == key.run_datetime && self.runtype == key.runtype
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PdpasaFnmInterconnectorsoln1 {
+    type Builder = PdpasaFnmInterconnectorsoln1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "runtype",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interconnectorid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int16),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "clearedflow",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PdpasaFnmInterconnectorsoln1Builder {
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int16Type,
+            >::new(),
+            clearedflow_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder.runtype_array.append_value(row.runtype());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.interconnectorid_array.append_value(row.interconnectorid());
+        builder
+            .clearedflow_array
+            .append_option({
+                row.clearedflow
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.runtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clearedflow_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PdpasaFnmInterconnectorsoln1Builder {
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int16Type,
+    >,
+    clearedflow_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct PdpasaFnmInterzonalsolution1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PdpasaFnmInterzonalsolution1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PdpasaFnmInterzonalsolution1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PdpasaFnmInterzonalsolution1Mapping([usize; 8]);
+/// # Summary
+///
+/// ## PDPASA_FNM_INTERZONALSOLUTION
+///
+/// PDPASA_FNM_INTERZONALSOLUTION shows cleared inter zonal flow for the interval and run type.
+///
+/// * Data Set Name: Pdpasa
+/// * File Name: Fnm Interzonalsolution
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * INTERVAL_DATETIME
+/// * INTERZONALCONNECTORID
+/// * RUN_DATETIME
+/// * RUNTYPE
+#[derive(Debug, PartialEq, Eq)]
+pub struct PdpasaFnmInterzonalsolution1Row<'data> {
+    /// Unique Timestamp Identifier for this run, identified by the first half hour ended interval of the run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Run Type (BASE, RELIABILITY, WARNING)
+    pub runtype: core::ops::Range<usize>,
+    /// End date time of the interval
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// InterzonalConnector Identifier
+    pub interzonalconnectorid: core::ops::Range<usize>,
+    /// FromZoneID of the InterZonalConnectorID
+    pub fromzoneid: core::ops::Range<usize>,
+    /// ToZoneID of the InterZonalConnectorID
+    pub tozoneid: core::ops::Range<usize>,
+    /// Cleared Interzonal flow (MW)
+    pub clearedflow: Option<rust_decimal::Decimal>,
+    /// Date time this record was created
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PdpasaFnmInterzonalsolution1Row<'data> {
+    pub fn runtype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.runtype.clone())
+    }
+    pub fn interzonalconnectorid(&self) -> &str {
+        core::ops::Index::index(
+            self.backing_data.as_slice(),
+            self.interzonalconnectorid.clone(),
+        )
+    }
+    pub fn fromzoneid(&self) -> Option<&str> {
+        if self.fromzoneid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.fromzoneid.clone(),
+                ),
+            )
+        }
+    }
+    pub fn tozoneid(&self) -> Option<&str> {
+        if self.tozoneid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.tozoneid.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for PdpasaFnmInterzonalsolution1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PDPASA";
+    const TABLE_NAME: &'static str = "FNM_INTERZONALSOLUTION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaFnmInterzonalsolution1Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "RUNTYPE",
+        "INTERVAL_DATETIME",
+        "INTERZONALCONNECTORID",
+        "FROMZONEID",
+        "TOZONEID",
+        "CLEAREDFLOW",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PdpasaFnmInterzonalsolution1Row<'row>;
+    type FieldMapping = PdpasaFnmInterzonalsolution1Mapping;
+    type PrimaryKey = PdpasaFnmInterzonalsolution1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PdpasaFnmInterzonalsolution1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            runtype: row.get_range("runtype", field_mapping.0[1])?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            interzonalconnectorid: row
+                .get_range("interzonalconnectorid", field_mapping.0[3])?,
+            fromzoneid: row.get_opt_range("fromzoneid", field_mapping.0[4])?,
+            tozoneid: row.get_opt_range("tozoneid", field_mapping.0[5])?,
+            clearedflow: row
+                .get_opt_custom_parsed_at_idx(
+                    "clearedflow",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PdpasaFnmInterzonalsolution1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PdpasaFnmInterzonalsolution1PrimaryKey {
+        PdpasaFnmInterzonalsolution1PrimaryKey {
+            interval_datetime: row.interval_datetime,
+            interzonalconnectorid: row.interzonalconnectorid().to_string(),
+            run_datetime: row.run_datetime,
+            runtype: row.runtype().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("pdpasa_fnm_interzonalsolution_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PdpasaFnmInterzonalsolution1Row {
+            run_datetime: row.run_datetime.clone(),
+            runtype: row.runtype.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            interzonalconnectorid: row.interzonalconnectorid.clone(),
+            fromzoneid: row.fromzoneid.clone(),
+            tozoneid: row.tozoneid.clone(),
+            clearedflow: row.clearedflow.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PdpasaFnmInterzonalsolution1PrimaryKey {
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub interzonalconnectorid: alloc::string::String,
+    pub run_datetime: chrono::NaiveDateTime,
+    pub runtype: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for PdpasaFnmInterzonalsolution1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmInterzonalsolution1Row<'data> {
+    type Row<'other> = PdpasaFnmInterzonalsolution1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.interzonalconnectorid() == row.interzonalconnectorid()
+            && self.run_datetime == row.run_datetime && self.runtype() == row.runtype()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey
+for PdpasaFnmInterzonalsolution1Row<'data> {
+    type PrimaryKey = PdpasaFnmInterzonalsolution1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interval_datetime == key.interval_datetime
+            && self.interzonalconnectorid() == key.interzonalconnectorid
+            && self.run_datetime == key.run_datetime && self.runtype() == key.runtype
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmInterzonalsolution1PrimaryKey {
+    type Row<'other> = PdpasaFnmInterzonalsolution1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.interzonalconnectorid == row.interzonalconnectorid()
+            && self.run_datetime == row.run_datetime && self.runtype == row.runtype()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PdpasaFnmInterzonalsolution1PrimaryKey {
+    type PrimaryKey = PdpasaFnmInterzonalsolution1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interval_datetime == key.interval_datetime
+            && self.interzonalconnectorid == key.interzonalconnectorid
+            && self.run_datetime == key.run_datetime && self.runtype == key.runtype
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PdpasaFnmInterzonalsolution1 {
+    type Builder = PdpasaFnmInterzonalsolution1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "runtype",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interzonalconnectorid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "fromzoneid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "tozoneid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "clearedflow",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PdpasaFnmInterzonalsolution1Builder {
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interzonalconnectorid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            fromzoneid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            tozoneid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            clearedflow_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder.runtype_array.append_value(row.runtype());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.interzonalconnectorid_array.append_value(row.interzonalconnectorid());
+        builder.fromzoneid_array.append_option(row.fromzoneid());
+        builder.tozoneid_array.append_option(row.tozoneid());
+        builder
+            .clearedflow_array
+            .append_option({
+                row.clearedflow
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.runtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interzonalconnectorid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.fromzoneid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.tozoneid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clearedflow_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PdpasaFnmInterzonalsolution1Builder {
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interzonalconnectorid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    fromzoneid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    tozoneid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    clearedflow_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct PdpasaFnmRegionsolution1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PdpasaFnmRegionsolution1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PdpasaFnmRegionsolution1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PdpasaFnmRegionsolution1Mapping([usize; 26]);
+/// # Summary
+///
+/// ## PDPASA_FNM_REGIONSOLUTION
+///
+/// PDPASA_FNM_REGIONSOLUTION shows region demand, cleared values of resources, spare capacity, losses for each run type and intervals.
+///
+/// * Data Set Name: Pdpasa
+/// * File Name: Fnm Regionsolution
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * INTERVAL_DATETIME
+/// * REGIONID
+/// * RUN_DATETIME
+/// * RUNTYPE
+#[derive(Debug, PartialEq, Eq)]
+pub struct PdpasaFnmRegionsolution1Row<'data> {
+    /// Unique Timestamp Identifier for this run, identified by the first half hour ended interval of the run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Run Type (BASE, RELIABILITY, WARNING)
+    pub runtype: core::ops::Range<usize>,
+    /// End date time of the interval
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Region Identifier
+    pub regionid: core::ops::Range<usize>,
+    /// Lack of Reserve Condition (LORCONDITION) >0 if a supply deficit exists in the Zone for this Region that contains its Regional Reference NodeLORCONDITION = 3 if deficit in BASE runLORCONDITION = 2 if deficit in RELIABILITY runLORCONDITION = 1 if deficit in WARNING run
+    pub lorcondition: Option<rust_decimal::Decimal>,
+    /// Deficit Condition (DEFICITCONDITION) >0 if a supply deficit only exists in a Zone for this Region that does not contain its Regional Reference NodeDEFICITCONDITION = 3 if deficit in BASE runDEFICITCONDITION = 2 if deficit in RELIABILITY runDEFICITCONDITION = 1 if deficit in WARNING run
+    pub deficitcondition: Option<rust_decimal::Decimal>,
+    /// Most probable Demand Forecast adjusted by Demand Uncertainty Margin (MW)
+    pub initialdemand: Option<rust_decimal::Decimal>,
+    /// Aggregate Uncertainty Margin adjustment to most probable Demand Forecast (MW)
+    pub demand_uncertainty_margin: Option<rust_decimal::Decimal>,
+    /// Aggregate Uncertainty Margin adjustment to Scheduled Generation Bid Max Avail (MW)
+    pub sched_gen_uncertainty_margin: Option<rust_decimal::Decimal>,
+    /// Aggregate Uncertainty Margin adjustment to most probable VRE Forecast (MW)
+    pub vre_gen_uncertainty_margin: Option<rust_decimal::Decimal>,
+    /// Aggregate Auxiliary Load adjustment to uncertainty-adjusted Bid MaxAvail of all scheduled generating units (MW)
+    pub sched_gen_aux_load: Option<rust_decimal::Decimal>,
+    /// Cleared Generation from non energy-constrained resources - that is, excluding bidirectional units and generating units subject to daily energy limits (MW)
+    pub energyunconstrained_cleared: Option<rust_decimal::Decimal>,
+    /// Cleared Generation from energy-constrained resources - that is, from bidirectional units and generating units subject to daily energy limits (MW)
+    pub energyconstrained_cleared: Option<rust_decimal::Decimal>,
+    /// Cleared Generation (positive) or Consumption (negative) from bidirectional units (MW)
+    pub bdu_cleared: Option<rust_decimal::Decimal>,
+    /// Cleared Generation from semi-scheduled generating units (MW)
+    pub ss_cleared: Option<rust_decimal::Decimal>,
+    /// Cleared Generation from semi-scheduled solar generating units (MW)
+    pub ss_solar_cleared: Option<rust_decimal::Decimal>,
+    /// Cleared Generation from semi-scheduled wind generating units (MW)
+    pub ss_wind_cleared: Option<rust_decimal::Decimal>,
+    /// Spare Generation Capacity = max(0, Available Generation minus [Cleared Generation minus Cleared Net Interchange]) (MW)
+    pub sparecapacity: Option<rust_decimal::Decimal>,
+    /// Cleared Generation (MW)
+    pub clearedsupply: Option<rust_decimal::Decimal>,
+    /// Cleared Grid Losses (MW)
+    pub clearedlosses: Option<rust_decimal::Decimal>,
+    /// Cleared Net Export (positive) or Net Import (negative) (MW)
+    pub clearednetinterchange: Option<rust_decimal::Decimal>,
+    /// Cleared Demand (MW)
+    pub cleareddemand: Option<rust_decimal::Decimal>,
+    /// Supply Deficit (MW) across at all loads in the Region = Max(0, Initial Demand minus Cleared Demand) where Cleared Demand = (Cleared Generation minus Cleared Losses minus Cleared Net Interchange).Supply Deficit = Supply Deficit_RRN + Supply Deficit_NonRRN
+    pub supplydeficit: Option<rust_decimal::Decimal>,
+    /// Supply Deficit across all loads in the Zone that contains the Regional Reference Node (MW)
+    pub supplydeficit_rrn: Option<rust_decimal::Decimal>,
+    /// Supply Deficit across all loads in the Zone(s) that do not contain the Regional Reference Node (MW)
+    pub supplydeficit_nonrrn: Option<rust_decimal::Decimal>,
+    /// Date time this record was created
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PdpasaFnmRegionsolution1Row<'data> {
+    pub fn runtype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.runtype.clone())
+    }
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+}
+impl mmsdm_core::GetTable for PdpasaFnmRegionsolution1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PDPASA";
+    const TABLE_NAME: &'static str = "FNM_REGIONSOLUTION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaFnmRegionsolution1Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28, 29,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "RUNTYPE",
+        "INTERVAL_DATETIME",
+        "REGIONID",
+        "LORCONDITION",
+        "DEFICITCONDITION",
+        "INITIALDEMAND",
+        "DEMAND_UNCERTAINTY_MARGIN",
+        "SCHED_GEN_UNCERTAINTY_MARGIN",
+        "VRE_GEN_UNCERTAINTY_MARGIN",
+        "SCHED_GEN_AUX_LOAD",
+        "ENERGYUNCONSTRAINED_CLEARED",
+        "ENERGYCONSTRAINED_CLEARED",
+        "BDU_CLEARED",
+        "SS_CLEARED",
+        "SS_SOLAR_CLEARED",
+        "SS_WIND_CLEARED",
+        "SPARECAPACITY",
+        "CLEAREDSUPPLY",
+        "CLEAREDLOSSES",
+        "CLEAREDNETINTERCHANGE",
+        "CLEAREDDEMAND",
+        "SUPPLYDEFICIT",
+        "SUPPLYDEFICIT_RRN",
+        "SUPPLYDEFICIT_NONRRN",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PdpasaFnmRegionsolution1Row<'row>;
+    type FieldMapping = PdpasaFnmRegionsolution1Mapping;
+    type PrimaryKey = PdpasaFnmRegionsolution1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PdpasaFnmRegionsolution1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            runtype: row.get_range("runtype", field_mapping.0[1])?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            regionid: row.get_range("regionid", field_mapping.0[3])?,
+            lorcondition: row
+                .get_opt_custom_parsed_at_idx(
+                    "lorcondition",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            deficitcondition: row
+                .get_opt_custom_parsed_at_idx(
+                    "deficitcondition",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            initialdemand: row
+                .get_opt_custom_parsed_at_idx(
+                    "initialdemand",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            demand_uncertainty_margin: row
+                .get_opt_custom_parsed_at_idx(
+                    "demand_uncertainty_margin",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            sched_gen_uncertainty_margin: row
+                .get_opt_custom_parsed_at_idx(
+                    "sched_gen_uncertainty_margin",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            vre_gen_uncertainty_margin: row
+                .get_opt_custom_parsed_at_idx(
+                    "vre_gen_uncertainty_margin",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            sched_gen_aux_load: row
+                .get_opt_custom_parsed_at_idx(
+                    "sched_gen_aux_load",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            energyunconstrained_cleared: row
+                .get_opt_custom_parsed_at_idx(
+                    "energyunconstrained_cleared",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            energyconstrained_cleared: row
+                .get_opt_custom_parsed_at_idx(
+                    "energyconstrained_cleared",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            bdu_cleared: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_cleared",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ss_cleared: row
+                .get_opt_custom_parsed_at_idx(
+                    "ss_cleared",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ss_solar_cleared: row
+                .get_opt_custom_parsed_at_idx(
+                    "ss_solar_cleared",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ss_wind_cleared: row
+                .get_opt_custom_parsed_at_idx(
+                    "ss_wind_cleared",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            sparecapacity: row
+                .get_opt_custom_parsed_at_idx(
+                    "sparecapacity",
+                    field_mapping.0[17],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            clearedsupply: row
+                .get_opt_custom_parsed_at_idx(
+                    "clearedsupply",
+                    field_mapping.0[18],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            clearedlosses: row
+                .get_opt_custom_parsed_at_idx(
+                    "clearedlosses",
+                    field_mapping.0[19],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            clearednetinterchange: row
+                .get_opt_custom_parsed_at_idx(
+                    "clearednetinterchange",
+                    field_mapping.0[20],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            cleareddemand: row
+                .get_opt_custom_parsed_at_idx(
+                    "cleareddemand",
+                    field_mapping.0[21],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            supplydeficit: row
+                .get_opt_custom_parsed_at_idx(
+                    "supplydeficit",
+                    field_mapping.0[22],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            supplydeficit_rrn: row
+                .get_opt_custom_parsed_at_idx(
+                    "supplydeficit_rrn",
+                    field_mapping.0[23],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            supplydeficit_nonrrn: row
+                .get_opt_custom_parsed_at_idx(
+                    "supplydeficit_nonrrn",
+                    field_mapping.0[24],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[25],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PdpasaFnmRegionsolution1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PdpasaFnmRegionsolution1PrimaryKey {
+        PdpasaFnmRegionsolution1PrimaryKey {
+            interval_datetime: row.interval_datetime,
+            regionid: row.regionid().to_string(),
+            run_datetime: row.run_datetime,
+            runtype: row.runtype().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("pdpasa_fnm_regionsolution_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PdpasaFnmRegionsolution1Row {
+            run_datetime: row.run_datetime.clone(),
+            runtype: row.runtype.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            regionid: row.regionid.clone(),
+            lorcondition: row.lorcondition.clone(),
+            deficitcondition: row.deficitcondition.clone(),
+            initialdemand: row.initialdemand.clone(),
+            demand_uncertainty_margin: row.demand_uncertainty_margin.clone(),
+            sched_gen_uncertainty_margin: row.sched_gen_uncertainty_margin.clone(),
+            vre_gen_uncertainty_margin: row.vre_gen_uncertainty_margin.clone(),
+            sched_gen_aux_load: row.sched_gen_aux_load.clone(),
+            energyunconstrained_cleared: row.energyunconstrained_cleared.clone(),
+            energyconstrained_cleared: row.energyconstrained_cleared.clone(),
+            bdu_cleared: row.bdu_cleared.clone(),
+            ss_cleared: row.ss_cleared.clone(),
+            ss_solar_cleared: row.ss_solar_cleared.clone(),
+            ss_wind_cleared: row.ss_wind_cleared.clone(),
+            sparecapacity: row.sparecapacity.clone(),
+            clearedsupply: row.clearedsupply.clone(),
+            clearedlosses: row.clearedlosses.clone(),
+            clearednetinterchange: row.clearednetinterchange.clone(),
+            cleareddemand: row.cleareddemand.clone(),
+            supplydeficit: row.supplydeficit.clone(),
+            supplydeficit_rrn: row.supplydeficit_rrn.clone(),
+            supplydeficit_nonrrn: row.supplydeficit_nonrrn.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PdpasaFnmRegionsolution1PrimaryKey {
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub regionid: alloc::string::String,
+    pub run_datetime: chrono::NaiveDateTime,
+    pub runtype: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for PdpasaFnmRegionsolution1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmRegionsolution1Row<'data> {
+    type Row<'other> = PdpasaFnmRegionsolution1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.regionid() == row.regionid() && self.run_datetime == row.run_datetime
+            && self.runtype() == row.runtype()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PdpasaFnmRegionsolution1Row<'data> {
+    type PrimaryKey = PdpasaFnmRegionsolution1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interval_datetime == key.interval_datetime
+            && self.regionid() == key.regionid && self.run_datetime == key.run_datetime
+            && self.runtype() == key.runtype
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmRegionsolution1PrimaryKey {
+    type Row<'other> = PdpasaFnmRegionsolution1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.regionid == row.regionid() && self.run_datetime == row.run_datetime
+            && self.runtype == row.runtype()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PdpasaFnmRegionsolution1PrimaryKey {
+    type PrimaryKey = PdpasaFnmRegionsolution1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
+            && self.run_datetime == key.run_datetime && self.runtype == key.runtype
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PdpasaFnmRegionsolution1 {
+    type Builder = PdpasaFnmRegionsolution1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "runtype",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lorcondition",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "deficitcondition",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "initialdemand",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "demand_uncertainty_margin",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "sched_gen_uncertainty_margin",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "vre_gen_uncertainty_margin",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "sched_gen_aux_load",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "energyunconstrained_cleared",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "energyconstrained_cleared",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "bdu_cleared",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ss_cleared",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ss_solar_cleared",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ss_wind_cleared",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "sparecapacity",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "clearedsupply",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "clearedlosses",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "clearednetinterchange",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "cleareddemand",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "supplydeficit",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "supplydeficit_rrn",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "supplydeficit_nonrrn",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PdpasaFnmRegionsolution1Builder {
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            lorcondition_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            deficitcondition_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            initialdemand_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            demand_uncertainty_margin_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            sched_gen_uncertainty_margin_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            vre_gen_uncertainty_margin_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            sched_gen_aux_load_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            energyunconstrained_cleared_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            energyconstrained_cleared_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            bdu_cleared_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            ss_cleared_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            ss_solar_cleared_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            ss_wind_cleared_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            sparecapacity_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            clearedsupply_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            clearedlosses_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            clearednetinterchange_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            cleareddemand_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            supplydeficit_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            supplydeficit_rrn_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            supplydeficit_nonrrn_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder.runtype_array.append_value(row.runtype());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.regionid_array.append_value(row.regionid());
+        builder
+            .lorcondition_array
+            .append_option({
+                row.lorcondition
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .deficitcondition_array
+            .append_option({
+                row.deficitcondition
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .initialdemand_array
+            .append_option({
+                row.initialdemand
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .demand_uncertainty_margin_array
+            .append_option({
+                row.demand_uncertainty_margin
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .sched_gen_uncertainty_margin_array
+            .append_option({
+                row.sched_gen_uncertainty_margin
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .vre_gen_uncertainty_margin_array
+            .append_option({
+                row.vre_gen_uncertainty_margin
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .sched_gen_aux_load_array
+            .append_option({
+                row.sched_gen_aux_load
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .energyunconstrained_cleared_array
+            .append_option({
+                row.energyunconstrained_cleared
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .energyconstrained_cleared_array
+            .append_option({
+                row.energyconstrained_cleared
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .bdu_cleared_array
+            .append_option({
+                row.bdu_cleared
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ss_cleared_array
+            .append_option({
+                row.ss_cleared
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ss_solar_cleared_array
+            .append_option({
+                row.ss_solar_cleared
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ss_wind_cleared_array
+            .append_option({
+                row.ss_wind_cleared
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .sparecapacity_array
+            .append_option({
+                row.sparecapacity
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .clearedsupply_array
+            .append_option({
+                row.clearedsupply
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .clearedlosses_array
+            .append_option({
+                row.clearedlosses
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .clearednetinterchange_array
+            .append_option({
+                row.clearednetinterchange
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .cleareddemand_array
+            .append_option({
+                row.cleareddemand
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .supplydeficit_array
+            .append_option({
+                row.supplydeficit
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .supplydeficit_rrn_array
+            .append_option({
+                row.supplydeficit_rrn
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .supplydeficit_nonrrn_array
+            .append_option({
+                row.supplydeficit_nonrrn
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.runtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lorcondition_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.deficitcondition_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.initialdemand_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.demand_uncertainty_margin_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.sched_gen_uncertainty_margin_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.vre_gen_uncertainty_margin_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sched_gen_aux_load_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.energyunconstrained_cleared_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.energyconstrained_cleared_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bdu_cleared_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ss_cleared_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ss_solar_cleared_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ss_wind_cleared_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sparecapacity_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clearedsupply_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clearedlosses_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clearednetinterchange_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.cleareddemand_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.supplydeficit_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.supplydeficit_rrn_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.supplydeficit_nonrrn_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PdpasaFnmRegionsolution1Builder {
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    lorcondition_array: arrow::array::builder::Decimal128Builder,
+    deficitcondition_array: arrow::array::builder::Decimal128Builder,
+    initialdemand_array: arrow::array::builder::Decimal128Builder,
+    demand_uncertainty_margin_array: arrow::array::builder::Decimal128Builder,
+    sched_gen_uncertainty_margin_array: arrow::array::builder::Decimal128Builder,
+    vre_gen_uncertainty_margin_array: arrow::array::builder::Decimal128Builder,
+    sched_gen_aux_load_array: arrow::array::builder::Decimal128Builder,
+    energyunconstrained_cleared_array: arrow::array::builder::Decimal128Builder,
+    energyconstrained_cleared_array: arrow::array::builder::Decimal128Builder,
+    bdu_cleared_array: arrow::array::builder::Decimal128Builder,
+    ss_cleared_array: arrow::array::builder::Decimal128Builder,
+    ss_solar_cleared_array: arrow::array::builder::Decimal128Builder,
+    ss_wind_cleared_array: arrow::array::builder::Decimal128Builder,
+    sparecapacity_array: arrow::array::builder::Decimal128Builder,
+    clearedsupply_array: arrow::array::builder::Decimal128Builder,
+    clearedlosses_array: arrow::array::builder::Decimal128Builder,
+    clearednetinterchange_array: arrow::array::builder::Decimal128Builder,
+    cleareddemand_array: arrow::array::builder::Decimal128Builder,
+    supplydeficit_array: arrow::array::builder::Decimal128Builder,
+    supplydeficit_rrn_array: arrow::array::builder::Decimal128Builder,
+    supplydeficit_nonrrn_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct PdpasaFnmRegionsummary1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PdpasaFnmRegionsummary1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PdpasaFnmRegionsummary1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PdpasaFnmRegionsummary1Mapping([usize; 15]);
+/// # Summary
+///
+/// ## PDPASA_FNM_REGIONSUMMARY
+///
+/// PDPASA_FNM_REGIONSUMMARY shows the summary of PDPASA outcome for each region.
+///
+/// * Data Set Name: Pdpasa
+/// * File Name: Fnm Regionsummary
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * INTERVAL_DATETIME
+/// * REGIONID
+/// * RUN_DATETIME
+#[derive(Debug, PartialEq, Eq)]
+pub struct PdpasaFnmRegionsummary1Row<'data> {
+    /// Unique Timestamp Identifier for this run, identified by the first half hour ended interval of the run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// End date time of the interval
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Region identifier
+    pub regionid: core::ops::Range<usize>,
+    /// Lack of Reserve Condition (LORCONDITION) >0 if a supply deficit exists in the Zone for this Region that contains its Regional Reference NodeLORCONDITION indicates the most severe condition:LORCONDITION = 3 if deficit in BASE run; elseLORCONDITION = 2 if deficit in RELIABILITY run; elseLORCONDITION = 1 if deficit in WARNING run
+    pub lorcondition: Option<rust_decimal::Decimal>,
+    /// Deficit Condition (DEFICITCONDITION) >0 if a supply deficit only exists in a Zone for this Region that does not contain its Regional Reference Node DEFICITCONDITION indicates the most severe condition:DEFICITCONDITION = 3 if deficit in BASE run; elseDEFICITCONDITION = 2 if deficit in RELIABILITY run; elseDEFICITCONDITION = 1 if deficit in WARNING run
+    pub deficitcondition: Option<rust_decimal::Decimal>,
+    /// 50% Probability of Exceedance demand forecast (MW)
+    pub demand50: Option<rust_decimal::Decimal>,
+    /// 50% Probability of Exceedance demand forecast plus Aggregate Generation Forecast of all non-scheduled and exempt generation (MW)
+    pub demand50_unsched_gen: Option<rust_decimal::Decimal>,
+    /// Aggregate Bid MaxAvail of all scheduled generating units, scheduled bidirectional units (Gen side) and semi-scheduled generating units, with latter capped at UIGF (MW)
+    pub sched_ss_gen_capacityavail: Option<rust_decimal::Decimal>,
+    /// Aggregate Generation Forecast of all non-scheduled and exempt generation (MW)
+    pub unsched_gen_capacityavail: Option<rust_decimal::Decimal>,
+    /// Aggregate Bid PASAAvailability of all scheduled generating units and scheduled bidirectional units (Gen side) with a Bid Recall Period less than (Interval_DateTime minus Run_DateTime) plus UIGF for all semi-scheduled generating units (MW)
+    pub sched_ss_gen_pasaavail: Option<rust_decimal::Decimal>,
+    /// Aggregate Bid MaxAvail of all scheduled loads (MW)
+    pub sched_load_capacityavail: Option<rust_decimal::Decimal>,
+    /// Aggregate 50% Probability of Exceedance Unconstrained Intermittent Generation Forecast (UIGF) of all semi-scheduled generating units (MW)
+    pub ss_uigf: Option<rust_decimal::Decimal>,
+    /// Aggregate 50% Probability of Exceedance Unconstrained Intermittent Generation Forecast (UIGF) of all solar semi-scheduled generating units (MW)
+    pub ss_solar_uigf: Option<rust_decimal::Decimal>,
+    /// Aggregate 50% Probability of Exceedance Unconstrained Intermittent Generation Forecast (UIGF) of all wind semi-scheduled generating units (MW)
+    pub ss_wind_uigf: Option<rust_decimal::Decimal>,
+    /// Date time this record was created
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PdpasaFnmRegionsummary1Row<'data> {
+    pub fn regionid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.regionid.clone())
+    }
+}
+impl mmsdm_core::GetTable for PdpasaFnmRegionsummary1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PDPASA";
+    const TABLE_NAME: &'static str = "FNM_REGIONSUMMARY";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaFnmRegionsummary1Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "INTERVAL_DATETIME",
+        "REGIONID",
+        "LORCONDITION",
+        "DEFICITCONDITION",
+        "DEMAND50",
+        "DEMAND50_UNSCHED_GEN",
+        "SCHED_SS_GEN_CAPACITYAVAIL",
+        "UNSCHED_GEN_CAPACITYAVAIL",
+        "SCHED_SS_GEN_PASAAVAIL",
+        "SCHED_LOAD_CAPACITYAVAIL",
+        "SS_UIGF",
+        "SS_SOLAR_UIGF",
+        "SS_WIND_UIGF",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PdpasaFnmRegionsummary1Row<'row>;
+    type FieldMapping = PdpasaFnmRegionsummary1Mapping;
+    type PrimaryKey = PdpasaFnmRegionsummary1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PdpasaFnmRegionsummary1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            regionid: row.get_range("regionid", field_mapping.0[2])?,
+            lorcondition: row
+                .get_opt_custom_parsed_at_idx(
+                    "lorcondition",
+                    field_mapping.0[3],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            deficitcondition: row
+                .get_opt_custom_parsed_at_idx(
+                    "deficitcondition",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            demand50: row
+                .get_opt_custom_parsed_at_idx(
+                    "demand50",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            demand50_unsched_gen: row
+                .get_opt_custom_parsed_at_idx(
+                    "demand50_unsched_gen",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            sched_ss_gen_capacityavail: row
+                .get_opt_custom_parsed_at_idx(
+                    "sched_ss_gen_capacityavail",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            unsched_gen_capacityavail: row
+                .get_opt_custom_parsed_at_idx(
+                    "unsched_gen_capacityavail",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            sched_ss_gen_pasaavail: row
+                .get_opt_custom_parsed_at_idx(
+                    "sched_ss_gen_pasaavail",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            sched_load_capacityavail: row
+                .get_opt_custom_parsed_at_idx(
+                    "sched_load_capacityavail",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ss_uigf: row
+                .get_opt_custom_parsed_at_idx(
+                    "ss_uigf",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ss_solar_uigf: row
+                .get_opt_custom_parsed_at_idx(
+                    "ss_solar_uigf",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ss_wind_uigf: row
+                .get_opt_custom_parsed_at_idx(
+                    "ss_wind_uigf",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PdpasaFnmRegionsummary1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PdpasaFnmRegionsummary1PrimaryKey {
+        PdpasaFnmRegionsummary1PrimaryKey {
+            interval_datetime: row.interval_datetime,
+            regionid: row.regionid().to_string(),
+            run_datetime: row.run_datetime,
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("pdpasa_fnm_regionsummary_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PdpasaFnmRegionsummary1Row {
+            run_datetime: row.run_datetime.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            regionid: row.regionid.clone(),
+            lorcondition: row.lorcondition.clone(),
+            deficitcondition: row.deficitcondition.clone(),
+            demand50: row.demand50.clone(),
+            demand50_unsched_gen: row.demand50_unsched_gen.clone(),
+            sched_ss_gen_capacityavail: row.sched_ss_gen_capacityavail.clone(),
+            unsched_gen_capacityavail: row.unsched_gen_capacityavail.clone(),
+            sched_ss_gen_pasaavail: row.sched_ss_gen_pasaavail.clone(),
+            sched_load_capacityavail: row.sched_load_capacityavail.clone(),
+            ss_uigf: row.ss_uigf.clone(),
+            ss_solar_uigf: row.ss_solar_uigf.clone(),
+            ss_wind_uigf: row.ss_wind_uigf.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PdpasaFnmRegionsummary1PrimaryKey {
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub regionid: alloc::string::String,
+    pub run_datetime: chrono::NaiveDateTime,
+}
+impl mmsdm_core::PrimaryKey for PdpasaFnmRegionsummary1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmRegionsummary1Row<'data> {
+    type Row<'other> = PdpasaFnmRegionsummary1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.regionid() == row.regionid() && self.run_datetime == row.run_datetime
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PdpasaFnmRegionsummary1Row<'data> {
+    type PrimaryKey = PdpasaFnmRegionsummary1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interval_datetime == key.interval_datetime
+            && self.regionid() == key.regionid && self.run_datetime == key.run_datetime
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmRegionsummary1PrimaryKey {
+    type Row<'other> = PdpasaFnmRegionsummary1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.regionid == row.regionid() && self.run_datetime == row.run_datetime
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PdpasaFnmRegionsummary1PrimaryKey {
+    type PrimaryKey = PdpasaFnmRegionsummary1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interval_datetime == key.interval_datetime && self.regionid == key.regionid
+            && self.run_datetime == key.run_datetime
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PdpasaFnmRegionsummary1 {
+    type Builder = PdpasaFnmRegionsummary1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "lorcondition",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "deficitcondition",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "demand50",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "demand50_unsched_gen",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "sched_ss_gen_capacityavail",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "unsched_gen_capacityavail",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "sched_ss_gen_pasaavail",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "sched_load_capacityavail",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ss_uigf",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ss_solar_uigf",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ss_wind_uigf",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PdpasaFnmRegionsummary1Builder {
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            lorcondition_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            deficitcondition_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            demand50_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            demand50_unsched_gen_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            sched_ss_gen_capacityavail_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            unsched_gen_capacityavail_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            sched_ss_gen_pasaavail_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            sched_load_capacityavail_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            ss_uigf_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            ss_solar_uigf_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            ss_wind_uigf_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.regionid_array.append_value(row.regionid());
+        builder
+            .lorcondition_array
+            .append_option({
+                row.lorcondition
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .deficitcondition_array
+            .append_option({
+                row.deficitcondition
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .demand50_array
+            .append_option({
+                row.demand50
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .demand50_unsched_gen_array
+            .append_option({
+                row.demand50_unsched_gen
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .sched_ss_gen_capacityavail_array
+            .append_option({
+                row.sched_ss_gen_capacityavail
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .unsched_gen_capacityavail_array
+            .append_option({
+                row.unsched_gen_capacityavail
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .sched_ss_gen_pasaavail_array
+            .append_option({
+                row.sched_ss_gen_pasaavail
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .sched_load_capacityavail_array
+            .append_option({
+                row.sched_load_capacityavail
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ss_uigf_array
+            .append_option({
+                row.ss_uigf
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ss_solar_uigf_array
+            .append_option({
+                row.ss_solar_uigf
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ss_wind_uigf_array
+            .append_option({
+                row.ss_wind_uigf
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lorcondition_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.deficitcondition_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.demand50_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.demand50_unsched_gen_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.sched_ss_gen_capacityavail_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.unsched_gen_capacityavail_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sched_ss_gen_pasaavail_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.sched_load_capacityavail_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ss_uigf_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ss_solar_uigf_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ss_wind_uigf_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PdpasaFnmRegionsummary1Builder {
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    lorcondition_array: arrow::array::builder::Decimal128Builder,
+    deficitcondition_array: arrow::array::builder::Decimal128Builder,
+    demand50_array: arrow::array::builder::Decimal128Builder,
+    demand50_unsched_gen_array: arrow::array::builder::Decimal128Builder,
+    sched_ss_gen_capacityavail_array: arrow::array::builder::Decimal128Builder,
+    unsched_gen_capacityavail_array: arrow::array::builder::Decimal128Builder,
+    sched_ss_gen_pasaavail_array: arrow::array::builder::Decimal128Builder,
+    sched_load_capacityavail_array: arrow::array::builder::Decimal128Builder,
+    ss_uigf_array: arrow::array::builder::Decimal128Builder,
+    ss_solar_uigf_array: arrow::array::builder::Decimal128Builder,
+    ss_wind_uigf_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct PdpasaFnmZonesolution1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PdpasaFnmZonesolution1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PdpasaFnmZonesolution1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PdpasaFnmZonesolution1Mapping([usize; 25]);
+/// # Summary
+///
+/// ## PDPASA_FNM_ZONESOLUTION
+///
+/// PDPASA_FNM_ZONESOLUTION shows zone demand, cleared values of resources, spare capacity, losses for each run type and intervals.
+///
+/// * Data Set Name: Pdpasa
+/// * File Name: Fnm Zonesolution
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * INTERVAL_DATETIME
+/// * RUN_DATETIME
+/// * RUNTYPE
+/// * ZONEID
+#[derive(Debug, PartialEq, Eq)]
+pub struct PdpasaFnmZonesolution1Row<'data> {
+    /// Unique Timestamp Identifier for this run, identified by the first half hour ended interval of the run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// Run Type (BASE, RELIABILITY, WARNING)
+    pub runtype: core::ops::Range<usize>,
+    /// End date time of the interval
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Zone identifier
+    pub zoneid: core::ops::Range<usize>,
+    /// Region identifier of the Region containing this Zone
+    pub regionid: core::ops::Range<usize>,
+    /// Lack of Reserve Condition (LORCONDITION) >0 if a supply deficit exists and this Zone contains the Regional Reference Node LORCONDITION = 3 if deficit in BASE runLORCONDITION = 2 if deficit in RELIABILITY runLORCONDITION = 1 if deficit in WARNING run
+    pub lorcondition: Option<rust_decimal::Decimal>,
+    /// Deficit Condition (DEFICITCONDITION) >0 if a supply deficit exists and this Zone does not contain the Regional Reference NodeDEFICITCONDITION = 3 if deficit in BASE runDEFICITCONDITION = 2 if deficit in RELIABILITY runDEFICITCONDITION = 1 if deficit in WARNING run
+    pub deficitcondition: Option<rust_decimal::Decimal>,
+    /// Most probable Demand Forecast adjusted by Demand Uncertainty Margin (MW)
+    pub initialdemand: Option<rust_decimal::Decimal>,
+    /// Aggregate Uncertainty Margin adjustment (increase) to most probable Demand Forecast (MW)
+    pub demand_uncertainty_margin: Option<rust_decimal::Decimal>,
+    /// Aggregate Uncertainty Margin adjustment (decrease) to Scheduled Generation Bid Max Avail (MW)
+    pub sched_gen_uncertainty_margin: Option<rust_decimal::Decimal>,
+    /// Aggregate Uncertainty Margin adjustment (decrease) to most probable VRE Forecast (MW)
+    pub vre_gen_uncertainty_margin: Option<rust_decimal::Decimal>,
+    /// Aggregate Auxiliary Load adjustment to uncertainty-adjusted Bid MaxAvail of all scheduled generating units (MW)
+    pub sched_gen_aux_load: Option<rust_decimal::Decimal>,
+    /// Cleared Generation from non energy-constrained resources - that is, excluding bidirectional units and generating units subject to daily energy limits (MW)
+    pub energyunconstrained_cleared: Option<rust_decimal::Decimal>,
+    /// Cleared Generation from energy-constrained resources - that is, from bidirectional units and generating units subject to daily energy limits (MW)
+    pub energyconstrained_cleared: Option<rust_decimal::Decimal>,
+    /// Cleared Generation (positive) or Consumption (negative) from bidirectional units (MW)
+    pub bdu_cleared: Option<rust_decimal::Decimal>,
+    /// Cleared Generation from semi-scheduled generating units (MW)
+    pub ss_cleared: Option<rust_decimal::Decimal>,
+    /// Cleared Generation from semi-scheduled solar generating units (MW)
+    pub ss_solar_cleared: Option<rust_decimal::Decimal>,
+    /// Cleared Generation from semi-scheduled wind generating units (MW)
+    pub ss_wind_cleared: Option<rust_decimal::Decimal>,
+    /// Spare generation capacity = max(0, Available Generation minus [Cleared Generation minus Cleared Net Interchange]) (MW)
+    pub sparecapacity: Option<rust_decimal::Decimal>,
+    /// Cleared Generation (MW)
+    pub clearedsupply: Option<rust_decimal::Decimal>,
+    /// Cleared Grid Losses (MW)
+    pub clearedlosses: Option<rust_decimal::Decimal>,
+    /// Cleared Net Export (positive) or Net Import (negative) (MW)
+    pub clearednetinterchange: Option<rust_decimal::Decimal>,
+    /// Cleared Demand (MW)
+    pub cleareddemand: Option<rust_decimal::Decimal>,
+    /// Supply Deficit at loads = Max(0, Initial Demand minus Cleared Demand) where Cleared Demand = (Cleared Generation minus Cleared Losses minus Cleared Net Interchange) (MW)
+    pub supplydeficit: Option<rust_decimal::Decimal>,
+    /// Date time this record was created
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PdpasaFnmZonesolution1Row<'data> {
+    pub fn runtype(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.runtype.clone())
+    }
+    pub fn zoneid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.zoneid.clone())
+    }
+    pub fn regionid(&self) -> Option<&str> {
+        if self.regionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.regionid.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for PdpasaFnmZonesolution1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PDPASA";
+    const TABLE_NAME: &'static str = "FNM_ZONESOLUTION";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaFnmZonesolution1Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+        26, 27, 28,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "RUNTYPE",
+        "INTERVAL_DATETIME",
+        "ZONEID",
+        "REGIONID",
+        "LORCONDITION",
+        "DEFICITCONDITION",
+        "INITIALDEMAND",
+        "DEMAND_UNCERTAINTY_MARGIN",
+        "SCHED_GEN_UNCERTAINTY_MARGIN",
+        "VRE_GEN_UNCERTAINTY_MARGIN",
+        "SCHED_GEN_AUX_LOAD",
+        "ENERGYUNCONSTRAINED_CLEARED",
+        "ENERGYCONSTRAINED_CLEARED",
+        "BDU_CLEARED",
+        "SS_CLEARED",
+        "SS_SOLAR_CLEARED",
+        "SS_WIND_CLEARED",
+        "SPARECAPACITY",
+        "CLEAREDSUPPLY",
+        "CLEAREDLOSSES",
+        "CLEAREDNETINTERCHANGE",
+        "CLEAREDDEMAND",
+        "SUPPLYDEFICIT",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PdpasaFnmZonesolution1Row<'row>;
+    type FieldMapping = PdpasaFnmZonesolution1Mapping;
+    type PrimaryKey = PdpasaFnmZonesolution1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PdpasaFnmZonesolution1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            runtype: row.get_range("runtype", field_mapping.0[1])?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[2],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            zoneid: row.get_range("zoneid", field_mapping.0[3])?,
+            regionid: row.get_opt_range("regionid", field_mapping.0[4])?,
+            lorcondition: row
+                .get_opt_custom_parsed_at_idx(
+                    "lorcondition",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            deficitcondition: row
+                .get_opt_custom_parsed_at_idx(
+                    "deficitcondition",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            initialdemand: row
+                .get_opt_custom_parsed_at_idx(
+                    "initialdemand",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            demand_uncertainty_margin: row
+                .get_opt_custom_parsed_at_idx(
+                    "demand_uncertainty_margin",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            sched_gen_uncertainty_margin: row
+                .get_opt_custom_parsed_at_idx(
+                    "sched_gen_uncertainty_margin",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            vre_gen_uncertainty_margin: row
+                .get_opt_custom_parsed_at_idx(
+                    "vre_gen_uncertainty_margin",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            sched_gen_aux_load: row
+                .get_opt_custom_parsed_at_idx(
+                    "sched_gen_aux_load",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            energyunconstrained_cleared: row
+                .get_opt_custom_parsed_at_idx(
+                    "energyunconstrained_cleared",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            energyconstrained_cleared: row
+                .get_opt_custom_parsed_at_idx(
+                    "energyconstrained_cleared",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            bdu_cleared: row
+                .get_opt_custom_parsed_at_idx(
+                    "bdu_cleared",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ss_cleared: row
+                .get_opt_custom_parsed_at_idx(
+                    "ss_cleared",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ss_solar_cleared: row
+                .get_opt_custom_parsed_at_idx(
+                    "ss_solar_cleared",
+                    field_mapping.0[16],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ss_wind_cleared: row
+                .get_opt_custom_parsed_at_idx(
+                    "ss_wind_cleared",
+                    field_mapping.0[17],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            sparecapacity: row
+                .get_opt_custom_parsed_at_idx(
+                    "sparecapacity",
+                    field_mapping.0[18],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            clearedsupply: row
+                .get_opt_custom_parsed_at_idx(
+                    "clearedsupply",
+                    field_mapping.0[19],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            clearedlosses: row
+                .get_opt_custom_parsed_at_idx(
+                    "clearedlosses",
+                    field_mapping.0[20],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            clearednetinterchange: row
+                .get_opt_custom_parsed_at_idx(
+                    "clearednetinterchange",
+                    field_mapping.0[21],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            cleareddemand: row
+                .get_opt_custom_parsed_at_idx(
+                    "cleareddemand",
+                    field_mapping.0[22],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            supplydeficit: row
+                .get_opt_custom_parsed_at_idx(
+                    "supplydeficit",
+                    field_mapping.0[23],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[24],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PdpasaFnmZonesolution1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PdpasaFnmZonesolution1PrimaryKey {
+        PdpasaFnmZonesolution1PrimaryKey {
+            interval_datetime: row.interval_datetime,
+            run_datetime: row.run_datetime,
+            runtype: row.runtype().to_string(),
+            zoneid: row.zoneid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("pdpasa_fnm_zonesolution_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PdpasaFnmZonesolution1Row {
+            run_datetime: row.run_datetime.clone(),
+            runtype: row.runtype.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            zoneid: row.zoneid.clone(),
+            regionid: row.regionid.clone(),
+            lorcondition: row.lorcondition.clone(),
+            deficitcondition: row.deficitcondition.clone(),
+            initialdemand: row.initialdemand.clone(),
+            demand_uncertainty_margin: row.demand_uncertainty_margin.clone(),
+            sched_gen_uncertainty_margin: row.sched_gen_uncertainty_margin.clone(),
+            vre_gen_uncertainty_margin: row.vre_gen_uncertainty_margin.clone(),
+            sched_gen_aux_load: row.sched_gen_aux_load.clone(),
+            energyunconstrained_cleared: row.energyunconstrained_cleared.clone(),
+            energyconstrained_cleared: row.energyconstrained_cleared.clone(),
+            bdu_cleared: row.bdu_cleared.clone(),
+            ss_cleared: row.ss_cleared.clone(),
+            ss_solar_cleared: row.ss_solar_cleared.clone(),
+            ss_wind_cleared: row.ss_wind_cleared.clone(),
+            sparecapacity: row.sparecapacity.clone(),
+            clearedsupply: row.clearedsupply.clone(),
+            clearedlosses: row.clearedlosses.clone(),
+            clearednetinterchange: row.clearednetinterchange.clone(),
+            cleareddemand: row.cleareddemand.clone(),
+            supplydeficit: row.supplydeficit.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PdpasaFnmZonesolution1PrimaryKey {
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub run_datetime: chrono::NaiveDateTime,
+    pub runtype: alloc::string::String,
+    pub zoneid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for PdpasaFnmZonesolution1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmZonesolution1Row<'data> {
+    type Row<'other> = PdpasaFnmZonesolution1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.run_datetime == row.run_datetime && self.runtype() == row.runtype()
+            && self.zoneid() == row.zoneid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PdpasaFnmZonesolution1Row<'data> {
+    type PrimaryKey = PdpasaFnmZonesolution1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interval_datetime == key.interval_datetime
+            && self.run_datetime == key.run_datetime && self.runtype() == key.runtype
+            && self.zoneid() == key.zoneid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmZonesolution1PrimaryKey {
+    type Row<'other> = PdpasaFnmZonesolution1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.run_datetime == row.run_datetime && self.runtype == row.runtype()
+            && self.zoneid == row.zoneid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PdpasaFnmZonesolution1PrimaryKey {
+    type PrimaryKey = PdpasaFnmZonesolution1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interval_datetime == key.interval_datetime
+            && self.run_datetime == key.run_datetime && self.runtype == key.runtype
+            && self.zoneid == key.zoneid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PdpasaFnmZonesolution1 {
+    type Builder = PdpasaFnmZonesolution1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "runtype",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "zoneid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lorcondition",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "deficitcondition",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "initialdemand",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "demand_uncertainty_margin",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "sched_gen_uncertainty_margin",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "vre_gen_uncertainty_margin",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "sched_gen_aux_load",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "energyunconstrained_cleared",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "energyconstrained_cleared",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "bdu_cleared",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ss_cleared",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ss_solar_cleared",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ss_wind_cleared",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "sparecapacity",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "clearedsupply",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "clearedlosses",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "clearednetinterchange",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "cleareddemand",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "supplydeficit",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PdpasaFnmZonesolution1Builder {
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            runtype_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            zoneid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            lorcondition_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            deficitcondition_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            initialdemand_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            demand_uncertainty_margin_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            sched_gen_uncertainty_margin_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            vre_gen_uncertainty_margin_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            sched_gen_aux_load_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            energyunconstrained_cleared_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            energyconstrained_cleared_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            bdu_cleared_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            ss_cleared_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            ss_solar_cleared_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            ss_wind_cleared_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            sparecapacity_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            clearedsupply_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            clearedlosses_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            clearednetinterchange_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            cleareddemand_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            supplydeficit_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder.runtype_array.append_value(row.runtype());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.zoneid_array.append_value(row.zoneid());
+        builder.regionid_array.append_option(row.regionid());
+        builder
+            .lorcondition_array
+            .append_option({
+                row.lorcondition
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .deficitcondition_array
+            .append_option({
+                row.deficitcondition
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .initialdemand_array
+            .append_option({
+                row.initialdemand
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .demand_uncertainty_margin_array
+            .append_option({
+                row.demand_uncertainty_margin
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .sched_gen_uncertainty_margin_array
+            .append_option({
+                row.sched_gen_uncertainty_margin
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .vre_gen_uncertainty_margin_array
+            .append_option({
+                row.vre_gen_uncertainty_margin
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .sched_gen_aux_load_array
+            .append_option({
+                row.sched_gen_aux_load
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .energyunconstrained_cleared_array
+            .append_option({
+                row.energyunconstrained_cleared
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .energyconstrained_cleared_array
+            .append_option({
+                row.energyconstrained_cleared
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .bdu_cleared_array
+            .append_option({
+                row.bdu_cleared
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ss_cleared_array
+            .append_option({
+                row.ss_cleared
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ss_solar_cleared_array
+            .append_option({
+                row.ss_solar_cleared
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ss_wind_cleared_array
+            .append_option({
+                row.ss_wind_cleared
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .sparecapacity_array
+            .append_option({
+                row.sparecapacity
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .clearedsupply_array
+            .append_option({
+                row.clearedsupply
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .clearedlosses_array
+            .append_option({
+                row.clearedlosses
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .clearednetinterchange_array
+            .append_option({
+                row.clearednetinterchange
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .cleareddemand_array
+            .append_option({
+                row.cleareddemand
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .supplydeficit_array
+            .append_option({
+                row.supplydeficit
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.runtype_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.zoneid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lorcondition_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.deficitcondition_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.initialdemand_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.demand_uncertainty_margin_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.sched_gen_uncertainty_margin_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.vre_gen_uncertainty_margin_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sched_gen_aux_load_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.energyunconstrained_cleared_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.energyconstrained_cleared_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.bdu_cleared_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ss_cleared_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ss_solar_cleared_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ss_wind_cleared_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sparecapacity_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clearedsupply_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clearedlosses_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.clearednetinterchange_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.cleareddemand_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.supplydeficit_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PdpasaFnmZonesolution1Builder {
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    runtype_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    zoneid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    lorcondition_array: arrow::array::builder::Decimal128Builder,
+    deficitcondition_array: arrow::array::builder::Decimal128Builder,
+    initialdemand_array: arrow::array::builder::Decimal128Builder,
+    demand_uncertainty_margin_array: arrow::array::builder::Decimal128Builder,
+    sched_gen_uncertainty_margin_array: arrow::array::builder::Decimal128Builder,
+    vre_gen_uncertainty_margin_array: arrow::array::builder::Decimal128Builder,
+    sched_gen_aux_load_array: arrow::array::builder::Decimal128Builder,
+    energyunconstrained_cleared_array: arrow::array::builder::Decimal128Builder,
+    energyconstrained_cleared_array: arrow::array::builder::Decimal128Builder,
+    bdu_cleared_array: arrow::array::builder::Decimal128Builder,
+    ss_cleared_array: arrow::array::builder::Decimal128Builder,
+    ss_solar_cleared_array: arrow::array::builder::Decimal128Builder,
+    ss_wind_cleared_array: arrow::array::builder::Decimal128Builder,
+    sparecapacity_array: arrow::array::builder::Decimal128Builder,
+    clearedsupply_array: arrow::array::builder::Decimal128Builder,
+    clearedlosses_array: arrow::array::builder::Decimal128Builder,
+    clearednetinterchange_array: arrow::array::builder::Decimal128Builder,
+    cleareddemand_array: arrow::array::builder::Decimal128Builder,
+    supplydeficit_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
+pub struct PdpasaFnmZonesummary1 {
+    extract_row_partition: alloc::boxed::Box<
+        dyn Fn(
+            &PdpasaFnmZonesummary1Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    >,
+    row_partition_key: mmsdm_core::PartitionKey,
+}
+impl PdpasaFnmZonesummary1 {
+    pub fn new(
+        row_partition_key: mmsdm_core::PartitionKey,
+        func: impl Fn(
+            &<Self as mmsdm_core::GetTable>::Row<'_>,
+        ) -> mmsdm_core::PartitionValue + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            extract_row_partition: alloc::boxed::Box::new(func),
+            row_partition_key,
+        }
+    }
+}
+pub struct PdpasaFnmZonesummary1Mapping([usize; 16]);
+/// # Summary
+///
+/// ## PDPASA_FNM_ZONESUMMARY
+///
+/// PDPASA_FNM_ZONESUMMARY shows the summary of PDPASA outcome for each zone.
+///
+/// * Data Set Name: Pdpasa
+/// * File Name: Fnm Zonesummary
+/// * Data Version: 1
+///
+/// # Description
+///
+///
+/// # Notes
+/// * (Visibility)  Public
+///
+/// # Primary Key Columns
+///
+/// * INTERVAL_DATETIME
+/// * RUN_DATETIME
+/// * ZONEID
+#[derive(Debug, PartialEq, Eq)]
+pub struct PdpasaFnmZonesummary1Row<'data> {
+    /// Unique Timestamp Identifier for this run, identified by the first half hour ended interval of the run
+    pub run_datetime: chrono::NaiveDateTime,
+    /// End date time of the interval
+    pub interval_datetime: chrono::NaiveDateTime,
+    /// Zone identifier
+    pub zoneid: core::ops::Range<usize>,
+    /// Region identifier of the Region containing this Zone
+    pub regionid: core::ops::Range<usize>,
+    /// Lack of Reserve Condition (LORCONDITION) >0 if a supply deficit exists and this Zone contains the Regional Reference Node LORCONDITION indicates the most severe condition:LORCONDITION = 3 if deficit in BASE run; elseLORCONDITION = 2 if deficit in RELIABILITY run; elseLORCONDITION = 1 if deficit in WARNING run
+    pub lorcondition: Option<rust_decimal::Decimal>,
+    /// Deficit Condition (DEFICITCONDITION) >0 if a supply deficit only exists in a Zone for this Region that does not contain the Regional Reference Node. DEFICITCONDITION indicates the most severe condition:DEFICITCONDITION = 3 if deficit in BASE run; elseDEFICITCONDITION = 2 if deficit in RELIABILITY run; else DEFICITCONDITION = 1 if deficit in WARNING run
+    pub deficitcondition: Option<rust_decimal::Decimal>,
+    /// 50% Probability of Exceedance demand forecast (MW)
+    pub demand50: Option<rust_decimal::Decimal>,
+    /// 50% Probability of Exceedance demand forecast plus Aggregate Generation Forecast of all non-scheduled and exempt generation (MW)
+    pub demand50_unsched_gen: Option<rust_decimal::Decimal>,
+    /// Aggregate Bid MaxAvail of all scheduled generating units, scheduled bidirectional units (Gen side) and semi-scheduled generating units, with latter capped at UIGF (MW)
+    pub sched_ss_gen_capacityavail: Option<rust_decimal::Decimal>,
+    /// Aggregate Generation Forecast of all non-scheduled and exempt generation (MW)
+    pub unsched_gen_capacityavail: Option<rust_decimal::Decimal>,
+    /// Aggregate Bid PASAAvailability of all scheduled generating units and scheduled bidirectional units (Gen side) with a Bid Recall Period less than (Interval_DateTime minus Run_DateTime) plus UIGF for all semi-scheduled generating units (MW)
+    pub sched_ss_gen_pasaavail: Option<rust_decimal::Decimal>,
+    /// Aggregate Bid MaxAvail of all scheduled loads (MW)
+    pub sched_load_capacityavail: Option<rust_decimal::Decimal>,
+    /// Aggregate 50% Probability of Exceedance Unconstrained Intermittent Generation Forecast (UIGF) of all semi-scheduled generating units (MW)
+    pub ss_uigf: Option<rust_decimal::Decimal>,
+    /// Aggregate 50% Probability of Exceedance Unconstrained Intermittent Generation Forecast (UIGF) of all solar semi-scheduled generating units (MW)
+    pub ss_solar_uigf: Option<rust_decimal::Decimal>,
+    /// Aggregate 50% Probability of Exceedance Unconstrained Intermittent Generation Forecast (UIGF) of all wind semi-scheduled generating units (MW)
+    pub ss_wind_uigf: Option<rust_decimal::Decimal>,
+    /// Date time this record was created
+    pub lastchanged: Option<chrono::NaiveDateTime>,
+    backing_data: mmsdm_core::CsvRow<'data>,
+}
+impl<'data> PdpasaFnmZonesummary1Row<'data> {
+    pub fn zoneid(&self) -> &str {
+        core::ops::Index::index(self.backing_data.as_slice(), self.zoneid.clone())
+    }
+    pub fn regionid(&self) -> Option<&str> {
+        if self.regionid.is_empty() {
+            None
+        } else {
+            Some(
+                core::ops::Index::index(
+                    self.backing_data.as_slice(),
+                    self.regionid.clone(),
+                ),
+            )
+        }
+    }
+}
+impl mmsdm_core::GetTable for PdpasaFnmZonesummary1 {
+    const VERSION: i32 = 1;
+    const DATA_SET_NAME: &'static str = "PDPASA";
+    const TABLE_NAME: &'static str = "FNM_ZONESUMMARY";
+    const DEFAULT_FIELD_MAPPING: Self::FieldMapping = PdpasaFnmZonesummary1Mapping([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+    ]);
+    const COLUMNS: &'static [&'static str] = &[
+        "RUN_DATETIME",
+        "INTERVAL_DATETIME",
+        "ZONEID",
+        "REGIONID",
+        "LORCONDITION",
+        "DEFICITCONDITION",
+        "DEMAND50",
+        "DEMAND50_UNSCHED_GEN",
+        "SCHED_SS_GEN_CAPACITYAVAIL",
+        "UNSCHED_GEN_CAPACITYAVAIL",
+        "SCHED_SS_GEN_PASAAVAIL",
+        "SCHED_LOAD_CAPACITYAVAIL",
+        "SS_UIGF",
+        "SS_SOLAR_UIGF",
+        "SS_WIND_UIGF",
+        "LASTCHANGED",
+    ];
+    type Row<'row> = PdpasaFnmZonesummary1Row<'row>;
+    type FieldMapping = PdpasaFnmZonesummary1Mapping;
+    type PrimaryKey = PdpasaFnmZonesummary1PrimaryKey;
+    fn from_row<'data>(
+        row: mmsdm_core::CsvRow<'data>,
+        field_mapping: &Self::FieldMapping,
+    ) -> mmsdm_core::Result<Self::Row<'data>> {
+        Ok(PdpasaFnmZonesummary1Row {
+            run_datetime: row
+                .get_custom_parsed_at_idx(
+                    "run_datetime",
+                    field_mapping.0[0],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            interval_datetime: row
+                .get_custom_parsed_at_idx(
+                    "interval_datetime",
+                    field_mapping.0[1],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            zoneid: row.get_range("zoneid", field_mapping.0[2])?,
+            regionid: row.get_opt_range("regionid", field_mapping.0[3])?,
+            lorcondition: row
+                .get_opt_custom_parsed_at_idx(
+                    "lorcondition",
+                    field_mapping.0[4],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            deficitcondition: row
+                .get_opt_custom_parsed_at_idx(
+                    "deficitcondition",
+                    field_mapping.0[5],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            demand50: row
+                .get_opt_custom_parsed_at_idx(
+                    "demand50",
+                    field_mapping.0[6],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            demand50_unsched_gen: row
+                .get_opt_custom_parsed_at_idx(
+                    "demand50_unsched_gen",
+                    field_mapping.0[7],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            sched_ss_gen_capacityavail: row
+                .get_opt_custom_parsed_at_idx(
+                    "sched_ss_gen_capacityavail",
+                    field_mapping.0[8],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            unsched_gen_capacityavail: row
+                .get_opt_custom_parsed_at_idx(
+                    "unsched_gen_capacityavail",
+                    field_mapping.0[9],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            sched_ss_gen_pasaavail: row
+                .get_opt_custom_parsed_at_idx(
+                    "sched_ss_gen_pasaavail",
+                    field_mapping.0[10],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            sched_load_capacityavail: row
+                .get_opt_custom_parsed_at_idx(
+                    "sched_load_capacityavail",
+                    field_mapping.0[11],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ss_uigf: row
+                .get_opt_custom_parsed_at_idx(
+                    "ss_uigf",
+                    field_mapping.0[12],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ss_solar_uigf: row
+                .get_opt_custom_parsed_at_idx(
+                    "ss_solar_uigf",
+                    field_mapping.0[13],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            ss_wind_uigf: row
+                .get_opt_custom_parsed_at_idx(
+                    "ss_wind_uigf",
+                    field_mapping.0[14],
+                    mmsdm_core::mms_decimal::parse,
+                )?,
+            lastchanged: row
+                .get_opt_custom_parsed_at_idx(
+                    "lastchanged",
+                    field_mapping.0[15],
+                    mmsdm_core::mms_datetime::parse,
+                )?,
+            backing_data: row,
+        })
+    }
+    fn field_mapping_from_row<'a>(
+        mut row: mmsdm_core::CsvRow<'a>,
+    ) -> mmsdm_core::Result<Self::FieldMapping> {
+        if !row.is_heading() {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!("Expected an I row but got {row:?}"),
+                ),
+            );
+        }
+        let row_key = mmsdm_core::FileKey::from_row(row.borrow())?;
+        if !Self::matches_file_key(&row_key, row_key.version) {
+            return Err(
+                mmsdm_core::Error::UnexpectedRowType(
+                    alloc::format!(
+                        "Expected a row matching {}.{}.v{} but got {row_key}",
+                        Self::DATA_SET_NAME, Self::TABLE_NAME, Self::VERSION
+                    ),
+                ),
+            );
+        }
+        let mut base_mapping = Self::DEFAULT_FIELD_MAPPING.0;
+        for (field_index, field) in Self::COLUMNS.iter().enumerate() {
+            base_mapping[field_index] = row
+                .iter_fields()
+                .position(|f| f == *field)
+                .unwrap_or(usize::MAX);
+        }
+        Ok(PdpasaFnmZonesummary1Mapping(base_mapping))
+    }
+    fn matches_file_key(key: &mmsdm_core::FileKey<'_>, version: i32) -> bool {
+        version == key.version && Self::DATA_SET_NAME == key.data_set_name()
+            && Self::TABLE_NAME == key.table_name()
+    }
+    fn primary_key(row: &Self::Row<'_>) -> PdpasaFnmZonesummary1PrimaryKey {
+        PdpasaFnmZonesummary1PrimaryKey {
+            interval_datetime: row.interval_datetime,
+            run_datetime: row.run_datetime,
+            zoneid: row.zoneid().to_string(),
+        }
+    }
+    fn partition_value(&self, row: &Self::Row<'_>) -> mmsdm_core::PartitionValue {
+        (self.extract_row_partition)(row)
+    }
+    fn partition_name(&self, row: &Self::Row<'_>) -> alloc::string::String {
+        alloc::format!("pdpasa_fnm_zonesummary_v1_{}", self.partition_value(row))
+    }
+    fn partition_key(&self) -> mmsdm_core::PartitionKey {
+        self.row_partition_key
+    }
+    fn to_static<'a>(row: &Self::Row<'a>) -> Self::Row<'static> {
+        PdpasaFnmZonesummary1Row {
+            run_datetime: row.run_datetime.clone(),
+            interval_datetime: row.interval_datetime.clone(),
+            zoneid: row.zoneid.clone(),
+            regionid: row.regionid.clone(),
+            lorcondition: row.lorcondition.clone(),
+            deficitcondition: row.deficitcondition.clone(),
+            demand50: row.demand50.clone(),
+            demand50_unsched_gen: row.demand50_unsched_gen.clone(),
+            sched_ss_gen_capacityavail: row.sched_ss_gen_capacityavail.clone(),
+            unsched_gen_capacityavail: row.unsched_gen_capacityavail.clone(),
+            sched_ss_gen_pasaavail: row.sched_ss_gen_pasaavail.clone(),
+            sched_load_capacityavail: row.sched_load_capacityavail.clone(),
+            ss_uigf: row.ss_uigf.clone(),
+            ss_solar_uigf: row.ss_solar_uigf.clone(),
+            ss_wind_uigf: row.ss_wind_uigf.clone(),
+            lastchanged: row.lastchanged.clone(),
+            backing_data: row.backing_data.to_owned(),
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PdpasaFnmZonesummary1PrimaryKey {
+    pub interval_datetime: chrono::NaiveDateTime,
+    pub run_datetime: chrono::NaiveDateTime,
+    pub zoneid: alloc::string::String,
+}
+impl mmsdm_core::PrimaryKey for PdpasaFnmZonesummary1PrimaryKey {}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmZonesummary1Row<'data> {
+    type Row<'other> = PdpasaFnmZonesummary1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.run_datetime == row.run_datetime && self.zoneid() == row.zoneid()
+    }
+}
+impl<'data> mmsdm_core::CompareWithPrimaryKey for PdpasaFnmZonesummary1Row<'data> {
+    type PrimaryKey = PdpasaFnmZonesummary1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interval_datetime == key.interval_datetime
+            && self.run_datetime == key.run_datetime && self.zoneid() == key.zoneid
+    }
+}
+impl<'data> mmsdm_core::CompareWithRow for PdpasaFnmZonesummary1PrimaryKey {
+    type Row<'other> = PdpasaFnmZonesummary1Row<'other>;
+    fn compare_with_row<'other>(&self, row: &Self::Row<'other>) -> bool {
+        self.interval_datetime == row.interval_datetime
+            && self.run_datetime == row.run_datetime && self.zoneid == row.zoneid()
+    }
+}
+impl mmsdm_core::CompareWithPrimaryKey for PdpasaFnmZonesummary1PrimaryKey {
+    type PrimaryKey = PdpasaFnmZonesummary1PrimaryKey;
+    fn compare_with_key(&self, key: &Self::PrimaryKey) -> bool {
+        self.interval_datetime == key.interval_datetime
+            && self.run_datetime == key.run_datetime && self.zoneid == key.zoneid
+    }
+}
+#[cfg(feature = "arrow")]
+impl mmsdm_core::ArrowSchema for PdpasaFnmZonesummary1 {
+    type Builder = PdpasaFnmZonesummary1Builder;
+    fn schema() -> arrow::datatypes::Schema {
+        arrow::datatypes::Schema::new(
+            alloc::vec::Vec::from([
+                arrow::datatypes::Field::new(
+                    "run_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "interval_datetime",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "zoneid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    false,
+                ),
+                arrow::datatypes::Field::new(
+                    "regionid",
+                    arrow::datatypes::DataType::Dictionary(
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Int32),
+                        alloc::boxed::Box::new(arrow::datatypes::DataType::Utf8),
+                    ),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lorcondition",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "deficitcondition",
+                    arrow::datatypes::DataType::Decimal128(1, 0),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "demand50",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "demand50_unsched_gen",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "sched_ss_gen_capacityavail",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "unsched_gen_capacityavail",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "sched_ss_gen_pasaavail",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "sched_load_capacityavail",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ss_uigf",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ss_solar_uigf",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "ss_wind_uigf",
+                    arrow::datatypes::DataType::Decimal128(12, 2),
+                    true,
+                ),
+                arrow::datatypes::Field::new(
+                    "lastchanged",
+                    arrow::datatypes::DataType::Timestamp(
+                        arrow::datatypes::TimeUnit::Millisecond,
+                        None,
+                    ),
+                    true,
+                ),
+            ]),
+        )
+    }
+    fn new_builder() -> Self::Builder {
+        PdpasaFnmZonesummary1Builder {
+            run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+            zoneid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            regionid_array: arrow::array::StringDictionaryBuilder::<
+                arrow::array::types::Int32Type,
+            >::new(),
+            lorcondition_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            deficitcondition_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(1, 0)),
+            demand50_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            demand50_unsched_gen_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            sched_ss_gen_capacityavail_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            unsched_gen_capacityavail_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            sched_ss_gen_pasaavail_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            sched_load_capacityavail_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            ss_uigf_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            ss_solar_uigf_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            ss_wind_uigf_array: arrow::array::builder::Decimal128Builder::new()
+                .with_data_type(arrow::datatypes::DataType::Decimal128(12, 2)),
+            lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder::new(),
+        }
+    }
+    fn append_builder(builder: &mut Self::Builder, row: Self::Row<'_>) {
+        builder
+            .run_datetime_array
+            .append_value(row.run_datetime.and_utc().timestamp_millis());
+        builder
+            .interval_datetime_array
+            .append_value(row.interval_datetime.and_utc().timestamp_millis());
+        builder.zoneid_array.append_value(row.zoneid());
+        builder.regionid_array.append_option(row.regionid());
+        builder
+            .lorcondition_array
+            .append_option({
+                row.lorcondition
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .deficitcondition_array
+            .append_option({
+                row.deficitcondition
+                    .map(|mut val| {
+                        val.rescale(0);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .demand50_array
+            .append_option({
+                row.demand50
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .demand50_unsched_gen_array
+            .append_option({
+                row.demand50_unsched_gen
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .sched_ss_gen_capacityavail_array
+            .append_option({
+                row.sched_ss_gen_capacityavail
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .unsched_gen_capacityavail_array
+            .append_option({
+                row.unsched_gen_capacityavail
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .sched_ss_gen_pasaavail_array
+            .append_option({
+                row.sched_ss_gen_pasaavail
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .sched_load_capacityavail_array
+            .append_option({
+                row.sched_load_capacityavail
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ss_uigf_array
+            .append_option({
+                row.ss_uigf
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ss_solar_uigf_array
+            .append_option({
+                row.ss_solar_uigf
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .ss_wind_uigf_array
+            .append_option({
+                row.ss_wind_uigf
+                    .map(|mut val| {
+                        val.rescale(2);
+                        val.mantissa()
+                    })
+            });
+        builder
+            .lastchanged_array
+            .append_option(row.lastchanged.map(|val| val.and_utc().timestamp_millis()));
+    }
+    fn finalize_builder(
+        builder: &mut Self::Builder,
+    ) -> mmsdm_core::Result<arrow::array::RecordBatch> {
+        arrow::array::RecordBatch::try_new(
+                alloc::sync::Arc::new(<Self as mmsdm_core::ArrowSchema>::schema()),
+                alloc::vec::Vec::from([
+                    alloc::sync::Arc::new(builder.run_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.interval_datetime_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.zoneid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.regionid_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lorcondition_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.deficitcondition_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.demand50_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.demand50_unsched_gen_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.sched_ss_gen_capacityavail_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.unsched_gen_capacityavail_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.sched_ss_gen_pasaavail_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(
+                        builder.sched_load_capacityavail_array.finish(),
+                    ) as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ss_uigf_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ss_solar_uigf_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.ss_wind_uigf_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                    alloc::sync::Arc::new(builder.lastchanged_array.finish())
+                        as alloc::sync::Arc<dyn arrow::array::Array>,
+                ]),
+            )
+            .map_err(Into::into)
+    }
+}
+#[cfg(feature = "arrow")]
+pub struct PdpasaFnmZonesummary1Builder {
+    run_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    interval_datetime_array: arrow::array::builder::TimestampMillisecondBuilder,
+    zoneid_array: arrow::array::StringDictionaryBuilder<arrow::array::types::Int32Type>,
+    regionid_array: arrow::array::StringDictionaryBuilder<
+        arrow::array::types::Int32Type,
+    >,
+    lorcondition_array: arrow::array::builder::Decimal128Builder,
+    deficitcondition_array: arrow::array::builder::Decimal128Builder,
+    demand50_array: arrow::array::builder::Decimal128Builder,
+    demand50_unsched_gen_array: arrow::array::builder::Decimal128Builder,
+    sched_ss_gen_capacityavail_array: arrow::array::builder::Decimal128Builder,
+    unsched_gen_capacityavail_array: arrow::array::builder::Decimal128Builder,
+    sched_ss_gen_pasaavail_array: arrow::array::builder::Decimal128Builder,
+    sched_load_capacityavail_array: arrow::array::builder::Decimal128Builder,
+    ss_uigf_array: arrow::array::builder::Decimal128Builder,
+    ss_solar_uigf_array: arrow::array::builder::Decimal128Builder,
+    ss_wind_uigf_array: arrow::array::builder::Decimal128Builder,
+    lastchanged_array: arrow::array::builder::TimestampMillisecondBuilder,
+}
 pub struct PdpasaInterconnectorsoln1 {
     extract_row_partition: alloc::boxed::Box<
         dyn Fn(
@@ -2321,7 +7572,7 @@ pub struct PdpasaRegionsolution7Row<'data> {
     pub aggregatescheduledload: Option<rust_decimal::Decimal>,
     /// Date time this record was created.
     pub lastchanged: Option<chrono::NaiveDateTime>,
-    /// Sum of PASAAVAILABILITY for all scheduled generating units and scheduled bidirectional units (Gen side) with a Recall_Period <= 24 hours plus the sum of Unconstrained Intermittent Generation Forecasts (UIGF) for all semi-scheduled generating units. For the OUTAGE_LRC run, UIGF is the POE90 forecast. For the LOR Run, UIGF is the POE50 forecast. Note that the OUTAGE_LRC Run Type is discontinued from 31 July 2025.
+    /// Sum of PASAAVAILABILITY for all scheduled generating units and scheduled bidirectional units (Gen side) with a Recall_Period <= 24 hours plus the sum of Unconstrained Intermittent Generation Forecasts (UIGF) for all semi-scheduled generating units. For the OUTAGE_LRC run, UIGF is the POE90 forecast. For the LOR Run, UIGF is the POE50 forecast. Note that the OUTAGE_LRC Run Type is discontinued from 31 July 2025. From March 2026, AGGREGATEPASAAVAILABILITY changes from that with Recall_Period <= 24 to that achievable by the relevant INTERVAL_DATETIME if recalled at the start of the run.
     pub aggregatepasaavailability: Option<rust_decimal::Decimal>,
     /// Type of run. Values are OUTAGE_LRC and LOR. Note that the PDPASA OUTAGE_LRC Run Type is discontinued from 31 July 2025, with only the LOR Run Type reported.
     pub runtype: core::ops::Range<usize>,

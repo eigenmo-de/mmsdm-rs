@@ -13,7 +13,7 @@ mod mms;
 mod pdr;
 mod rust;
 
-pub const VERSION: &str = "5.6";
+pub const VERSION: &str = "5.7";
 
 fn main() {
     if let Err(e) = run() {
