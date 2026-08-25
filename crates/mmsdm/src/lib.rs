@@ -6,4 +6,5 @@ pub mod data_model;
 
 pub use mmsdm_core::*;
 
+#[cfg(feature = "arrow")]
 pub use arrow;
