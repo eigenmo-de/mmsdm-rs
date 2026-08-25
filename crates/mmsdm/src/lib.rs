@@ -5,3 +5,5 @@
 pub mod data_model;
 
 pub use mmsdm_core::*;
+
+pub use arrow;
