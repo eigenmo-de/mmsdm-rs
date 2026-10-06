@@ -36,9 +36,13 @@ mod io;
 pub use io::*;
 
 #[cfg(feature = "arrow")]
-mod arrow;
+mod arrow_impl;
+
 #[cfg(feature = "arrow")]
-pub use arrow::*;
+pub use arrow_impl::*;
+
+#[cfg(feature = "arrow")]
+pub use arrow;
 
 #[derive(Debug, Clone, Copy)]
 pub enum RecordType {
